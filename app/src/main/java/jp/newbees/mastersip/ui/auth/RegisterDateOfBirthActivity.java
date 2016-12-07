@@ -69,6 +69,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         picker.setMaxValue(1);
 
         picker.setDisplayedValues(new String[]{"Male", "Female"});
+        picker.
     }
 
     private void goPolicyActivity() {
