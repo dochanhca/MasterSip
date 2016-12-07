@@ -8,17 +8,20 @@
         layout="@layout/layout_action_bar" />
 
     <TextView
+        android:id="@+id/txt_dob"
         android:text="Date of birth"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="40dp" />
 
     <TextView
         android:id="@+id/txt_gender"
+        android:gravity="center_vertical"
         android:text="Gender"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="40dp" />
 
-    <LinearLayout
+  <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
@@ -38,7 +41,7 @@
 
     <Button
         android:id="@+id/btn_register_dob"
-        android:text="Login"
+        android:text="Register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

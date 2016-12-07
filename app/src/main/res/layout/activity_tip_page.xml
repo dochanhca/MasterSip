@@ -5,4 +5,9 @@
 
     <include layout="@layout/layout_action_bar" />
 
+    <Button
+        android:id="@+id/btn_register_info"
+        android:text="Register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
