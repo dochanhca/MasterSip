@@ -3,4 +3,42 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/layout_action_bar" />
+
+    <TextView
+        android:text="Date of birth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/txt_gender"
+        android:text="Gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_term"
+            android:layout_margin="20dp"
+            android:text="Term of services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_policy"
+            android:layout_margin="20dp"
+            android:text="Policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_register_dob"
+        android:text="Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
