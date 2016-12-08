@@ -7,28 +7,29 @@ import android.widget.Button;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.top.TopActivity;
 
 /**
- * Created by vietbq on 12/6/16.
+ * Created by ducpv on 12/7/16.
  */
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class TipPageActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button btnLogin;
+    private Button btnRegisterInfo;
 
     @Override
     protected int layoutId() {
-        return R.layout.activity_login;
+        return R.layout.activity_tip_page;
     }
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
 
-        initHeader(getString(R.string.login_activity));
+        btnRegisterInfo = (Button) findViewById(R.id.btn_register_info);
 
-        btnLogin = (Button) findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(this);
+        btnRegisterInfo.setOnClickListener(this);
+
+        initHeader(getString(R.string.tip_page_activity));
+
     }
 
     @Override
@@ -38,11 +39,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        goTopActivity();
-    }
-
-    private void goTopActivity() {
-        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+        Intent intent = new Intent(getApplicationContext(), RegisterInfoActivity.class);
         startActivity(intent);
     }
 }

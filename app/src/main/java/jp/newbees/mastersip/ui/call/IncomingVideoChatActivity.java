@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.call;
 
+import android.os.Bundle;
+
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
@@ -7,4 +9,18 @@ import jp.newbees.mastersip.ui.BaseActivity;
  */
 
 public class IncomingVideoChatActivity extends BaseActivity {
+    @Override
+    protected int layoutId() {
+        return 0;
+    }
+
+    @Override
+    protected void initViews(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected void initVariables(Bundle savedInstanceState) {
+
+    }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MasterSip</string>
+    <string name="login_activity">Login Activity</string>
+    <string name="register_dob_activity">Register DoB Activity</string>
+    <string name="top_activity">Top Activity</string>
+    <string name="register_info_activity">Register Info Activity</string>
+    <string name="tip_page_activity">Tip Page activity</string>
+    <string name="policy">Policy</string>
+    <string name="terms_of_service">Terms Of Service</string>
 </resources>
