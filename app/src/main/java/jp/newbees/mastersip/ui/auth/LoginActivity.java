@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -15,7 +16,7 @@ import jp.newbees.mastersip.ui.top.TopActivity;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button btnLogin;
+    private ImageView btnLogin;
 
     @Override
     protected int layoutId() {
@@ -27,7 +28,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         initHeader(getString(R.string.login_activity));
 
-        btnLogin = (Button) findViewById(R.id.btn_login);
+        btnLogin = (ImageView) findViewById(R.id.img_login);
         btnLogin.setOnClickListener(this);
     }
 
