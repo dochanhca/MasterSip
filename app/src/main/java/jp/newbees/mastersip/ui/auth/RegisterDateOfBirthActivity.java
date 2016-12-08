@@ -128,6 +128,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
         numberPicker.setDisplayedValues(new String[]{"Male", "Female"});
         showDialogSelectGender(numberPicker);
+//        a
     }
 
     private void goPolicyActivity() {
