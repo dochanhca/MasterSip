@@ -13,6 +13,10 @@
     <string name="err_gender_empty">性別が空白です。</string>
     <string name="err_dob_empty">生年月日が空白です。</string>
     <string name="err_age_less_than_18">１８歳未満の方は登録できません。</string>
+    <string name="enter_nickname">なまえの入力</string>
+    <string name="tokyo">東京都</string>
+    <string name="part_time">フリーター</string>
+    <string name="status">メッセージ</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

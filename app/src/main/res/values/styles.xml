@@ -9,21 +9,34 @@
 
     </style>
 
-    <style name="style_common_text_view">
+    <style name="style_common_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:textSize">@dimen/text_size_17</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
 
-    <style name="style_title_text_view" parent="style_common_text_view">
+    <style name="style_title_text_view" parent="style_common_text">
         <item name="android:textColor">@color/text_color_gray</item>
         <item name="android:layout_marginLeft">@dimen/margin_15</item>
     </style>
 
-    <style name="style_content_text_view" parent="style_common_text_view">
+    <style name="style_content_text_view" parent="style_common_text">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:layout_marginRight">@dimen/margin_15</item>
     </style>
 
+    <style name="style_info_edittext" parent="style_common_text">
+        <item name="android:cacheColorHint">@color/gray_holo_light</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_marginRight">@dimen/margin_15</item>
+    </style>
+
+    <style name="style_img_right_text_field_common">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_marginRight">@dimen/margin_15</item>
+    </style>
 </resources>
