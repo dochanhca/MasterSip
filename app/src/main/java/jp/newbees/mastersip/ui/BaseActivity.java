@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.application.MyContextWrapper;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
-import jp.newbees.mastersip.utils.ConstantTest;
-import jp.newbees.mastersip.utils.SmartLog;
+import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyContextWrapper;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -25,14 +25,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(MyContextWrapper.wrap(newBase, ConstantTest.DEFAULT_LANGUAGE));
+        super.attachBaseContext(MyContextWrapper.wrap(newBase, Constant.Application.DEFAULT_LANGUAGE));
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SmartLog.logE(TAG, "Create");
+        Logger.e(TAG, "Create");
 
         setContentView(layoutId());
         initViews(savedInstanceState);
