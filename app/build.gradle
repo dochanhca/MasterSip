@@ -40,4 +40,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.romandanylyk:pageindicatorview:0.0.7'
+    compile project(':slideDateTimePicker')
 }

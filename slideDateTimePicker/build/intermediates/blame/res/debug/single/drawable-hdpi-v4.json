@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/build/intermediates/res/merged/debug/drawable-hdpi-v4/selection_divider.9.png",
+        "source": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/src/main/res/drawable-hdpi/selection_divider.9.png"
+    },
+    {
+        "merged": "/Users/ducpv/AndroidStudioProjects/develop/slideDateTimePicker/build/intermediates/res/merged/debug/drawable-hdpi-v4/selection_divider.9.png",
+        "source": "/Users/ducpv/AndroidStudioProjects/develop/slideDateTimePicker/src/main/res/drawable-hdpi/selection_divider.9.png"
+    }
+]
