@@ -11,7 +11,7 @@ import android.widget.TextView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.application.MyContextWrapper;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
-import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.ConstantTest;
 import jp.newbees.mastersip.utils.SmartLog;
 
 /**
@@ -25,7 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(MyContextWrapper.wrap(newBase, Constant.DEFAULT_LANGUAGE));
+        super.attachBaseContext(MyContextWrapper.wrap(newBase, ConstantTest.DEFAULT_LANGUAGE));
     }
 
     @Override

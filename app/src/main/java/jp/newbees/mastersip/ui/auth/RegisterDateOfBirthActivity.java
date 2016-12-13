@@ -1,14 +1,11 @@
 package jp.newbees.mastersip.ui.auth;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,7 +20,7 @@ import java.util.Date;
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.ConstantTest;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Enum;
 
@@ -81,7 +78,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
         calendar = Calendar.getInstance();
         currentDate = calendar.getTime();
-        calendar.add(Calendar.YEAR, -(Constant.MIN_AGE + 1)); // to get previous year add -MIN_AGE + 1
+        calendar.add(Calendar.YEAR, -(ConstantTest.MIN_AGE + 1)); // to get previous year add -MIN_AGE + 1
         defaultDate = calendar.getTime();
     }
 
@@ -131,7 +128,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         } else if (txtGender.getText().length() < 1) {
             showMessageDialog("", getString(R.string.err_gender_empty), "");
             isDataValid = false;
-        } else if (myAge < Constant.MIN_AGE) {
+        } else if (myAge < ConstantTest.MIN_AGE) {
             showMessageDialog("", getString(R.string.err_age_less_than_18), "");
             isDataValid = false;
         } else {
