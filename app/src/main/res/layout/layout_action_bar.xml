@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_action_bar"
     android:layout_width="match_parent"
     android:background="@color/colorPrimary"
-    android:layout_height="50dp"
-    android:orientation="horizontal">
+    android:layout_height="@dimen/action_bar_h">
 
-    <TextView
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_15"
+        android:src="@drawable/ic_back_button"/>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_action_bar_title"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_size_action_bar"
         android:text="Title"
-        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
-</LinearLayout>
+</RelativeLayout>

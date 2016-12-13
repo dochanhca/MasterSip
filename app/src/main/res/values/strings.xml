@@ -8,4 +8,13 @@
     <string name="policy">Policy</string>
     <string name="terms_of_service">Terms Of Service</string>
     <string name="register_dob_title">アカウント登録</string>
+    <string name="select_dob">生年月日</string>
+    <string name="select_gender">性別</string>
+    <string name="err_gender_empty">性別が空白です。</string>
+    <string name="err_dob_empty">生年月日が空白です。</string>
+    <string name="err_age_less_than_18">１８歳未満の方は登録できません。</string>
+    <string-array name="array_gender">
+        <item>男性</item>
+        <item>女性</item>
+    </string-array>
 </resources>

@@ -1,6 +1,10 @@
 package jp.newbees.mastersip.application;
 
 import android.app.Application;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+
+import java.util.Locale;
 
 import jp.newbees.mastersip.utils.FontUtils;
 

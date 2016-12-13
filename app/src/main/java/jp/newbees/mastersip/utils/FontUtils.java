@@ -20,7 +20,7 @@ public class FontUtils {
     }
 
     public final void initFonts(Context context) {
-        typefaceTextView = Typeface.createFromAsset(context.getAssets(), "fonts/HiraginoPro-W6.otf");
+        typefaceTextView = Typeface.createFromAsset(context.getAssets(), "fonts/HiraginoProW3.otf");
         typefaceButton = Typeface.createFromAsset(context.getAssets(), "fonts/HiraginoProN-W4.ttc");
     }
 

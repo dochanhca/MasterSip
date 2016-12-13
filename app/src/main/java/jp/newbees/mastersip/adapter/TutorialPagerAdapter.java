@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
 
@@ -16,13 +17,10 @@ import jp.newbees.mastersip.R;
  */
 
 public class TutorialPagerAdapter extends PagerAdapter {
-
-    private Context context;
-    private ArrayList<Integer> drawableIds;
+    private List<Integer> drawableIds;
     private LayoutInflater inflater;
 
-    public TutorialPagerAdapter(Context context, ArrayList<Integer> drawableIds) {
-        this.context = context;
+    public TutorialPagerAdapter(Context context, List<Integer> drawableIds) {
         this.drawableIds = drawableIds;
         this.inflater = LayoutInflater.from(context);
     }

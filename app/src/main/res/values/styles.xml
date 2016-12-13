@@ -9,4 +9,21 @@
 
     </style>
 
+    <style name="style_common_text_view">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="style_title_text_view" parent="style_common_text_view">
+        <item name="android:textColor">@color/text_color_gray</item>
+        <item name="android:layout_marginLeft">@dimen/margin_15</item>
+    </style>
+
+    <style name="style_content_text_view" parent="style_common_text_view">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_marginRight">@dimen/margin_15</item>
+    </style>
+
 </resources>
