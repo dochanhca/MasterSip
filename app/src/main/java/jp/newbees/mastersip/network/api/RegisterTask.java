@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -34,6 +35,9 @@ public class RegisterTask extends BaseTask<UserItem> {
         Number gender = new Integer(userItem.getGender());
 
         String facebooklID = userItem.getFacebookId();
+        if (null == facebooklID || facebooklID.isEmpty()){
+            facebooklID = "0";
+        }
         String deviceId = ConfigManager.getInstance().getDeviceId();
         String osVersion = ConfigManager.getInstance().getOSVersion();
         String appVersion = ConfigManager.getInstance().getApplicationVersion();

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -79,15 +80,11 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     SipError sipError = new SipError(Constant.Error.PARSE_PARAM_ERROR, e.getMessage());
                     Response.error(sipError);
                 }
-//                if (null == jParams) {
-//                    return "".getBytes();
-//                } else {
                 if (Constant.Application.SHOW_DATA_REQUEST) {
                     Logger.d(TAG,jParams.toString());
                 }
                 byte[] body = jParams.toString().getBytes();
                 return body;
-//                }
             }
 
             @Override

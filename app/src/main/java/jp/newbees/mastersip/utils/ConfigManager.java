@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.network.api;
+package jp.newbees.mastersip.utils;
 
 import android.content.Context;
 import android.os.Build;
@@ -13,8 +13,6 @@ import com.android.volley.toolbox.HurlStack;
 import com.facebook.FacebookSdk;
 
 import jp.newbees.mastersip.BuildConfig;
-import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.Logger;
 
 import static com.facebook.FacebookSdk.getCacheDir;
 

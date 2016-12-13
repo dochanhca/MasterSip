@@ -1,6 +1,6 @@
 package jp.newbees.mastersip;
 
-import jp.newbees.mastersip.network.api.ConfigManager;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/12/16.

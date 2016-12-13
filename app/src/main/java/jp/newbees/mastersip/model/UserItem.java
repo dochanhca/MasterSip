@@ -55,7 +55,6 @@ public class UserItem implements Serializable, Parcelable {
     private String userId;
 
     public UserItem() {
-        this.facebookId = "0";
     }
 
     @NonNull
