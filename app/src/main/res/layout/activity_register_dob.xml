@@ -1,47 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_register_dob">
 
     <include
         android:id="@+id/action_bar"
         layout="@layout/layout_action_bar" />
 
-    <TextView
-        android:id="@+id/txt_dob"
-        android:text="Date of birth"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
-
-    <TextView
-        android:id="@+id/txt_gender"
-        android:gravity="center_vertical"
-        android:text="Gender"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
-
-  <LinearLayout
+    <!--Lay out select date of birth-->
+    <RelativeLayout
+        android:id="@+id/layout_dob"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btn_term"
-            android:layout_margin="20dp"
-            android:text="Term of services"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_simple_text_field_bg" />
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view"
+            android:text="@string/select_dob" />
 
-        <Button
-            android:id="@+id/btn_policy"
-            android:layout_margin="20dp"
-            android:text="Policy"
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_dob"
+            style="@style/style_content_text_view"
+            android:layout_toLeftOf="@+id/img_arrow_right_dob" />
+        <ImageView
+            android:id="@+id/img_arrow_right_dob"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_15"
+            android:src="@drawable/ic_arrow_right"/>
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_register_dob"
-        android:text="Register"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_separate_line"/>
+
+    <!--Lay out select gender-->
+    <RelativeLayout
+        android:id="@+id/layout_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_simple_text_field_bg" />
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view"
+            android:text="@string/select_gender" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_gender"
+            style="@style/style_content_text_view"
+            android:layout_toLeftOf="@+id/img_arrow_right_gender" />
+        <ImageView
+            android:id="@+id/img_arrow_right_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_15"
+            android:src="@drawable/ic_arrow_right"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20">
+        <ImageView
+            android:id="@+id/img_term_of_services"
+            android:src="@drawable/btn_term_of_service"
+            android:layout_alignLeft="@+id/img_accep_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/img_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/img_accep_policy"
+            android:layout_marginBottom="@dimen/margin_20"
+            android:src="@drawable/btn_policy"/>
+
+        <ImageView
+            android:id="@+id/img_accep_policy"
+            android:layout_below="@+id/img_term_of_services"
+            android:layout_marginTop="@dimen/margin_20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_register_dob"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 </LinearLayout>

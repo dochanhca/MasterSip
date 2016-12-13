@@ -1,33 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" 
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/bg_start_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    
-    
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_tutorial"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btn_register"
-            android:layout_margin="20dp"
-            android:text="register"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"/>
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20"
+        android:layout_gravity="center_horizontal"
+        attrs:piv_viewPager="@id/pager_tutorial"
+        attrs:piv_unselectedColor="@color/colorPrimaryLight"
+        attrs:piv_selectedColor="@color/colorPrimaryDark"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <ImageView
+            android:id="@+id/img_login"
+            android:src="@drawable/btn_login"
+            android:layout_above="@+id/img_fb_login"
+            android:layout_alignRight="@+id/img_fb_login"
+            android:layout_marginBottom="@dimen/margin_20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_margin="20dp"
-            android:text="login"
+        <ImageView
+            android:id="@+id/img_register"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/img_fb_login"
+            android:layout_alignLeft="@+id/img_fb_login"
+            android:layout_marginBottom="@dimen/margin_20"
+            android:src="@drawable/btn_register"/>
 
-    <Button
-        android:id="@+id/btn_fb_login"
-        android:text="fb_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/img_fb_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_fb_login"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_20"
+            />
+    </RelativeLayout>
 
 </LinearLayout>

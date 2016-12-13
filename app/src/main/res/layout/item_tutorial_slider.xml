@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_logo_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_header"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/img_logo_master_sip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20"
+        android:layout_gravity="center"
+        android:src="@drawable/master_sip_logo"/>
+
+    <ImageView
+        android:id="@+id/img_second_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/img_body_start_app"/>
+
+    <ImageView
+        android:id="@+id/img_full_screen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:src="@drawable/slide_tutorial_page_2"/>
+
+</LinearLayout>
