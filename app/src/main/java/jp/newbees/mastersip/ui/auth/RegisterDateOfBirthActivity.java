@@ -5,9 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,7 +98,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
                 registerDOB();
                 break;
             case R.id.layout_gender:
-                openGenderPicker();
+                showDialogSelectGender();
                 break;
             case R.id.layout_dob:
                 openDialogDatePicker();
@@ -139,23 +141,6 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         return isDataValid;
     }
 
-    private void openGenderPicker() {
-        final MaterialNumberPicker numberPicker = new MaterialNumberPicker.Builder(this)
-                .minValue(Enum.Gender.MALE.getValue())
-                .maxValue(Enum.Gender.FEMALE.getValue())
-                .defaultValue(Enum.Gender.MALE.getValue())
-                .backgroundColor(Color.WHITE)
-                .separatorColor(Color.GRAY)
-                .textColor(Color.BLACK)
-                .textSize(20)
-                .enableFocusability(false)
-                .wrapSelectorWheel(true)
-                .build();
-
-        numberPicker.setDisplayedValues(genders);
-        showDialogSelectGender(numberPicker);
-    }
-
     private void goPolicyActivity() {
         Intent intent = new Intent(getApplicationContext(), PolicyActivity.class);
         startActivity(intent);
@@ -166,30 +151,41 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         startActivity(intent);
     }
 
-    private void showDialogSelectGender(final MaterialNumberPicker numberPicker) {
-        AlertDialog alertDialog;
+    private void showDialogSelectGender() {
 
         AlertDialog.Builder alerBuilder = new AlertDialog.Builder(this);
 
-        alerBuilder
-                .setView(numberPicker)
-                .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        gender = numberPicker.getValue();
-                        txtGender.setText(genders[gender]);
-                    }
-                })
-                .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_gender_picker, null);
+        alerBuilder.setView(dialogView);
 
-                    }
-                });
+        final MaterialNumberPicker numberPicker = (MaterialNumberPicker) dialogView.findViewById(R.id.picker_gender);
+        Button positiveButton = (Button) dialogView.findViewById(R.id.btn_ok);
+        Button negativeButton = (Button) dialogView.findViewById(R.id.btn_cancel);
 
-        alertDialog = alerBuilder.create();
-        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        numberPicker.setMinValue(Enum.Gender.MALE.getValue());
+        numberPicker.setMaxValue(Enum.Gender.FEMALE.getValue());
+        numberPicker.setValue(Enum.Gender.MALE.getValue());
+        numberPicker.setDisplayedValues(genders);
+
+        final AlertDialog alertDialog = alerBuilder.create();
         alertDialog.show();
+
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gender = numberPicker.getValue();
+                txtGender.setText(genders[gender]);
+                alertDialog.dismiss();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     private void openDialogDatePicker() {

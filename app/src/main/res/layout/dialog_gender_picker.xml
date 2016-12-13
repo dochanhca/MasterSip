@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+
+    <biz.kasual.materialnumberpicker.MaterialNumberPicker
+        android:id="@+id/picker_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:npBackgroundColor="@color/white"
+        app:npSeparatorColor="@color/gray_holo_light"
+        app:npTextSize="@dimen/text_size_25">
+    </biz.kasual.materialnumberpicker.MaterialNumberPicker>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_cancel"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textSize="@dimen/text_size_18"/>
+        <!-- The vertical divider line between the two buttons -->
+
+        <View
+            android:id="@+id/buttonVerticalDivider"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@color/gray_holo_light" />
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_ok"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ok"
+            android:textSize="@dimen/text_size_18"/>
+
+    </LinearLayout>
+</LinearLayout>
