@@ -168,8 +168,8 @@
                     "startLine": 4,
                     "startColumn": 4,
                     "startOffset": 180,
-                    "endColumn": 41,
-                    "endOffset": 217
+                    "endColumn": 40,
+                    "endOffset": 216
                 },
                 "from": {
                     "file": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/src/main/res/values/strings.xml",
@@ -177,8 +177,8 @@
                         "startLine": 2,
                         "startColumn": 4,
                         "startOffset": 17,
-                        "endColumn": 41,
-                        "endOffset": 54
+                        "endColumn": 40,
+                        "endOffset": 53
                     }
                 }
             },
@@ -186,18 +186,18 @@
                 "to": {
                     "startLine": 5,
                     "startColumn": 4,
-                    "startOffset": 222,
+                    "startOffset": 221,
                     "endColumn": 33,
-                    "endOffset": 251
+                    "endOffset": 250
                 },
                 "from": {
                     "file": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/src/main/res/values/strings.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 59,
+                        "startOffset": 58,
                         "endColumn": 33,
-                        "endOffset": 88
+                        "endOffset": 87
                     }
                 }
             },
@@ -205,10 +205,10 @@
                 "to": {
                     "startLine": 6,
                     "startColumn": 4,
-                    "startOffset": 256,
+                    "startOffset": 255,
                     "endLine": 12,
                     "endColumn": 12,
-                    "endOffset": 542
+                    "endOffset": 541
                 },
                 "from": {
                     "file": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/src/main/res/values/styles.xml",
@@ -226,10 +226,10 @@
                 "to": {
                     "startLine": 13,
                     "startColumn": 4,
-                    "startOffset": 547,
+                    "startOffset": 546,
                     "endLine": 15,
                     "endColumn": 12,
-                    "endOffset": 702
+                    "endOffset": 701
                 },
                 "from": {
                     "file": "/Users/ducpv/CICD/workspace/android-master-sip/slideDateTimePicker/src/main/res/values/styles.xml",

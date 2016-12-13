@@ -36,12 +36,12 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/okButton"
+            android:id="@+id/cancelButton"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/ok" />
+            android:text="@string/cancel" />
 
         <!-- The vertical divider line between the two buttons -->
 
@@ -54,12 +54,12 @@
             android:background="@color/gray_holo_dark" />
 
         <Button
-            android:id="@+id/cancelButton"
+            android:id="@+id/okButton"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/ok" />
 
     </LinearLayout>
 

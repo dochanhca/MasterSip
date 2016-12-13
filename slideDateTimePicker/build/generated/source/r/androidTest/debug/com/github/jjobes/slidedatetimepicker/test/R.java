@@ -20,10 +20,10 @@ public final class R {
     public static final class id {
         public static final int buttonHorizontalDivider=0x7f070006;
         public static final int buttonVerticalDivider=0x7f070008;
-        public static final int cancelButton=0x7f070009;
+        public static final int cancelButton=0x7f070007;
         public static final int customTab=0x7f070000;
         public static final int datePicker=0x7f070002;
-        public static final int okButton=0x7f070007;
+        public static final int okButton=0x7f070009;
         public static final int slidingTabLayout=0x7f070004;
         public static final int tabText=0x7f070001;
         public static final int timePicker=0x7f070003;

@@ -3,10 +3,10 @@ int color gray_holo_light 0x7f060001
 int drawable selection_divider 0x7f020000
 int id buttonHorizontalDivider 0x7f070006
 int id buttonVerticalDivider 0x7f070008
-int id cancelButton 0x7f070009
+int id cancelButton 0x7f070007
 int id customTab 0x7f070000
 int id datePicker 0x7f070002
-int id okButton 0x7f070007
+int id okButton 0x7f070009
 int id slidingTabLayout 0x7f070004
 int id tabText 0x7f070001
 int id timePicker 0x7f070003
