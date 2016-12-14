@@ -24,6 +24,16 @@ public final class Constant {
         public static String kData = "data";
         public static String kUserId = "user_id";
         public static String kUploadType = "upload_for";
+        public static String kHandleName = "handle_name";
+        public static String kPhoneNumber = "phonenumber";
+        public static String kProvinceId = "province_id";
+        public static String kAvatarId = "avatar_id";
+        public static String kJobId = "job_id";
+        public static String kTypeId = "type_id";
+        public static String kTypeBoy = "type_boy";
+        public static String kCharmPoint ="charm_point";
+        public static String kFreeTime = "free_time";
+        public static String kSlogan = "slogan";
     }
 
     public static final class API {
@@ -31,11 +41,13 @@ public final class Constant {
         private static final String PRODUCTION_IP     = "52.197.138.1";
         public static final String VERSION            = "v1";
         public static final String  PREFIX_URL        = "sip_api/public/api";
+
         public static String BASE_URL;
 
         public static final String LOGIN_BY_EMAIL = "login";
         public static final String REGISTER = "register";
         public static final String UPLOAD_IMAGE = "upload_image";
+        public static final String UPDATE_REGISTER_PROFILE = "user/update";
 
         public static void initBaseURL(){
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
