@@ -21,5 +21,6 @@
     <dimen name="margin_25">25dp</dimen>
     <dimen name="corner_5">5dp</dimen>
     <dimen name="corner_10">10dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
     <dimen name="avatar_size">180dp</dimen>
 </resources>

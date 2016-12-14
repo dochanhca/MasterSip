@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -76,6 +75,19 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         startActivity(intent);
     }
 
+/*
+    private void testShowDialog() {
+        SelectionDialog dialog = new SelectionDialog();
+        ArrayList<SelectionItem> selectionItems = new ArrayList<>();
+        for (int i= 0;i<30;i++){
+            selectionItems.add(new SelectionItem(i,"Item " + i));
+        }
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(SelectionDialog.LIST_SELECTION,selectionItems);
+        dialog.setArguments(args);
+        dialog.show(getFragmentManager(),SelectionDialog.TAG);
+    }
+*/
     private void goRegisterDOBActivity() {
 
         Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
