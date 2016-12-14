@@ -22,18 +22,20 @@ public final class Constant {
         public static String kCode = "code";
         public static String kMessage = "message";
         public static String kData = "data";
+        public static String kUserId = "user_id";
+        public static String kUploadType = "upload_for";
     }
 
     public static final class API {
         private static final String DEVELOPMENT_IP    = "52.197.14.30";
         private static final String PRODUCTION_IP     = "52.197.138.1";
-
         public static final String VERSION            = "v1";
         public static final String  PREFIX_URL        = "sip_api/public/api";
         public static String BASE_URL;
 
         public static final String LOGIN_BY_EMAIL = "login";
         public static final String REGISTER = "register";
+        public static final String UPLOAD_IMAGE = "upload_image";
 
         public static void initBaseURL(){
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
