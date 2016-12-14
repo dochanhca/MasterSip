@@ -1,10 +1,17 @@
 package jp.newbees.mastersip.ui.auth;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -13,13 +20,20 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
+import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
 public class RegisterProfileMaleActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
+
+    private Uri pickedImage;
+    private Bitmap bitmapAvatar;
 
     @Override
     protected int layoutId() {
@@ -37,10 +51,15 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     }
 
-    @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_status, R.id.img_complete_register})
+    @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_status,
+            R.id.img_complete_register, R.id.img_avatar})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
+                SelectAvatarDialog.showDialogSelectAvatar(this);
+                break;
+            case R.id.img_avatar:
+                SelectAvatarDialog.showDialogSelectAvatar(this);
                 break;
             case R.id.layout_area:
                 break;
@@ -55,9 +74,71 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    handleImageFromCamera();
+                }
+                break;
+            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    pickedImage = data.getData();
+                    handleImageFromGallery();
+                }
+                break;
+            case SelectAvatarDialog.CROP_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    handleImageCroped(data);
+                }
+        }
+    }
+
+    private void handleImageCroped(Intent data) {
+        byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(
+                result, 0, result.length);
+
+        imgAvatar.setImageBitmap(bitmap);
+        imgSelectAvatar.setVisibility(View.GONE);
+    }
+
+    private void handleImageFromCamera() {
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectAvatarDialog.AVATAR_NAME);
+        if (!outFile.exists()) {
+            Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
+        } else {
+            gotoCropImageScreen(Uri.fromFile(outFile));
+        }
+    }
+
+    private void handleImageFromGallery() {
+        getImageFilePath();
+    }
+
+    private void getImageFilePath() {
+        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
+            pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
+        }
+        gotoCropImageScreen(pickedImage);
+    }
+
+    private void gotoCropImageScreen(Uri imagePath) {
+        Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
+
+        intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
+
+        startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
+    }
+
 
     @BindView(R.id.img_select_avatar)
     ImageView imgSelectAvatar;
+    @BindView(R.id.img_avatar)
+    ImageView imgAvatar;
     @BindView(R.id.edt_nickname)
     HiraginoEditText edtNickname;
     @BindView(R.id.layout_nickname)

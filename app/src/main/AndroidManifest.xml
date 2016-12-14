@@ -1,29 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.newbees.mastersip">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <!-- Needed to allow Linphone to install on tablets, since android.permission.CALL_PHONE implies android.hardware.telephony is required -->
-    <uses-feature 	 android:name="android.hardware.telephony" android:required="false" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Needed to allow Linphone to install on tablets, since android.permission.CAMERA implies android.hardware.camera and android.hardware.camera.autofocus are required -->
-    <uses-feature 	 android:name="android.hardware.camera" android:required="false" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!-- Needed to store received images if the user wants to -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
-    <uses-feature android:name="android.hardware.sip.voip" android:required="true" />
-    <uses-feature android:name="android.hardware.wifi" android:required="true" />
-    <uses-feature android:name="android.hardware.microphone" android:required="true" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Needed to store received images if the user wants to -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.sip.voip"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />>
 
     <application
         android:name=".Application"
@@ -36,7 +50,34 @@
 
         </activity>
 
-        <activity android:name=".ui.auth.StartActivity"
+        <activity
+            android:name=".ui.auth.StartActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".ui.auth.RegisterDateOfBirthActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.auth.TermsOfServiceActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.auth.PolicyActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.auth.TipPageActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.auth.RegisterProfileMaleActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -46,41 +87,27 @@
         </activity>
 
         <activity
-            android:name=".ui.auth.RegisterDateOfBirthActivity"
+            android:name=".ui.auth.RegisterProfileFemaleActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".ui.auth.TermsOfServiceActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".ui.auth.PolicyActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".ui.auth.TipPageActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".ui.auth.RegisterProfileMaleActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".ui.auth.RegisterProfileFemaleActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.auth.LoginActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.top.TopActivity"
+        <activity
+            android:name=".ui.top.TopActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/AppThemeHasActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.auth.CropImageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>

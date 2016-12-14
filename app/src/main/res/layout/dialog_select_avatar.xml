@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_take_picture"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_gray_light_button"/>
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/take_a_picture"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_select_picture"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_gray_light_button"/>
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/text_color_gray"
+            android:text="@string/select_from_library"
+            android:textSize="@dimen/text_size_15"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_cancel"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_gray_dark_button"/>
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15"/>
+    </RelativeLayout>
+
+</LinearLayout>

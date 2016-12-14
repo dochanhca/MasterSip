@@ -12,6 +12,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 
 /**
  * Created by ducpv on 12/13/16.
@@ -41,6 +42,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
+                SelectAvatarDialog.showDialogSelectAvatar(this);
                 break;
             case R.id.layout_area:
                 break;
