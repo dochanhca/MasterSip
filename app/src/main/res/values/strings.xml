@@ -13,8 +13,127 @@
     <string name="err_gender_empty">性別が空白です。</string>
     <string name="err_dob_empty">生年月日が空白です。</string>
     <string name="err_age_less_than_18">１８歳未満の方は登録できません。</string>
+
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
+    </string-array>
+
+    <string-array name="female_job">
+        <item>未設定</item>
+        <item>学生"</item>
+        <item>OL</item>
+        <item>アルバイター</item>
+        <item>フリーター</item>
+        <item>看護師</item>
+        <item>保育士</item>
+        <item>販売員</item>
+        <item>モデル</item>
+        <item>教師</item>
+        <item>家事手伝い</item>
+        <item>主婦</item>
+        <item>飲食系</item>
+        <item>アパレル系</item>
+        <item>美容系</item>
+        <item>お水系</item>
+        <item>ヒミツ</item>
+        <item>その他</item>
+    </string-array>
+
+    <string-array name="male_job">
+        <item>会社員</item>
+        <item>経営者</item>
+        <item>経営幹部</item>
+        <item>フリーター</item>
+        <item>学生</item>
+        <item>エンジニア</item>
+        <item>製造系</item>
+        <item>運輸系</item>
+        <item>金融系</item>
+        <item>不動産系</item>
+        <item>法律系</item>
+        <item>IT系</item>
+        <item>医療系</item>
+        <item>教育系</item>
+        <item>福祉系</item>
+        <item>アパレル系</item>
+        <item>メディア系</item>
+        <item>芸術系</item>
+        <item>その他</item>
+        <item>ヒミツ</item>
+    </string-array>
+
+    <string-array name="rest_time">
+        <item>午前中</item>
+        <item>朝～昼間</item>
+        <item>夕方</item>
+        <item>夜～深夜</item>
+        <item>深夜～早朝</item>
+    </string-array>
+
+    <string-array name="province">
+        <item>北海道</item>
+        <item>青森県</item>
+        <item>岩手県</item>
+        <item>宮城県</item>
+        <item>秋田県</item>
+        <item>山形県</item>
+        <item>福島県</item>
+        <item>茨城県</item>
+        <item>栃木県</item>
+        <item>群馬県</item>
+        <item>埼玉県</item>
+        <item>千葉県</item>
+        <item>東京都</item>
+        <item>神奈川県</item>
+        <item>新潟県</item>
+        <item>富山県</item>
+        <item>石川県</item>
+        <item>福井県</item>
+        <item>山梨県</item>
+        <item>長野県</item>
+        <item>岐阜県</item>
+        <item>静岡県</item>
+        <item>愛知県</item>
+        <item>三重県</item>
+        <item>滋賀県</item>
+        <item>京都府</item>
+        <item>大阪府</item>
+        <item>兵庫県</item>
+        <item>奈良県</item>
+        <item>和歌山</item>
+        <item>鳥取県</item>
+        <item>島根県</item>
+        <item>岡山県</item>
+        <item>広島県</item>
+        <item>山口県</item>
+        <item>徳島県</item>
+        <item>香川県</item>
+        <item>愛媛県</item>
+        <item>高知県</item>
+        <item>福岡県</item>
+        <item>佐賀県</item>
+        <item>長崎県</item>
+        <item>熊本県</item>
+        <item>大分県</item>
+        <item>宮崎県</item>
+        <item>鹿児島県</item>
+        <item>沖縄県</item>
+    </string-array>
+
+    <string-array name="type_of_man">
+        <item>清楚</item>
+        <item>おっとり系</item>
+        <item>ロリ系</item>
+        <item>癒し系</item>
+        <item>きれい系</item>
+        <item>かわいい系</item>
+        <item>ギャル系</item>
+        <item>お笑い系</item>
+        <item>天然系</item>
+        <item>お姉系</item>
+        <item>妹系</item>
+        <item>女王様系</item>
+        <item>ヒミツ</item>
     </string-array>
 </resources>

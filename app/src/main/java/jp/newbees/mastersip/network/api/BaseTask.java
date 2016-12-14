@@ -76,7 +76,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     }
                     getCommonParams(jParams);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Logger.e(TAG,e.getLocalizedMessage());
                     SipError sipError = new SipError(Constant.Error.PARSE_PARAM_ERROR, e.getMessage());
                     Response.error(sipError);
                 }

@@ -21,9 +21,9 @@ public class UserItem implements Serializable, Parcelable {
     private String username;
 
     @NonNull
-    private LocationItem location;
-    private JobItem jobItem;
-    private AvailableTimeItem availableTimeItem;
+    private SelectionItem location;
+    private SelectionItem jobItem;
+    private SelectionItem availableTimeItem;
     private String typeOfBoy;
     private String charmingPoint;
     private String memo;
@@ -67,27 +67,27 @@ public class UserItem implements Serializable, Parcelable {
     }
 
     @NonNull
-    public LocationItem getLocation() {
+    public SelectionItem getLocation() {
         return location;
     }
 
-    public void setLocation(@NonNull LocationItem location) {
+    public void setLocation(@NonNull SelectionItem location) {
         this.location = location;
     }
 
-    public JobItem getJobItem() {
+    public SelectionItem getJobItem() {
         return jobItem;
     }
 
-    public void setJobItem(JobItem jobItem) {
+    public void setJobItem(SelectionItem jobItem) {
         this.jobItem = jobItem;
     }
 
-    public AvailableTimeItem getAvailableTimeItem() {
+    public SelectionItem getAvailableTimeItem() {
         return availableTimeItem;
     }
 
-    public void setAvailableTimeItem(AvailableTimeItem availableTimeItem) {
+    public void setAvailableTimeItem(SelectionItem availableTimeItem) {
         this.availableTimeItem = availableTimeItem;
     }
 
@@ -220,9 +220,9 @@ public class UserItem implements Serializable, Parcelable {
 
     protected UserItem(Parcel in) {
         this.username = in.readString();
-        this.location = in.readParcelable(LocationItem.class.getClassLoader());
-        this.jobItem = in.readParcelable(JobItem.class.getClassLoader());
-        this.availableTimeItem = in.readParcelable(AvailableTimeItem.class.getClassLoader());
+        this.location = in.readParcelable(SelectionItem.class.getClassLoader());
+        this.jobItem = in.readParcelable(SelectionItem.class.getClassLoader());
+        this.availableTimeItem = in.readParcelable(SelectionItem.class.getClassLoader());
         this.typeOfBoy = in.readString();
         this.charmingPoint = in.readString();
         this.memo = in.readString();
