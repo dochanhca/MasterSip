@@ -7,9 +7,9 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
-        public static String kDeviceId  = "device_id";
-        public static String kPassword  = "password";
-        public static String kEmail     = "email";
+        public static String kDeviceId = "device_id";
+        public static String kPassword = "password";
+        public static String kEmail = "email";
         public static String kClientAuthID = "client_auth_id";
 
         public static String kRegisterToken = "regist_token";
@@ -25,28 +25,31 @@ public final class Constant {
     }
 
     public static final class API {
-        private static final String DEVELOPMENT_IP    = "52.197.14.30";
-        private static final String PRODUCTION_IP     = "52.197.138.1";
+        private static final String DEVELOPMENT_IP = "52.197.14.30";
+        private static final String PRODUCTION_IP = "52.197.138.1";
 
-        public static final String VERSION            = "v1";
-        public static final String  PREFIX_URL        = "sip_api/public/api";
+        public static final String VERSION = "v1";
+        public static final String PREFIX_URL = "sip_api/public/api";
         public static String BASE_URL;
 
         public static final String LOGIN_BY_EMAIL = "login";
         public static final String REGISTER = "register";
 
-        public static void initBaseURL(){
+        public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
         }
+
+        public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
+        public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
     }
 
     public final class Error {
-        public static final int SERVER_BUSY         = 100000;
-        public static final int REQUEST_TIMEOUT     = 100001;
-        public static final int NO_NETWORK          = 100002;
-        public static final int UNKNOWN_ERROR       = 100003;
-        public static final int PARSE_ERROR         = 100004;
-        public static final int PARSE_PARAM_ERROR   = 100005;
+        public static final int SERVER_BUSY = 100000;
+        public static final int REQUEST_TIMEOUT = 100001;
+        public static final int NO_NETWORK = 100002;
+        public static final int UNKNOWN_ERROR = 100003;
+        public static final int PARSE_ERROR = 100004;
+        public static final int PARSE_PARAM_ERROR = 100005;
         public static final int MISSING_FACEBOOK_ID = 1006;
     }
 

@@ -17,6 +17,15 @@
     <string name="tokyo">東京都</string>
     <string name="part_time">フリーター</string>
     <string name="status">メッセージ</string>
+    <string name="register_profile">プロフィール入力</string>
+    <string name="tip_page_title">プロフィール登録前に</string>
+    <string name="profession">職業</string>
+    <string name="type">タイプ</string>
+    <string name="neat">清楚系</string>
+    <string name="charm_point">チャームポイント</string>
+    <string name="type_of_men">タイプの男性</string>
+    <string name="available_time">主な出没時間</string>
+    <string name="irregular">不定期</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

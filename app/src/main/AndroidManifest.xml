@@ -65,7 +65,12 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.auth.RegisterInfoActivity"
+        <activity android:name=".ui.auth.RegisterProfileMaleActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.auth.RegisterProfileFemaleActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:background="@color/bg_register_dob">
 
     <include
         android:id="@+id/layout_action_bar"
@@ -10,30 +12,29 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_register_dob"
-        android:layout_below="@+id/layout_action_bar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/layout_action_bar">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/img_select_avatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_25"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_10"
-                android:src="@drawable/img_select_avatar"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_marginTop="@dimen/margin_25"
+                android:src="@drawable/img_select_avatar" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_text_require_note"
-                android:layout_margin="@dimen/margin_20"/>
+                android:layout_margin="@dimen/margin_20"
+                android:src="@drawable/img_text_require_note" />
 
             <!--Lay out input nickname-->
             <RelativeLayout
@@ -47,16 +48,16 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/img_simple_text_field_bg" />
 
-               <ImageView
-                   style="@style/style_title_text_view"
-                   android:src="@drawable/img_nickname_title"
-                   />
+                <ImageView
+                    style="@style/style_title_text_view"
+                    android:src="@drawable/img_nickname_title" />
 
                 <jp.newbees.mastersip.customviews.HiraginoEditText
                     android:id="@+id/edt_nickname"
                     style="@style/style_info_edittext"
+                    android:maxLines="1"
                     android:layout_alignParentRight="true"
-                    android:hint="@string/enter_nickname"/>
+                    android:hint="@string/enter_nickname" />
 
             </RelativeLayout>
 
@@ -80,20 +81,26 @@
 
                 <ImageView
                     style="@style/style_title_text_view"
-                    android:src="@drawable/img_area_title"
-                    />
+                    android:src="@drawable/img_area_title" />
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_area"
                     style="@style/style_content_text_view"
                     android:layout_toLeftOf="@+id/img_arrow_right_area"
-                    android:text="@string/tokyo"/>
+                    android:text="@string/tokyo" />
 
                 <ImageView
                     android:id="@+id/img_arrow_right_area"
                     style="@style/style_img_right_text_field_common"
                     android:src="@drawable/ic_arrow_right" />
+
             </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
 
             <!--Lay out select profession-->
             <RelativeLayout
@@ -109,19 +116,25 @@
 
                 <ImageView
                     style="@style/style_title_text_view"
-                    android:src="@drawable/img_area_title"
-                    />
+                    android:src="@drawable/img_area_title" />
+
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_profession"
                     style="@style/style_content_text_view"
                     android:layout_toLeftOf="@+id/img_arrow_right_profession"
-                    android:text="@string/part_time"/>
+                    android:text="@string/part_time" />
 
                 <ImageView
                     android:id="@+id/img_arrow_right_profession"
                     style="@style/style_img_right_text_field_common"
                     android:src="@drawable/ic_arrow_right" />
             </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
 
             <!--Lay out select status-->
             <RelativeLayout
@@ -143,6 +156,25 @@
                     style="@style/style_img_right_text_field_common"
                     android:src="@drawable/img_pencil" />
             </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_status_content"
+                    style="@style/style_content_text_view"
+                    android:visibility="gone"
+                    android:layout_margin="@dimen/margin_15"
+                    android:text="テキストテキストテキストテキスト。テキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -150,8 +182,8 @@
         android:id="@+id/img_complete_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/img_complete_register"
+        android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
-        android:layout_alignParentBottom="true"/>
+        android:src="@drawable/img_complete_register" />
 
 </RelativeLayout>

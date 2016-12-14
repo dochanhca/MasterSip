@@ -111,7 +111,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
             return;
 
         if (gender == Enum.Gender.MALE.getValue()) {
-            Intent intent = new Intent(getApplicationContext(), RegisterInfoActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
             startActivity(intent);
         } else if (gender == Enum.Gender.FEMALE.getValue()) {
             Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
