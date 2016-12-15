@@ -13,7 +13,28 @@
     <string name="err_gender_empty">性別が空白です。</string>
     <string name="err_dob_empty">生年月日が空白です。</string>
     <string name="err_age_less_than_18">１８歳未満の方は登録できません。</string>
-
+    <string name="enter_nickname">なまえの入力</string>
+    <string name="tokyo">東京都</string>
+    <string name="part_time">フリーター</string>
+    <string name="status">メッセージ</string>
+    <string name="register_profile">プロフィール入力</string>
+    <string name="tip_page_title">プロフィール登録前に</string>
+    <string name="profession">職業</string>
+    <string name="type">タイプ</string>
+    <string name="neat">清楚系</string>
+    <string name="charm_point">チャームポイント</string>
+    <string name="type_of_men">タイプの男性</string>
+    <string name="available_time">主な出没時間</string>
+    <string name="irregular">不定期</string>
+    <string name="pick_location">地域選択</string>
+    <string name="take_a_picture">写真を撮る</string>
+    <string name="select_from_library">ライブラリから選択する</string>
+    <string name="cancel">キャンセル</string>
+    <string name="mess_confirm_cancel_crop_image">画像の編集を中止してもよろしいでしょうか？</string>
+    <string name="register_success">登録完了</string>
+    <string name="mess_input_profile">続いてプロフィールをご入力ください。</string>
+    <string name="delete_image">写真を削除する</string>
+    <string name="mess_delete_image_success">写真を削除しました。</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

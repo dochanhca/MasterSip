@@ -8,5 +8,6 @@
     <color name="white">#ffffff</color>
     <color name="bg_register_dob">#dfdfdf</color>
     <color name="text_color_gray">#666666</color>
+    <color name="black">#000000</color>
 
 </resources>

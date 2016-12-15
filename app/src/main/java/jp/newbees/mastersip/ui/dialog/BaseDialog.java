@@ -22,6 +22,7 @@ public abstract class BaseDialog extends DialogFragment {
     private ViewStub mViewStub;
     protected ImageView mButtonPositive;
     protected ImageView mButtonNegative;
+    protected ViewGroup mLayoutActions;
 
     public BaseDialog() {
 
@@ -34,6 +35,8 @@ public abstract class BaseDialog extends DialogFragment {
         mRoot = inflater.inflate(R.layout.dialog_base, null);
 
         mViewStub = (ViewStub) mRoot.findViewById(R.id.view_stub);
+        mLayoutActions = (ViewGroup) mRoot.findViewById(R.id.layout_actions);
+
         mViewStub.setLayoutResource(getLayoutDialog());
         View content = mViewStub.inflate();
         initActions();
@@ -72,5 +75,9 @@ public abstract class BaseDialog extends DialogFragment {
 
 
     protected abstract int getLayoutDialog();
+
+    protected void hideLayoutActions() {
+        mLayoutActions.setVisibility(View.GONE);
+    }
 
 }

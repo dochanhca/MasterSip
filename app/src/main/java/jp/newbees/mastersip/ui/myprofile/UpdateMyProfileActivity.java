@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.myprofile;
 
 import android.os.Bundle;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
@@ -9,9 +10,10 @@ import jp.newbees.mastersip.ui.BaseActivity;
  */
 
 public class UpdateMyProfileActivity extends BaseActivity {
+
     @Override
     protected int layoutId() {
-        return 0;
+        return R.layout.activity_register_profile_male;
     }
 
     @Override

@@ -20,6 +20,7 @@ public class MessageDialog extends DialogFragment {
     public static final String MESSAGE_DIALOG_TITLE = "MESSAGE_DIALOG_TITLE";
     public static final String MESSAGE_DIALOG_CONTENT = "MESSAGE_DIALOG_CONTENT";
     public static final String MESSAGE_DIALOG_NOTE = "MESSAGE_DIALOG_NOTE";
+    public static final String IS_HIDE_ACTION_BUTTON = "IS_HIDE_ACTION_BUTTON";
 
     private View mRoot;
     private TextView txtTitle;
@@ -27,6 +28,7 @@ public class MessageDialog extends DialogFragment {
     private TextView txtNote;
 
     private String title, content, note;
+    private boolean isHideActionButton;
 
 
     @Override
@@ -44,11 +46,13 @@ public class MessageDialog extends DialogFragment {
         txtTitle = (TextView) mRoot.findViewById(R.id.txt_dialog_title);
         txtContent = (TextView) mRoot.findViewById(R.id.txt_dialog_content);
         txtNote = (TextView) mRoot.findViewById(R.id.txt_dialog_note);
-        initAction();
 
         title = getArguments().getString(MESSAGE_DIALOG_TITLE, "");
         content = getArguments().getString(MESSAGE_DIALOG_CONTENT, "");
         note = getArguments().getString(MESSAGE_DIALOG_NOTE, "");
+        isHideActionButton = getArguments().getBoolean(IS_HIDE_ACTION_BUTTON, false);
+
+        initAction();
 
         setDialogTitle();
         setDialogContent();
@@ -59,6 +63,10 @@ public class MessageDialog extends DialogFragment {
 
     private void initAction() {
         ImageView imgOKButton = (ImageView) mRoot.findViewById(R.id.img_ok_button);
+        if (isHideActionButton) {
+            imgOKButton.setVisibility(View.GONE);
+            return;
+        }
         imgOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

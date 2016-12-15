@@ -111,7 +111,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
             return;
 
         if (gender == Enum.Gender.MALE.getValue()) {
-            Intent intent = new Intent(getApplicationContext(), RegisterInfoActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
             startActivity(intent);
         } else if (gender == Enum.Gender.FEMALE.getValue()) {
             Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
@@ -123,13 +123,13 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private boolean isDataValid() {
         boolean isDataValid;
         if (txtDOB.getText().length() < 1) {
-            showMessageDialog("", getString(R.string.err_dob_empty), "");
+            showMessageDialog("", getString(R.string.err_dob_empty), "", false);
             isDataValid = false;
         } else if (txtGender.getText().length() < 1) {
-            showMessageDialog("", getString(R.string.err_gender_empty), "");
+            showMessageDialog("", getString(R.string.err_gender_empty), "", false);
             isDataValid = false;
         } else if (myAge < Constant.Application.MIN_AGE) {
-            showMessageDialog("", getString(R.string.err_age_less_than_18), "");
+            showMessageDialog("", getString(R.string.err_age_less_than_18), "", false);
             isDataValid = false;
         } else {
             isDataValid = true;

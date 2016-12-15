@@ -29,11 +29,7 @@
             android:layout_toLeftOf="@+id/img_arrow_right_dob" />
         <ImageView
             android:id="@+id/img_arrow_right_dob"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/margin_15"
+            style="@style/style_img_right_text_field_common"
             android:src="@drawable/ic_arrow_right"/>
     </RelativeLayout>
 
@@ -63,11 +59,7 @@
             android:layout_toLeftOf="@+id/img_arrow_right_gender" />
         <ImageView
             android:id="@+id/img_arrow_right_gender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/margin_15"
+            style="@style/style_img_right_text_field_common"
             android:src="@drawable/ic_arrow_right"/>
     </RelativeLayout>
 

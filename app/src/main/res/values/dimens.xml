@@ -7,10 +7,13 @@
     <dimen name="margin_20">20dp</dimen>
     <dimen name="action_bar_h">53dp</dimen>
     <dimen name="text_size_action_bar">19sp</dimen>
+    <dimen name="text_size_25">25sp</dimen>
     <!--Header dialog text size-->
     <dimen name="text_size_18">18sp</dimen>
+    <dimen name="text_size_17">17sp</dimen>
     <!--Content dialog text size-->
     <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
     <!--Note dialog text size-->
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="margin_15">15dp</dimen>
@@ -18,6 +21,6 @@
     <dimen name="margin_25">25dp</dimen>
     <dimen name="corner_5">5dp</dimen>
     <dimen name="corner_10">10dp</dimen>
-    <dimen name="text_size_25">25sp</dimen>
     <dimen name="margin_5">5dp</dimen>
+    <dimen name="avatar_size">160dp</dimen>
 </resources>
