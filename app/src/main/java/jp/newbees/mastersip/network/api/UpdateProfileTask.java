@@ -39,8 +39,8 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
         jParams.put(Constant.JSON.kAvatarId,userItem.getAvatarItem().getImageId());
         jParams.put(Constant.JSON.kJobId,userItem.getJobItem().getId());
         jParams.put(Constant.JSON.kDeviceId,getDeviceId());
-        jParams.put(Constant.JSON.kTypeId,userItem.getTypeOfMan().getId());
-        jParams.put(Constant.JSON.kTypeBoy,userItem.getTypeOfMan().getTitle());
+        jParams.put(Constant.JSON.kTypeId,userItem.getTypeGirl().getId());
+        jParams.put(Constant.JSON.kTypeBoy,userItem.getTypeBoy());
         jParams.put(Constant.JSON.kCharmPoint,userItem.getCharmingPoint());
         jParams.put(Constant.JSON.kFreeTime,userItem.getAvailableTimeItem().getId());
         jParams.put(Constant.JSON.kSlogan, userItem.getMemo());

@@ -24,7 +24,17 @@ public class UserItem implements Serializable, Parcelable {
     private SelectionItem location;
     private SelectionItem jobItem;
     private SelectionItem availableTimeItem;
-    private SelectionItem typeOfMan;
+    private SelectionItem typeGirl;
+    private String typeBoy;
+
+    public String getTypeBoy() {
+        return typeBoy;
+    }
+
+    public void setTypeBoy(String typeBoy) {
+        this.typeBoy = typeBoy;
+    }
+
     private String charmingPoint;
     private String memo;
     private int gender;
@@ -184,12 +194,12 @@ public class UserItem implements Serializable, Parcelable {
         this.sipItem = sipItem;
     }
 
-    public SelectionItem getTypeOfMan() {
-        return typeOfMan;
+    public SelectionItem getTypeGirl() {
+        return typeGirl;
     }
 
-    public void setTypeOfMan(SelectionItem typeOfMan) {
-        this.typeOfMan = typeOfMan;
+    public void setTypeGirl(SelectionItem typeGirl) {
+        this.typeGirl = typeGirl;
     }
 
     @Override
@@ -203,7 +213,8 @@ public class UserItem implements Serializable, Parcelable {
         dest.writeParcelable(this.location, flags);
         dest.writeParcelable(this.jobItem, flags);
         dest.writeParcelable(this.availableTimeItem, flags);
-        dest.writeParcelable(this.typeOfMan, flags);
+        dest.writeParcelable(this.typeGirl, flags);
+        dest.writeString(this.typeBoy);
         dest.writeString(this.charmingPoint);
         dest.writeString(this.memo);
         dest.writeInt(this.gender);
@@ -223,7 +234,8 @@ public class UserItem implements Serializable, Parcelable {
         this.location = in.readParcelable(SelectionItem.class.getClassLoader());
         this.jobItem = in.readParcelable(SelectionItem.class.getClassLoader());
         this.availableTimeItem = in.readParcelable(SelectionItem.class.getClassLoader());
-        this.typeOfMan = in.readParcelable(SelectionItem.class.getClassLoader());
+        this.typeGirl = in.readParcelable(SelectionItem.class.getClassLoader());
+        this.typeBoy = in.readString();
         this.charmingPoint = in.readString();
         this.memo = in.readString();
         this.gender = in.readInt();
