@@ -19,6 +19,8 @@ import java.util.Date;
 
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.auth.RegisterPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -28,7 +30,7 @@ import jp.newbees.mastersip.utils.Enum;
  * Created by vietbq on 12/6/16.
  */
 
-public class RegisterDateOfBirthActivity extends BaseActivity implements View.OnClickListener {
+public class RegisterDateOfBirthActivity extends BaseActivity implements View.OnClickListener, RegisterPresenter.RegisterView {
 
     private ImageView imgTerm;
     private ImageView imgPolicy;
@@ -46,6 +48,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private Calendar calendar;
 
     private int gender = -1;
+
+    private RegisterPresenter registerPresenter;
 
     @Override
     protected int layoutId() {
@@ -74,6 +78,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        registerPresenter = new RegisterPresenter(this.getApplicationContext(),this);
         genders = getResources().getStringArray(R.array.array_gender);
 
         calendar = Calendar.getInstance();
@@ -106,18 +111,12 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     }
 
     private void registerDOB() {
-
         if (!isDataValid())
             return;
-
-        if (gender == Enum.Gender.MALE.getValue()) {
-            Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
-            startActivity(intent);
-        } else if (gender == Enum.Gender.FEMALE.getValue()) {
-            Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
-            startActivity(intent);
-        }
-
+        UserItem userItem = new UserItem();
+        userItem.setDateOfBirth("1988-10-28");
+        userItem.setGender(UserItem.MALE);
+        registerPresenter.registerUser(userItem);
     }
 
     private boolean isDataValid() {
@@ -211,4 +210,20 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
             myAge = DateTimeUtils.subtractDateToYear(date, currentDate);
         }
     };
+
+    @Override
+    public void onRegistered(UserItem userItem) {
+        if (userItem.getGender() == UserItem.MALE) {
+            Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
+            startActivity(intent);
+        } else if (userItem.getGender() == UserItem.FEMALE) {
+            Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onRegisterFailure(int errorCode, String errorMessage) {
+
+    }
 }

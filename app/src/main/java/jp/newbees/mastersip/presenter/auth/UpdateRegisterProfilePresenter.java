@@ -4,10 +4,11 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
 /**
- * Created by vietbq on 12/12/16.
+ * Created by vietbq on 12/15/16.
  */
 
-public class LoginPresenter extends BasePresenter {
+public class UpdateRegisterProfilePresenter extends BasePresenter {
+
 
     @Override
     protected void didResponseTask(BaseTask task) {

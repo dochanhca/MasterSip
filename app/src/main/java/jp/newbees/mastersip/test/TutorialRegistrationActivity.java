@@ -6,17 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-
 import org.linphone.core.LinphoneCoreException;
 import org.linphone.core.tutorials.TutorialNotifier;
 import org.linphone.mediastream.Log;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.RegisterTask;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -58,24 +52,9 @@ public class TutorialRegistrationActivity extends TutorialHelloWorldActivity {
         buttonCall.setText("Register");
         buttonCall.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                UserItem userItem = new UserItem();
-                userItem.setDateOfBirth("1988-10-28");
-                userItem.setGender(UserItem.MALE);
-                RegisterTask registerTask = new RegisterTask(getApplicationContext(),userItem);
-                registerTask.request(new Response.Listener<UserItem>() {
-                    @Override
-                    public void onResponse(UserItem response) {
-                        Logger.d("TutorialRegistrationActivity","request OK");
-                    }
-                }, new BaseTask.ErrorListener() {
-                    @Override
-                    public void onError(int errorCode, String errorMessage) {
-                        Logger.e("TutorialRegistrationActivity",errorMessage);
-                    }
-                });
-//                TutorialLaunchingThread thread = new TutorialLaunchingThread();
-//                buttonCall.setEnabled(false);
-//                thread.start();
+                TutorialLaunchingThread thread = new TutorialLaunchingThread();
+                buttonCall.setEnabled(false);
+                thread.start();
             }
         });
 

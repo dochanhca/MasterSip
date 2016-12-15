@@ -48,8 +48,6 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
         return jParams;
     }
 
-
-
     @NonNull
     @Override
     protected String getUrl() {

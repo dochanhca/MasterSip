@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -14,7 +15,6 @@ import com.facebook.FacebookSdk;
 
 import jp.newbees.mastersip.BuildConfig;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.facebook.FacebookSdk.getCacheDir;
 
 /**
@@ -25,6 +25,7 @@ final public class ConfigManager {
     private final RequestQueue requestQueue;
     private static ConfigManager instance;
     private final String deviceId;
+    private final SharedPreferences sharedPreferences;
 
     public final static void initConfig(Context context){
         if (instance == null) {
@@ -57,6 +58,9 @@ final public class ConfigManager {
 
         //init font
         FontUtils.getInstance().initFonts(context);
+
+        //Init SharePreference
+        sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     public RequestQueue getRequestQueue() {
@@ -82,5 +86,11 @@ final public class ConfigManager {
 
     public String getDeviceInfo() {
         return android.os.Build.MODEL;
+    }
+
+    public void saveRegisterToken(String token){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.REGISTER_TOKEN, token);
+        editor.commit();
     }
 }
