@@ -9,11 +9,18 @@
         android:id="@+id/layout_action_bar"
         layout="@layout/layout_action_bar" />
 
+    <ImageView
+        android:id="@+id/img_complete_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_complete_register" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_above="@+id/img_complete_register"
         android:layout_below="@+id/layout_action_bar">
 
         <LinearLayout
@@ -39,8 +46,8 @@
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"
                     android:layout_centerInParent="true"
-                    android:visibility="gone"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -53,14 +60,7 @@
             <!--Lay out input nickname-->
             <RelativeLayout
                 android:id="@+id/layout_nickname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/img_simple_text_field_bg" />
+                style="@style/style_layout_text_field_common">
 
                 <ImageView
                     style="@style/style_title_text_view"
@@ -84,14 +84,7 @@
             <!--Lay out select area-->
             <RelativeLayout
                 android:id="@+id/layout_area"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/img_simple_text_field_bg" />
+                style="@style/style_layout_text_field_common">
 
                 <ImageView
                     style="@style/style_title_text_view"
@@ -119,14 +112,7 @@
             <!--Lay out select profession-->
             <RelativeLayout
                 android:id="@+id/layout_profession"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/img_simple_text_field_bg" />
+                style="@style/style_layout_text_field_common">
 
                 <ImageView
                     style="@style/style_title_text_view"
@@ -153,14 +139,7 @@
             <!--Lay out select status-->
             <RelativeLayout
                 android:id="@+id/layout_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/img_simple_text_field_bg" />
+                style="@style/style_layout_text_field_common">
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     style="@style/style_title_text_view"
@@ -177,27 +156,22 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/img_separate_line" />
 
-            <LinearLayout
+            <!--Layout status content-->
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_status_content"
+                style="@style/style_content_text_input"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_divider_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line"
+                android:visibility="gone" />
 
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    android:id="@+id/txt_status_content"
-                    style="@style/style_content_text_view"
-                    android:layout_margin="@dimen/margin_15"
-                    android:text="テキストテキストテキストテキスト。テキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト"
-                    android:visibility="gone" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <ImageView
-        android:id="@+id/img_complete_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/img_complete_register" />
 
 </RelativeLayout>

@@ -54,10 +54,6 @@
             android:name=".ui.auth.StartActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -89,7 +85,12 @@
         <activity
             android:name=".ui.auth.RegisterProfileFemaleActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".ui.auth.LoginActivity"
@@ -110,6 +111,17 @@
             android:name=".ui.auth.CropImageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.auth.PickLocationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.InputActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize">
         </activity>
     </application>
 

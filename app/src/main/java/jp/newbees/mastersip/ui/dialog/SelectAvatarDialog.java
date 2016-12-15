@@ -29,7 +29,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
     public static final int PICK_AVATAR_CAMERA = 1;
     public static final int PICK_AVATAR_GALLERY = 2;
-    public static final int CROP_IMAGE = 4;
+    public static final int CROP_IMAGE = 3;
     public static final String IS_SHOW_BUTTON_DELETE_IMAGE = "IS_SHOW_BUTTON_DELETE_IMAGE";
     private static final int CAMERA_PERMISSION = 10;
     private static final int GALLERY_PERMISSION = 11;

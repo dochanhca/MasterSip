@@ -142,7 +142,7 @@
         <item>沖縄県</item>
     </string-array>
 
-    <string-array name="type_of_man">
+    <string-array name="type">
         <item>清楚</item>
         <item>おっとり系</item>
         <item>ロリ系</item>

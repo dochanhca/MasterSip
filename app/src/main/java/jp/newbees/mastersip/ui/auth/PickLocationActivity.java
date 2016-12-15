@@ -10,6 +10,8 @@ import jp.newbees.mastersip.ui.BaseActivity;
  */
 
 public class PickLocationActivity extends BaseActivity {
+    public static final int PICK_LOCATION_REQUEST_CODE = 12;
+
     @Override
     protected int layoutId() {
         return R.layout.activity_pick_location;

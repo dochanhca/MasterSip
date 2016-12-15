@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
 
@@ -23,6 +23,7 @@ public abstract class BaseDialog extends DialogFragment {
     protected ImageView mButtonPositive;
     protected ImageView mButtonNegative;
     protected ViewGroup mLayoutActions;
+    protected TextView txtDialogHeader;
 
     public BaseDialog() {
 
@@ -32,10 +33,13 @@ public abstract class BaseDialog extends DialogFragment {
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0));
         getDialog().requestWindowFeature(STYLE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
+
         mRoot = inflater.inflate(R.layout.dialog_base, null);
 
         mViewStub = (ViewStub) mRoot.findViewById(R.id.view_stub);
         mLayoutActions = (ViewGroup) mRoot.findViewById(R.id.layout_actions);
+        txtDialogHeader = (TextView) mRoot.findViewById(R.id.txt_dialog_header);
 
         mViewStub.setLayoutResource(getLayoutDialog());
         View content = mViewStub.inflate();
@@ -78,6 +82,11 @@ public abstract class BaseDialog extends DialogFragment {
 
     protected void hideLayoutActions() {
         mLayoutActions.setVisibility(View.GONE);
+    }
+
+    protected void setDialogHeader(String title) {
+        txtDialogHeader.setVisibility(View.VISIBLE);
+        txtDialogHeader.setText(title);
     }
 
 }

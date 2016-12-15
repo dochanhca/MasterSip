@@ -41,6 +41,7 @@ public class MessageDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(STYLE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
 
         mRoot = inflater.inflate(R.layout.dialog_message, container, false);
         txtTitle = (TextView) mRoot.findViewById(R.id.txt_dialog_title);
