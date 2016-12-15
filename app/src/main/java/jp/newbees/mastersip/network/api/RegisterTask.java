@@ -9,10 +9,10 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -67,7 +67,17 @@ public class RegisterTask extends BaseTask<UserItem> {
 
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
-        Logger.d(TAG,data.toString());
+
+        String extension = data.getString(Constant.JSON.kExtension);
+        String password = data.getString(Constant.JSON.kPassword);
+        String userId = data.getString(Constant.JSON.kUserId);
+        String registerToken = data.getString(Constant.JSON.kRegisterToken);
+
+        SipItem sipItem = new SipItem(extension,password);
+        this.userItem.setSipItem(sipItem);
+        this.userItem.setUserId(userId);
+        ConfigManager.getInstance().saveRegisterToken(registerToken);
+
         return this.userItem;
     }
 }

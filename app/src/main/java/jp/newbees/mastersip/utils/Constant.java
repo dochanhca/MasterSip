@@ -34,6 +34,7 @@ public final class Constant {
         public static String kCharmPoint ="charm_point";
         public static String kFreeTime = "free_time";
         public static String kSlogan = "slogan";
+        public static String kExtension = "extension";
     }
 
     public static final class API {
@@ -60,11 +61,33 @@ public final class Constant {
     public final class Error {
         public static final int SERVER_BUSY = 100000;
         public static final int REQUEST_TIMEOUT = 100001;
-        public static final int NO_NETWORK = 100002;
         public static final int UNKNOWN_ERROR = 100003;
         public static final int PARSE_ERROR = 100004;
         public static final int PARSE_PARAM_ERROR = 100005;
         public static final int MISSING_FACEBOOK_ID = 1006;
+        public static final int INVALID_DEVICE_ID = 1001;
+        public static final int MAX_CALL_ERROR = 1200;
+        public static final int USER_BUSY = 1201;
+        public static final int SAME_GENDER = 1202;
+        public static final int RECEIVER_NOT_EXISTS = 1203;
+        public static final int ROOM_CHAT_IS_NOT_EXIST = 1403;
+        public static final int OUT_OF_MONEY = 1204;
+        public static final int EXTENSION_OFFLINE = 1206;
+        public static final int USER_NOT_EXIST = 1011;
+        public static final int SOCIAL_ID_IS_NOT_EXIST = 1100;
+        public static final int EMAIL_OR_PASS_IS_WRONG = 1044;
+        public static final int WRONG_CODE_RESET_PASS = 1039;
+        public static final int EMAIL_USED_BY_ANOTHER = 1008;
+        public static final int EMAIL_IS_NOT_EXIST = 1041;
+        public static final int RESET_CODE_IS_NOT_MATCH = 1501;
+        public static final int RESET_CODE_IS_NOT_EXIST = 1500;
+        public static final int INVALID_GENDER = 1002;
+        public static final int NO_MESSAGE_TO_UPDATE_STATUS = 1410;
+        public static final int INVALID_PASSWORD = 1009;
+        public static final int INVALID_EMAIL = 1007;
+        public static final int INVALID_TOKEN = 9999;
+        public static final int NO_NETWORK = 50;
+        public static final int REQUEST_TIME_OUT = -2102;
     }
 
     public final class Application {

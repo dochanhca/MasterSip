@@ -43,6 +43,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     private SharedPreferences.Editor editor;
     private final String authorization;
     private final String registerToken;
+    private RESULT_DATA dataResponse;
 
     public BaseTask(Context context) {
         this.context = context;
@@ -52,7 +53,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         TAG = getClass().getName();
     }
 
-    public final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
+    final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
         String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/" + Constant.API.VERSION + "/" + getUrl();
         Logger.d(TAG, "URL request : " + url);
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
@@ -124,6 +125,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
 
             @Override
             protected void deliverResponse(RESULT_DATA response) {
+                BaseTask.this.dataResponse = response;
                 listener.onResponse(response);
             }
         };
@@ -191,6 +193,10 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
      */
     protected final String getDeviceId() {
         return ConfigManager.getInstance().getDeviceId();
+    }
+
+    public RESULT_DATA getDataResponse() {
+        return dataResponse;
     }
 
     public interface ErrorListener {
