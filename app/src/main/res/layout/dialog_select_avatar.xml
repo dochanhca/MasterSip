@@ -45,6 +45,27 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_delete_picture"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_gray_light_button"/>
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/text_color_gray"
+            android:text="@string/delete_image"
+            android:textSize="@dimen/text_size_15"/>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/layout_cancel"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_10"

@@ -28,9 +28,8 @@ import jp.newbees.mastersip.utils.ImageUtils;
  * Created by vietbq on 12/6/16.
  */
 
-public class RegisterProfileMaleActivity extends BaseActivity implements View.OnClickListener {
-
-    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
+public class RegisterProfileMaleActivity extends BaseActivity implements View.OnClickListener,
+        SelectAvatarDialog.OnSelectAvatarDiaLogClick {
 
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
@@ -48,7 +47,8 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-
+        showMessageDialog(getString(R.string.register_success), getString(R.string.mess_input_profile)
+                , "", false);
     }
 
     @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_status,
@@ -56,10 +56,10 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
-                SelectAvatarDialog.showDialogSelectAvatar(this);
+                SelectAvatarDialog.showDialogSelectAvatar(this, false);
                 break;
             case R.id.img_avatar:
-                SelectAvatarDialog.showDialogSelectAvatar(this);
+                SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
                 break;
@@ -91,19 +91,29 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
                 break;
             case SelectAvatarDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    handleImageCroped(data);
+                    handleImageCropped(data);
+                } else if (resultCode == RESULT_CANCELED) {
+                    showAvatar();
+                    imgAvatar.setImageURI(null);
+                    imgAvatar.setImageURI(pickedImage);
                 }
         }
     }
 
-    private void handleImageCroped(Intent data) {
+    @Override
+    public void onDeleteImageClick() {
+        showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
+        hideAvatar();
+    }
+
+    private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(
                 result, 0, result.length);
 
+        showAvatar();
         imgAvatar.setImageBitmap(bitmap);
-        imgSelectAvatar.setVisibility(View.GONE);
     }
 
     private void handleImageFromCamera() {
@@ -111,7 +121,8 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         if (!outFile.exists()) {
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
-            gotoCropImageScreen(Uri.fromFile(outFile));
+            pickedImage = Uri.fromFile(outFile);
+            gotoCropImageScreen(pickedImage);
         }
     }
 
@@ -132,6 +143,16 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
 
         startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
+    }
+
+    private void showAvatar() {
+        imgAvatar.setVisibility(View.VISIBLE);
+        imgSelectAvatar.setVisibility(View.GONE);
+    }
+
+    private void hideAvatar() {
+        imgAvatar.setVisibility(View.GONE);
+        imgSelectAvatar.setVisibility(View.VISIBLE);
     }
 
 

@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.ConfirmCropImageDialog;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -21,7 +22,8 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class CropImageActivity extends BaseActivity implements CropImageView.OnCropImageCompleteListener,
-        View.OnClickListener, CropImageView.OnSetImageUriCompleteListener {
+        View.OnClickListener, CropImageView.OnSetImageUriCompleteListener,
+        ConfirmCropImageDialog.OnDialogConfirmCropImageClick {
 
     public static final String IMAGE_URI = "IMAGE_URI";
     public static final String IMAGE_CROPPED = "IMAGE_URI";
@@ -94,7 +96,7 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
         }
 
         if (view == txtCancel) {
-
+            showDialogConfirm();
         }
     }
 
@@ -102,7 +104,18 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
         if (error != null) {
             Logger.e("Crop Failed to load image for cropping: ", error.getMessage());
-            Toast.makeText(this,  "Something went wrong, try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Something went wrong, try again", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onOkClick() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    private void showDialogConfirm() {
+        ConfirmCropImageDialog confirmCropImageDialog = new ConfirmCropImageDialog();
+        confirmCropImageDialog.show(getFragmentManager(), "ConfirmCropImageDialog");
     }
 }

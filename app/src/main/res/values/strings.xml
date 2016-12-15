@@ -30,6 +30,11 @@
     <string name="take_a_picture">写真を撮る</string>
     <string name="select_from_library">ライブラリから選択する</string>
     <string name="cancel">キャンセル</string>
+    <string name="mess_confirm_cancel_crop_image">画像の編集を中止してもよろしいでしょうか？</string>
+    <string name="register_success">登録完了</string>
+    <string name="mess_input_profile">続いてプロフィールをご入力ください。</string>
+    <string name="delete_image">写真を削除する</string>
+    <string name="mess_delete_image_success">写真を削除しました。</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

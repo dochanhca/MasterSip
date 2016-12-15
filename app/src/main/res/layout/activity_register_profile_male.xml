@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:background="@color/bg_register_dob">
+    android:background="@color/bg_register_dob"
+    android:focusableInTouchMode="true">
 
     <include
         android:id="@+id/layout_action_bar"
@@ -22,24 +22,25 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_10"
                 android:layout_marginTop="@dimen/margin_25">
 
-            <ImageView
-                android:id="@+id/img_select_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_select_avatar" />
+                <ImageView
+                    android:id="@+id/img_select_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_select_avatar" />
 
                 <ImageView
                     android:id="@+id/img_avatar"
-                    android:layout_centerInParent="true"
-                    android:scaleType="fitXY"
                     android:layout_width="@dimen/avatar_size"
-                    android:layout_height="@dimen/avatar_size" />
+                    android:layout_height="@dimen/avatar_size"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:scaleType="fitXY" />
 
             </RelativeLayout>
 
@@ -68,9 +69,9 @@
                 <jp.newbees.mastersip.customviews.HiraginoEditText
                     android:id="@+id/edt_nickname"
                     style="@style/style_info_edittext"
-                    android:maxLines="1"
                     android:layout_alignParentRight="true"
-                    android:hint="@string/enter_nickname" />
+                    android:hint="@string/enter_nickname"
+                    android:maxLines="1" />
 
             </RelativeLayout>
 
@@ -184,9 +185,9 @@
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_status_content"
                     style="@style/style_content_text_view"
-                    android:visibility="gone"
                     android:layout_margin="@dimen/margin_15"
-                    android:text="テキストテキストテキストテキスト。テキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト"/>
+                    android:text="テキストテキストテキストテキスト。テキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト。テキストテキストテキストテキストテキストテキスト"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -1,8 +1,7 @@
 package jp.newbees.mastersip.ui.dialog;
 
 import android.Manifest;
-import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -13,8 +12,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -33,23 +30,41 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     public static final int PICK_AVATAR_CAMERA = 1;
     public static final int PICK_AVATAR_GALLERY = 2;
     public static final int CROP_IMAGE = 4;
+    public static final String IS_SHOW_BUTTON_DELETE_IMAGE = "IS_SHOW_BUTTON_DELETE_IMAGE";
     private static final int CAMERA_PERMISSION = 10;
     private static final int GALLERY_PERMISSION = 11;
     public static final String AVATAR_NAME = "/avatar.jpg";
 
     private RelativeLayout layoutTakeAPicture;
     private RelativeLayout layoutSelectPicture;
+    private RelativeLayout layoutDeletePicture;
     private RelativeLayout layoutCancel;
+
+    private boolean isShowButtonDeleteImage;
+
+    public interface OnSelectAvatarDiaLogClick {
+        abstract void onDeleteImageClick();
+    }
+
+    private OnSelectAvatarDiaLogClick onSelectAvatarDiaLogClick;
 
     @Override
     protected void initViews(View rootView, Bundle savedInstanceState) {
         layoutTakeAPicture = (RelativeLayout) rootView.findViewById(R.id.layout_take_picture);
         layoutSelectPicture = (RelativeLayout) rootView.findViewById(R.id.layout_select_picture);
         layoutCancel = (RelativeLayout) rootView.findViewById(R.id.layout_cancel);
+        layoutDeletePicture = (RelativeLayout) rootView.findViewById(R.id.layout_delete_picture);
 
         layoutTakeAPicture.setOnClickListener(this);
         layoutSelectPicture.setOnClickListener(this);
         layoutCancel.setOnClickListener(this);
+        layoutDeletePicture.setOnClickListener(this);
+
+        isShowButtonDeleteImage = getArguments().getBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, false);
+
+        if (isShowButtonDeleteImage) {
+            layoutDeletePicture.setVisibility(View.VISIBLE);
+        }
 
         hideLayoutActions();
 
@@ -78,6 +93,9 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
             checkCameraPermission();
         } else if (view == layoutSelectPicture) {
             checkStoragePermission();
+        } else if (view == layoutDeletePicture) {
+            this.onSelectAvatarDiaLogClick.onDeleteImageClick();
+            dismiss();
         } else {
             dismiss();
         }
@@ -95,14 +113,26 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         } else if (requestCode == GALLERY_PERMISSION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use camera
+                // Now user should be able to use gallery
                 openGallery();
                 this.dismiss();
             }
         }
-
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.onSelectAvatarDiaLogClick = (OnSelectAvatarDiaLogClick) context;
+        } catch (ClassCastException e) {
+            //
+        }
+    }
+
+    /**
+     * Check use camera and write external storage permission real time
+     */
     private void checkCameraPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
@@ -111,7 +141,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
                 != PackageManager.PERMISSION_GRANTED) {
 
             requestPermissions(new String[]{Manifest.permission.CAMERA
-                            , Manifest.permission.WRITE_EXTERNAL_STORAGE} ,
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     CAMERA_PERMISSION);
         } else {
             openCamera();
@@ -119,6 +149,9 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         }
     }
 
+    /**
+     * check use read external storage permission real time
+     */
     private void checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 checkSelfPermission(getActivity(),
@@ -132,8 +165,13 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         }
     }
 
-    public static void showDialogSelectAvatar(FragmentActivity context) {
+    public static void showDialogSelectAvatar(FragmentActivity context, boolean isShowButtonDeleteImage) {
         SelectAvatarDialog selectAvatarDialog = new SelectAvatarDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
+
+        selectAvatarDialog.setArguments(bundle);
         selectAvatarDialog.show(context.getFragmentManager(), "SelectAvatarDialog");
     }
 
