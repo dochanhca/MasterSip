@@ -10,6 +10,22 @@ import java.io.Serializable;
  */
 
 public class SipItem implements Parcelable , Serializable{
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
     private String extension;
     private String secret;
 

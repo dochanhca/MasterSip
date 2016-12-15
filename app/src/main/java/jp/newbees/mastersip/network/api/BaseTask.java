@@ -41,12 +41,14 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     //    private RequestQueue requestQueue;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private String authorization;
+    private final String authorization;
+    private final String registerToken;
 
     public BaseTask(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
+        registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
         TAG = getClass().getName();
     }
 
@@ -193,5 +195,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
 
     public interface ErrorListener {
         void onError(int errorCode, String errorMessage);
+    }
+
+    protected String getRegisterToken() {
+        return registerToken;
     }
 }
