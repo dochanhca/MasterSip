@@ -23,4 +23,5 @@
     <dimen name="corner_10">10dp</dimen>
     <dimen name="margin_5">5dp</dimen>
     <dimen name="avatar_size">160dp</dimen>
+    <dimen name="common_text_field_h">50dp</dimen>
 </resources>

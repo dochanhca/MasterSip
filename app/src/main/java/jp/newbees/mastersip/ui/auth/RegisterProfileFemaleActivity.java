@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,8 +21,11 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ImageUtils;
 
@@ -29,10 +34,20 @@ import jp.newbees.mastersip.utils.ImageUtils;
  */
 
 public class RegisterProfileFemaleActivity extends BaseActivity implements View.OnClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick {
+        SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick {
 
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
+
+    private ArrayList<SelectionItem> femaleJobItems;
+    private ArrayList<SelectionItem> typeItems;
+    private ArrayList<SelectionItem> availableTimeItems;
+
+    private InputDataType inputDataType;
+
+    enum InputDataType {
+        TYPE_OF_MEN, CHARM_POINT, STATUS;
+    }
 
     @Override
     protected int layoutId() {
@@ -49,6 +64,28 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     protected void initVariables(Bundle savedInstanceState) {
         showMessageDialog(getString(R.string.register_success), getString(R.string.mess_input_profile)
                 , "", false);
+
+        femaleJobItems = new ArrayList<>();
+        typeItems = new ArrayList<>();
+        availableTimeItems = new ArrayList<>();
+
+        String[] femaleJobs = getResources().getStringArray(R.array.female_job);
+        for (int i = 0; i < femaleJobs.length; i++) {
+            SelectionItem selectionItem = new SelectionItem(i, femaleJobs[i]);
+            femaleJobItems.add(selectionItem);
+        }
+
+        String[] types = getResources().getStringArray(R.array.type);
+        for (int i = 0; i < types.length; i++) {
+            SelectionItem selectionItem = new SelectionItem(i, types[i]);
+            typeItems.add(selectionItem);
+        }
+
+        String[] availableTimes = getResources().getStringArray(R.array.rest_time);
+        for (int i = 0; i < availableTimes.length; i++) {
+            SelectionItem selectionItem = new SelectionItem(i, availableTimes[i]);
+            availableTimeItems.add(selectionItem);
+        }
     }
 
     @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_type,
@@ -63,18 +100,25 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
+                selectLocation();
                 break;
             case R.id.layout_profession:
+                selectJob();
                 break;
             case R.id.layout_type:
+                selectType();
                 break;
             case R.id.layout_type_of_men:
+                inputTypeOfMen();
                 break;
             case R.id.layout_charm_point:
+                inputCharmPoint();
                 break;
             case R.id.layout_available_time:
+                selectAvaiableTime();
                 break;
             case R.id.layout_status:
+                inputStatus();
                 break;
             case R.id.img_complete_register:
                 Intent intent = new Intent(getApplicationContext(), TopActivity.class);
@@ -82,6 +126,86 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 break;
         }
     }
+
+    private void selectLocation() {
+        Intent intent = new Intent(getApplicationContext(), PickLocationActivity.class);
+        startActivityForResult(intent, PickLocationActivity.PICK_LOCATION_REQUEST_CODE);
+    }
+
+    private void inputStatus() {
+        inputDataType = InputDataType.STATUS;
+        goToInputDataActivity(getString(R.string.status));
+    }
+
+    private void selectAvaiableTime() {
+
+    }
+
+    private void inputCharmPoint() {
+        inputDataType = InputDataType.CHARM_POINT;
+        goToInputDataActivity(getString(R.string.charm_point));
+    }
+
+    private void inputTypeOfMen() {
+        inputDataType = InputDataType.TYPE_OF_MEN;
+        goToInputDataActivity(getString(R.string.type_of_men));
+    }
+
+    private void selectType() {
+
+    }
+
+    private void selectJob() {
+        openSelectionDialog(getString(R.string.profession), femaleJobItems);
+    }
+
+    private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
+        SelectionDialog selectionDialog = new SelectionDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
+
+        selectionDialog.setArguments(bundle);
+        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+    }
+
+    private void goToInputDataActivity(String title) {
+        Intent intent = new Intent(getApplicationContext(), InputActivity.class);
+        intent.putExtra(InputActivity.TITLE, title);
+
+        startActivityForResult(intent, InputActivity.INPUT_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void handleDataInput(Intent data) {
+        String content = data.getStringExtra(InputActivity.INPUT_DATA);
+
+        if (content.length() <= 0) {
+            return;
+        }
+
+        switch (inputDataType) {
+            case TYPE_OF_MEN:
+                imgDividerTypeOfMen.setVisibility(View.VISIBLE);
+                txtTypeOfMenContent.setVisibility(View.VISIBLE);
+                txtTypeOfMenContent.setText(content);
+                break;
+            case CHARM_POINT:
+                imgDividerCharmPoint.setVisibility(View.VISIBLE);
+                txtCharmPointContent.setVisibility(View.VISIBLE);
+                txtCharmPointContent.setText(content);
+                break;
+            case STATUS:
+                imgDividerStatus.setVisibility(View.VISIBLE);
+                txtStatusContent.setVisibility(View.VISIBLE);
+                txtStatusContent.setText(content);
+                break;
+            default:
+                break;
+        }
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -106,6 +230,12 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                     imgAvatar.setImageURI(null);
                     imgAvatar.setImageURI(pickedImage);
                 }
+                break;
+            case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    handleDataInput(data);
+                }
+                break;
         }
     }
 
@@ -113,6 +243,11 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     public void onDeleteImageClick() {
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+
     }
 
     private void handleImageCropped(Intent data) {
@@ -124,7 +259,6 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         showAvatar();
 
         imgAvatar.setImageBitmap(bitmap);
-        ;
     }
 
     private void handleImageFromCamera() {
@@ -202,4 +336,11 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     HiraginoTextView txtStatusContent;
     @BindView(R.id.img_complete_register)
     ImageView imgCompleteRegister;
+    @BindView(R.id.img_divider_type_of_men)
+    ImageView imgDividerTypeOfMen;
+    @BindView(R.id.img_divider_charm_point)
+    ImageView imgDividerCharmPoint;
+    @BindView(R.id.img_divider_status)
+    ImageView imgDividerStatus;
+
 }

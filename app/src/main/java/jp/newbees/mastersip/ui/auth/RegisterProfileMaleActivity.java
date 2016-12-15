@@ -21,6 +21,7 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ImageUtils;
 
@@ -29,7 +30,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
  */
 
 public class RegisterProfileMaleActivity extends BaseActivity implements View.OnClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick {
+        SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick {
 
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
@@ -106,6 +107,11 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         hideAvatar();
     }
 
+    @Override
+    public void onItemSelected(int position) {
+
+    }
+
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
 
@@ -178,4 +184,5 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     HiraginoTextView txtStatusContent;
     @BindView(R.id.img_complete_register)
     ImageView imgCompleteRegister;
+
 }

@@ -23,6 +23,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
     private MessageDialog messageDialog;
 
+    protected ImageView imgBack;
+    protected TextView txtActionBarTitle;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(MyContextWrapper.wrap(newBase, Constant.Application.DEFAULT_LANGUAGE));
@@ -51,8 +54,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initVariables(Bundle savedInstanceState);
 
     protected void initHeader(String title) {
-        TextView txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
-        ImageView imgBack = (ImageView) findViewById(R.id.img_back);
+        txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
+        imgBack = (ImageView) findViewById(R.id.img_back);
 
         txtActionBarTitle.setText(title);
         imgBack.setOnClickListener(new View.OnClickListener() {
