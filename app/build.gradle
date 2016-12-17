@@ -66,5 +66,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
     compile project(':rippleview')
+    compile 'com.pnikosis:materialish-progress:1.7'
 }
 
