@@ -12,7 +12,7 @@
         android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_action_bar"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/bg_header_dialog"
         android:text="asasdasdasdasdas"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_h" />

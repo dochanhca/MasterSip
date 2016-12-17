@@ -1,18 +1,22 @@
 package jp.newbees.mastersip.ui.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.SelectionAdapter;
-import jp.newbees.mastersip.customviews.RecyclerItemClickListener;
 import jp.newbees.mastersip.model.SelectionItem;
+import jp.newbees.mastersip.utils.Utils;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -20,7 +24,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by vietbq on 12/14/16.
  */
 
-public class SelectionDialog extends BaseDialog {
+public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSelectionAdapterClick {
 
     public static final String TAG = "SelectionDialog";
     public static final String LIST_SELECTION = "LIST SELECTION";
@@ -29,6 +33,8 @@ public class SelectionDialog extends BaseDialog {
     private List<SelectionItem> data;
     private String title;
     private SelectionAdapter adapter;
+
+    private int selectedItem;
 
     public interface OnSelectionDialogClick {
         void onItemSelected(int position);
@@ -45,11 +51,40 @@ public class SelectionDialog extends BaseDialog {
         initRecyclerView();
 
         setDialogHeader(title);
+
+        adapter.setOnSelectionAdapterClick(this);
+
+        setOnPositiveListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSelectionDialogClick.onItemSelected(selectedItem);
+                dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        int width = (int) (Utils.getScreenWidth(getApplicationContext()) * 0.9);
+        int height = (int) (Utils.getScreenHeight(getApplicationContext()) * 0.6);
+
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(width,
+                    height);
+        }
     }
 
     @Override
     protected int getLayoutDialog() {
         return R.layout.dialog_selection;
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        selectedItem = position;
     }
 
     @Override

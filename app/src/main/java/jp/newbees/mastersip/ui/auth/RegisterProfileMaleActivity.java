@@ -11,7 +11,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
+
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +22,9 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
@@ -35,6 +40,8 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
 
+    private ArrayList<SelectionItem> maleJobItems;
+
     @Override
     protected int layoutId() {
         return R.layout.activity_register_profile_male;
@@ -48,12 +55,20 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        maleJobItems = new ArrayList<>();
+
+        String[] maleJobs = getResources().getStringArray(R.array.male_job);
+        for (int i = 0; i < maleJobs.length; i++) {
+            SelectionItem selectionItem = new SelectionItem(i + 1, maleJobs[i]);
+            maleJobItems.add(selectionItem);
+        }
+
         showMessageDialog(getString(R.string.register_success), getString(R.string.mess_input_profile)
                 , "", false);
     }
 
     @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_status,
-            R.id.img_complete_register, R.id.img_avatar})
+            R.id.btn_complete_register, R.id.img_avatar})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
@@ -63,12 +78,15 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
                 SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
+                selectLocation();
                 break;
             case R.id.layout_profession:
+                selectJob();
                 break;
             case R.id.layout_status:
+                inputStatus();
                 break;
-            case R.id.img_complete_register:
+            case R.id.btn_complete_register:
                 Intent intent = new Intent(getApplicationContext(), TopActivity.class);
                 startActivity(intent);
                 break;
@@ -98,6 +116,12 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
                     imgAvatar.setImageURI(null);
                     imgAvatar.setImageURI(pickedImage);
                 }
+                break;
+            case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    handleDataInput(data);
+                }
+                break;
         }
     }
 
@@ -109,8 +133,53 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     public void onItemSelected(int position) {
-
+        txtProfession.setText(maleJobItems.get(position).getTitle());
     }
+
+    private void selectLocation() {
+        Intent intent = new Intent(getApplicationContext(), PickLocationActivity.class);
+        startActivityForResult(intent, PickLocationActivity.PICK_LOCATION_REQUEST_CODE);
+    }
+
+    private void inputStatus() {
+        goToInputDataActivity(getString(R.string.status));
+    }
+
+    private void selectJob() {
+        openSelectionDialog(getString(R.string.profession), maleJobItems);
+    }
+
+    private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
+        SelectionDialog selectionDialog = new SelectionDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
+
+        selectionDialog.setArguments(bundle);
+        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+    }
+
+    private void goToInputDataActivity(String title) {
+        Intent intent = new Intent(getApplicationContext(), InputActivity.class);
+        intent.putExtra(InputActivity.TITLE, title);
+
+        startActivityForResult(intent, InputActivity.INPUT_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void handleDataInput(Intent data) {
+        String content = data.getStringExtra(InputActivity.INPUT_DATA);
+
+        if (content.length() <= 0) {
+            return;
+        }
+
+        imgDividerStatus.setVisibility(View.VISIBLE);
+        txtStatusContent.setVisibility(View.VISIBLE);
+        txtStatusContent.setText(content);
+    }
+
+
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
@@ -182,7 +251,9 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     RelativeLayout layoutStatus;
     @BindView(R.id.txt_status_content)
     HiraginoTextView txtStatusContent;
-    @BindView(R.id.img_complete_register)
-    ImageView imgCompleteRegister;
+    @BindView(R.id.btn_complete_register)
+    RippleView btnCompleteRegister;
+    @BindView(R.id.img_divider_status)
+    ImageView imgDividerStatus;
 
 }

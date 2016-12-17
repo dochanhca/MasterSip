@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import com.andexert.library.RippleView;
 
 import java.util.ArrayList;
 
@@ -18,8 +21,8 @@ import jp.newbees.mastersip.ui.BaseActivity;
 
 public class StartActivity extends BaseActivity implements View.OnClickListener {
 
-    private ImageView imgRegister;
-    private ImageView imgLogin;
+    private Button btnRegister;
+    private Button btnLogin;
     private ImageView imgFbLogin;
 
     private ViewPager pagerTutorial;
@@ -33,14 +36,15 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void initViews(Bundle savedInstanceState) {
 
-        imgRegister = (ImageView) findViewById(R.id.img_register);
-        imgLogin = (ImageView) findViewById(R.id.img_login);
+        btnRegister = (Button) findViewById(R.id.btn_register);
+        btnLogin = (Button) findViewById(R.id.btn_login);
         imgFbLogin = (ImageView) findViewById(R.id.img_fb_login);
         pagerTutorial = (ViewPager) findViewById(R.id.pager_tutorial);
 
-        imgRegister.setOnClickListener(this);
-        imgLogin.setOnClickListener(this);
+        btnRegister.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
         imgFbLogin.setOnClickListener(this);
+
     }
 
     @Override
@@ -52,10 +56,10 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.img_register:
+            case R.id.btn_register:
                 goRegisterDOBActivity();
                 break;
-            case R.id.img_login:
+            case R.id.btn_login:
                 goLoginActivity();
                 break;
             case R.id.img_fb_login:

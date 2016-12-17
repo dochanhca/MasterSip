@@ -67,28 +67,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_20">
-        <ImageView
-            android:id="@+id/img_term_of_services"
-            android:src="@drawable/btn_term_of_service"
-            android:layout_alignLeft="@+id/img_accep_policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/img_policy"
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_term_of_services"
+            android:background="@drawable/bg_button_gray_small"
+            android:layout_alignLeft="@+id/rv_accep_policy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/img_accep_policy"
-            android:layout_marginBottom="@dimen/margin_20"
-            android:src="@drawable/btn_policy"/>
+            style="@style/style_button_small"
+            android:text="@string/terms_of_service"/>
 
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/rv_accep_policy"
+            android:layout_marginBottom="@dimen/margin_20"
+            android:background="@drawable/bg_button_gray_small"
+            style="@style/style_button_small"
+            android:text="@string/policy"
+            />
+
+        <com.andexert.library.RippleView
+            android:id="@+id/rv_accep_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_term_of_services"
+            android:layout_marginTop="@dimen/margin_20"
+            android:layout_centerHorizontal="true">
         <ImageView
             android:id="@+id/img_accep_policy"
             android:layout_below="@+id/img_term_of_services"
-            android:layout_marginTop="@dimen/margin_20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/btn_register_dob"
             android:layout_centerHorizontal="true" />
+
+        </com.andexert.library.RippleView>
     </RelativeLayout>
 </LinearLayout>

@@ -72,7 +72,6 @@ public abstract class BaseDialog extends DialogFragment {
 
     public void setOnPositiveListener(View.OnClickListener onPositiveListener) {
         mButtonPositive.setOnClickListener(onPositiveListener);
-        ;
     }
 
     protected abstract void initViews(View rootView, Bundle savedInstanceState);

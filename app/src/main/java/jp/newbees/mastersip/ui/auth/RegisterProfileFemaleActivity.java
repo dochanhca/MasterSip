@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.andexert.library.RippleView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,9 +45,14 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     private ArrayList<SelectionItem> availableTimeItems;
 
     private InputDataType inputDataType;
+    private SelectDateType selectDataType;
 
     enum InputDataType {
         TYPE_OF_MEN, CHARM_POINT, STATUS;
+    }
+
+    enum SelectDateType {
+        JOB, TYPE, AVAILABLE_TIME;
     }
 
     @Override
@@ -71,26 +77,26 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
         String[] femaleJobs = getResources().getStringArray(R.array.female_job);
         for (int i = 0; i < femaleJobs.length; i++) {
-            SelectionItem selectionItem = new SelectionItem(i, femaleJobs[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, femaleJobs[i]);
             femaleJobItems.add(selectionItem);
         }
 
         String[] types = getResources().getStringArray(R.array.type);
         for (int i = 0; i < types.length; i++) {
-            SelectionItem selectionItem = new SelectionItem(i, types[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, types[i]);
             typeItems.add(selectionItem);
         }
 
         String[] availableTimes = getResources().getStringArray(R.array.rest_time);
         for (int i = 0; i < availableTimes.length; i++) {
-            SelectionItem selectionItem = new SelectionItem(i, availableTimes[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, availableTimes[i]);
             availableTimeItems.add(selectionItem);
         }
     }
 
     @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_type,
             R.id.layout_type_of_men, R.id.layout_charm_point, R.id.layout_available_time,
-            R.id.layout_status, R.id.img_complete_register, R.id.img_avatar})
+            R.id.layout_status, R.id.btn_complete_register, R.id.img_avatar})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
@@ -115,12 +121,12 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 inputCharmPoint();
                 break;
             case R.id.layout_available_time:
-                selectAvaiableTime();
+                selectAvailableTime();
                 break;
             case R.id.layout_status:
                 inputStatus();
                 break;
-            case R.id.img_complete_register:
+            case R.id.btn_complete_register:
                 Intent intent = new Intent(getApplicationContext(), TopActivity.class);
                 startActivity(intent);
                 break;
@@ -137,8 +143,9 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         goToInputDataActivity(getString(R.string.status));
     }
 
-    private void selectAvaiableTime() {
-
+    private void selectAvailableTime() {
+        selectDataType = SelectDateType.AVAILABLE_TIME;
+        openSelectionDialog(getString(R.string.available_time), availableTimeItems);
     }
 
     private void inputCharmPoint() {
@@ -152,10 +159,12 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     }
 
     private void selectType() {
-
+        selectDataType = SelectDateType.TYPE;
+        openSelectionDialog(getString(R.string.type), typeItems);
     }
 
     private void selectJob() {
+        selectDataType = SelectDateType.JOB;
         openSelectionDialog(getString(R.string.profession), femaleJobItems);
     }
 
@@ -203,9 +212,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
             default:
                 break;
         }
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -247,7 +254,18 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     @Override
     public void onItemSelected(int position) {
-
+        Toast.makeText(getApplicationContext(), femaleJobItems.get(position).getTitle(), Toast.LENGTH_LONG).show();
+        switch (selectDataType) {
+            case TYPE:
+                txtType.setText(typeItems.get(position).getTitle());
+                break;
+            case JOB:
+                txtProfession.setText(femaleJobItems.get(position).getTitle());
+                break;
+            case AVAILABLE_TIME:
+                txtAvaiableTime.setText(availableTimeItems.get(position).getTitle());
+                break;
+        }
     }
 
     private void handleImageCropped(Intent data) {
@@ -326,7 +344,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     RelativeLayout layoutCharmPoint;
     @BindView(R.id.txt_charm_point_content)
     HiraginoTextView txtCharmPointContent;
-    @BindView(R.id.txt_avaiable_time)
+    @BindView(R.id.txt_available_time)
     HiraginoTextView txtAvaiableTime;
     @BindView(R.id.layout_available_time)
     RelativeLayout layoutAvailableTime;
@@ -334,8 +352,8 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     RelativeLayout layoutStatus;
     @BindView(R.id.txt_status_content)
     HiraginoTextView txtStatusContent;
-    @BindView(R.id.img_complete_register)
-    ImageView imgCompleteRegister;
+    @BindView(R.id.btn_complete_register)
+    RippleView btnCompleteRegister;
     @BindView(R.id.img_divider_type_of_men)
     ImageView imgDividerTypeOfMen;
     @BindView(R.id.img_divider_charm_point)

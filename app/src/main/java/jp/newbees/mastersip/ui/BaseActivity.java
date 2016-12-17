@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.ui.dialog.DialogLoading;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -19,6 +20,12 @@ import jp.newbees.mastersip.utils.MyContextWrapper;
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    private static boolean mIsDialogShowing;
+    private boolean mInterrupted;
+    private DialogLoading dialogLoadingData;
+    private boolean isActivityPaused;
+    private String mCurrentContentLoading;
 
     private String TAG = getClass().getSimpleName();
     private MessageDialog messageDialog;
@@ -40,6 +47,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(layoutId());
         initViews(savedInstanceState);
         initVariables(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isActivityPaused = false;
+        if (mIsDialogShowing && mInterrupted) {
+            mInterrupted = false;
+            showLoading(mCurrentContentLoading);
+        }
+
     }
 
     @Override
@@ -65,6 +83,41 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public final void showLoading() {
+        this.showLoading(getString(R.string.loading));
+    }
+
+    public final void showLoading(String content) {
+        mCurrentContentLoading = content;
+        if (mIsDialogShowing) {
+            return;
+        }
+        mIsDialogShowing = true;
+        if (isActivityPaused) {
+            mInterrupted = true;
+        } else {
+            mInterrupted = false;
+            dialogLoadingData = new DialogLoading();
+            Bundle bundle = new Bundle();
+            bundle.putString(DialogLoading.CONTENT_DIALOG, mCurrentContentLoading);
+            dialogLoadingData.setArguments(bundle);
+            dialogLoadingData.show(getFragmentManager(), "DialogLoadingData");
+        }
+    }
+
+    public final void disMissLoading() {
+        mInterrupted = false;
+        mIsDialogShowing = false;
+        if (null != dialogLoadingData) {
+            dialogLoadingData.dismissDialog();
+            dialogLoadingData = null;
+        }
+    }
+
+    public final boolean isShowLoading() {
+        return mIsDialogShowing;
     }
 
     protected void showMessageDialog(String title, String content, String note,
