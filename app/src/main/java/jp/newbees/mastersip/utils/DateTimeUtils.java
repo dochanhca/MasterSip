@@ -11,8 +11,11 @@ import java.util.Locale;
 
 public class DateTimeUtils {
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日",
+    public static final SimpleDateFormat JAPAN_DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日",
             Locale.JAPAN);
+
+    public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
+            Locale.ENGLISH);
 
     public static int subtractDateToYear(Date from, Date to) {
         Calendar a = getCalendar(from);

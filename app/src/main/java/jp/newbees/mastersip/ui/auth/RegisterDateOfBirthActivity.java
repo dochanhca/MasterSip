@@ -3,6 +3,7 @@ package jp.newbees.mastersip.ui.auth;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,8 @@ import jp.newbees.mastersip.utils.Enum;
 
 public class RegisterDateOfBirthActivity extends BaseActivity implements View.OnClickListener, RegisterPresenter.RegisterView {
 
-    private ImageView imgTerm;
-    private ImageView imgPolicy;
+    private Button btnTerm;
+    private Button btnPolicy;
     private ImageView imgAccepPolicy;
     private TextView txtGender;
     private TextView txtDOB;
@@ -42,6 +43,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     private String[] genders;
     private String mDOB = "";
+    private String dateSendToServer = "";
     private int myAge = 0;
     private Date defaultDate;
     private Date currentDate;
@@ -59,21 +61,22 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     @Override
     protected void initViews(Bundle savedInstanceState) {
 
-        imgTerm = (ImageView) findViewById(R.id.img_term_of_services);
-        imgPolicy = (ImageView) findViewById(R.id.img_policy);
+        btnTerm = (Button) findViewById(R.id.btn_term_of_services);
+        btnPolicy = (Button) findViewById(R.id.btn_policy);
         imgAccepPolicy = (ImageView) findViewById(R.id.img_accep_policy);
         txtGender = (TextView) findViewById(R.id.txt_gender);
         txtDOB = (TextView) findViewById(R.id.txt_dob);
         layoutDOB = (ViewGroup) findViewById(R.id.layout_dob);
         layoutGender = (ViewGroup) findViewById(R.id.layout_gender);
 
-        imgTerm.setOnClickListener(this);
-        imgPolicy.setOnClickListener(this);
+        btnTerm.setOnClickListener(this);
+        btnPolicy.setOnClickListener(this);
         imgAccepPolicy.setOnClickListener(this);
         layoutDOB.setOnClickListener(this);
         layoutGender.setOnClickListener(this);
 
         initHeader(getString(R.string.register_dob_title));
+
     }
 
     @Override
@@ -90,10 +93,10 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.img_term_of_services:
+            case R.id.btn_term_of_services:
                 goTermActivity();
                 break;
-            case R.id.img_policy:
+            case R.id.btn_policy:
                 goPolicyActivity();
                 break;
             case R.id.img_accep_policy:
@@ -114,8 +117,11 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         if (!isDataValid())
             return;
         UserItem userItem = new UserItem();
-        userItem.setDateOfBirth("1988-10-28");
-        userItem.setGender(UserItem.MALE);
+
+        userItem.setDateOfBirth(dateSendToServer);
+        userItem.setGender((gender == 0) ? UserItem.MALE : UserItem.FEMALE);
+
+        showLoading();
         registerPresenter.registerUser(userItem);
     }
 
@@ -159,9 +165,9 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         Button positiveButton = (Button) dialogView.findViewById(R.id.btn_ok);
         Button negativeButton = (Button) dialogView.findViewById(R.id.btn_cancel);
 
-        numberPicker.setMinValue(Enum.Gender.MALE.getValue());
-        numberPicker.setMaxValue(Enum.Gender.FEMALE.getValue());
-        numberPicker.setValue(Enum.Gender.MALE.getValue());
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(1);
+        numberPicker.setValue(0);
         numberPicker.setDisplayedValues(genders);
 
         final AlertDialog alertDialog = alerBuilder.create();
@@ -187,7 +193,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private void openDialogDatePicker() {
         if (!mDOB.equalsIgnoreCase("")) {
             try {
-                defaultDate = DateTimeUtils.DATE_FORMAT.parse(mDOB);
+                defaultDate = DateTimeUtils.JAPAN_DATE_FORMAT.parse(mDOB);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -204,7 +210,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private SlideDateTimeListener onDateSelected = new SlideDateTimeListener() {
         @Override
         public void onDateTimeSet(Date date) {
-            mDOB = DateTimeUtils.DATE_FORMAT.format(date);
+            mDOB = DateTimeUtils.JAPAN_DATE_FORMAT.format(date);
+            dateSendToServer = DateTimeUtils.ENGLISH_DATE_FORMAT.format(date);
             txtDOB.setText(mDOB);
 
             myAge = DateTimeUtils.subtractDateToYear(date, currentDate);
@@ -213,6 +220,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     public void onRegistered(UserItem userItem) {
+        disMissLoading();
         if (userItem.getGender() == UserItem.MALE) {
             Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
             startActivity(intent);
@@ -224,6 +232,6 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     public void onRegisterFailure(int errorCode, String errorMessage) {
-
+        disMissLoading();
     }
 }

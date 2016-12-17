@@ -21,13 +21,17 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
     private List<SelectionItem> data;
     private Context context;
 
-//    private int selectedItem;
+    private int selectedItem = -1;
 
     public interface OnSelectionAdapterClick {
         abstract void onItemSelected(int position);
     }
 
     private OnSelectionAdapterClick onSelectionAdapterClick;
+
+    public void setOnSelectionAdapterClick(OnSelectionAdapterClick onSelectionAdapterClick) {
+        this.onSelectionAdapterClick = onSelectionAdapterClick;
+    }
 
     public SelectionAdapter(Context context, List<SelectionItem> data) {
         this.data = data;
@@ -45,24 +49,27 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
             @Override
             public void onClick(View view) {
                 int position = selectionHolder.getAdapterPosition();
-//                onSelectionAdapterClick.onItemSelected(position);
-//                selectedItem = position;
+
+                onSelectionAdapterClick.onItemSelected(position);
+                notifyItemChanged(selectedItem);
+                selectedItem = position;
+                notifyItemChanged(selectedItem);
             }
         });
 
-        return new SelectionHolder(itemView);
+        return selectionHolder;
     }
 
     @Override
-    public void onBindViewHolder(SelectionHolder holder, int position) {
+    public void onBindViewHolder(SelectionHolder holder, final int position) {
         SelectionItem item = data.get(position);
         holder.txtTitle.setText(item.getTitle());
 
-//        if (position == selectedItem) {
-//            holder.rootView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
-//        } else {
-//            holder.rootView.setBackgroundColor(context.getResources().getColor(R.color.white));
-//        }
+        if (position == selectedItem) {
+            holder.txtTitle.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+        } else {
+            holder.txtTitle.setBackgroundColor(context.getResources().getColor(R.color.white));
+        }
     }
 
     @Override
@@ -73,12 +80,10 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
     static class SelectionHolder extends RecyclerView.ViewHolder {
 
         private TextView txtTitle;
-        private ViewGroup rootView;
 
         public SelectionHolder(View itemView) {
             super(itemView);
             this.txtTitle = (TextView) itemView.findViewById(R.id.txt_title);
-            this.rootView = (ViewGroup) itemView.findViewById(R.id.root_view);
         }
     }
 }

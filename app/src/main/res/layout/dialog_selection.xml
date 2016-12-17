@@ -4,6 +4,11 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_separate_line" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/selection_list_view"

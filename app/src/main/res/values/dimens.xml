@@ -24,4 +24,7 @@
     <dimen name="margin_5">5dp</dimen>
     <dimen name="avatar_size">160dp</dimen>
     <dimen name="common_text_field_h">50dp</dimen>
+    <dimen name="btn_big_size">53dp</dimen>
+    <dimen name="size_50dp">50dp</dimen>
+    <dimen name="size_40dp">40dp</dimen>
 </resources>

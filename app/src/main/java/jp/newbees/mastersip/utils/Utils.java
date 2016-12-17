@@ -14,4 +14,12 @@ public class Utils {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
+
+    public static int getScreenWidth(Context context) {
+        return  context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight(Context context) {
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
 }
