@@ -111,10 +111,6 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
             case SelectAvatarDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
-                } else if (resultCode == RESULT_CANCELED) {
-                    showAvatar();
-                    imgAvatar.setImageURI(null);
-                    imgAvatar.setImageURI(pickedImage);
                 }
                 break;
             case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
