@@ -123,6 +123,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     public void onDeleteImageClick() {
+        //
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
     }
