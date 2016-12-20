@@ -1,8 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/layout_action_bar" />
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/layout_action_bar" />
 
-</LinearLayout>
+    <jp.newbees.mastersip.customviews.NavigationLayoutGroup
+        android:id="@+id/navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <jp.newbees.mastersip.customviews.NavigationLayoutChild
+            android:id="@+id/nav_member"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:iconNormal="@drawable/ic_memer_off"
+            app:iconSelected="@drawable/ic_member_on"
+            app:text = "@string/member"
+            app:state ="true"
+            app:textColorNormal="@color/dark_gray"
+            app:textColorSelected="@color/selected_color">
+
+        </jp.newbees.mastersip.customviews.NavigationLayoutChild>
+
+        <jp.newbees.mastersip.customviews.NavigationLayoutChild
+            android:id="@+id/nav_message"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:showBoxValue="true"
+            app:iconNormal="@drawable/ic_message_off"
+            app:iconSelected="@drawable/ic_message_on"
+            app:text = "@string/message"
+            app:textColorNormal="@color/dark_gray"
+            app:textColorSelected="@color/selected_color">
+
+        </jp.newbees.mastersip.customviews.NavigationLayoutChild>
+
+        <jp.newbees.mastersip.customviews.NavigationLayoutChild
+            android:id="@+id/nav_leg"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:showBoxValue="true"
+            app:iconNormal="@drawable/ic_leg"
+            app:iconSelected="@drawable/ic_leg_on"
+            app:text = "@string/leg"
+            app:textColorNormal="@color/dark_gray"
+            app:textColorSelected="@color/selected_color"/>
+
+        <jp.newbees.mastersip.customviews.NavigationLayoutChild
+            android:id="@+id/nav_heart"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:iconNormal="@drawable/ic_heard_off"
+            app:iconSelected="@drawable/ic_heart_on"
+            app:text = "@string/heart"
+            app:textColorNormal="@color/dark_gray"
+            app:textColorSelected="@color/selected_color"/>
+
+        <jp.newbees.mastersip.customviews.NavigationLayoutChild
+            android:id="@+id/nav_menu"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:iconNormal="@drawable/ic_menu"
+            app:iconSelected="@drawable/ic_menu_on"
+            app:text = "@string/menu"
+            app:textColorNormal="@color/dark_gray"
+            app:textColorSelected="@color/selected_color"/>
+    </jp.newbees.mastersip.customviews.NavigationLayoutGroup>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/navigation_bar"
+        android:layout_below="@id/action_bar" />
+    
+</RelativeLayout>

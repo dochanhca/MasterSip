@@ -40,6 +40,11 @@
     <string name="start">はじめる(無料)</string>
     <string name="login">ログイン</string>
     <string name="loading">Loading...</string>
+    <string name="member">背景</string>
+    <string name="message">チャット</string>
+    <string name="leg">足あと</string>
+    <string name="heart">フォロワー</string>
+    <string name="menu">マイメニュー</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
