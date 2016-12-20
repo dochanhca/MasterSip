@@ -232,10 +232,6 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
             case SelectAvatarDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
-                } else if (resultCode == RESULT_CANCELED) {
-                    showAvatar();
-                    imgAvatar.setImageURI(null);
-                    imgAvatar.setImageURI(pickedImage);
                 }
                 break;
             case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
@@ -254,7 +250,6 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     @Override
     public void onItemSelected(int position) {
-        Toast.makeText(getApplicationContext(), femaleJobItems.get(position).getTitle(), Toast.LENGTH_LONG).show();
         switch (selectDataType) {
             case TYPE:
                 txtType.setText(typeItems.get(position).getTitle());

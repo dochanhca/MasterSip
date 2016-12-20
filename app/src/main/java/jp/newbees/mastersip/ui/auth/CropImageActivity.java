@@ -76,8 +76,6 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
 
     @Override
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
-//        mCropImageView.setImageBitmap(result.getBitmap());
-        Toast.makeText(getApplicationContext(), "Crop image success", Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
 
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -112,6 +110,11 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     public void onOkClick() {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDialogConfirm();
     }
 
     private void showDialogConfirm() {

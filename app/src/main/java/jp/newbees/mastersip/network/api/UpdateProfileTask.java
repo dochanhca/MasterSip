@@ -29,20 +29,20 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
     protected JSONObject genBodyParam() throws JSONException {
         JSONObject jParams = new JSONObject();
 
-        jParams.put(Constant.JSON.kRegisterToken,getRegisterToken());
-        jParams.put(Constant.JSON.kBirthday,userItem.getDateOfBirth());
-        jParams.put(Constant.JSON.kEmail,userItem.getEmail());
-        jParams.put(Constant.JSON.kPassword,userItem.getSipItem().getSecret());
-        jParams.put(Constant.JSON.kHandleName,userItem.getUsername());
-        jParams.put(Constant.JSON.kPhoneNumber,"");
-        jParams.put(Constant.JSON.kProvinceId,userItem.getLocation().getId());
-        jParams.put(Constant.JSON.kAvatarId,userItem.getAvatarItem().getImageId());
-        jParams.put(Constant.JSON.kJobId,userItem.getJobItem().getId());
-        jParams.put(Constant.JSON.kDeviceId,getDeviceId());
-        jParams.put(Constant.JSON.kTypeId,userItem.getTypeGirl().getId());
-        jParams.put(Constant.JSON.kTypeBoy,userItem.getTypeBoy());
-        jParams.put(Constant.JSON.kCharmPoint,userItem.getCharmingPoint());
-        jParams.put(Constant.JSON.kFreeTime,userItem.getAvailableTimeItem().getId());
+        jParams.put(Constant.JSON.kRegisterToken, getRegisterToken());
+        jParams.put(Constant.JSON.kBirthday, userItem.getDateOfBirth());
+        jParams.put(Constant.JSON.kEmail, userItem.getEmail());
+        jParams.put(Constant.JSON.kPassword, userItem.getSipItem().getSecret());
+        jParams.put(Constant.JSON.kHandleName, userItem.getUsername());
+        jParams.put(Constant.JSON.kPhoneNumber, "");
+        jParams.put(Constant.JSON.kProvinceId, userItem.getLocation().getId());
+        jParams.put(Constant.JSON.kAvatarId, userItem.getAvatarItem().getImageId());
+        jParams.put(Constant.JSON.kJobId, userItem.getJobItem().getId());
+        jParams.put(Constant.JSON.kDeviceId, getDeviceId());
+        jParams.put(Constant.JSON.kTypeId, userItem.getTypeGirl().getId());
+        jParams.put(Constant.JSON.kTypeBoy, userItem.getTypeBoy());
+        jParams.put(Constant.JSON.kCharmPoint, userItem.getCharmingPoint());
+        jParams.put(Constant.JSON.kFreeTime, userItem.getAvailableTimeItem().getId());
         jParams.put(Constant.JSON.kSlogan, userItem.getMemo());
 
         return jParams;
