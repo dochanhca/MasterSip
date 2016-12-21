@@ -28,7 +28,7 @@ public class JSONUtils {
             userItem.setMemo(jUser.getString(Constant.JSON.kSlogan));
 
             ImageItem avatar = new ImageItem();
-            avatar.setImageId(jUser.getString(Constant.JSON.kAvatarId));
+            avatar.setImageId(jUser.getInt(Constant.JSON.kAvatarId));
             avatar.setOriginUrl(jUser.getString(Constant.JSON.kAvatar));
             userItem.setAvatarItem(avatar);
 
@@ -77,7 +77,7 @@ public class JSONUtils {
 
             JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
             ImageItem avatarItem = new ImageItem();
-            String imageId = ""+jAvatar.getInt(Constant.JSON.kID);
+            int imageId = jAvatar.getInt(Constant.JSON.kID);
             String imagePath = jAvatar.getString(Constant.JSON.kPath);
             avatarItem.setImageId(imageId);
             avatarItem.setOriginUrl(imagePath);

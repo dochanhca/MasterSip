@@ -27,4 +27,5 @@
     <dimen name="btn_big_size">53dp</dimen>
     <dimen name="size_50dp">50dp</dimen>
     <dimen name="size_40dp">40dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
 </resources>

@@ -107,6 +107,8 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
             return;
         }
 
-        goRegisterDOBActivity();
+        Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
+        intent.putExtra(IS_REGISTERED, true);
+        startActivity(intent);
     }
 }

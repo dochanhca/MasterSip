@@ -44,8 +44,8 @@ public class UploadImagePresenter extends BaseUploadPresenter {
         this.view = view;
     }
 
-    public final void upLoadImage(UserItem userItem, int typeUpload, InputStream inputStream) {
-        UploadImageTask uploadImageTask = new UploadImageTask(context, userItem,
+    public final void upLoadImage(String userId, int typeUpload, InputStream inputStream) {
+        UploadImageTask uploadImageTask = new UploadImageTask(context, userId,
                 typeUpload, inputStream);
         requestToServer(uploadImageTask);
     }

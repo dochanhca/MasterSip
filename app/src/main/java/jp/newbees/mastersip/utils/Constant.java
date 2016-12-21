@@ -61,6 +61,10 @@ public final class Constant {
 
         public final static String kReceiveProvinceId = "provinceId";
         public final static String kProvinceName = "provinceName";
+
+        public final static String kImageId = "image_id";
+        public final static String kImageUrl = "image_path_full";
+        public final static String kImageThumbUrl = "image_path_thumb";
     }
 
     public static final class API {

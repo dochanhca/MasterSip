@@ -10,14 +10,32 @@ import java.io.Serializable;
  */
 
 public class ImageItem implements Parcelable, Serializable {
-    private String imageId;
+    private int imageId;
     private String thumbUrl;
 
-    public String getImageId() {
+    protected ImageItem(Parcel in) {
+        imageId = in.readInt();
+        thumbUrl = in.readString();
+        originUrl = in.readString();
+    }
+
+    public static final Creator<ImageItem> CREATOR = new Creator<ImageItem>() {
+        @Override
+        public ImageItem createFromParcel(Parcel in) {
+            return new ImageItem(in);
+        }
+
+        @Override
+        public ImageItem[] newArray(int size) {
+            return new ImageItem[size];
+        }
+    };
+
+    public int getImageId() {
         return imageId;
     }
 
-    public void setImageId(String imageId) {
+    public void setImageId(int imageId) {
         this.imageId = imageId;
     }
 
@@ -39,39 +57,21 @@ public class ImageItem implements Parcelable, Serializable {
 
     private String originUrl;
 
+    public ImageItem() {
+        this.imageId = 0;
+        this.thumbUrl = "";
+        this.originUrl = "";
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.imageId);
-        dest.writeString(this.thumbUrl);
-        dest.writeString(this.originUrl);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(imageId);
+        parcel.writeString(thumbUrl);
+        parcel.writeString(originUrl);
     }
-
-    public ImageItem() {
-        this.imageId = "0";
-        this.thumbUrl = "";
-        this.originUrl = "";
-    }
-
-    protected ImageItem(Parcel in) {
-        this.imageId = in.readString();
-        this.thumbUrl = in.readString();
-        this.originUrl = in.readString();
-    }
-
-    public static final Parcelable.Creator<ImageItem> CREATOR = new Parcelable.Creator<ImageItem>() {
-        @Override
-        public ImageItem createFromParcel(Parcel source) {
-            return new ImageItem(source);
-        }
-
-        @Override
-        public ImageItem[] newArray(int size) {
-            return new ImageItem[size];
-        }
-    };
 }
