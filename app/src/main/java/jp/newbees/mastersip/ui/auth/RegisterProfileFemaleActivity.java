@@ -3,9 +3,12 @@ package jp.newbees.mastersip.ui.auth;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 import com.andexert.library.RippleView;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -22,12 +26,17 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.SelectionItem;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenter;
+import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
@@ -35,23 +44,36 @@ import jp.newbees.mastersip.utils.ImageUtils;
  */
 
 public class RegisterProfileFemaleActivity extends BaseActivity implements View.OnClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick {
+        SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
+        UpdateRegisterProfilePresenter.View, UploadImagePresenter.View {
 
+    private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
+    private int imageId;
 
     private ArrayList<SelectionItem> femaleJobItems;
     private ArrayList<SelectionItem> typeItems;
     private ArrayList<SelectionItem> availableTimeItems;
 
+    private SelectionItem provinceItem;
+    private SelectionItem jobItem;
+    private SelectionItem typeItem;
+    private SelectionItem availableTimeItem;
+
     private InputDataType inputDataType;
-    private SelectDateType selectDataType;
+    private SelectDataType selectDataType;
+
+    private UserItem userItem;
+
+    private UpdateRegisterProfilePresenter updateRegisterProfilePresenter;
+    private UploadImagePresenter uploadImagePresenter;
 
     enum InputDataType {
         TYPE_OF_MEN, CHARM_POINT, STATUS;
     }
 
-    enum SelectDateType {
+    enum SelectDataType {
         JOB, TYPE, AVAILABLE_TIME;
     }
 
@@ -71,9 +93,15 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         showMessageDialog(getString(R.string.register_success), getString(R.string.mess_input_profile)
                 , "", false);
 
+        updateRegisterProfilePresenter = new UpdateRegisterProfilePresenter(getApplicationContext(),
+                this);
+        uploadImagePresenter = new UploadImagePresenter(getApplicationContext(), this);
+
         femaleJobItems = new ArrayList<>();
         typeItems = new ArrayList<>();
         availableTimeItems = new ArrayList<>();
+
+        userItem = getUserItem();
 
         String[] femaleJobs = getResources().getStringArray(R.array.female_job);
         for (int i = 0; i < femaleJobs.length; i++) {
@@ -127,10 +155,156 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 inputStatus();
                 break;
             case R.id.btn_complete_register:
-                Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-                startActivity(intent);
+                registerProfileToServer();
                 break;
         }
+    }
+
+    @Override
+    public void onUpdateRegisterProfileSuccess(UserItem userItem) {
+        disMissLoading();
+        startTopScreenWithNewTask();
+    }
+
+    @Override
+    public void onUpdateRegisterProfileFailure(int errorCode, String errorMessage) {
+        disMissLoading();
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onUploadImageSuccess(ImageItem imageItem) {
+
+    }
+
+    @Override
+    public void onUploadImageFailure(int errorCode, String errorMessage) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    handleImageFromCamera();
+                }
+                break;
+            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    pickedImage = data.getData();
+                    handleImageFromGallery();
+                }
+                break;
+            case SelectAvatarDialog.CROP_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    handleImageCropped(data);
+                }
+                break;
+            case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    handleDataInput(data);
+                }
+                break;
+            case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
+                    txtArea.setText(provinceItem.getTitle());
+                }
+        }
+    }
+
+    @Override
+    public void onDeleteImageClick() {
+        showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
+        hideAvatar();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                disMissMessageDialog();
+            }
+        }, TIME_DELAY);
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        switch (selectDataType) {
+            case TYPE:
+                typeItem = typeItems.get(position);
+                txtType.setText(typeItem.getTitle());
+                break;
+            case JOB:
+                jobItem = femaleJobItems.get(position);
+                txtProfession.setText(jobItem.getTitle());
+                break;
+            case AVAILABLE_TIME:
+                availableTimeItem = availableTimeItems.get(position);
+                txtAvaiableTime.setText(availableTimeItem.getTitle());
+                break;
+        }
+    }
+
+    private void registerProfileToServer() {
+        if (!checkDataValid()) {
+            return;
+        }
+
+//        if (imgAvatar.getDrawable() != null) {
+//            Bitmap avatar = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
+//            InputStream inputStream = ImageUtils.convertToInputStream(avatar);
+//            uploadImagePresenter.upLoadImage();
+//
+//        }
+
+        userItem.setUsername(edtNickname.getText().toString().trim());
+        userItem.setLocation(provinceItem);
+
+        if (jobItem != null) {
+            userItem.setJobItem(jobItem);
+        }
+
+        if (typeItem != null) {
+            userItem.setTypeGirl(typeItem);
+        }
+
+        String typeOfMen = txtTypeOfMenContent.getText().toString();
+        if (typeOfMen.length() > 0) {
+            userItem.setTypeBoy(typeOfMen);
+        }
+
+        String charmPoint = txtCharmPointContent.getText().toString();
+        if (charmPoint.length() > 0) {
+            userItem.setCharmingPoint(charmPoint);
+        }
+
+        if (availableTimeItem != null) {
+            userItem.setAvailableTimeItem(availableTimeItem);
+        }
+
+        String memo = txtStatusContent.getText().toString();
+        if (memo.length() > 0) {
+            userItem.setMemo(memo);
+        }
+
+        // Send Request to server
+        showLoading();
+        updateRegisterProfilePresenter.updateRegisterProfile(userItem);
+    }
+
+    private boolean checkDataValid() {
+        boolean isDataValid = false;
+        String userName = edtNickname.getText().toString().trim();
+        if (userName.length() == 0) {
+            showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
+        } else if (provinceItem == null) {
+            showMessageDialog("", getString(R.string.err_require_field_empty), "", false);
+        } else  {
+            isDataValid = true;
+        }
+
+        return isDataValid;
     }
 
     private void selectLocation() {
@@ -144,7 +318,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     }
 
     private void selectAvailableTime() {
-        selectDataType = SelectDateType.AVAILABLE_TIME;
+        selectDataType = SelectDataType.AVAILABLE_TIME;
         openSelectionDialog(getString(R.string.available_time), availableTimeItems);
     }
 
@@ -159,12 +333,12 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     }
 
     private void selectType() {
-        selectDataType = SelectDateType.TYPE;
+        selectDataType = SelectDataType.TYPE;
         openSelectionDialog(getString(R.string.type), typeItems);
     }
 
     private void selectJob() {
-        selectDataType = SelectDateType.JOB;
+        selectDataType = SelectDataType.JOB;
         openSelectionDialog(getString(R.string.profession), femaleJobItems);
     }
 
@@ -214,55 +388,6 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
-                if (resultCode == RESULT_OK) {
-                    handleImageFromCamera();
-                }
-                break;
-            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
-                if (resultCode == RESULT_OK) {
-                    pickedImage = data.getData();
-                    handleImageFromGallery();
-                }
-                break;
-            case SelectAvatarDialog.CROP_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    handleImageCropped(data);
-                }
-                break;
-            case InputActivity.INPUT_ACTIVITY_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-                    handleDataInput(data);
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onDeleteImageClick() {
-        showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
-        hideAvatar();
-    }
-
-    @Override
-    public void onItemSelected(int position) {
-        switch (selectDataType) {
-            case TYPE:
-                txtType.setText(typeItems.get(position).getTitle());
-                break;
-            case JOB:
-                txtProfession.setText(femaleJobItems.get(position).getTitle());
-                break;
-            case AVAILABLE_TIME:
-                txtAvaiableTime.setText(availableTimeItems.get(position).getTitle());
-                break;
-        }
-    }
-
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
 
@@ -301,6 +426,18 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
 
         startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
+    }
+
+    private void startTopScreenWithNewTask() {
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constant.Application.USER_ITEM, userItem);
+
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+        this.finish();
     }
 
     private void showAvatar() {

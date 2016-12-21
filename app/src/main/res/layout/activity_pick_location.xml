@@ -1,21 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@color/bg_register_dob"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_register_dob"
+    android:orientation="vertical">
 
     <include layout="@layout/layout_action_bar" />
 
-    <LinearLayout
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    <ImageView
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_25"
-        android:src="@drawable/img_bg_location"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/margin_20"
+        android:layout_marginRight="@dimen/margin_20"
+        android:layout_marginTop="@dimen/margin_25">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_bg_location" />
+
+        <CheckBox
+            android:id="@+id/cb_enable_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:button="@drawable/ck_location_selector"
+            android:paddingLeft="@dimen/margin_5"
+            android:text="@string/enable_location"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_17" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_location_des" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_20"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_select_location_header" />
+
+        <RelativeLayout
+            android:id="@+id/layout_position"
+            style="@style/style_layout_text_field_common">
+            <ImageView
+                android:id="@+id/img_arrow_right_area"
+                style="@style/style_img_right_text_field_common"
+                android:src="@drawable/ic_arrow_right" />
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_position"
+                style="@style/style_content_text_view"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_20" />
+        </RelativeLayout>
     </LinearLayout>
+
 
 </LinearLayout>

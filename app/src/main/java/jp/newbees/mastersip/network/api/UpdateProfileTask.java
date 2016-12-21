@@ -29,9 +29,9 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
     protected JSONObject genBodyParam() throws JSONException {
         JSONObject jParams = new JSONObject();
 
-        jParams.put(Constant.JSON.kRegisterToken, getRegisterToken());
+//        jParams.put(Constant.JSON.kRegisterToken, getRegisterToken());
         jParams.put(Constant.JSON.kBirthday, userItem.getDateOfBirth());
-        jParams.put(Constant.JSON.kEmail, userItem.getEmail());
+        jParams.put(Constant.JSON.kEmail, "");
         jParams.put(Constant.JSON.kPassword, userItem.getSipItem().getSecret());
         jParams.put(Constant.JSON.kHandleName, userItem.getUsername());
         jParams.put(Constant.JSON.kPhoneNumber, "");

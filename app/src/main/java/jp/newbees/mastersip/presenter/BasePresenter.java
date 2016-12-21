@@ -3,6 +3,7 @@ package jp.newbees.mastersip.presenter;
 import com.android.volley.Response;
 
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.TaskManager;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -38,5 +39,4 @@ public abstract class BasePresenter {
     protected abstract void didResponseTask(BaseTask task);
 
     protected abstract void didErrorRequestTask(BaseTask task,int errorCode,String errorMessage);
-
 }

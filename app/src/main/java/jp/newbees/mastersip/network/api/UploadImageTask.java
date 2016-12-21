@@ -28,11 +28,13 @@ public class UploadImageTask extends BaseUploadTask<ImageItem> {
 
     private final UserItem userItem;
     private final int typeUpload;
+    private InputStream inputStream;
 
-    protected UploadImageTask(Context mContext, UserItem userItem, int typeUpload) {
+    public UploadImageTask(Context mContext, UserItem userItem, int typeUpload, InputStream inputStream) {
         super(mContext);
         this.userItem = userItem;
         this.typeUpload = typeUpload;
+        this.inputStream = inputStream;
     }
 
     @Override
@@ -57,7 +59,7 @@ public class UploadImageTask extends BaseUploadTask<ImageItem> {
 
     @Override
     protected InputStream getInputStream() {
-        return null;
+        return inputStream;
     }
 
     @Override

@@ -47,6 +47,8 @@ public class SelectionItem implements Serializable, Parcelable {
     }
 
     public SelectionItem() {
+        this.id = 0;
+        this.title = "";
     }
 
     protected SelectionItem(Parcel in) {

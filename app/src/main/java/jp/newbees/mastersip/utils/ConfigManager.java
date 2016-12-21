@@ -93,4 +93,10 @@ final public class ConfigManager {
         editor.putString(Constant.Application.REGISTER_TOKEN, token);
         editor.commit();
     }
+
+    public void saveAuthId(String authId){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.AUTHORIZATION, authId);
+        editor.commit();
+    }
 }

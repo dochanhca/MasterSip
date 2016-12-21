@@ -26,6 +26,7 @@ public class MessageDialog extends DialogFragment {
     private TextView txtTitle;
     private TextView txtContent;
     private TextView txtNote;
+    private ImageView imgOKButton;
 
     private String title, content, note;
     private boolean isHideActionButton;
@@ -63,7 +64,7 @@ public class MessageDialog extends DialogFragment {
     }
 
     private void initAction() {
-        ImageView imgOKButton = (ImageView) mRoot.findViewById(R.id.img_ok_button);
+        imgOKButton = (ImageView) mRoot.findViewById(R.id.img_ok_button);
         if (isHideActionButton) {
             imgOKButton.setVisibility(View.GONE);
             return;
@@ -98,6 +99,10 @@ public class MessageDialog extends DialogFragment {
         }
         txtNote.setVisibility(View.VISIBLE);
         txtNote.setText(note);
+    }
+
+    public void setOnPositiveListener(View.OnClickListener onPositiveListener) {
+        imgOKButton.setOnClickListener(onPositiveListener);
     }
 
 }

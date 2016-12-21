@@ -55,6 +55,12 @@ public final class Constant {
         public final static String kExtendInfo = "extend_info";
         public final static String kFavoriteType = "favorite_type";
         public final static String kPath = "path";
+
+        public final static String kLat = "lat";
+        public final static String kLong = "long";
+
+        public final static String kReceiveProvinceId = "provinceId";
+        public final static String kProvinceName = "provinceName";
     }
 
     public static final class API {
@@ -73,6 +79,7 @@ public final class Constant {
         public static final String REGISTER = "register";
         public static final String UPLOAD_IMAGE = "upload_image";
         public static final String UPDATE_REGISTER_PROFILE = "user/update";
+        public static final String GET_PROVINCE = "provinces/province";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -115,7 +122,7 @@ public final class Constant {
     }
 
     public final class Application {
-        public static final boolean DEBUG = false;
+        public static final boolean DEBUG = true;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";
