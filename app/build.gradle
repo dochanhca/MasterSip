@@ -28,6 +28,20 @@ android {
         }
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("mastersip.jks")
+            storePassword "MasterSip2016#"
+            keyAlias "mastersip"
+            keyPassword "MasterSip2016#"
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE.txt'

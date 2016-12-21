@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAfPNfZ-BFiJPxiIGKZVnCvBIB5TZdlygM"/>
+            android:value="AIzaSyDGHE93m3lSKewntsAw-QKGkY97NS2k7Qs"/>
 
         <activity android:name="jp.newbees.mastersip.test.TutorialRegistrationActivity">
 
