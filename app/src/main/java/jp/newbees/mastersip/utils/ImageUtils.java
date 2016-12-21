@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -88,6 +89,18 @@ public class ImageUtils {
             }
         }
         return inSampleSize;
+    }
+
+    public static InputStream convertToInputStream(Bitmap bitmap) {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        byte[] imageInByte = stream.toByteArray();
+        System.out.println("........length......" + imageInByte);
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageInByte);
+        return bis;
     }
 
 }

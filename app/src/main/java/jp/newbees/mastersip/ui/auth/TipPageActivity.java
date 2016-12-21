@@ -40,8 +40,6 @@ public class TipPageActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         wbTipPage.setWebViewClient(new WebViewClient() {
-
-
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -71,7 +69,5 @@ public class TipPageActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-//        Intent intent = new Intent(getApplicationContext(), RegisterProfileFemaleActivity.class);
-//        startActivity(intent);
     }
 }

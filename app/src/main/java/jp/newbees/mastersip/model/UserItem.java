@@ -65,6 +65,13 @@ public class UserItem implements Serializable, Parcelable {
     private String userId;
 
     public UserItem() {
+        this.jobItem = new SelectionItem();
+        this.typeGirl = new SelectionItem();
+        this.availableTimeItem = new SelectionItem();
+        this.memo = "";
+        this.typeBoy = "";
+        this.charmingPoint = "";
+        this.avatarItem = new ImageItem();
     }
 
     @NonNull

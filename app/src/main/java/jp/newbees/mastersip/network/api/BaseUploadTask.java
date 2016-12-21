@@ -49,6 +49,7 @@ public abstract class BaseUploadTask<T extends Object> {
     private Context mContext;
     private RequestQueue mRequestQueue;
     private SharedPreferences sharedPreferences;
+    private T dataResponse;
 
     private MultipartEntityBuilder mEntityBuilder;
     private int REQUEST_OK = 0;
@@ -140,6 +141,7 @@ public abstract class BaseUploadTask<T extends Object> {
 
             @Override
             protected void deliverResponse(T data) {
+                BaseUploadTask.this.dataResponse = data;
                 listener.onResponse(data);
             }
         };
@@ -205,6 +207,10 @@ public abstract class BaseUploadTask<T extends Object> {
 
     @Nullable
     protected abstract HashMap<String, String> genBodyParam();
+
+    public T getDataResponse() {
+        return dataResponse;
+    }
 
     public interface ErrorListener {
         public void onErrorListener(int errorCode, String errorMessage);

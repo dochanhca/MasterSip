@@ -40,6 +40,10 @@
     <string name="start">はじめる(無料)</string>
     <string name="login">ログイン</string>
     <string name="loading">Loading...</string>
+    <string name="enable_location">位置情報を利用する</string>
+    <string name="mess_enable_gps">You must enable your location access</string>
+    <string name="err_user_name_empty">氏名を入力してください</string>
+    <string name="err_require_field_empty">(※)は必須項目です。</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
