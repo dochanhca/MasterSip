@@ -166,6 +166,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     @Override
     public void onUpdateRegisterProfileSuccess(UserItem userItem) {
         disMissLoading();
+        saveLoginState();
         startTopScreenWithNewTask();
     }
 
@@ -331,15 +332,15 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     private void startTopScreenWithNewTask() {
         Intent intent = new Intent(getApplicationContext(), TopActivity.class);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constant.Application.USER_ITEM, userItem);
-
-        intent.putExtras(bundle);
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
+    }
+
+    private void saveLoginState() {
+        getEditor().putBoolean(Constant.Application.LOGIN_FLAG, true);
+        getEditor().commit();
     }
 
     @BindView(R.id.img_select_avatar)

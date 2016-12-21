@@ -132,6 +132,7 @@ public final class Constant {
         public static final String AUTHORIZATION = "AUTHORIZATION";
         public static final String USER_ITEM = "UserItem";
         public static final String REGISTER_TOKEN = "RegisterToken";
+        public static final String LOGIN_FLAG = "Login_Flag";
 
         public static final String DEFAULT_LANGUAGE = "ja";
         public static final int MIN_AGE = 18;

@@ -70,8 +70,9 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
 
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
-        int nextPage = data.getInt(Constant.JSON.kNextPage);
-        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(data);
+        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        int nextPage = jData.getInt(Constant.JSON.kNextPage);
+        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER,userItems);
