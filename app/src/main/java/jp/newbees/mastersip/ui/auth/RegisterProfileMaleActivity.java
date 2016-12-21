@@ -42,6 +42,9 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     private ArrayList<SelectionItem> maleJobItems;
 
+    private SelectionItem provinceItem;
+    private SelectionItem jobItem;
+
     @Override
     protected int layoutId() {
         return R.layout.activity_register_profile_male;
@@ -118,6 +121,11 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
                     handleDataInput(data);
                 }
                 break;
+            case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
+                    txtArea.setText(provinceItem.getTitle());
+                }
         }
     }
 
@@ -130,7 +138,8 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     public void onItemSelected(int position) {
-        txtProfession.setText(maleJobItems.get(position).getTitle());
+        jobItem = maleJobItems.get(position);
+        txtProfession.setText(jobItem.getTitle());
     }
 
     private void selectLocation() {

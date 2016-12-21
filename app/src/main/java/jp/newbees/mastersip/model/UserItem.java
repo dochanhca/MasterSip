@@ -16,7 +16,20 @@ public class UserItem implements Serializable, Parcelable {
     public static final int FEMALE = 0;
     public static final int MALE = 1;
 
+    public final static int ONLINE = 1;
+    public final static int OFFLINE = 0;
 
+    private String lastLogin;
+
+    public RelationshipItem getRelationshipItem() {
+        return relationshipItem;
+    }
+
+    public void setRelationshipItem(RelationshipItem relationshipItem) {
+        this.relationshipItem = relationshipItem;
+    }
+
+    private RelationshipItem relationshipItem;
     @NonNull
     private String username;
 
@@ -65,6 +78,13 @@ public class UserItem implements Serializable, Parcelable {
     private String userId;
 
     public UserItem() {
+        this.jobItem = new SelectionItem();
+        this.typeGirl = new SelectionItem();
+        this.availableTimeItem = new SelectionItem();
+        this.memo = "";
+        this.typeBoy = "";
+        this.charmingPoint = "";
+        this.avatarItem = new ImageItem();
     }
 
     @NonNull
@@ -202,6 +222,14 @@ public class UserItem implements Serializable, Parcelable {
         this.typeGirl = typeGirl;
     }
 
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -209,6 +237,8 @@ public class UserItem implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.lastLogin);
+        dest.writeParcelable(this.relationshipItem, flags);
         dest.writeString(this.username);
         dest.writeParcelable(this.location, flags);
         dest.writeParcelable(this.jobItem, flags);
@@ -230,6 +260,8 @@ public class UserItem implements Serializable, Parcelable {
     }
 
     protected UserItem(Parcel in) {
+        this.lastLogin = in.readString();
+        this.relationshipItem = in.readParcelable(RelationshipItem.class.getClassLoader());
         this.username = in.readString();
         this.location = in.readParcelable(SelectionItem.class.getClassLoader());
         this.jobItem = in.readParcelable(SelectionItem.class.getClassLoader());

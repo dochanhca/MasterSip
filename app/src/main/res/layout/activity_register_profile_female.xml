@@ -80,7 +80,9 @@
                     android:hint="@string/enter_nickname"
                     android:imeOptions="actionDone"
                     android:maxLength="14"
-                    android:maxLines="1" />
+                    android:singleLine="true"
+                    android:gravity="center_vertical"
+                    android:layout_height="match_parent" />
 
             </RelativeLayout>
 
@@ -196,7 +198,6 @@
             <jp.newbees.mastersip.customviews.HiraginoTextView
                 android:id="@+id/txt_type_of_men_content"
                 style="@style/style_content_text_input"
-                android:text="キストテキストテキストテキスト"
                 android:visibility="gone" />
 
             <ImageView

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.newbees.mastersip">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -49,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAfPNfZ-BFiJPxiIGKZVnCvBIB5TZdlygM"/>
+            android:value="AIzaSyDGHE93m3lSKewntsAw-QKGkY97NS2k7Qs"/>
 
         <activity android:name="jp.newbees.mastersip.test.TutorialRegistrationActivity">
 

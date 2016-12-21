@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.DialogLoading;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.utils.Constant;
@@ -27,6 +31,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private boolean isActivityPaused;
     private String mCurrentContentLoading;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     private String TAG = getClass().getSimpleName();
     private MessageDialog messageDialog;
 
@@ -43,6 +50,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Logger.e(TAG, "Create");
+
+        setupSharePreference();
 
         setContentView(layoutId());
         initViews(savedInstanceState);
@@ -138,6 +147,25 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         messageDialog.setArguments(bundle);
         messageDialog.show(getFragmentManager(), "MessageDialog");
+    }
+
+    protected void disMissMessageDialog() {
+        if (null != messageDialog) {
+            messageDialog.dismiss();
+        }
+    }
+
+    private void setupSharePreference() {
+        if (sharedPreferences == null) {
+            sharedPreferences = getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+        }
+    }
+
+    protected UserItem getUserItem() {
+        Gson gson = new Gson();
+        String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
+        return gson.fromJson(jUser, UserItem.class);
     }
 }
 

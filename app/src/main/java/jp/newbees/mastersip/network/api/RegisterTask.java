@@ -67,16 +67,19 @@ public class RegisterTask extends BaseTask<UserItem> {
 
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
+        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
 
-        String extension = data.getString(Constant.JSON.kExtension);
-        String password = data.getString(Constant.JSON.kPassword);
-        String userId = data.getString(Constant.JSON.kUserId);
-        String registerToken = data.getString(Constant.JSON.kRegisterToken);
+        String extension = jData.getString(Constant.JSON.kExtension);
+        String password = jData.getString(Constant.JSON.kPassword);
+        String userId = jData.getString(Constant.JSON.kUserId);
+        String registerToken = jData.getString(Constant.JSON.kRegisterToken);
 
         SipItem sipItem = new SipItem(extension,password);
         this.userItem.setSipItem(sipItem);
         this.userItem.setUserId(userId);
         ConfigManager.getInstance().saveRegisterToken(registerToken);
+        ConfigManager.getInstance().saveAuthId(userId);
+        saveUserItem(userItem);
 
         return this.userItem;
     }

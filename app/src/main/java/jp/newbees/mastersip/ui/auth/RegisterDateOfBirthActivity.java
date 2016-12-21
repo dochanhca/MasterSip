@@ -53,6 +53,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     private RegisterPresenter registerPresenter;
 
+    private boolean isRegistered;
+
     @Override
     protected int layoutId() {
         return R.layout.activity_register_dob;
@@ -81,6 +83,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        handleRegisterException();
+
         registerPresenter = new RegisterPresenter(this.getApplicationContext(),this);
         genders = getResources().getStringArray(R.array.array_gender);
 
@@ -218,9 +222,23 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         }
     };
 
-    @Override
-    public void onRegistered(UserItem userItem) {
-        disMissLoading();
+    /**
+     * User registered
+     * if gender = Male redirect to Register Profile Screen
+     * else redirect to Tip Page Screen
+     */
+    private void handleRegisterException() {
+        isRegistered = getIntent().getBooleanExtra(StartActivity.IS_REGISTERED, false);
+        if (!isRegistered) {
+            return;
+        }
+
+        UserItem userItem = getUserItem();
+
+        gotoRegisterProfileActivity(userItem);
+    }
+
+    private void gotoRegisterProfileActivity(UserItem userItem) {
         if (userItem.getGender() == UserItem.MALE) {
             Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
             startActivity(intent);
@@ -230,6 +248,12 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         }
     }
 
+    @Override
+    public void onRegistered(UserItem userItem) {
+        disMissLoading();
+        gotoRegisterProfileActivity(userItem);
+
+    }
     @Override
     public void onRegisterFailure(int errorCode, String errorMessage) {
         disMissLoading();

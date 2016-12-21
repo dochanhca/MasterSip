@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
@@ -20,6 +21,8 @@ import jp.newbees.mastersip.ui.BaseActivity;
  */
 
 public class StartActivity extends BaseActivity implements View.OnClickListener {
+
+    public static final String IS_REGISTERED = "IS_REGISTERED";
 
     private Button btnRegister;
     private Button btnLogin;
@@ -44,11 +47,11 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         btnRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         imgFbLogin.setOnClickListener(this);
-
     }
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        handleRegisterException();
         tutorialPagerAdapter = new TutorialPagerAdapter(getApplicationContext(), getDrawableIds());
         pagerTutorial.setAdapter(tutorialPagerAdapter);
     }
@@ -79,19 +82,6 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         startActivity(intent);
     }
 
-/*
-    private void testShowDialog() {
-        SelectionDialog dialog = new SelectionDialog();
-        ArrayList<SelectionItem> selectionItems = new ArrayList<>();
-        for (int i= 0;i<30;i++){
-            selectionItems.add(new SelectionItem(i,"Item " + i));
-        }
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(SelectionDialog.LIST_SELECTION,selectionItems);
-        dialog.setArguments(args);
-        dialog.show(getFragmentManager(),SelectionDialog.TAG);
-    }
-*/
     private void goRegisterDOBActivity() {
 
         Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
@@ -105,5 +95,18 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         drawableIds.add(R.drawable.slide_tutorial_page_3);
         drawableIds.add(R.drawable.slide_tutorial_page_4);
         return drawableIds;
+    }
+
+    /**
+     * User registered
+     * if gender = Male redirect to Register Profile Screen
+     * else redirect to Tip Page Screen
+     */
+    private void handleRegisterException() {
+        if (getUserItem() == null) {
+            return;
+        }
+
+        goRegisterDOBActivity();
     }
 }

@@ -3,9 +3,6 @@ package jp.newbees.mastersip.utils;
 import android.content.Context;
 import android.graphics.Typeface;
 
-/**
- * Created by datnx on 12/9/14.
- */
 public class FontUtils {
     private static FontUtils instance;
     private Typeface typefaceTextView;
@@ -20,8 +17,8 @@ public class FontUtils {
     }
 
     public final void initFonts(Context context) {
-        typefaceTextView = Typeface.createFromAsset(context.getAssets(), "fonts/HiraginoProW3.otf");
-        typefaceButton = Typeface.createFromAsset(context.getAssets(), "fonts/HiraginoProN-W4.ttc");
+        typefaceTextView = Typeface.createFromAsset(context.getAssets(), "fonts/Hiragino-Pro-W3.ttf");
+        typefaceButton = Typeface.createFromAsset(context.getAssets(), "fonts/Hiragino-Pro-N-W4.ttf");
     }
 
     public Typeface getTypefaceTextView() {

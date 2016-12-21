@@ -48,14 +48,21 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     public BaseTask(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
         registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
         TAG = getClass().getName();
     }
 
     final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
+
         String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/" + Constant.API.VERSION + "/" + getUrl();
-        Logger.d(TAG, "URL request : " + url);
+        if (!getUrl().equals(Constant.API.REGISTER) && !getUrl().equals(Constant.API.UPDATE_REGISTER_PROFILE)) {
+            url += "&" + Constant.JSON.kRegisterToken + "=" + registerToken
+                    + "&" + Constant.JSON.kClientAuthID + "=" + authorization;
+        }
+        Logger.e(TAG, "URL request : " + url);
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -79,12 +86,12 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     }
                     getCommonParams(jParams);
                 } catch (JSONException e) {
-                    Logger.e(TAG,e.getLocalizedMessage());
+                    Logger.e(TAG, e.getLocalizedMessage());
                     SipError sipError = new SipError(Constant.Error.PARSE_PARAM_ERROR, e.getMessage());
                     Response.error(sipError);
                 }
                 if (Constant.Application.SHOW_DATA_REQUEST) {
-                    Logger.d(TAG,jParams.toString());
+                    Logger.e(TAG, jParams.toString());
                 }
                 byte[] body = jParams.toString().getBytes();
                 return body;
@@ -111,8 +118,8 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     sipError = validData(data);
                     if (null == sipError) {
                         JSONObject jsonObject = new JSONObject(data);
-                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.kData);
-                        result = didResponse(jData);
+//                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.kData);
+                        result = didResponse(jsonObject);
                         return Response.success(result, getCacheEntry());
                     } else {
                         return Response.error(sipError);
@@ -142,7 +149,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             String message = jsonObject.getString(Constant.JSON.kMessage);
             SipError sipError = new SipError(code, message);
             return sipError;
-        }else {
+        } else {
             return null;
         }
     }
@@ -194,10 +201,10 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     protected final String getDeviceId() {
         return ConfigManager.getInstance().getDeviceId();
     }
-
     public RESULT_DATA getDataResponse() {
         return dataResponse;
     }
+
 
     public interface ErrorListener {
         void onError(int errorCode, String errorMessage);
@@ -206,4 +213,13 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     protected String getRegisterToken() {
         return registerToken;
     }
+
+    protected void saveUserItem(UserItem userItem) {
+        Gson gson = new Gson();
+        String jUser = gson.toJson(userItem);
+
+        editor.putString(Constant.Application.USER_ITEM, jUser);
+        editor.commit();
+    }
+
 }
