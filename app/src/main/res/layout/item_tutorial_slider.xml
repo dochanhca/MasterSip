@@ -27,12 +27,16 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/img_body_start_app"/>
 
-    <ImageView
-        android:id="@+id/img_full_screen"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:scaleType="centerCrop"
-        android:src="@drawable/slide_tutorial_page_2"/>
-
+        android:background="@color/colorPrimaryDark">
+        <ImageView
+            android:id="@+id/img_full_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            android:src="@drawable/slide_tutorial_page_2"/>
+    </LinearLayout>
 </LinearLayout>

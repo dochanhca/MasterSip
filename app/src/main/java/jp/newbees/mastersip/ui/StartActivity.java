@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.auth;
+package jp.newbees.mastersip.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,9 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.auth.LoginActivity;
+import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -38,6 +41,11 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        if (checkUserLogin()) {
+            startTopScreenWithNewTask();
+        } else {
+            handleRegisterException();
+        }
 
         btnRegister = (Button) findViewById(R.id.btn_register);
         btnLogin = (Button) findViewById(R.id.btn_login);
@@ -51,7 +59,7 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        handleRegisterException();
+
         tutorialPagerAdapter = new TutorialPagerAdapter(getApplicationContext(), getDrawableIds());
         pagerTutorial.setAdapter(tutorialPagerAdapter);
     }
@@ -96,7 +104,6 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         drawableIds.add(R.drawable.slide_tutorial_page_4);
         return drawableIds;
     }
-
     /**
      * User registered
      * if gender = Male redirect to Register Profile Screen
@@ -107,6 +114,17 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
             return;
         }
 
-        goRegisterDOBActivity();
+        Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
+        intent.putExtra(IS_REGISTERED, true);
+        startActivity(intent);
+    }
+
+    private void startTopScreenWithNewTask() {
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
     }
 }

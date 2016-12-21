@@ -162,6 +162,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    protected SharedPreferences getSharedPreferences() {
+        if (sharedPreferences == null) {
+            setupSharePreference();
+        }
+        return sharedPreferences;
+    }
+
+    protected SharedPreferences.Editor getEditor() {
+        if (editor == null) {
+            setupSharePreference();
+        }
+        return editor;
+    }
+
+    protected boolean checkUserLogin() {
+        return sharedPreferences.getBoolean(Constant.Application.LOGIN_FLAG, false);
+    }
+
     protected UserItem getUserItem() {
         Gson gson = new Gson();
         String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);

@@ -36,4 +36,5 @@
     <dimen name="text_size_xnormal">16sp</dimen>
     <dimen name="text_size_xlarge">22sp</dimen>
     <dimen name="value_box_size">17dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
 </resources>

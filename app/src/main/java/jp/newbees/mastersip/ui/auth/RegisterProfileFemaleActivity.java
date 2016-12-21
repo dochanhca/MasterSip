@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,6 +28,7 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.UploadImageTask;
 import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenter;
 import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -155,7 +155,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 inputStatus();
                 break;
             case R.id.btn_complete_register:
-                registerProfileToServer();
+                uploadAvatarToServerIfExist();
                 break;
         }
     }
@@ -163,23 +163,27 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     @Override
     public void onUpdateRegisterProfileSuccess(UserItem userItem) {
         disMissLoading();
+        saveLoginState();
         startTopScreenWithNewTask();
     }
 
     @Override
     public void onUpdateRegisterProfileFailure(int errorCode, String errorMessage) {
         disMissLoading();
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onUploadImageSuccess(ImageItem imageItem) {
-
+        userItem.setAvatarItem(imageItem);
+        doRegister();
     }
 
     @Override
     public void onUploadImageFailure(int errorCode, String errorMessage) {
 
+        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+        doRegister();
     }
 
     @Override
@@ -246,18 +250,23 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         }
     }
 
-    private void registerProfileToServer() {
+    private void uploadAvatarToServerIfExist() {
         if (!checkDataValid()) {
             return;
         }
 
-//        if (imgAvatar.getDrawable() != null) {
-//            Bitmap avatar = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
-//            InputStream inputStream = ImageUtils.convertToInputStream(avatar);
-//            uploadImagePresenter.upLoadImage();
-//
-//        }
+        if (imgAvatar.getDrawable() != null) {
+            showLoading();
+            Bitmap avatar = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
+            InputStream inputStream = ImageUtils.convertToInputStream(avatar);
+            uploadImagePresenter.upLoadImage(userItem.getUserId(), UploadImageTask.UPLOAD_FOR_TEMPLATE,
+                    inputStream);
+        } else {
+            doRegister();
+        }
+    }
 
+    private void doRegister() {
         userItem.setUsername(edtNickname.getText().toString().trim());
         userItem.setLocation(provinceItem);
 
@@ -431,13 +440,15 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     private void startTopScreenWithNewTask() {
         Intent intent = new Intent(getApplicationContext(), TopActivity.class);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constant.Application.USER_ITEM, userItem);
-
-        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
-        this.finish();
+    }
+
+    private void saveLoginState() {
+        getEditor().putBoolean(Constant.Application.LOGIN_FLAG, true);
+        getEditor().commit();
     }
 
     private void showAvatar() {

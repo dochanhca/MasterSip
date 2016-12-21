@@ -39,6 +39,7 @@ import java.util.Set;
 
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thanglh on 13/11/2014.
@@ -51,18 +52,33 @@ public abstract class BaseUploadTask<T extends Object> {
     private SharedPreferences sharedPreferences;
     private T dataResponse;
 
+    private final String authorization;
+    private final String registerToken;
+
     private MultipartEntityBuilder mEntityBuilder;
     private int REQUEST_OK = 0;
+
+    protected static String TAG;
 
     protected BaseUploadTask(Context context) {
         this.mContext = context;
         sharedPreferences = mContext.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
+        registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
+        TAG = getClass().getName();
     }
 
     public final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
+        String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/"
+                + Constant.API.VERSION + "/" + genURL()
+                + "?" + Constant.JSON.kRegisterToken + "=" + registerToken
+                + "&" + Constant.JSON.kClientAuthID + "=" + authorization;;
+
+        Logger.e(TAG, "URL request : " + url);
+
         buildMultipartEntity();
 
-        mRequest = new Request<T>(genMethod(), genURL(), new Response.ErrorListener() {
+        mRequest = new Request<T>(genMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 /**
@@ -82,21 +98,6 @@ public abstract class BaseUploadTask<T extends Object> {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "multipart/form-data");
-//                headers.put("app-session-id", session);
-//                headers.put("os", "" + 2);
-
-//                try {
-//                    data = ResGuildApplication.CONFIG.USER_AGENT.getBytes("UTF-8");
-//                    String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-//                    Log.e("TAG", "BASE 64 =" + base64);
-//                    headers.put("agent", URLEncoder.encode(base64, "UTF-8"));
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                    headers.put("agent", "Android");
-//                }
-
-//                headers.put("udid", ResGuildApplication.CONFIG.DEVICE_UUID);
-//                headers.put("locale", ResGuildApplication.CONFIG.CURRENT_LOCAL);
                 return headers;
             }
 
@@ -106,8 +107,9 @@ public abstract class BaseUploadTask<T extends Object> {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 try {
                     httpEntity.writeTo(bos);
+                    Logger.e("REQUEST --> ", "json = " + getBodyContentType());
                 } catch (IOException e) {
-                    VolleyLog.e("IOException writing to ByteArrayOutputStream");
+                    Logger.e("REQUEST --> upload multi part", "IOException writing to ByteArrayOutputStream");
                 }
                 return bos.toByteArray();
             }
@@ -127,8 +129,7 @@ public abstract class BaseUploadTask<T extends Object> {
                     sipError = validData(data);
                     if (null == sipError) {
                         JSONObject jsonObject = new JSONObject(data);
-                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.kData);
-                        result = didResponse(jData);
+                        result = didResponse(jsonObject);
                         return Response.success(result, getCacheEntry());
                     } else {
                         return Response.error(sipError);
@@ -157,7 +158,7 @@ public abstract class BaseUploadTask<T extends Object> {
             String message = jsonObject.getString(Constant.JSON.kMessage);
             SipError sipError = new SipError(code, message);
             return sipError;
-        }else {
+        } else {
             return null;
         }
     }
@@ -167,16 +168,16 @@ public abstract class BaseUploadTask<T extends Object> {
         mEntityBuilder.addBinaryBody(getNameEntity(), getInputStream(), ContentType.create("image/jpeg"), getFileName());
         mEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         mEntityBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
-        HashMap<String,String>params = genBodyParam();
-        if (null!=params){
+        HashMap<String, Integer> params = genBodyParam();
+        if (null != params) {
             Set<String> keySet = params.keySet();
-            for (Iterator<String> key = keySet.iterator();key.hasNext();){
+            for (Iterator<String> key = keySet.iterator(); key.hasNext(); ) {
                 String name = key.next();
-                String value = params.get(name);
-                mEntityBuilder.addTextBody(name,value);
+                String value = String.valueOf(params.get(name));
+                mEntityBuilder.addTextBody(name, value);
             }
         }
-        setCommonParams();
+//        setCommonParams();
     }
 
     private void setCommonParams() {
@@ -188,7 +189,7 @@ public abstract class BaseUploadTask<T extends Object> {
             Type type = new TypeToken<UserItem>() {
             }.getType();
             userItem = gson.fromJson(jUser, type);
-            mEntityBuilder.addTextBody(Constant.JSON.kClientAuthID, userItem.getUserId());
+//            mEntityBuilder.addTextBody(Constant.JSON.kClientAuthID, userItem.getUserId());
             mEntityBuilder.addTextBody(Constant.JSON.kRegisterToken, registerToken);
         }
     }
@@ -206,7 +207,7 @@ public abstract class BaseUploadTask<T extends Object> {
     protected abstract String getFileName();
 
     @Nullable
-    protected abstract HashMap<String, String> genBodyParam();
+    protected abstract HashMap<String, Integer> genBodyParam();
 
     public T getDataResponse() {
         return dataResponse;

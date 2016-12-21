@@ -57,7 +57,7 @@
         </activity>
 
         <activity
-            android:name=".ui.auth.StartActivity"
+            android:name=".ui.StartActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
