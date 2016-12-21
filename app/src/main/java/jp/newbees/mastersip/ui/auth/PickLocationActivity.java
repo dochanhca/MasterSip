@@ -179,6 +179,11 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         txtPosition.setText(provinceItem.getTitle());
     }
 
+    @Override
+    public void onBackPressed() {
+        putDataBack();
+    }
+
     private void checkLocationPermission() {
         if (mGoogleApiClient.isConnected()) {
             if (ContextCompat.checkSelfPermission(PickLocationActivity.this,
