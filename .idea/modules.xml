@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MasterSip.iml" filepath="$PROJECT_DIR$/MasterSip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-master-sip.iml" filepath="$PROJECT_DIR$/android-master-sip.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/rippleview/rippleview.iml" filepath="$PROJECT_DIR$/rippleview/rippleview.iml" />
       <module fileurl="file://$PROJECT_DIR$/slideDateTimePicker/slideDateTimePicker.iml" filepath="$PROJECT_DIR$/slideDateTimePicker/slideDateTimePicker.iml" />

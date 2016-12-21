@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NavigationLayout">
+        <attr name="textColorNormal" format="color|reference"/>
+        <attr name="textColorSelected" format="color|reference"/>
+        <attr name="iconNormal" format="reference"/>
+        <attr name="iconSelected" format="reference"/>
+        <attr name="state" format="boolean" />
+        <attr name="showBoxValue" format="boolean" />
+        <attr name="text" format="string"/>
+    </declare-styleable>
+</resources>

@@ -40,6 +40,11 @@
     <string name="start">はじめる(無料)</string>
     <string name="login">ログイン</string>
     <string name="loading">Loading...</string>
+    <string name="member">背景</string>
+    <string name="message">チャット</string>
+    <string name="leg">足あと</string>
+    <string name="heart">フォロワー</string>
+    <string name="menu">マイメニュー</string>
     <string name="enable_location">位置情報を利用する</string>
     <string name="mess_enable_gps">You must enable your location access</string>
     <string name="err_user_name_empty">氏名を入力してください</string>

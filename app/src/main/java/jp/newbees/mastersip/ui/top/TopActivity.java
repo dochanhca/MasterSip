@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
@@ -11,6 +12,14 @@ import jp.newbees.mastersip.ui.BaseActivity;
  */
 
 public class TopActivity extends BaseActivity implements View.OnClickListener {
+
+    private NavigationLayoutGroup navigationLayoutGroup;
+    private NavigationLayoutGroup.OnChildItemClickListener onNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
+        @Override
+        public void onChildItemClick(View view, int position) {
+
+        }
+    };
 
     @Override
     protected int layoutId() {
@@ -20,6 +29,9 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         initHeader(getString(R.string.top_activity));
+
+        navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
+        navigationLayoutGroup.setOnChildItemClickListener(onNavigationChangeListener);
     }
 
     @Override

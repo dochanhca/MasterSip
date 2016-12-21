@@ -9,5 +9,10 @@
     <color name="bg_register_dob">#dfdfdf</color>
     <color name="text_color_gray">#666666</color>
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="divider">#ced7db</color>
+    <color name="selected_color">#55aaaf</color>
+    <color name="dark_gray">#999999</color>
+    <color name="box_value_bg">#fb5050</color>
 
 </resources>
