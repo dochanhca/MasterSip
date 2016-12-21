@@ -7,50 +7,74 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
-        public static String kDeviceId = "device_id";
-        public static String kPassword = "password";
-        public static String kEmail = "email";
-        public static String kClientAuthID = "client_auth_id";
+        public final static String kDeviceId = "device_id";
+        public final static String kPassword = "password";
+        public final static String kEmail = "email";
+        public final static String kClientAuthID = "client_auth_id";
 
-        public static String kRegisterToken = "regist_token";
-        public static String kBirthday = "birthday";
-        public static String kGender = "gen";
-        public static String kSocialId = "social_id";
-        public static String kOSVersion = "os_version";
-        public static String kAppVersion = "app_version";
-        public static String kDeviceInfo = "device_info";
-        public static String kCode = "code";
-        public static String kMessage = "message";
-        public static String kData = "data";
-        public static String kUserId = "user_id";
-        public static String kUploadType = "upload_for";
-        public static String kHandleName = "handle_name";
-        public static String kPhoneNumber = "phonenumber";
-        public static String kProvinceId = "province_id";
-        public static String kAvatarId = "avatar_id";
-        public static String kJobId = "job_id";
-        public static String kTypeId = "type_id";
-        public static String kTypeBoy = "type_boy";
-        public static String kCharmPoint ="charm_point";
-        public static String kFreeTime = "free_time";
-        public static String kSlogan = "slogan";
-        public static String kExtension = "extension";
+        public final static String kRegisterToken = "regist_token";
+        public final static String kBirthday = "birthday";
+        public final static String kGender = "gen";
+        public final static String kSocialId = "social_id";
+        public final static String kOSVersion = "os_version";
+        public final static String kAppVersion = "app_version";
+        public final static String kDeviceInfo = "device_info";
+        public final static String kCode = "code";
+        public final static String kMessage = "message";
+        public final static String kData = "data";
+        public final static String kUserId = "user_id";
+        public final static String kUploadType = "upload_for";
+        public final static String kHandleName = "handle_name";
+        public final static String kPhoneNumber = "phonenumber";
+        public final static String kProvinceId = "province_id";
+        public final static String kAvatarId = "avatar_id";
+        public final static String kJobId = "job_id";
+        public final static String kTypeId = "type_id";
+        public final static String kTypeBoy = "type_boy";
+        public final static String kCharmPoint ="charm_point";
+        public final static String kFreeTime = "free_time";
+        public final static String kSlogan = "slogan";
+        public final static String kExtension = "extension";
+        public final static String kAboveAge = "above_age";
+        public final static String kBelowAge = "below_age";
+        public final static String kProvinces = "provinces";
+        public final static String kOrderBy = "order_by";
+        public final static String kLogin24HourAgo = "limit_online_ago";
+        public final static String kFilterType = "type";
+        public final static String kNextPage = "next_page";
+        public final static String kUsers = "users";
+        public final static String kID = "id";
+        public final static String kAvatar = "avatar";
+        public final static String kRelationship = "relations";
+        public final static String kFollowed = "followed";
+        public final static String kNotification = "online_notification";
+        public final static String kJobName = "job_name";
+        public final static String kLastLogin = "last_login";
+        public final static String kStatus = "status";
+        public final static String kUserGender = "gender";
+        public final static String kExtendInfo = "extend_info";
+        public final static String kFavoriteType = "favorite_type";
+        public final static String kPath = "path";
 
-        public static String kLat = "lat";
-        public static String kLong = "long";
+        public final static String kLat = "lat";
+        public final static String kLong = "long";
 
-        public static String kReceiveProvinceId = "provinceId";
-        public static String kProvinceName = "provinceName";
+        public final static String kReceiveProvinceId = "provinceId";
+        public final static String kProvinceName = "provinceName";
     }
 
     public static final class API {
+        public static final int AVAILABLE_CALL = 1;
+        public static final int NEW_USER = 2;
+        public static final int ALL_USER = 3;
+
         private static final String DEVELOPMENT_IP = "52.197.14.30";
         private static final String PRODUCTION_IP = "52.197.138.1";
+        public static String BASE_URL;
 
         public static final String VERSION = "v1";
         public static final String PREFIX_URL = "sip_api/public/api";
-        public static String BASE_URL;
-
+        public static final String FILTER_USER = "users";
         public static final String LOGIN_BY_EMAIL = "login";
         public static final String REGISTER = "register";
         public static final String UPLOAD_IMAGE = "upload_image";
