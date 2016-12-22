@@ -6,7 +6,7 @@
     <color name="bg_start_screen">#d5e8e9</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
-    <color name="bg_register_dob">#dfdfdf</color>
+    <color name="color_gray_bg">#dfdfdf</color>
     <color name="text_color_gray">#666666</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>

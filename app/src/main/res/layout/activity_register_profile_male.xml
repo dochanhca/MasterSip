@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:ripple="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
-    android:background="@color/bg_register_dob"
+    android:background="@color/color_gray_bg"
     android:focusableInTouchMode="true">
 
     <include

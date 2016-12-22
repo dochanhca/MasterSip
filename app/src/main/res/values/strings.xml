@@ -49,6 +49,17 @@
     <string name="mess_enable_gps">You must enable your location access</string>
     <string name="err_user_name_empty">氏名を入力してください</string>
     <string name="err_require_field_empty">(※)は必須項目です。</string>
+    <string name="setting_condition">条件設定</string>
+    <string name="area">地域</string>
+    <string name="age">年齢</string>
+    <string name="login_with_24h">24時間以内ログイン</string>
+    <string name="sort">並び替え</string>
+    <string name="i_do_not_care">こだわらない〜こだわらない</string>
+    <string name="do_not_care">こだわらない</string>
+    <string name="login_order_by_newest">ログインが新しい順</string>
+    <string name="search_with_condition">この条件で検索する</string>
+    <string name="handle_name_search">ハンドルネーム検索</string>
+    <string name="search_by_name">ハンドルネームで検索する</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

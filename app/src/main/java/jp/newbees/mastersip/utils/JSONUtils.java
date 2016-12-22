@@ -62,9 +62,8 @@ public class JSONUtils {
             userItem.setStatus(status);
 
 
-           int gender = getInt(jUser,Constant.JSON.kUserGender);
-           userItem.setGender(gender);
-
+            int gender = getInt(jUser,Constant.JSON.kUserGender);
+            userItem.setGender(gender);
             if (jUser.has(Constant.JSON.kExtendInfo)) {
                 JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.kExtendInfo);
                 if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
