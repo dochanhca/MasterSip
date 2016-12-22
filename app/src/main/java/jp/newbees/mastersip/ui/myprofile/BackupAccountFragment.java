@@ -1,5 +1,8 @@
 package jp.newbees.mastersip.ui.myprofile;
 
+import android.os.Bundle;
+import android.view.View;
+
 import jp.newbees.mastersip.ui.BaseFragment;
 
 /**
@@ -7,4 +10,13 @@ import jp.newbees.mastersip.ui.BaseFragment;
  */
 
 public class BackupAccountFragment extends BaseFragment {
+    @Override
+    protected int layoutId() {
+        return 0;
+    }
+
+    @Override
+    protected void init(View mRoot, Bundle savedInstanceState) {
+
+    }
 }

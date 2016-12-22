@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.myprofile;
+package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,13 +8,13 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
 
 /**
- * Created by vietbq on 12/6/16.
+ * Created by thangit14 on 12/22/16.
  */
 
-public class MyInfoFragment extends BaseFragment {
+public class MyMenuFragment extends BaseFragment {
     @Override
     protected int layoutId() {
-        return R.layout.my_info_fragment;
+        return R.layout.my_menu_fragment;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class MyInfoFragment extends BaseFragment {
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new MyInfoFragment();
+        Fragment fragment = new MyMenuFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
