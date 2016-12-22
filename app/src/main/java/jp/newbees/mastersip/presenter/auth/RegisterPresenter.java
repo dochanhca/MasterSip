@@ -34,6 +34,7 @@ public class RegisterPresenter extends BasePresenter {
     private final RegisterView view;
 
     public RegisterPresenter(Context context, RegisterView view){
+        super(context);
         this.context = context;
         this.view = view;
     }

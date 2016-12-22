@@ -28,7 +28,7 @@ public class JSONUtils {
             userItem.setMemo(jUser.getString(Constant.JSON.kSlogan));
 
             ImageItem avatar = new ImageItem();
-            avatar.setImageId(jUser.getInt(Constant.JSON.kAvatarId));
+            avatar.setImageId(getInt(jUser, Constant.JSON.kAvatarId));
             avatar.setOriginUrl(jUser.getString(Constant.JSON.kAvatar));
             userItem.setAvatarItem(avatar);
 
@@ -36,56 +36,73 @@ public class JSONUtils {
             sipItem.setExtension(jUser.getString(Constant.JSON.kExtension));
             userItem.setSipItem(sipItem);
 
-            JSONObject jRelationship = jUser.getJSONObject(Constant.JSON.kRelationship);
-            RelationshipItem relationshipItem = parseRelationship(jRelationship);
-            userItem.setRelationshipItem(relationshipItem);
+            if (jUser.has(Constant.JSON.kRelationship)) {
+                JSONObject jRelationship = jUser.getJSONObject(Constant.JSON.kRelationship);
+                RelationshipItem relationshipItem = parseRelationship(jRelationship);
+                userItem.setRelationshipItem(relationshipItem);
+            }
 
             String birthDay = jUser.getString(Constant.JSON.kBirthday);
             userItem.setDateOfBirth(birthDay);
 
             SelectionItem location = new SelectionItem();
-            location.setId(jUser.getInt(Constant.JSON.kProvinceId));
+            JSONObject jProvince = jUser.getJSONObject(Constant.JSON.kProvince);
+            location.setId(jProvince.getInt(Constant.JSON.kUserProvinceId));
+            location.setTitle(jProvince.getString(Constant.JSON.kUserProvinceName));
             userItem.setLocation(location);
 
             SelectionItem job = new SelectionItem();
-            job.setTitle(jUser.getString(Constant.JSON.kJobName));
+            job.setTitle(getString(jUser,Constant.JSON.kJobName));
             userItem.setJobItem(job);
 
             String lastLogin = jUser.getString(Constant.JSON.kLastLogin);
             userItem.setLastLogin(lastLogin);
-            int status = jUser.getInt(Constant.JSON.kStatus);
+
+            int status = getInt(jUser,Constant.JSON.kStatus);
             userItem.setStatus(status);
 
-            int gender = jUser.getInt(Constant.JSON.kUserGender);
-            userItem.setGender(gender);
 
-            JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.kExtendInfo);
-            if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0){
-                String charmPoint = jExtendInfo.getString(Constant.JSON.kCharmPoint);
-                userItem.setCharmingPoint(charmPoint);
-                String freeTime = jExtendInfo.getString(Constant.JSON.kFreeTime);
-                SelectionItem availableTime = new SelectionItem();
-                availableTime.setTitle(freeTime);
-                userItem.setAvailableTimeItem(availableTime);
-                String typeBoy = jExtendInfo.getString(Constant.JSON.kTypeBoy);
-                userItem.setTypeBoy(typeBoy);
-                String favoriteType = jExtendInfo.getString(Constant.JSON.kFavoriteType);
-                SelectionItem typeGirl = new SelectionItem();
-                typeGirl.setTitle(favoriteType);
-                userItem.setTypeGirl(typeGirl);
+           int gender = getInt(jUser,Constant.JSON.kUserGender);
+           userItem.setGender(gender);
+
+            if (jUser.has(Constant.JSON.kExtendInfo)) {
+                JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.kExtendInfo);
+                if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
+                    String charmPoint = jExtendInfo.getString(Constant.JSON.kCharmPoint);
+                    userItem.setCharmingPoint(charmPoint);
+                    String freeTime = jExtendInfo.getString(Constant.JSON.kFreeTime);
+                    SelectionItem availableTime = new SelectionItem();
+                    availableTime.setTitle(freeTime);
+                    userItem.setAvailableTimeItem(availableTime);
+                    String typeBoy = jExtendInfo.getString(Constant.JSON.kTypeBoy);
+                    userItem.setTypeBoy(typeBoy);
+                    String favoriteType = jExtendInfo.getString(Constant.JSON.kFavoriteType);
+                    SelectionItem typeGirl = new SelectionItem();
+                    typeGirl.setTitle(favoriteType);
+                    userItem.setTypeGirl(typeGirl);
+                }
             }
-
-            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
-            ImageItem avatarItem = new ImageItem();
-            int imageId = jAvatar.getInt(Constant.JSON.kID);
-            String imagePath = jAvatar.getString(Constant.JSON.kPath);
-            avatarItem.setImageId(imageId);
-            avatarItem.setOriginUrl(imagePath);
-            userItem.setAvatarItem(avatarItem);
+//
+//            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
+//            ImageItem avatarItem = new ImageItem();
+//            int imageId = jAvatar.getInt(Constant.JSON.kID);
+//            String imagePath = jAvatar.getString(Constant.JSON.kPath);
+//            avatarItem.setImageId(imageId);
+//            avatarItem.setOriginUrl(imagePath);
+//            userItem.setAvatarItem(avatarItem);
             result.add(userItem);
         }
         return result;
     }
+
+    private static String getString(JSONObject jsonObject, String name) throws JSONException {
+        if (jsonObject.has(name)){
+            return jsonObject.getString(name);
+        }else {
+            return "";
+        }
+    }
+
     public final static RelationshipItem parseRelationship(JSONObject jsonObject) throws JSONException {
         RelationshipItem relationshipItem = new RelationshipItem();
         int followed = jsonObject.getInt(Constant.JSON.kFollowed);
@@ -93,5 +110,20 @@ public class JSONUtils {
         relationshipItem.setFollowed(followed);
         relationshipItem.setNotification(isNotification);
         return relationshipItem;
+    }
+
+    /**
+     *
+     * @param jsonObject
+     * @param name
+     * @return Default value is -1
+     * @throws JSONException
+     */
+    private final static int getInt(JSONObject jsonObject, String name) throws JSONException {
+        if (jsonObject.has(name)){
+            return jsonObject.getInt(name);
+        }else {
+            return -1;
+        }
     }
 }

@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.presenter.auth;
 
+import android.content.Context;
+
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
@@ -8,6 +10,11 @@ import jp.newbees.mastersip.presenter.BasePresenter;
  */
 
 public class LoginPresenter extends BasePresenter {
+
+
+    public LoginPresenter(Context context) {
+        super(context);
+    }
 
     @Override
     protected void didResponseTask(BaseTask task) {

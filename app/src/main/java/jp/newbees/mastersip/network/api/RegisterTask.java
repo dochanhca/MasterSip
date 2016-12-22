@@ -29,7 +29,7 @@ public class RegisterTask extends BaseTask<UserItem> {
 
     @Nullable
     @Override
-    protected JSONObject genBodyParam() throws JSONException {
+    protected JSONObject genParams() throws JSONException {
         JSONObject jParam = new JSONObject();
         String dob = userItem.getDateOfBirth();
         Number gender = new Integer(userItem.getGender());

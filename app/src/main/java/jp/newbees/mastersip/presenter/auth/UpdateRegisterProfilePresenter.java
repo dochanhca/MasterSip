@@ -24,6 +24,7 @@ public class UpdateRegisterProfilePresenter extends BasePresenter {
     private final View view;
 
     public UpdateRegisterProfilePresenter(Context context, View view) {
+        super(context);
         this.context = context;
         this.view = view;
     }

@@ -26,7 +26,7 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
 
     @Nullable
     @Override
-    protected JSONObject genBodyParam() throws JSONException {
+    protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
 
 //        jParams.put(Constant.JSON.kRegisterToken, getRegisterToken());

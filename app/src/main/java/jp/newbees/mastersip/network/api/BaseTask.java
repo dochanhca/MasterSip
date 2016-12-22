@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import jp.newbees.mastersip.model.UserItem;
@@ -58,11 +59,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
 
         String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/" + Constant.API.VERSION + "/" + getUrl();
-        if (!getUrl().equals(Constant.API.REGISTER) && !getUrl().equals(Constant.API.UPDATE_REGISTER_PROFILE)) {
-            url += "&" + Constant.JSON.kRegisterToken + "=" + registerToken
+            url += "?" + Constant.JSON.kRegisterToken + "=" + registerToken
                     + "&" + Constant.JSON.kClientAuthID + "=" + authorization;
-        }
-        Logger.e(TAG, "URL request : " + url);
+            url += genParamURL();
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -80,7 +79,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             public byte[] getBody() throws AuthFailureError {
                 JSONObject jParams = null;
                 try {
-                    jParams = genBodyParam();
+                    jParams = genParams();
                     if (null == jParams) {
                         jParams = new JSONObject();
                     }
@@ -89,9 +88,10 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     Logger.e(TAG, e.getLocalizedMessage());
                     SipError sipError = new SipError(Constant.Error.PARSE_PARAM_ERROR, e.getMessage());
                     Response.error(sipError);
+                    jParams = new JSONObject();
                 }
                 if (Constant.Application.SHOW_DATA_REQUEST) {
-                    Logger.e(TAG, jParams.toString());
+                    Logger.e(TAG,"Data request : "+ jParams.toString());
                 }
                 byte[] body = jParams.toString().getBytes();
                 return body;
@@ -99,9 +99,10 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("Content-type", "application/json");
-                return params;
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-type", "application/json");
+                addCommonHeaders(headers);
+                return headers;
             }
 
             @Override
@@ -142,6 +143,22 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         ConfigManager.getInstance().getRequestQueue().add(request);
     }
 
+    private String genParamURL(){
+        StringBuilder urlBuilder = new StringBuilder();
+        if (getMethod() == Request.Method.GET) {
+            try {
+                JSONObject jParams = genParams();
+                for(Iterator<String> it = jParams.keys();it.hasNext();){
+                    String key = it.next();
+                    urlBuilder.append("&").append(key).append("=").append(jParams.get(key));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return urlBuilder.toString();
+    }
+
     private SipError validData(String data) throws JSONException {
         JSONObject jsonObject = new JSONObject(data);
         int code = jsonObject.getInt(Constant.JSON.kCode);
@@ -168,6 +185,20 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         }
     }
 
+    private void addCommonHeaders(HashMap<String, String> jParams) {
+        Gson gson = new Gson();
+        String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
+        String registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
+        UserItem userItem;
+        if (jUser != null) {
+            Type type = new TypeToken<UserItem>() {
+            }.getType();
+            userItem = gson.fromJson(jUser, type);
+            jParams.put(Constant.JSON.kClientAuthID, userItem.getUserId());
+            jParams.put(Constant.JSON.kRegisterToken, registerToken);
+        }
+    }
+
     protected boolean hasValueForKey(JSONObject jsonObject, String key, int position) {
         if (jsonObject.has(key) && !jsonObject.isNull(key)) {
             return true;
@@ -177,7 +208,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     }
 
     @Nullable
-    protected abstract JSONObject genBodyParam() throws JSONException;
+    protected abstract JSONObject genParams() throws JSONException;
 
     @NonNull
     protected abstract String getUrl();

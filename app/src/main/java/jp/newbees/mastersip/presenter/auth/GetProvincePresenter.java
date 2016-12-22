@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.android.gms.maps.model.LatLng;
 
 import jp.newbees.mastersip.model.SelectionItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.GetProvinceTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -23,11 +22,10 @@ public class GetProvincePresenter extends BasePresenter {
          void onGetProvinceFailure(int errorCode, String errorMessage);
     }
 
-    private final Context context;
     private final View view;
 
     public GetProvincePresenter(Context context, View view) {
-        this.context = context;
+        super(context);
         this.view = view;
     }
 

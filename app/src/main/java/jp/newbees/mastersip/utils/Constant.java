@@ -65,6 +65,11 @@ public final class Constant {
         public final static String kImageId = "image_id";
         public final static String kImageUrl = "image_path_full";
         public final static String kImageThumbUrl = "image_path_thumb";
+        public final static String kProvince = "province";
+
+        //TODO : Duplicate
+        public final static String kUserProvinceId = "province_id";
+        public final static String kUserProvinceName = "province_name";
     }
 
     public static final class API {
@@ -136,6 +141,7 @@ public final class Constant {
 
         public static final String DEFAULT_LANGUAGE = "ja";
         public static final int MIN_AGE = 18;
+        public static final String SETTING_FILTER = "SETTING_FILTER";
     }
 
 }

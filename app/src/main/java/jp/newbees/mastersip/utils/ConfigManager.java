@@ -12,8 +12,14 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.facebook.FacebookSdk;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import jp.newbees.mastersip.BuildConfig;
+import jp.newbees.mastersip.model.FilterItem;
+import jp.newbees.mastersip.model.UserItem;
 
 import static com.facebook.FacebookSdk.getCacheDir;
 
@@ -98,5 +104,40 @@ final public class ConfigManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.AUTHORIZATION, authId);
         editor.commit();
+    }
+
+    public FilterItem getFilterUser() {
+        String jFilter = sharedPreferences.getString(Constant.Application.SETTING_FILTER, null);
+        Gson gson = new Gson();
+        FilterItem filterItem;
+        if (jFilter != null) {
+            Type type = new TypeToken<FilterItem>() {
+            }.getType();
+            filterItem = gson.fromJson(jFilter, type);
+        }else {
+            filterItem = new FilterItem();
+            this.saveFilterSetting(filterItem);
+        }
+        return filterItem;
+    }
+
+    public final void saveFilterSetting(FilterItem filterItem){
+        Gson gson = new Gson();
+        String jFilter = gson.toJson(filterItem);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.SETTING_FILTER, jFilter);
+        editor.commit();
+    }
+
+    public UserItem getCurrentUser() {
+        Gson gson = new Gson();
+        String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
+        UserItem userItem = new UserItem();
+        if (jUser != null) {
+            Type type = new TypeToken<UserItem>() {
+            }.getType();
+            userItem = gson.fromJson(jUser, type);
+        }
+        return userItem;
     }
 }

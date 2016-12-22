@@ -3,6 +3,7 @@ package jp.newbees.mastersip.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import jp.newbees.mastersip.utils.Constant;
@@ -11,7 +12,7 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by vietbq on 12/20/16.
  */
 
-public class FilterItem implements Parcelable {
+public class FilterItem implements Parcelable, Serializable {
 
     public FilterItem() {
         this(-1,-1, new ArrayList<SelectionItem>(), true, new SelectionItem(), Constant.API.ALL_USER);

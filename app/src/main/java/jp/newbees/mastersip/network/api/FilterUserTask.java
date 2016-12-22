@@ -26,15 +26,19 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     private static final String NEXT_PAGE = "NEXT_PAGE";
     private static final String LIST_USER = "LIST_USER";
     private final FilterItem filterItem;
+    private final int nextPage;
+    private final UserItem userItem;
 
-    public FilterUserTask(Context context, FilterItem filterItem) {
+    public FilterUserTask(Context context, FilterItem filterItem, int nextPage, UserItem userItem) {
         super(context);
         this.filterItem = filterItem;
+        this.userItem = userItem;
+        this.nextPage = nextPage;
     }
 
     @Nullable
     @Override
-    protected JSONObject genBodyParam() throws JSONException {
+    protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
         if (filterItem.getMinAge() >= 18) {
             jParams.put(Constant.JSON.kAboveAge,filterItem.getMinAge());
@@ -60,7 +64,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.FILTER_USER;
+        return Constant.API.FILTER_USER+"/"+userItem.getUserId()+"/"+nextPage;
     }
 
     @Override

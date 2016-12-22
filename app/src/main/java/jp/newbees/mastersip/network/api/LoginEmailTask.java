@@ -28,7 +28,7 @@ public class LoginEmailTask extends BaseTask<UserItem> {
 
     @Nullable
     @Override
-    protected JSONObject genBodyParam() throws JSONException {
+    protected JSONObject genParams() throws JSONException {
         String deviceId = getDeviceId();
         JSONObject jData = new JSONObject();
         jData.put(Constant.JSON.kDeviceId,deviceId);

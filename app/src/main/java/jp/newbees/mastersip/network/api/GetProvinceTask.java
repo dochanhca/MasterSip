@@ -19,25 +19,26 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class GetProvinceTask extends BaseTask {
 
-    private final LatLng latLng;
+    private final LatLng location;
 
     public GetProvinceTask(Context context, LatLng latLng) {
         super(context);
-        this.latLng = latLng;
+        this.location = latLng;
     }
 
     @Nullable
     @Override
-    protected JSONObject genBodyParam() throws JSONException {
-        return null;
+    protected JSONObject genParams() throws JSONException {
+        JSONObject jParam = new JSONObject();
+        jParam.put(Constant.JSON.kLong,location.longitude);
+        jParam.put(Constant.JSON.kLat, location.latitude);
+        return jParam;
     }
 
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.GET_PROVINCE
-                + "?" + Constant.JSON.kLong + "=" + latLng.longitude
-                + "&" + Constant.JSON.kLat + "=" + latLng.latitude;
+        return Constant.API.GET_PROVINCE;
     }
 
     @Override

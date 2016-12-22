@@ -1,10 +1,13 @@
 package jp.newbees.mastersip.presenter;
 
+import android.content.Context;
+
 import com.android.volley.Response;
 
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.TaskManager;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -12,6 +15,12 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public abstract class BasePresenter {
+
+    protected Context context;
+
+    public BasePresenter(Context context){
+        this.context = context;
+    }
 
     protected void requestToServer(final BaseTask task){
 
@@ -34,6 +43,10 @@ public abstract class BasePresenter {
 
     private void handleInvalidToken(){
 
+    }
+
+    protected UserItem getCurrentUserItem() {
+        return ConfigManager.getInstance().getCurrentUser();
     }
 
     protected abstract void didResponseTask(BaseTask task);
