@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_gray_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_action_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:orientation="vertical">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_10"
+            android:orientation="vertical"
+            android:text="@string/setting_condition"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_corner_layout"
+            android:orientation="vertical">
+
+            <!--Lay out select age-->
+            <RelativeLayout
+                android:id="@+id/layout_age"
+                style="@style/style_layout_text_field_common"
+                android:background="@drawable/bg_corner_header_layout">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view_small"
+                    android:text="@string/age" />
+
+                <ImageView
+                    android:id="@+id/img_arrow_indicator_age"
+                    style="@style/style_img_right_text_field_common"
+                    android:src="@drawable/ic_arrow_bottom" />
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_age"
+                    style="@style/style_content_text_view_small"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_50"
+                    android:text="@string/i_do_not_care" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+            <!--Lay out select location-->
+            <RelativeLayout
+                android:id="@+id/layout_location"
+                style="@style/style_layout_text_field_common">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view_small"
+                    android:text="@string/area" />
+
+                <ImageView
+                    android:id="@+id/img_arrow_right_area"
+                    style="@style/style_img_right_text_field_common"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_area"
+                    style="@style/style_content_text_view_small"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_50"
+                    android:text="@string/do_not_care" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+            <!--Lay out check online 24h-->
+            <RelativeLayout
+                android:id="@+id/layout_recently_login"
+                style="@style/style_layout_text_field_common">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view_small"
+                    android:text="@string/login_with_24h" />
+
+                <CheckBox
+                    style="@style/style_img_right_text_field_common"
+                    android:button="@drawable/ck_24h_selector" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+
+            <!--Lay out sort-->
+            <RelativeLayout
+                android:id="@+id/layout_sort"
+                style="@style/style_layout_text_field_common">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view_small"
+                    android:text="@string/sort" />
+
+                <ImageView
+                    android:id="@+id/img_arrow_indicator_sort"
+                    style="@style/style_img_right_text_field_common"
+                    android:src="@drawable/ic_arrow_bottom" />
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_sort"
+                    style="@style/style_content_text_view_small"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_50"
+                    android:text="@string/login_order_by_newest" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+            <!---->
+
+            <jp.newbees.mastersip.customviews.HiraginoButton
+                android:id="@+id/btn_search"
+                style="@style/style_button_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_margin"
+                android:background="@drawable/bg_button_primary_big"
+                android:text="@string/search_with_condition"
+                android:textSize="@dimen/text_size_15" />
+        </LinearLayout>
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_25"
+            android:orientation="vertical"
+            android:text="@string/handle_name_search"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_corner_layout">
+
+            <jp.newbees.mastersip.customviews.HiraginoButton
+                android:id="@+id/btn_search_by_name"
+                style="@style/style_button_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_margin"
+                android:background="@drawable/bg_button_primary_big"
+                android:text="@string/search_by_name"
+                android:textSize="@dimen/text_size_15" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

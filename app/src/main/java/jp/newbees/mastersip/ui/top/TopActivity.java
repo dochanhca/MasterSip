@@ -10,6 +10,7 @@ import android.view.View;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.filter.FilterFragment;
 import jp.newbees.mastersip.ui.myprofile.MyInfoFragment;
 
 /**
@@ -100,7 +101,6 @@ public class TopActivity extends BaseActivity implements View.OnClickListener {
                     return FlowFragment.newInstance();
                 case PROFILE_FRAGMENT:
                     return MyMenuFragment.newInstance();
-
                 default:
                     return null;
             }

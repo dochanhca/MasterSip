@@ -10,6 +10,7 @@ import jp.newbees.mastersip.ui.BaseFragment;
  */
 
 public class ListGiftFragment extends BaseFragment {
+
     @Override
     protected int layoutId() {
         return 0;
