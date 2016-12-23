@@ -37,7 +37,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
-            viewPager.setCurrentItem(position, true);
+            viewPager.setCurrentItem(position, false);
         }
     };
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -65,7 +65,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        initHeader(getString(R.string.top_activity));
+//        initHeader(getString(R.string.top_activity));
         navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);

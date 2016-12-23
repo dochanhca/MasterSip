@@ -41,6 +41,10 @@
         <!--<item name="android:layout_marginRight">@dimen/margin_15</item>-->
     </style>
 
+    <style name="style_content_text_view_tiny" parent="style_content_text_view_small">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
     <style name="style_content_text_view" parent="style_common_text">
         <item name="android:textSize">@dimen/text_size_17</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -96,4 +100,15 @@
     <style name="style_button_small" parent="style_button_common">
         <item name="android:textSize">@dimen/text_size_13</item>
     </style>
+
+    <style name="RadioButton">
+        <item name="android:minHeight">@dimen/header_search_height</item>
+        <item name="android:minWidth">@dimen/action_filter_search_width</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:paddingLeft">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
+        <item name="android:textSize">@dimen/text_size_15</item>
+    </style>
+
 </resources>

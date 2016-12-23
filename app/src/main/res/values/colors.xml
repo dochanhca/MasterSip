@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#55aaaf</color>
     <color name="colorPrimaryLight">#b9dadc</color>
     <color name="bg_start_screen">#d5e8e9</color>
+    <color name="bg_green_normal">#d5e8e9</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
     <color name="color_gray_bg">#dfdfdf</color>
@@ -15,5 +16,7 @@
     <color name="selected_color">#55aaaf</color>
     <color name="dark_gray">#999999</color>
     <color name="box_value_bg">#fb5050</color>
+    <color name="radio_button_selected_color">#e0e0e0</color>
+    <color name="radio_button_unselected_color">#2d495e</color>
 
 </resources>

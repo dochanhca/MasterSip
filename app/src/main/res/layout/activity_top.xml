@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/action_bar"
-        layout="@layout/layout_action_bar" />
+    <!--<include-->
+        <!--android:id="@+id/action_bar"-->
+        <!--layout="@layout/layout_action_bar" />-->
 
     <jp.newbees.mastersip.customviews.NavigationLayoutGroup
         android:id="@+id/navigation_bar"
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             app:showBoxValue="true"
-            app:iconNormal="@drawable/ic_leg"
+            app:iconNormal="@drawable/ic_leg_off"
             app:iconSelected="@drawable/ic_leg_on"
             app:text = "@string/leg"
             app:textColorNormal="@color/dark_gray"
@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            app:iconNormal="@drawable/ic_heard_off"
+            app:iconNormal="@drawable/ic_heart_off"
             app:iconSelected="@drawable/ic_heart_on"
             app:text = "@string/heart"
             app:textColorNormal="@color/dark_gray"
@@ -73,7 +73,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            app:iconNormal="@drawable/ic_menu"
+            app:iconNormal="@drawable/ic_menu_off"
             app:iconSelected="@drawable/ic_menu_on"
             app:text = "@string/menu"
             app:textColorNormal="@color/dark_gray"
