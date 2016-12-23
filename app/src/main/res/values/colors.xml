@@ -8,6 +8,7 @@
     <color name="white">#ffffff</color>
     <color name="color_gray_bg">#dfdfdf</color>
     <color name="text_color_gray">#666666</color>
+    <color name="text_color_gray_hint">#dddddd</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="divider">#ced7db</color>

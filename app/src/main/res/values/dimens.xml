@@ -39,4 +39,5 @@
     <dimen name="margin_2">2dp</dimen>
     <dimen name="common_margin">16dp</dimen>
     <dimen name="margin_50">50dp</dimen>
+    <dimen name="search_field_h">45dp</dimen>
 </resources>
