@@ -45,6 +45,10 @@ public abstract class BasePresenter {
 
     }
 
+    protected final Context getContext() {
+        return context;
+    }
+
     protected UserItem getCurrentUserItem() {
         return ConfigManager.getInstance().getCurrentUser();
     }

@@ -60,8 +60,8 @@ public class UserItem implements Serializable, Parcelable {
     @Nullable
     private ImageItem avatarItem;
 
-    @Nullable
-    private String avatarUrl;
+//    @Nullable
+//    private String avatarUrl;
     @Nullable
     private String facebookId;
     @NonNull
@@ -187,14 +187,14 @@ public class UserItem implements Serializable, Parcelable {
         this.avatarItem = avatarItem;
     }
 
-    @Nullable
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(@Nullable String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
+//    @Nullable
+//    public String getAvatarUrl() {
+//        return avatarUrl;
+//    }
+//
+//    public void setAvatarUrl(@Nullable String avatarUrl) {
+//        this.avatarUrl = avatarUrl;
+//    }
 
     @Nullable
     public String getFacebookId() {
@@ -253,7 +253,7 @@ public class UserItem implements Serializable, Parcelable {
         dest.writeInt(this.status);
         dest.writeString(this.email);
         dest.writeParcelable(this.avatarItem, flags);
-        dest.writeString(this.avatarUrl);
+//        dest.writeString(this.avatarUrl);
         dest.writeString(this.facebookId);
         dest.writeParcelable(this.sipItem, flags);
         dest.writeString(this.userId);
@@ -276,7 +276,7 @@ public class UserItem implements Serializable, Parcelable {
         this.status = in.readInt();
         this.email = in.readString();
         this.avatarItem = in.readParcelable(ImageItem.class.getClassLoader());
-        this.avatarUrl = in.readString();
+//        this.avatarUrl = in.readString();
         this.facebookId = in.readString();
         this.sipItem = in.readParcelable(SipItem.class.getClassLoader());
         this.userId = in.readString();

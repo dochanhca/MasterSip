@@ -23,8 +23,8 @@ import jp.newbees.mastersip.utils.JSONUtils;
  */
 
 public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
-    private static final String NEXT_PAGE = "NEXT_PAGE";
-    private static final String LIST_USER = "LIST_USER";
+    public static final String NEXT_PAGE = "NEXT_PAGE";
+    public static final String LIST_USER = "LIST_USER";
     private final FilterItem filterItem;
     private final int nextPage;
     private final UserItem userItem;

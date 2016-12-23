@@ -70,6 +70,7 @@ public final class Constant {
         //TODO : Duplicate
         public final static String kUserProvinceId = "province_id";
         public final static String kUserProvinceName = "province_name";
+        public final static String kName = "name";
     }
 
     public static final class API {
@@ -79,7 +80,9 @@ public final class Constant {
 
         private static final String DEVELOPMENT_IP = "52.197.14.30";
         private static final String PRODUCTION_IP = "52.197.138.1";
+
         public static String BASE_URL;
+        public static final String PROTOCOL = "http";
 
         public static final String VERSION = "v1";
         public static final String PREFIX_URL = "sip_api/public/api";
@@ -89,6 +92,7 @@ public final class Constant {
         public static final String UPLOAD_IMAGE = "upload_image";
         public static final String UPDATE_REGISTER_PROFILE = "user/update";
         public static final String GET_PROVINCE = "provinces/province";
+        public static final String SEARCH_BY_NAME_URL = "searchuser";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

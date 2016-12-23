@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.presenter.top.SearchPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 
 /**
@@ -12,6 +13,8 @@ import jp.newbees.mastersip.ui.BaseFragment;
  */
 
 public class SearchFragment extends BaseFragment {
+    private SearchPresenter presenter;
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_filter_by_name;
@@ -19,7 +22,7 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-
+        presenter = new SearchPresenter(getContext());
     }
 
     public static Fragment newInstance() {
@@ -28,4 +31,5 @@ public class SearchFragment extends BaseFragment {
         fragment.setArguments(bundle);
         return fragment;
     }
+
 }

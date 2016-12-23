@@ -57,11 +57,11 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     }
 
     final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
-
-        String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/" + Constant.API.VERSION + "/" + getUrl();
-            url += "?" + Constant.JSON.kRegisterToken + "=" + registerToken
-                    + "&" + Constant.JSON.kClientAuthID + "=" + authorization;
-            url += genParamURL();
+        String url = genURL();
+        url += genParamURL();
+        if(Constant.Application.DEBUG) {
+            Logger.d(TAG,url);
+        }
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -143,6 +143,22 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         ConfigManager.getInstance().getRequestQueue().add(request);
     }
 
+    @NonNull
+    private String genURL() {
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append(Constant.API.PROTOCOL)
+                .append("://")
+                .append(Constant.API.BASE_URL)
+                .append("/")
+                .append(Constant.API.PREFIX_URL)
+                .append("/")
+                .append(getVersion())
+                .append("/").append(getUrl())
+                .append("?").append(Constant.JSON.kRegisterToken).append("=").append(registerToken)
+                .append("&").append(Constant.JSON.kClientAuthID).append("=").append(authorization);
+        return urlBuilder.toString();
+    }
+
     private String genParamURL(){
         StringBuilder urlBuilder = new StringBuilder();
         if (getMethod() == Request.Method.GET) {
@@ -205,6 +221,10 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         } else {
             return false;
         }
+    }
+
+    protected String getVersion(){
+        return Constant.API.VERSION;
     }
 
     @Nullable

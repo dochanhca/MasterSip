@@ -4,39 +4,69 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.android.volley.Request;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
+
+import static jp.newbees.mastersip.utils.Constant.API.SEARCH_BY_NAME_URL;
 
 /**
  * Created by vietbq on 12/22/16.
  */
 
 public class SearchNameTask extends BaseTask<HashMap<String, Object>> {
-    public SearchNameTask(Context context) {
+
+    public static final String NEXT_PAGE = "NEXT_PAGE";
+    public static final String LIST_USER = "LIST_USER";
+
+    private final UserItem userItem;
+    private final int page;
+    private final String name;
+
+    public SearchNameTask(Context context, UserItem userItem, int page, String name) {
         super(context);
+        this.userItem = userItem;
+        this.page = page;
+        this.name = name;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
-        return null;
+        JSONObject jParams = new JSONObject();
+        jParams.put(Constant.JSON.kNextPage, page);
+        jParams.put(Constant.JSON.kName, name);
+        return jParams;
     }
 
     @NonNull
     @Override
     protected String getUrl() {
-        return null;
+        String url = String.format("%s/%s",SEARCH_BY_NAME_URL,userItem.getUserId());
+        return url;
     }
 
     @Override
     protected int getMethod() {
-        return 0;
+        return Request.Method.GET;
     }
 
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
-        return null;
+        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        String nextPage = jData.getString(Constant.JSON.kNextPage);
+        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(jData);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put(NEXT_PAGE, nextPage);
+        result.put(LIST_USER,userItems);
+        return result;
     }
 }
