@@ -14,7 +14,7 @@ import jp.newbees.mastersip.ui.BaseFragment;
 public class SearchFragment extends BaseFragment {
     @Override
     protected int layoutId() {
-        return R.layout.search_fragment;
+        return R.layout.fragment_filter_by_name;
     }
 
     @Override

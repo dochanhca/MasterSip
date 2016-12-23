@@ -60,6 +60,8 @@
     <string name="search_with_condition">この条件で検索する</string>
     <string name="handle_name_search">ハンドルネーム検索</string>
     <string name="search_by_name">ハンドルネームで検索する</string>
+    <string name="pls_enter_name">ハンドルネームを入力してください</string>
+    <string name="filter_by_name">ハンドルネーム検索</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

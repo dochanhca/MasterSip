@@ -6,6 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import jp.newbees.mastersip.R;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -13,6 +17,8 @@ import android.view.ViewGroup;
 
 public abstract class BaseFragment extends Fragment {
     protected View mRoot;
+
+    protected TextView txtActionBarTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,12 @@ public abstract class BaseFragment extends Fragment {
     protected abstract int layoutId();
 
     protected abstract void init(View mRoot, Bundle savedInstanceState);
+
+    protected void setFragmentTitle(String title) {
+        txtActionBarTitle = (TextView) mRoot.findViewById(R.id.txt_action_bar_title);
+
+        txtActionBarTitle.setText(title);
+    }
 
     @Override
     public void setMenuVisibility(boolean menuVisible) {
