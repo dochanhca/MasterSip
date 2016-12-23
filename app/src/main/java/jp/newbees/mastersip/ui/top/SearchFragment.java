@@ -17,7 +17,7 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected int layoutId() {
-        return R.layout.fragment_filter_by_name;
+        return R.layout.search_fragment;
     }
 
     @Override
