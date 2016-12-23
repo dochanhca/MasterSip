@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_10"
             android:layout_marginTop="@dimen/margin_10"
-            android:orientation="vertical"
             android:text="@string/setting_condition"
             android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_15" />
@@ -97,7 +96,7 @@
 
                 <CheckBox
                     style="@style/style_img_right_text_field_common"
-                    android:button="@drawable/ck_24h_selector" />
+                    android:button="@drawable/cb_blue_selector" />
 
             </RelativeLayout>
 

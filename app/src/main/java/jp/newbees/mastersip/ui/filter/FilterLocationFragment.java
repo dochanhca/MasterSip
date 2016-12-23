@@ -3,6 +3,7 @@ package jp.newbees.mastersip.ui.filter;
 import android.os.Bundle;
 import android.view.View;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
 
 /**
@@ -12,7 +13,7 @@ import jp.newbees.mastersip.ui.BaseFragment;
 public class FilterLocationFragment extends BaseFragment {
     @Override
     protected int layoutId() {
-        return 0;
+        return R.layout.fragment_filter_location;
     }
 
     @Override

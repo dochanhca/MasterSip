@@ -75,6 +75,15 @@
     <string name="err_cant_get_location">Get Your location failed. Please try again</string>
     <string name="err_server_error">Interner server error</string>
 
+    <string name="hokkaido">北海道</string>
+    <string name="multi_choice_possible">※複数選択可</string>
+    <string name="tohoku">東北</string>
+    <string name="select_all">すべて選択</string>
+    <string name="aomori">青森</string>
+    <string name="iwate">岩手</string>
+    <string name="miyagi">宮城</string>
+    <string name="akita">秋田</string>
+    <string name="yamagata">山形</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>

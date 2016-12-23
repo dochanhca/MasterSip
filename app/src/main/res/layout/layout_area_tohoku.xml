@@ -1,0 +1,96 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/color_gray_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_20"
+        android:orientation="horizontal">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/tohoku"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15" />
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_select_all_tohoku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/margin_15"
+            android:background="@drawable/bg_img_primary_dark_x_small"
+            android:text="@string/select_all"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_13" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:background="@drawable/bg_corner_header_layout"
+            style="@style/style_layout_text_field_common">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_title_text_view_small"
+                android:text="@string/aomori" />
+            <CheckBox
+                style="@style/style_img_right_text_field_common"
+                android:button="@drawable/cb_blue_selector" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/margin_1"
+            style="@style/style_layout_text_field_common">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_title_text_view_small"
+                android:text="@string/iwate" />
+            <CheckBox
+                style="@style/style_img_right_text_field_common"
+                android:button="@drawable/cb_blue_selector" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/margin_1"
+            style="@style/style_layout_text_field_common">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_title_text_view_small"
+                android:text="@string/miyagi" />
+            <CheckBox
+                style="@style/style_img_right_text_field_common"
+                android:button="@drawable/cb_blue_selector" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/margin_1"
+            style="@style/style_layout_text_field_common">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_title_text_view_small"
+                android:text="@string/akita" />
+            <CheckBox
+                style="@style/style_img_right_text_field_common"
+                android:button="@drawable/cb_blue_selector" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/bg_corner_bottom_layout"
+            android:layout_marginTop="@dimen/margin_1"
+            style="@style/style_layout_text_field_common">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_title_text_view_small"
+                android:text="@string/yamagata" />
+            <CheckBox
+                style="@style/style_img_right_text_field_common"
+                android:button="@drawable/cb_blue_selector" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
