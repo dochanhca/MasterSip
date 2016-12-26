@@ -132,9 +132,9 @@
                 android:id="@+id/layout_profession"
                 style="@style/style_layout_text_field_common">
 
-                <ImageView
+                <jp.newbees.mastersip.customviews.HiraginoTextView
                     style="@style/style_title_text_view"
-                    android:src="@drawable/img_area_title" />
+                    android:text="@string/profession" />
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_profession"

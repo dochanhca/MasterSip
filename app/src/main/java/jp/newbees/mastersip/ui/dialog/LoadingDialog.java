@@ -10,7 +10,7 @@ import jp.newbees.mastersip.R;
 /**
  * Created by VietBui on 3/19/14.
  */
-public class DialogLoading extends BaseDialog {
+public class LoadingDialog extends BaseDialog {
 
     public static final java.lang.String TITLE_DIALOG = "TITLE DIALOG";
     public static final String CONTENT_DIALOG = "CONTENT DIALOG";

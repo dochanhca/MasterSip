@@ -170,7 +170,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     @Override
     public void onUpdateRegisterProfileFailure(int errorCode, String errorMessage) {
         disMissLoading();
-        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 
     @Override
@@ -308,7 +308,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         if (userName.length() == 0) {
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
         } else if (provinceItem == null) {
-            showMessageDialog("", getString(R.string.err_require_field_empty), "", false);
+            showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
         } else  {
             isDataValid = true;
         }
@@ -323,7 +323,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     private void inputStatus() {
         inputDataType = InputDataType.STATUS;
-        goToInputDataActivity(getString(R.string.status));
+        goToInputDataActivity(getString(R.string.status), txtStatusContent.getText().toString());
     }
 
     private void selectAvailableTime() {
@@ -333,12 +333,13 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     private void inputCharmPoint() {
         inputDataType = InputDataType.CHARM_POINT;
-        goToInputDataActivity(getString(R.string.charm_point));
+
+        goToInputDataActivity(getString(R.string.charm_point), txtCharmPointContent.getText().toString());
     }
 
     private void inputTypeOfMen() {
         inputDataType = InputDataType.TYPE_OF_MEN;
-        goToInputDataActivity(getString(R.string.type_of_men));
+        goToInputDataActivity(getString(R.string.type_of_men), txtTypeOfMenContent.getText().toString());
     }
 
     private void selectType() {
@@ -362,9 +363,10 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         selectionDialog.show(getFragmentManager(), "SelectionDialog");
     }
 
-    private void goToInputDataActivity(String title) {
+    private void goToInputDataActivity(String title, String textContent) {
         Intent intent = new Intent(getApplicationContext(), InputActivity.class);
         intent.putExtra(InputActivity.TITLE, title);
+        intent.putExtra(InputActivity.TEXT_CONTENT, textContent);
 
         startActivityForResult(intent, InputActivity.INPUT_ACTIVITY_REQUEST_CODE);
     }
@@ -372,28 +374,32 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     private void handleDataInput(Intent data) {
         String content = data.getStringExtra(InputActivity.INPUT_DATA);
 
-        if (content.length() <= 0) {
-            return;
-        }
-
         switch (inputDataType) {
             case TYPE_OF_MEN:
-                imgDividerTypeOfMen.setVisibility(View.VISIBLE);
-                txtTypeOfMenContent.setVisibility(View.VISIBLE);
                 txtTypeOfMenContent.setText(content);
+                showTextViewIfHasData(content, imgDividerTypeOfMen, txtTypeOfMenContent);
                 break;
             case CHARM_POINT:
-                imgDividerCharmPoint.setVisibility(View.VISIBLE);
-                txtCharmPointContent.setVisibility(View.VISIBLE);
                 txtCharmPointContent.setText(content);
+                showTextViewIfHasData(content, imgDividerCharmPoint, txtCharmPointContent);
                 break;
             case STATUS:
-                imgDividerStatus.setVisibility(View.VISIBLE);
-                txtStatusContent.setVisibility(View.VISIBLE);
                 txtStatusContent.setText(content);
+                showTextViewIfHasData(content, imgDividerStatus, txtStatusContent);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void showTextViewIfHasData(String content, ImageView dividerLine,
+                                       HiraginoTextView textView) {
+        if (content.length() > 0) {
+            dividerLine.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            dividerLine.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
         }
     }
 

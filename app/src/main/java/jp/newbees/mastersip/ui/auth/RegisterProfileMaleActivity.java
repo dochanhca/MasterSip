@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -46,6 +47,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
         UploadImagePresenter.View, UpdateRegisterProfilePresenter.View {
 
+    private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
     private Bitmap bitmapAvatar;
 
@@ -154,6 +156,13 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         //
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                disMissMessageDialog();
+            }
+        }, TIME_DELAY);
     }
 
     @Override
@@ -173,7 +182,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     @Override
     public void onUpdateRegisterProfileFailure(int errorCode, String errorMessage) {
         disMissLoading();
-        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 
     @Override
@@ -184,7 +193,6 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
     @Override
     public void onUploadImageFailure(int errorCode, String errorMessage) {
-        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
         doRegister();
     }
 
@@ -194,7 +202,8 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     }
 
     private void inputStatus() {
-        goToInputDataActivity(getString(R.string.status));
+        goToInputDataActivity(getString(R.string.status),
+                txtStatusContent.getText().toString());
     }
 
     private void selectJob() {
@@ -212,9 +221,10 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         selectionDialog.show(getFragmentManager(), "SelectionDialog");
     }
 
-    private void goToInputDataActivity(String title) {
+    private void goToInputDataActivity(String title, String textContent) {
         Intent intent = new Intent(getApplicationContext(), InputActivity.class);
         intent.putExtra(InputActivity.TITLE, title);
+        intent.putExtra(InputActivity.TEXT_CONTENT, textContent);
 
         startActivityForResult(intent, InputActivity.INPUT_ACTIVITY_REQUEST_CODE);
     }
@@ -222,15 +232,21 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
     private void handleDataInput(Intent data) {
         String content = data.getStringExtra(InputActivity.INPUT_DATA);
 
-        if (content.length() <= 0) {
-            return;
-        }
-
-        imgDividerStatus.setVisibility(View.VISIBLE);
-        txtStatusContent.setVisibility(View.VISIBLE);
         txtStatusContent.setText(content);
+
+        showTextViewIfHasContent(content);
+
     }
 
+    private void showTextViewIfHasContent(String content) {
+        if (content.length() > 0) {
+            imgDividerStatus.setVisibility(View.VISIBLE);
+            txtStatusContent.setVisibility(View.VISIBLE);
+        } else {
+            imgDividerStatus.setVisibility(View.GONE);
+            txtStatusContent.setVisibility(View.GONE);
+        }
+    }
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
@@ -321,7 +337,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         if (userName.length() == 0) {
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
         } else if (provinceItem == null) {
-            showMessageDialog("", getString(R.string.err_require_field_empty), "", false);
+            showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
         } else {
             isDataValid = true;
         }
