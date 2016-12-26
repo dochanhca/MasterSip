@@ -83,7 +83,7 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         provinceItems = new ArrayList<>();
-        String[] provinces = getResources().getStringArray(R.array.province);
+        String[] provinces = getResources().getStringArray(R.array.districts);
         for (int i = 0; i < provinces.length; i++) {
             SelectionItem selectionItem = new SelectionItem(i + 1, provinces[i]);
             provinceItems.add(selectionItem);

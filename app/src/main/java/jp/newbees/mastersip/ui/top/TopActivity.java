@@ -15,6 +15,7 @@ import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**

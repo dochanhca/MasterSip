@@ -31,24 +31,30 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_action_bar" />
 
-        <jp.newbees.mastersip.customviews.HiraginoButton
-            android:id="@+id/btn_right_action"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_10"
-            android:background="@drawable/bg_img_primary_dark_x_small"
-            android:gravity="center"
-            android:text="@string/do_not_care"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_13" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:id="@+id/btn_un_check_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_img_primary_dark_x_small" />
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                style="@style/style_button_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/do_not_care" />
+        </FrameLayout>
+
     </RelativeLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,31 +71,13 @@
                 android:textColor="@color/text_color_gray"
                 android:textSize="@dimen/text_size_15" />
 
-
-            <RelativeLayout
-                android:id="@+id/layout_hokkaido"
-                style="@style/style_layout_text_field_common"
-                android:background="@drawable/bg_corner_header_layout">
-
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    style="@style/style_title_text_view_small"
-                    android:text="@string/hokkaido" />
-
-                <CheckBox
-                    android:id="@+id/cb_hokkaido"
-                    style="@style/style_img_right_text_field_common"
-                    android:button="@drawable/cb_blue_selector" />
-            </RelativeLayout>
-
-            <ImageView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/img_separate_line" />
-
-
-            <include layout="@layout/layout_area_tohoku" />
+                android:layout_marginBottom="@dimen/action_bar_h">
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

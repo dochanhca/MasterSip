@@ -84,6 +84,8 @@
     <string name="miyagi">宮城</string>
     <string name="akita">秋田</string>
     <string name="yamagata">山形</string>
+    <string name="foreign_country">海外</string>
+    <string name="region_selection">地域選択</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
@@ -141,7 +143,7 @@
         <item>深夜～早朝</item>
     </string-array>
 
-    <string-array name="province">
+    <string-array name="districts">
         <item>北海道</item>
         <item>青森県</item>
         <item>岩手県</item>
@@ -193,6 +195,7 @@
 
     <string-array name="type">
         <item>清楚</item>
+
         <item>おっとり系</item>
         <item>ロリ系</item>
         <item>癒し系</item>
@@ -205,5 +208,16 @@
         <item>妹系</item>
         <item>女王様系</item>
         <item>ヒミツ</item>
+    </string-array>
+
+    <string-array name="cities">
+        <item>東北</item>
+        <item>関東</item>
+        <item>中部</item>
+        <item>近畿</item>
+        <item>中国</item>
+        <item>四国</item>
+        <item>九州</item>
+        <item>海外</item>
     </string-array>
 </resources>

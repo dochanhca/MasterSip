@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_10"
+    android:layout_marginTop="@dimen/margin_25"
+    android:background="@color/color_gray_bg"
+    android:orientation="horizontal">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/tohoku"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/text_size_15" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_15">
+
+        <ImageView
+            android:id="@+id/btn_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_img_primary_dark_x_small" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_button_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/select_all" />
+    </FrameLayout>
+</LinearLayout>
