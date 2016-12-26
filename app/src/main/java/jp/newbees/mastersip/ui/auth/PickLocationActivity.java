@@ -120,7 +120,6 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
             }
             isRequireGPS = false;
             checkLocationProviderAndOpenSettingIfNot();
-
         }
     }
 
@@ -207,7 +206,12 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-                getProvincePresenter.getProvince(likelyPlaces.get(0).getPlace().getLatLng());
+                if (likelyPlaces.getCount() > 0) {
+                    getProvincePresenter.getProvince(likelyPlaces.get(0).getPlace().getLatLng());
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.err_cant_get_location)
+                            , Toast.LENGTH_SHORT).show();
+                }
 
                 likelyPlaces.release();
             }

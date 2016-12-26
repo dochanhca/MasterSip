@@ -132,10 +132,11 @@ public final class Constant {
         public static final int INVALID_TOKEN = 9999;
         public static final int NO_NETWORK = 50;
         public static final int REQUEST_TIME_OUT = -2102;
+        public static final int SC_INTERNAL_SERVER_ERROR = 500;
     }
 
     public final class Application {
-        public static final boolean DEBUG = true;
+        public static final boolean DEBUG = false;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";

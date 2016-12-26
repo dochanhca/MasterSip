@@ -62,6 +62,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     @Override
     protected void initViews(Bundle savedInstanceState) {
 
+
         btnTerm = (Button) findViewById(R.id.btn_term_of_services);
         btnPolicy = (Button) findViewById(R.id.btn_policy);
         imgAccepPolicy = (ImageView) findViewById(R.id.img_accep_policy);
@@ -82,15 +83,15 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        handleRegisterException();
-
-        registerPresenter = new RegisterPresenter(this.getApplicationContext(),this);
         genders = getResources().getStringArray(R.array.array_gender);
+        registerPresenter = new RegisterPresenter(this.getApplicationContext(), this);
 
         calendar = Calendar.getInstance();
         currentDate = calendar.getTime();
         calendar.add(Calendar.YEAR, -(Constant.Application.MIN_AGE + 1)); // to get previous year add -MIN_AGE + 1
         defaultDate = calendar.getTime();
+
+        handleRegisterException();
     }
 
     @Override
@@ -113,6 +114,14 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getUserItem() != null) {
+            fillData(getUserItem());
         }
     }
 
@@ -234,7 +243,29 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
         UserItem userItem = getUserItem();
 
-        gotoRegisterProfileActivity(userItem);
+        if (userItem.getGender() == UserItem.FEMALE) {
+            Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
+            startActivity(intent);
+        } else {
+            // set DoB
+            fillData(userItem);
+        }
+    }
+
+    private void fillData(UserItem userItem) {
+        gender = (userItem.getGender() == UserItem.MALE) ? 0 : 1;
+        txtGender.setText(genders[gender]);
+        try {
+            defaultDate = DateTimeUtils.ENGLISH_DATE_FORMAT.parse(userItem.getDateOfBirth());
+            mDOB = DateTimeUtils.JAPAN_DATE_FORMAT.format(defaultDate);
+            dateSendToServer = DateTimeUtils.ENGLISH_DATE_FORMAT.format(defaultDate);
+            txtDOB.setText(mDOB);
+
+            myAge = DateTimeUtils.subtractDateToYear(defaultDate, currentDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void gotoRegisterProfileActivity(UserItem userItem) {
@@ -253,8 +284,10 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         gotoRegisterProfileActivity(userItem);
 
     }
+
     @Override
     public void onRegisterFailure(int errorCode, String errorMessage) {
         disMissLoading();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 }

@@ -1,10 +1,12 @@
 package jp.newbees.mastersip.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,11 +23,13 @@ public class InputActivity extends BaseActivity {
 
     public static final String TITLE = "TITLE";
     public static final String INPUT_DATA = "INPUT_DATA";
-
+    public static final String TEXT_CONTENT = "TEXT CONTENT";
     public static final int INPUT_ACTIVITY_REQUEST_CODE = 11;
+
 
     private EditText edtData;
     private String title;
+    private String textContent;
     private ViewGroup rootView;
 
     private boolean isKeyboardShowing = false;
@@ -40,16 +44,19 @@ public class InputActivity extends BaseActivity {
         edtData = (EditText) findViewById(R.id.edt_data);
 
         title = getIntent().getStringExtra(TITLE);
+        textContent = getIntent().getStringExtra(TEXT_CONTENT);
 
         txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
         imgBack = (ImageView) findViewById(R.id.img_back);
         rootView = (ViewGroup) findViewById(R.id.root_view);
 
         txtActionBarTitle.setText(title);
+        edtData.setText(textContent);
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideSoftwareKeyboard();
                 putDataBack();
             }
         });
@@ -71,5 +78,13 @@ public class InputActivity extends BaseActivity {
         intent.putExtra(INPUT_DATA, inputData);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void hideSoftwareKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

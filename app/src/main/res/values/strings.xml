@@ -67,6 +67,13 @@
     <string name="filter_all">全て表示</string>
     <string name="search_condition">検索条件</string>
     <string name="call_phone">通話設定</string>
+    <string name="err_pls_select_area">地域を選択してください</string>
+    <string name="err_no_network">No network connection</string>
+    <string name="err_invalid_token">Invalid token</string>
+    <string name="err_request_time_out">Request time out</string>
+    <string name="err_unknow">Unknow Error</string>
+    <string name="err_cant_get_location">Get Your location failed. Please try again</string>
+    <string name="err_server_error">Interner server error</string>
 
     <string-array name="array_gender">
         <item>男性</item>
