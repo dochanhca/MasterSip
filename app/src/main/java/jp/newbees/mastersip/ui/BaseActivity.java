@@ -5,19 +5,22 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.dialog.DialogLoading;
+import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.MyContextWrapper;
+import jp.newbees.mastersip.utils.ToastExceptionVolleyHelper;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -27,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static boolean mIsDialogShowing;
     private boolean mInterrupted;
-    private DialogLoading dialogLoadingData;
+    private LoadingDialog loadingDialogData;
     private boolean isActivityPaused;
     private String mCurrentContentLoading;
 
@@ -108,20 +111,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             mInterrupted = true;
         } else {
             mInterrupted = false;
-            dialogLoadingData = new DialogLoading();
+            loadingDialogData = new LoadingDialog();
             Bundle bundle = new Bundle();
-            bundle.putString(DialogLoading.CONTENT_DIALOG, mCurrentContentLoading);
-            dialogLoadingData.setArguments(bundle);
-            dialogLoadingData.show(getFragmentManager(), "DialogLoadingData");
+            bundle.putString(LoadingDialog.CONTENT_DIALOG, mCurrentContentLoading);
+            loadingDialogData.setArguments(bundle);
+            loadingDialogData.show(getFragmentManager(), "DialogLoadingData");
         }
     }
 
     public final void disMissLoading() {
         mInterrupted = false;
         mIsDialogShowing = false;
-        if (null != dialogLoadingData) {
-            dialogLoadingData.dismissDialog();
-            dialogLoadingData = null;
+        if (null != loadingDialogData) {
+            loadingDialogData.dismissDialog();
+            loadingDialogData = null;
         }
     }
 
@@ -174,6 +177,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             setupSharePreference();
         }
         return editor;
+    }
+
+    protected void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
+        ToastExceptionVolleyHelper toastExceptionVolleyHelper = new ToastExceptionVolleyHelper(context, errorCode, errorMessage);
+        if (!toastExceptionVolleyHelper.showCommonError()) {
+            Toast.makeText(context, R.string.err_unknow, Toast.LENGTH_SHORT).show();
+        }
+        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
     }
 
     protected boolean checkUserLogin() {

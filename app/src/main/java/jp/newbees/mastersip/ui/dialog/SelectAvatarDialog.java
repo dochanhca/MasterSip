@@ -135,10 +135,10 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
      */
     private void checkCameraPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                && (checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                || checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)) {
 
             requestPermissions(new String[]{Manifest.permission.CAMERA
                             , Manifest.permission.WRITE_EXTERNAL_STORAGE},
