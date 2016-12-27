@@ -111,7 +111,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
         public Fragment getItem(int position) {
             switch (position) {
                 case SEARCH_FRAGMENT:
-                    return SearchFragment.newInstance();
+                    return FilterLocationFragment.newInstance();
                 case CHAT_GROUP_FRAGMENT:
                     return ChatGroupFragment.newInstance();
                 case FOOT_PRINT_FRAGMENT:

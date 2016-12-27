@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.filter;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +21,8 @@ import jp.newbees.mastersip.ui.BaseFragment;
  * Created by vietbq on 12/6/16.
  */
 
-public class FilterLocationFragment extends BaseFragment {
+public class FilterLocationFragment extends BaseFragment implements
+        LocationAdapter.OnLocationAdapterClick, View.OnClickListener {
 
     private RecyclerView recyclerLocation;
     private ImageView imgBack;
@@ -28,6 +30,13 @@ public class FilterLocationFragment extends BaseFragment {
 
     private List<LocationItem> locationItems;
     private LocationAdapter locationAdapter;
+
+    public static Fragment newInstance() {
+        Fragment fragment = new FilterLocationFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected int layoutId() {
@@ -40,12 +49,36 @@ public class FilterLocationFragment extends BaseFragment {
         imgBack = (ImageView) mRoot.findViewById(R.id.img_back);
         btnUnCheckAll = (ImageView) mRoot.findViewById(R.id.btn_un_check_all);
 
+        btnUnCheckAll.setOnClickListener(this);
+        imgBack.setOnClickListener(this);
+
         setFragmentTitle(getString(R.string.region_selection));
 
         initLocationItem();
         initRecyclerLocation();
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == btnUnCheckAll) {
+            unCheckAllArea();
+        }
+
+        if (view == imgBack) {
+            putDataBack();
+        }
+    }
+
+    private void putDataBack() {
+
+    }
+
+    private void unCheckAllArea() {
+        for (LocationItem locationItem : locationItems) {
+            locationItem.setChecked(false);
+        }
+        locationAdapter.notifyDataSetChanged();
+    }
 
     private void initLocationItem() {
 
@@ -146,10 +179,22 @@ public class FilterLocationFragment extends BaseFragment {
 
     private void initRecyclerLocation() {
         locationAdapter = new LocationAdapter(getActivity().getApplicationContext(), locationItems);
+        locationAdapter.setOnLocationAdapterClick(this);
+
         recyclerLocation.setAdapter(locationAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerLocation.setLayoutManager(mLayoutManager);
         recyclerLocation.setItemAnimator(new DefaultItemAnimator());
         recyclerLocation.setNestedScrollingEnabled(false);
+    }
+
+    @Override
+    public void onSelectAllClick(int id) {
+        for (LocationItem item : locationItems) {
+            if (item.getParentId() == id) {
+                item.setChecked(true);
+            }
+        }
+        locationAdapter.notifyDataSetChanged();
     }
 }

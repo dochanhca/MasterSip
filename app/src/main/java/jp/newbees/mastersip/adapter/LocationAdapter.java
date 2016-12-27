@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +25,8 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private LayoutInflater inflater;
     private List<LocationItem> locationItems;
 
-    interface OnLocationAdapterClick {
+    public interface OnLocationAdapterClick {
         void onSelectAllClick(int id);
-
-        void onSelectClick(int id);
     }
 
     private OnLocationAdapterClick onLocationAdapterClick;
@@ -47,18 +46,37 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == LocationItem.CHILD) {
             View view = LayoutInflater.from(context).inflate(R.layout.item_child_location, parent, false);
 
-            ChildViewHolder viewHolder = new ChildViewHolder(context, view);
+            final ChildViewHolder viewHolder = new ChildViewHolder(context, view);
+
+            viewHolder.cbSelectArea.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    LocationItem locationItem = locationItems.get(viewHolder.getAdapterPosition());
+                    locationItem.setChecked(isChecked);
+                }
+            });
 
             return viewHolder;
-
-//            setupClickableViews(view, viewHolder, viewType);
+//
         } else {
             View view = LayoutInflater.from(context).inflate(R.layout.item_parent_location, parent, false);
 
             ParentViewHolder viewHolder = new ParentViewHolder(context, view);
 
+            setupClickableViews(viewHolder);
+
             return viewHolder;
         }
+    }
+
+    private void setupClickableViews(final ParentViewHolder viewHolder) {
+        viewHolder.btnSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocationItem locationItem = locationItems.get(viewHolder.getAdapterPosition());
+                onLocationAdapterClick.onSelectAllClick(locationItem.getSelectionItem().getId());
+            }
+        });
     }
 
     @Override
@@ -102,7 +120,11 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void bindChildView(LocationItem locationItem, int position, int itemSize) {
             txtDistrictName.setText(locationItem.getSelectionItem().getTitle());
+            cbSelectArea.setChecked(locationItem.isChecked());
 
+            /**
+             * Add corner for some rows
+             */
             if (position == 0 || position == itemSize - 1) {
                 parentView.setBackground(context.getResources().getDrawable(R.drawable.bg_corner_layout));
             } else if (position == LocationItem.START_CHINA || position == LocationItem.START_KINKI
