@@ -27,6 +27,8 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public interface OnLocationAdapterClick {
         void onSelectAllClick(int id);
+
+        void onSelectItemClick(int position, boolean isChecked);
     }
 
     private OnLocationAdapterClick onLocationAdapterClick;
@@ -37,29 +39,28 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public LocationAdapter(Context context, List<LocationItem> locationItems) {
         this.context = context;
-        this.inflater = LayoutInflater.from(context);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.locationItems = locationItems;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == LocationItem.CHILD) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_child_location, parent, false);
+            View view = inflater.inflate(R.layout.item_child_location, parent, false);
 
             final ChildViewHolder viewHolder = new ChildViewHolder(context, view);
 
             viewHolder.cbSelectArea.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    LocationItem locationItem = locationItems.get(viewHolder.getAdapterPosition());
-                    locationItem.setChecked(isChecked);
+                    int position = viewHolder.getAdapterPosition();
+                    onLocationAdapterClick.onSelectItemClick(position, isChecked);
                 }
             });
 
             return viewHolder;
-//
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_parent_location, parent, false);
+            View view = inflater.inflate(R.layout.item_parent_location, parent, false);
 
             ParentViewHolder viewHolder = new ParentViewHolder(context, view);
 

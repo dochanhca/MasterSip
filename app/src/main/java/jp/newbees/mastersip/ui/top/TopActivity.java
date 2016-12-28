@@ -6,17 +6,24 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.model.FilterItem;
+import jp.newbees.mastersip.model.LocationItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.filter.FilterFragment;
 import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -93,6 +100,11 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void didFilterData(ArrayList<UserItem> userItems) {
 
     }
@@ -111,7 +123,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
         public Fragment getItem(int position) {
             switch (position) {
                 case SEARCH_FRAGMENT:
-                    return FilterLocationFragment.newInstance();
+                    return SearchContainerFragment.newInstance();
                 case CHAT_GROUP_FRAGMENT:
                     return ChatGroupFragment.newInstance();
                 case FOOT_PRINT_FRAGMENT:

@@ -2,12 +2,13 @@ package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.filter.FilterFragment;
+import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 
 /**
  * Created by ducpv on 12/27/16.
@@ -15,8 +16,8 @@ import jp.newbees.mastersip.ui.BaseFragment;
 
 public class SearchContainerFragment extends BaseFragment {
 
-    public static Fragment newInstance() {
-        Fragment fragment = new SearchContainerFragment();
+    public static SearchContainerFragment newInstance() {
+        SearchContainerFragment fragment = new SearchContainerFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -39,8 +40,8 @@ public class SearchContainerFragment extends BaseFragment {
     }
 
     private void showSearchFragment() {
-        Fragment searchFragment = SearchFragment.newInstance();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_search_container, searchFragment).commit();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_search_container, SearchFragment.newInstance(),
+                SearchFragment.class.getName()).commit();
     }
 }
