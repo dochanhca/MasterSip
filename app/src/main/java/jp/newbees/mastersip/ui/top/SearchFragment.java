@@ -1,7 +1,7 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -13,10 +13,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.presenter.top.SearchPresenter;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
+import jp.newbees.mastersip.presenter.top.SearchPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.filter.FilterFragment;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -49,6 +50,7 @@ public class SearchFragment extends BaseFragment {
 
 
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
+
     @Override
     protected int layoutId() {
         return R.layout.search_fragment;
@@ -63,17 +65,23 @@ public class SearchFragment extends BaseFragment {
         initFilterMode();
     }
 
-    public static Fragment newInstance() {
-        Fragment fragment = new SearchFragment();
+    public static SearchFragment newInstance() {
+        SearchFragment fragment = new SearchFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    @OnClick(R.id.img_filter)
-    public void onClick() {
-        changeMode();
-
+    @OnClick({R.id.img_filter, R.id.header_search})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_filter:
+                changeMode();
+                break;
+            case R.id.header_search:
+                showFilterFragment();
+                break;
+        }
     }
 
     private void changeMode() {
@@ -98,5 +106,14 @@ public class SearchFragment extends BaseFragment {
         FILTER_MODE_INDEXS.put(MODE_FOUR_COLUMN, MODE_TWO_COLUMN);
         FILTER_MODE_INDEXS.put(MODE_TWO_COLUMN, MODE_LIST);
         FILTER_MODE_INDEXS.put(MODE_LIST, MODE_FOUR_COLUMN);
+    }
+
+    private void showFilterFragment() {
+        FilterFragment filterFragment = FilterFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_search_container, filterFragment,
+                FilterFragment.class.getName()).commit();
     }
 }

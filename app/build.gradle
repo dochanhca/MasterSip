@@ -82,5 +82,6 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
     compile project(':rippleview')
     compile 'com.pnikosis:materialish-progress:1.7'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
 

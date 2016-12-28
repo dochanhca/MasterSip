@@ -45,7 +45,7 @@
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_age"
-                    style="@style/style_content_text_view_small"
+                    style="@style/style_content_text_view_small_single_line"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/margin_50"
                     android:text="@string/i_do_not_care" />
@@ -63,6 +63,7 @@
                 style="@style/style_layout_text_field_common">
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_area_title"
                     style="@style/style_title_text_view_small"
                     android:text="@string/area" />
 
@@ -73,7 +74,9 @@
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_area"
-                    style="@style/style_content_text_view_small"
+                    style="@style/style_content_text_view_small_single_line"
+                    android:layout_toRightOf="@+id/txt_area_title"
+                    android:layout_marginLeft="@dimen/margin_20"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/margin_50"
                     android:text="@string/do_not_care" />
@@ -173,7 +176,6 @@
                 android:text="@string/search_by_name"
                 android:textSize="@dimen/text_size_15" />
         </FrameLayout>
-
     </LinearLayout>
 
 </LinearLayout>
