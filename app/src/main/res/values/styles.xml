@@ -97,6 +97,7 @@
     <style name="style_button_normal" parent="style_button_common">
         <item name="android:textSize">@dimen/text_size_15</item>
     </style>
+
     <style name="style_button_small" parent="style_button_common">
         <item name="android:textSize">@dimen/text_size_13</item>
     </style>
@@ -111,4 +112,44 @@
         <item name="android:textSize">@dimen/text_size_15</item>
     </style>
 
+    <style name="origin_style_content_text_view">
+        <item name="android:textSize">@dimen/text_size_17</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="origin_style_content_text_view_with_padding_LR" parent="origin_style_content_text_view">
+        <item name="android:paddingLeft">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
+    </style>
+
+    <style name="origin_style_content_text_view_small">
+        <item name="android:textSize">@dimen/text_size_15</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="origin_style_content_text_view_small_with_padding_LR" parent="origin_style_content_text_view_small">
+        <item name="android:paddingLeft">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
+    </style>
+
+    <style name="origin_style_title_text_view_small">
+        <item name="android:textSize">@dimen/text_size_15</item>
+        <item name="android:textColor">@color/text_color_gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="origin_style_title_text_view_small_padding_LR" parent="origin_style_title_text_view_small">
+        <item name="android:paddingLeft">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
+    </style>
+
+    <style name="origin_style_content_text_view_tiny" parent="origin_style_content_text_view_small">
+        <item name="android:textSize">@dimen/text_size_small</item>
+
+    </style>
 </resources>

@@ -43,4 +43,12 @@
     <dimen name="radio_button_stroke_border">1dp</dimen>
     <dimen name="header_search_height">36dp</dimen>
     <dimen name="action_filter_search_width">93dp</dimen>
+    <dimen name="item_user_size_mode_four">80dp</dimen>
+    <dimen name="corner_item_search_user">10dp</dimen>
+    <dimen name="size_avatar_mode_two">200dp</dimen>
+    <dimen name="height_about_mode_two">40dp</dimen>
+    <dimen name="size_avatar_mode_list">70dp</dimen>
+    <dimen name="item_offset_mode_four">7dp</dimen>
+    <dimen name="item_offset_mode_two">20dp</dimen>
+    <dimen name="_15dp">15dp</dimen>
 </resources>

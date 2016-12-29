@@ -2,33 +2,49 @@ package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.presenter.top.SearchPresenter;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.top.SearchPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.utils.GridSpacingItemDecoration;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Mockup;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class SearchFragment extends BaseFragment {
+public class SearchFragment extends BaseFragment implements SearchPresenter.SearchView {
+    @BindView(R.id.recycler_user)
+    RecyclerView recyclerUser;
     private SearchPresenter presenter;
-    private static final int MODE_FOUR_COLUMN = 0;
-    private static final int MODE_TWO_COLUMN = 1;
-    private static final int MODE_LIST = 2;
+    private static final int MODE_FOUR_COLUMN = 4;
+    private static final int MODE_TWO_COLUMN = 2;
+    private static final int MODE_LIST = 0;
+    private int currentFilterMode = MODE_FOUR_COLUMN;
 
-    private int currentFilterMode;
+    private AdapterSearchUserModeFour adapterSearchUserModeFour;
+    private AdapterSearchUserModeTwo adapterSearchUserModeTwo;
+    private AdapterSearUserModeList adapterSearUserModeList;
+
+        private ArrayList<UserItem> userItems = Mockup.getUserItems();
+//    private ArrayList<UserItem> userItems = new ArrayList<>();
 
     @BindView(R.id.txt_search)
     HiraginoTextView txtSearch;
@@ -47,8 +63,9 @@ public class SearchFragment extends BaseFragment {
     @BindView(R.id.img_filter)
     ImageView imgFilter;
 
-
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
+    private android.support.v7.widget.RecyclerView.ItemDecoration mItemDecoration;
+
     @Override
     protected int layoutId() {
         return R.layout.search_fragment;
@@ -56,11 +73,13 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        presenter = new SearchPresenter(getContext());
+        presenter = new SearchPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();
+        presenter.filterUser();
+//        changeUIContent(currentFilterMode);
     }
 
     public static Fragment newInstance() {
@@ -73,12 +92,66 @@ public class SearchFragment extends BaseFragment {
     @OnClick(R.id.img_filter)
     public void onClick() {
         changeMode();
-
     }
 
     private void changeMode() {
         setCurrentToNextFilterMode();
         changeFilterImage();
+        changeUIContent(currentFilterMode);
+    }
+
+    private void changeUIContent(int currentFilterMode) {
+        if (mItemDecoration != null) {
+            recyclerUser.removeItemDecoration(mItemDecoration);
+        }
+        switch (currentFilterMode) {
+            case MODE_FOUR_COLUMN:
+                setupListViewWithModeFour();
+                break;
+            case MODE_TWO_COLUMN:
+                setupListViewWithModeTwo();
+                break;
+            case MODE_LIST:
+                setupListViewWithModeList();
+                break;
+        }
+    }
+
+    private void setupListViewWithModeList() {
+        if (adapterSearUserModeList == null) {
+            adapterSearUserModeList = new AdapterSearUserModeList(getContext(), userItems);
+        } else {
+            adapterSearUserModeList.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerUser.setAdapter(adapterSearUserModeList);
+        mItemDecoration = null;
+    }
+
+    private void setupListViewWithModeTwo() {
+        if (adapterSearchUserModeTwo == null) {
+            adapterSearchUserModeTwo = new AdapterSearchUserModeTwo(getContext(), userItems);
+        } else {
+            adapterSearchUserModeTwo.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new GridLayoutManager(getActivity(), currentFilterMode));
+        mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_two), true);
+        recyclerUser.addItemDecoration(mItemDecoration);
+        recyclerUser.setAdapter(adapterSearchUserModeTwo);
+
+    }
+
+    private void setupListViewWithModeFour() {
+        if (adapterSearchUserModeFour == null) {
+            adapterSearchUserModeFour = new AdapterSearchUserModeFour(getContext(), userItems);
+        } else {
+            adapterSearchUserModeFour.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new GridLayoutManager(getActivity(), currentFilterMode));
+
+        mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_four), true);
+        recyclerUser.addItemDecoration(mItemDecoration);
+        recyclerUser.setAdapter(adapterSearchUserModeFour);
 
     }
 
@@ -98,5 +171,18 @@ public class SearchFragment extends BaseFragment {
         FILTER_MODE_INDEXS.put(MODE_FOUR_COLUMN, MODE_TWO_COLUMN);
         FILTER_MODE_INDEXS.put(MODE_TWO_COLUMN, MODE_LIST);
         FILTER_MODE_INDEXS.put(MODE_LIST, MODE_FOUR_COLUMN);
+    }
+
+    @Override
+    public void didFilterUser(ArrayList<UserItem> userItems) {
+        Logger.e("SearchFragment", "userItems " + userItems.size());
+        this.userItems = userItems;
+        changeUIContent(currentFilterMode);
+
+    }
+
+    @Override
+    public void didFilterUserError(int errorCode, String errorMessage) {
+
     }
 }

@@ -100,6 +100,14 @@ final public class ConfigManager {
         editor.commit();
     }
 
+    public String getRegisterToken(){
+        return sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
+    }
+
+    public String getAuthId(){
+        return sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
+    }
+
     public void saveAuthId(String authId){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.AUTHORIZATION, authId);
@@ -139,5 +147,14 @@ final public class ConfigManager {
             userItem = gson.fromJson(jUser, type);
         }
         return userItem;
+    }
+
+
+    public void saveUser(UserItem userItem) {
+        Gson gson = new Gson();
+        String jUser = gson.toJson(userItem);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.USER_ITEM, jUser);
+        editor.commit();
     }
 }

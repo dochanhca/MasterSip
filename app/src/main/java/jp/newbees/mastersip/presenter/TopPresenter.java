@@ -31,9 +31,7 @@ public class TopPresenter extends BasePresenter {
 
 
     public final void requestFilterData(FilterItem filterItem){
-        UserItem userItem = getCurrentUserItem();
-        FilterUserTask task = new FilterUserTask(context,filterItem, nextPage, userItem);
-        requestToServer(task);
+
     }
 
 

@@ -18,5 +18,7 @@
     <color name="box_value_bg">#fb5050</color>
     <color name="radio_button_selected_color">#e0e0e0</color>
     <color name="radio_button_unselected_color">#2d495e</color>
+    <color name="bg_item_search_user">#99000a00</color>
+    <color name="bg_content_search">#dfdfdf</color>
 
 </resources>
