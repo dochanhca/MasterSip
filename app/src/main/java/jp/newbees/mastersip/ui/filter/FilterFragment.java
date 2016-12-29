@@ -137,7 +137,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
                 openSelectAgeDialog();
                 break;
             case R.id.layout_sort:
-                openSelectionDialog();
+                SelectionDialog.openSelectionDialogFromFragment(this, SELECT_DIALOG, getFragmentManager(),
+                        sortCondition, getString(R.string.sort));
                 break;
             case R.id.btn_search:
                 getSearchCondition();
@@ -320,18 +321,18 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         selectMinMaxAgeDialog.show(getFragmentManager(), "SelectMinMaxAgeDialog");
     }
 
-    private void openSelectionDialog() {
-        SelectionDialog selectionDialog = new SelectionDialog();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, getString(R.string.sort));
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortCondition);
-
-        selectionDialog.setArguments(bundle);
-        selectionDialog.setTargetFragment(this, SELECT_DIALOG);
-
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
-    }
+//    private void openSelectionDialog() {
+//        SelectionDialog selectionDialog = new SelectionDialog();
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putString(SelectionDialog.DIALOG_TILE, getString(R.string.sort));
+//        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortCondition);
+//
+//        selectionDialog.setArguments(bundle);
+//        selectionDialog.setTargetFragment(this, SELECT_DIALOG);
+//
+//        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+//    }
 
     private void initAges() {
         ages.add(defaultAge);

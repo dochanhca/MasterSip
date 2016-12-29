@@ -23,10 +23,10 @@ import jp.newbees.mastersip.utils.Utils;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
- * Created by vietbq on 12/14/16.
+ * Created by ducpv on 12/29/16.
  */
 
-public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSelectionAdapterClick {
+public class SelectDialogForFragment extends BaseDialog implements SelectionAdapter.OnSelectionAdapterClick {
 
     private static final String TAG = "SelectionDialog";
     private static final String LIST_SELECTION = "LIST SELECTION";
@@ -74,9 +74,9 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getTargetFragment() != null) {
+        if (mode == FROM_FRAGMENT) {
             try {
-                this.onSelectionDialogClick = (OnSelectionDialogClick) getTargetFragment();
+                this.onSelectionDialogClick = (SelectionDialog.OnSelectionDialogClick) getTargetFragment();
             } catch (ClassCastException e) {
                 throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
             }
@@ -116,9 +116,10 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (getTargetFragment() == null) {
+        if (mode == FROM_ACTIVITY) {
+
             try {
-                this.onSelectionDialogClick = (OnSelectionDialogClick) context;
+                this.onSelectionDialogClick = (SelectionDialog.OnSelectionDialogClick) context;
             } catch (ClassCastException e) {
                 throw new ClassCastException("Calling Activity must implement DialogClickListener interface");
             }
@@ -138,26 +139,13 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         SelectionDialog selectionDialog = new SelectionDialog();
 
         Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortConditions);
+        bundle.putString(DIALOG_TILE, title);
+        bundle.putParcelableArrayList(LIST_SELECTION, sortConditions);
         bundle.putInt(MODE, FROM_FRAGMENT);
 
         selectionDialog.setArguments(bundle);
         selectionDialog.setTargetFragment(fragment, requestCode);
 
-        selectionDialog.show(fragmentManager, "SelectionDialog");
-    }
-
-    public static void openSelectionDialogFromActivity(
-            FragmentManager fragmentManager, ArrayList<SelectionItem> selectionItems, String title) {
-        SelectionDialog selectionDialog = new SelectionDialog();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, selectionItems);
-        bundle.putInt(MODE, FROM_ACTIVITY);
-
-        selectionDialog.setArguments(bundle);
         selectionDialog.show(fragmentManager, "SelectionDialog");
     }
 }

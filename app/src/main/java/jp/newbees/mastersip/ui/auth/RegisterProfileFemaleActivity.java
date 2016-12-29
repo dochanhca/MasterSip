@@ -309,7 +309,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
         } else if (provinceItem == null) {
             showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
-        } else  {
+        } else {
             isDataValid = true;
         }
 
@@ -353,14 +353,9 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     }
 
     private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
-        SelectionDialog selectionDialog = new SelectionDialog();
 
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
-
-        selectionDialog.setArguments(bundle);
-        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
+        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                data, title);
     }
 
     private void goToInputDataActivity(String title, String textContent) {
