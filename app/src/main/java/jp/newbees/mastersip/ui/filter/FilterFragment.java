@@ -14,9 +14,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.eventbus.FilterUserEvent;
 import jp.newbees.mastersip.eventbus.SelectLocationEvent;
 import jp.newbees.mastersip.model.AgeItem;
 import jp.newbees.mastersip.model.FilterItem;
@@ -65,6 +65,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private ArrayList<SelectionItem> sortCondition;
     private SelectionItem orderBy;
 
+    private ConfigManager configManager;
+
 
     public static FilterFragment newInstance() {
         FilterFragment fragment = new FilterFragment();
@@ -102,7 +104,19 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void initData() {
-        filterItem = ConfigManager.getInstance().getFilterUser();
+        configManager = ConfigManager.getInstance();
+
+        filterItem = configManager.getFilterUser();
+
+        minAge = new AgeItem(new SelectionItem(filterItem.getMinAge(), filterItem.getMinAge() + ""), false);
+        maxAge = new AgeItem(new SelectionItem(filterItem.getMaxAge(), filterItem.getMaxAge() + ""), false);
+        cb24h.setChecked(filterItem.isLogin24hours());
+        selectedItems = filterItem.getLocations();
+
+        updateAgeTextView();
+        updateArea(selectedItems);
+        orderBy = filterItem.getOrderBy();
+        txtSort.setText(orderBy.getTitle());
 
         defaultAge = new AgeItem(new SelectionItem(-1, getString(R.string.do_not_care)), false);
         sortCondition = new ArrayList<>();
@@ -171,18 +185,22 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
      */
     @Subscribe(sticky = true)
     public void onSelectLocationEvent(SelectLocationEvent event) {
-        Logger.e(TAG, "on Event bus receive");
+        Logger.e(TAG, "onSelectLocationEvent receive: " + event.getLocationItems().size());
 
         selectedItems = new ArrayList<>();
         selectedItems.addAll(event.getLocationItems());
-        updateArea(event.getLocationItems());
+        updateArea(selectedItems);
     }
 
     public void updateArea(ArrayList<LocationItem> selectedItems) {
-//        ArrayList<LocationItem> temps = new ArrayList<>();
+        ArrayList<LocationItem> temps = new ArrayList<>();
+        for (LocationItem item : selectedItems) {
+            temps.add(item.clone());
+        }
+
         cities = getResources().getStringArray(R.array.cities);
 
-        for (LocationItem item : selectedItems) {
+        for (LocationItem item : temps) {
             if (item.getParentId() == LocationItem.NORTHEAST) {
                 northeast++;
             } else if (item.getParentId() == LocationItem.KANTO) {
@@ -201,34 +219,34 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         }
 
         if (northeast == LocationItem.NORTHEAST_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.NORTHEAST);
+            grossLocations(temps, LocationItem.NORTHEAST);
         }
 
         if (kanto == LocationItem.KANTO_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KANTO);
+            grossLocations(temps, LocationItem.KANTO);
         }
 
         if (middle == LocationItem.MIDDLE_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.MIDDLE);
+            grossLocations(temps, LocationItem.MIDDLE);
         }
 
         if (kinki == LocationItem.KINKI_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KINKI);
+            grossLocations(temps, LocationItem.KINKI);
         }
 
         if (china == LocationItem.CHINA_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.CHINA);
+            grossLocations(temps, LocationItem.CHINA);
         }
 
         if (shikoku == LocationItem.SHIKOKU_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.SHIKOKU);
+            grossLocations(temps, LocationItem.SHIKOKU);
         }
 
         if (kyushu == LocationItem.KYUSHU_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KYUSHU);
+            grossLocations(temps, LocationItem.KYUSHU);
         }
 
-        showAreaToTextview(selectedItems);
+        showAreaToTextview(temps);
     }
 
 
@@ -335,5 +353,9 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         filterItem.setMaxAge(maxAge.getSelectionItem().getId());
         filterItem.setOrderBy(orderBy);
         filterItem.setLocations(selectedItems);
+
+        configManager.saveFilterSetting(filterItem);
+        EventBus.getDefault().postSticky(new FilterUserEvent(true));
+        getFragmentManager().popBackStack();
     }
 }

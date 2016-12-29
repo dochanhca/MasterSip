@@ -2,11 +2,18 @@ package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -15,22 +22,24 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
+import jp.newbees.mastersip.eventbus.FilterUserEvent;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.SearchPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.filter.FilterFragment;
+import jp.newbees.mastersip.utils.GridSpacingItemDecoration;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Mockup;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class SearchFragment extends BaseFragment {
-    private SearchPresenter presenter;
-    private static final int MODE_FOUR_COLUMN = 0;
-    private static final int MODE_TWO_COLUMN = 1;
-    private static final int MODE_LIST = 2;
+public class SearchFragment extends BaseFragment implements SearchPresenter.SearchView {
 
-    private int currentFilterMode;
-
+    @BindView(R.id.recycler_user)
+    RecyclerView recyclerUser;
     @BindView(R.id.txt_search)
     HiraginoTextView txtSearch;
     @BindView(R.id.txt_phone)
@@ -48,8 +57,23 @@ public class SearchFragment extends BaseFragment {
     @BindView(R.id.img_filter)
     ImageView imgFilter;
 
+    public final String TAG = getClass().getSimpleName();
+
+    private SearchPresenter presenter;
+    private static final int MODE_FOUR_COLUMN = 4;
+    private static final int MODE_TWO_COLUMN = 2;
+    private static final int MODE_LIST = 0;
+    private int currentFilterMode = MODE_FOUR_COLUMN;
+
+    private AdapterSearchUserModeFour adapterSearchUserModeFour;
+    private AdapterSearchUserModeTwo adapterSearchUserModeTwo;
+    private AdapterSearUserModeList adapterSearUserModeList;
+
+    private ArrayList<UserItem> userItems = Mockup.getUserItems();
+//    private ArrayList<UserItem> userItems = new ArrayList<>();
 
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
+    private android.support.v7.widget.RecyclerView.ItemDecoration mItemDecoration;
 
     @Override
     protected int layoutId() {
@@ -58,11 +82,13 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        presenter = new SearchPresenter(getContext());
+        presenter = new SearchPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();
+        ((BaseActivity) getActivity()).showLoading();
+        presenter.filterUser();
     }
 
     public static SearchFragment newInstance() {
@@ -84,9 +110,87 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = true)
+    public void onFilterUserEvent(FilterUserEvent event) {
+        Logger.e(TAG, "onFilterUserEvent receive");
+
+        if (event.isNeedFilter()) {
+            ((BaseActivity) getActivity()).showLoading();
+            presenter.filterUser();
+        }
+
+    }
+
     private void changeMode() {
         setCurrentToNextFilterMode();
         changeFilterImage();
+        changeUIContent(currentFilterMode);
+    }
+
+    private void changeUIContent(int currentFilterMode) {
+        if (mItemDecoration != null) {
+            recyclerUser.removeItemDecoration(mItemDecoration);
+        }
+        switch (currentFilterMode) {
+            case MODE_FOUR_COLUMN:
+                setupListViewWithModeFour();
+                break;
+            case MODE_TWO_COLUMN:
+                setupListViewWithModeTwo();
+                break;
+            case MODE_LIST:
+                setupListViewWithModeList();
+                break;
+        }
+    }
+
+    private void setupListViewWithModeList() {
+        if (adapterSearUserModeList == null) {
+            adapterSearUserModeList = new AdapterSearUserModeList(getContext(), userItems);
+        } else {
+            adapterSearUserModeList.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerUser.setAdapter(adapterSearUserModeList);
+        mItemDecoration = null;
+    }
+
+    private void setupListViewWithModeTwo() {
+        if (adapterSearchUserModeTwo == null) {
+            adapterSearchUserModeTwo = new AdapterSearchUserModeTwo(getContext(), userItems);
+        } else {
+            adapterSearchUserModeTwo.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new GridLayoutManager(getActivity(), currentFilterMode));
+        mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_two), true);
+        recyclerUser.addItemDecoration(mItemDecoration);
+        recyclerUser.setAdapter(adapterSearchUserModeTwo);
+
+    }
+
+    private void setupListViewWithModeFour() {
+        if (adapterSearchUserModeFour == null) {
+            adapterSearchUserModeFour = new AdapterSearchUserModeFour(getContext(), userItems);
+        } else {
+            adapterSearchUserModeFour.addAll(userItems);
+        }
+        recyclerUser.setLayoutManager(new GridLayoutManager(getActivity(), currentFilterMode));
+
+        mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_four), true);
+        recyclerUser.addItemDecoration(mItemDecoration);
+        recyclerUser.setAdapter(adapterSearchUserModeFour);
 
     }
 
@@ -115,5 +219,20 @@ public class SearchFragment extends BaseFragment {
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, filterFragment,
                 FilterFragment.class.getName()).commit();
+    }
+
+    @Override
+    public void didFilterUser(ArrayList<UserItem> userItems) {
+        Logger.e("SearchFragment", "userItems " + userItems.size());
+        this.userItems = userItems;
+        changeUIContent(currentFilterMode);
+        ((BaseActivity) getActivity()).disMissLoading();
+    }
+
+    @Override
+    public void didFilterUserError(int errorCode, String errorMessage) {
+        ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
+                errorCode, errorMessage);
+        ((BaseActivity) getActivity()).disMissLoading();
     }
 }

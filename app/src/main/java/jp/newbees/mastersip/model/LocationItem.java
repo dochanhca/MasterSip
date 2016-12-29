@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by ducpv on 12/23/16.
  */
 
-public class LocationItem implements Parcelable {
+public class LocationItem implements Parcelable, Cloneable {
 
     public static final int PARENT = 0;
     public static final int CHILD = 1;
@@ -144,5 +144,16 @@ public class LocationItem implements Parcelable {
     @Override
     public int hashCode() {
         return selectionItem.hashCode();
+    }
+
+    @Override
+    public LocationItem clone() {
+        LocationItem clone = null;
+        try {
+            clone = (LocationItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e); // won't happen
+        }
+        return clone;
     }
 }

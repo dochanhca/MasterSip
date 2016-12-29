@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static boolean mIsDialogShowing;
     private boolean mInterrupted;
-    private LoadingDialog loadingDialogData;
+    private LoadingDialog loadingDialog;
     private boolean isActivityPaused;
     private String mCurrentContentLoading;
 
@@ -75,6 +74,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        isActivityPaused = true;
+        if (null != loadingDialog && mIsDialogShowing) {
+            mInterrupted = true;
+            loadingDialog.dismissDialog();
+            loadingDialog = null;
+        }
     }
 
     protected abstract int layoutId();
@@ -111,20 +117,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             mInterrupted = true;
         } else {
             mInterrupted = false;
-            loadingDialogData = new LoadingDialog();
+            loadingDialog = new LoadingDialog();
             Bundle bundle = new Bundle();
             bundle.putString(LoadingDialog.CONTENT_DIALOG, mCurrentContentLoading);
-            loadingDialogData.setArguments(bundle);
-            loadingDialogData.show(getSupportFragmentManager(), "DialogLoadingData");
+            loadingDialog.setArguments(bundle);
+            loadingDialog.show(getSupportFragmentManager(), "DialogLoadingData");
         }
     }
 
     public final void disMissLoading() {
         mInterrupted = false;
         mIsDialogShowing = false;
-        if (null != loadingDialogData) {
-            loadingDialogData.dismissDialog();
-            loadingDialogData = null;
+        if (null != loadingDialog) {
+            loadingDialog.dismissDialog();
+            loadingDialog = null;
         }
     }
 
@@ -179,7 +185,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return editor;
     }
 
-    protected void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
+    public void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
         ToastExceptionVolleyHelper toastExceptionVolleyHelper = new ToastExceptionVolleyHelper(context, errorCode, errorMessage);
         if (!toastExceptionVolleyHelper.showCommonError()) {
             Toast.makeText(context, R.string.err_unknow, Toast.LENGTH_SHORT).show();

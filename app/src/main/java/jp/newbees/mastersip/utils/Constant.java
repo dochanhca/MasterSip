@@ -133,6 +133,7 @@ public final class Constant {
         public static final int NO_NETWORK = 50;
         public static final int REQUEST_TIME_OUT = -2102;
         public static final int SC_INTERNAL_SERVER_ERROR = 500;
+        public static final int WRONG_ORDER_BY_CODE = 3003;
     }
 
     public final class Application {
@@ -148,6 +149,8 @@ public final class Constant {
         public static final int MIN_AGE = 18;
         public static final int MAX_AGE = 120;
         public static final String SETTING_FILTER = "SETTING_FILTER";
+        public static final int LAST_LOGIN_24HOUR = 1;
+        public static final int NEW_REGISTER = 2;
     }
 
 }

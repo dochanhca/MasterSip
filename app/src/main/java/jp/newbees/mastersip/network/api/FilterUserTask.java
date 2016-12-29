@@ -26,10 +26,10 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     public static final String NEXT_PAGE = "NEXT_PAGE";
     public static final String LIST_USER = "LIST_USER";
     private final FilterItem filterItem;
-    private final int nextPage;
+    private final String nextPage;
     private final UserItem userItem;
 
-    public FilterUserTask(Context context, FilterItem filterItem, int nextPage, UserItem userItem) {
+    public FilterUserTask(Context context, FilterItem filterItem, String nextPage, UserItem userItem) {
         super(context);
         this.filterItem = filterItem;
         this.userItem = userItem;
@@ -56,6 +56,8 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
         }
         jParams.put(Constant.JSON.kOrderBy, filterItem.getOrderBy().getId());
         jParams.put(Constant.JSON.kLogin24HourAgo, filterItem.isLogin24hours());
+        jParams.put(Constant.JSON.kOrderBy,filterItem.getOrderBy().getId());
+        jParams.put(Constant.JSON.kLogin24HourAgo,filterItem.isLogin24hours() ? 1 : 0);
         jParams.put(Constant.JSON.kFilterType, filterItem.getFilterType());
 
         return jParams;
@@ -75,8 +77,8 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.kData);
-        int nextPage = jData.getInt(Constant.JSON.kNextPage);
-        ArrayList<UserItem> userItems = JSONUtils.parseUsers(jData);
+        String nextPage = jData.getString(Constant.JSON.kNextPage);
+        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER, userItems);

@@ -86,6 +86,7 @@
     <string name="yamagata">山形</string>
     <string name="foreign_country">海外</string>
     <string name="region_selection">地域選択</string>
+    <string name="err_wrong_order_by_code">Wrong order by code</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
