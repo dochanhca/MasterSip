@@ -77,10 +77,11 @@ public class RegisterTask extends BaseTask<UserItem> {
         SipItem sipItem = new SipItem(extension,password);
         this.userItem.setSipItem(sipItem);
         this.userItem.setUserId(userId);
+
         ConfigManager.getInstance().saveRegisterToken(registerToken);
         ConfigManager.getInstance().saveAuthId(userId);
-        saveUserItem(userItem);
-
+//        saveUserItem(userItem);
+        ConfigManager.getInstance().saveUser(userItem);
         return this.userItem;
     }
 }

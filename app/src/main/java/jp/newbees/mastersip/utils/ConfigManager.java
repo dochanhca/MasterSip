@@ -33,21 +33,21 @@ final public class ConfigManager {
     private final String deviceId;
     private final SharedPreferences sharedPreferences;
 
-    public final static void initConfig(Context context) {
+    public final static void initConfig(Context context){
         if (instance == null) {
             instance = new ConfigManager(context);
         }
     }
 
-    public final static synchronized ConfigManager getInstance() {
+    public final static synchronized ConfigManager getInstance(){
         if (instance == null) {
-            Logger.e("ConfigManager", "ConfigManager Must call method initConfig first !!! ");
+            Logger.e("ConfigManager","ConfigManager Must call method initConfig first !!! ");
         }
         return instance;
     }
 
 
-    private ConfigManager(Context context) {
+    private ConfigManager(Context context){
         FacebookSdk.sdkInitialize(context);
         Constant.API.initBaseURL();
         // Instantiate the cache
@@ -76,7 +76,7 @@ final public class ConfigManager {
     /**
      * @return Device ID
      */
-    public String getDeviceId() {
+    public String getDeviceId(){
         return deviceId;
     }
 
@@ -100,7 +100,15 @@ final public class ConfigManager {
         editor.commit();
     }
 
-    public void saveAuthId(String authId) {
+    public String getRegisterToken(){
+        return sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
+    }
+
+    public String getAuthId(){
+        return sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
+    }
+
+    public void saveAuthId(String authId){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.AUTHORIZATION, authId);
         editor.commit();
@@ -139,5 +147,14 @@ final public class ConfigManager {
             userItem = gson.fromJson(jUser, type);
         }
         return userItem;
+    }
+
+
+    public void saveUser(UserItem userItem) {
+        Gson gson = new Gson();
+        String jUser = gson.toJson(userItem);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.USER_ITEM, jUser);
+        editor.commit();
     }
 }
