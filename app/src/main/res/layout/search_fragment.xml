@@ -97,12 +97,13 @@
 
         <ImageView
             android:id="@+id/img_filter"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/header_search_width"
             android:layout_height="@dimen/header_search_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin"
             android:background="@drawable/bg_white_with_large_border"
+            android:scaleType="center"
             android:paddingLeft="@dimen/normal_margin"
             android:paddingRight="@dimen/normal_margin"
             android:src="@drawable/ic_4" />

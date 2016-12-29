@@ -34,7 +34,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_content_four, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view, context);
         return viewHolder;
     }
 
@@ -42,18 +42,6 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     public void onBindViewHolder(final ViewHolder holder, int position) {
         UserItem item = datas.get(position);
         holder.txtContent.setText(item.getUsername());
-
-//        holder.imgAvatar.post(new Runnable() {
-//            @Override
-//            public void run() {
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.imgAvatar.getLayoutParams();
-        layoutParams.height = (int) getFoodGalleryImageHeight(context);
-
-        holder.imgAvatar.setLayoutParams(layoutParams);
-//        holder.imgAvatar.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutParams.width));
-//        holder.imgAvatar.invalidate();
-//            }
-//        });
 
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
                 placeholder(R.drawable.ic_boy_default).
@@ -66,22 +54,29 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         return datas.size();
     }
 
-    public static float getFoodGalleryImageHeight(Context c) {
-        float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
-                - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_four) * 5);
-        float height = screenWidth / 4;
-        return height;
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtContent;
         private ImageView imgAvatar;
 
-        public ViewHolder(View root) {
+        public ViewHolder(View root, Context context) {
             super(root);
             txtContent = (TextView) root.findViewById(R.id.txt_content);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
 
+            setImageHeight(context);
+        }
+
+        private void setImageHeight(Context context) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgAvatar.getLayoutParams();
+            layoutParams.height = (int) getAvatarHeightInModeFour(context);
+            imgAvatar.setLayoutParams(layoutParams);
+        }
+
+        private static float getAvatarHeightInModeFour(Context c) {
+            float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
+                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_four) * 5);
+            float height = screenWidth / 4;
+            return height;
         }
     }
 

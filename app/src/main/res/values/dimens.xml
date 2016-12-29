@@ -51,5 +51,6 @@
     <dimen name="item_offset_mode_four">7dp</dimen>
     <dimen name="item_offset_mode_two">20dp</dimen>
     <dimen name="_15dp">15dp</dimen>
+    <dimen name="header_search_width">50dp</dimen>
     <dimen name="margin_1">1dp</dimen>
 </resources>

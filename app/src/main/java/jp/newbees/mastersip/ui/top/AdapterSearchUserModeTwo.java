@@ -34,7 +34,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.search_user_content_mode_two, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view, context);
         return viewHolder;
     }
 
@@ -44,34 +44,11 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
         holder.txtContent.setText(item.getUsername());
         holder.txtAbout.setText(item.getMemo());
 
-//        holder.imgAvatar.post(new Runnable() {
-//            @Override
-//            public void run() {
-////                int size = holder.imgAvatar.getMeasuredWidth();
-//                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.imgAvatar.getLayoutParams();
-//                layoutParams.height = layoutParams.width;
-//                holder.imgAvatar.setLayoutParams(layoutParams);
-////                holder.imgAvatar.invalidate();
-//            }
-//        });
-
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.imgAvatar.getLayoutParams();
-        layoutParams.height = (int) getFoodGalleryImageHeight(context);
-//        layoutParams.height = layoutParams.width;
-        holder.imgAvatar.setLayoutParams(layoutParams);
-
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
                 placeholder(R.drawable.ic_boy_default).
                 error(R.drawable.ic_boy_default).into(holder.imgAvatar);
     }
 
-
-    public static float getFoodGalleryImageHeight(Context c) {
-        float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
-                - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_two) * 3);
-        float height = screenWidth / 2;
-        return height;
-    }
 
     @Override
     public int getItemCount() {
@@ -84,12 +61,27 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
         ImageView imgActionTop;
         TextView txtAbout;
 
-        public ViewHolder(View root) {
+        public ViewHolder(View root, Context context) {
             super(root);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
             txtAbout = (TextView) root.findViewById(R.id.txt_about);
             txtContent = (TextView) root.findViewById(R.id.txt_content);
+
+            setImageHeight(context);
+        }
+
+        private void setImageHeight(Context context) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imgAvatar.getLayoutParams();
+            layoutParams.height = (int) getAvatarHeightInModeTwo(context);
+            imgAvatar.setLayoutParams(layoutParams);
+        }
+
+        public static float getAvatarHeightInModeTwo(Context c) {
+            float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
+                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_two) * 3);
+            float height = screenWidth / 2;
+            return height;
         }
     }
 
