@@ -252,7 +252,7 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void putDataBack() {

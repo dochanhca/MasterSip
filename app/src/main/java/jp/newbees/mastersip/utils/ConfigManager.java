@@ -33,21 +33,21 @@ final public class ConfigManager {
     private final String deviceId;
     private final SharedPreferences sharedPreferences;
 
-    public final static void initConfig(Context context){
+    public final static void initConfig(Context context) {
         if (instance == null) {
             instance = new ConfigManager(context);
         }
     }
 
-    public final static synchronized ConfigManager getInstance(){
+    public final static synchronized ConfigManager getInstance() {
         if (instance == null) {
-            Logger.e("ConfigManager","ConfigManager Must call method initConfig first !!! ");
+            Logger.e("ConfigManager", "ConfigManager Must call method initConfig first !!! ");
         }
         return instance;
     }
 
 
-    private ConfigManager(Context context){
+    private ConfigManager(Context context) {
         FacebookSdk.sdkInitialize(context);
         Constant.API.initBaseURL();
         // Instantiate the cache
@@ -76,14 +76,14 @@ final public class ConfigManager {
     /**
      * @return Device ID
      */
-    public String getDeviceId(){
+    public String getDeviceId() {
         return deviceId;
     }
 
     public String getOSVersion() {
         String release = Build.VERSION.RELEASE;
         int sdkVersion = Build.VERSION.SDK_INT;
-        return "Android SDK: " + sdkVersion + " (" + release +")";
+        return "Android SDK: " + sdkVersion + " (" + release + ")";
     }
 
     public String getApplicationVersion() {
@@ -94,13 +94,13 @@ final public class ConfigManager {
         return android.os.Build.MODEL;
     }
 
-    public void saveRegisterToken(String token){
+    public void saveRegisterToken(String token) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.REGISTER_TOKEN, token);
         editor.commit();
     }
 
-    public void saveAuthId(String authId){
+    public void saveAuthId(String authId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.AUTHORIZATION, authId);
         editor.commit();
@@ -114,14 +114,14 @@ final public class ConfigManager {
             Type type = new TypeToken<FilterItem>() {
             }.getType();
             filterItem = gson.fromJson(jFilter, type);
-        }else {
+        } else {
             filterItem = new FilterItem();
             this.saveFilterSetting(filterItem);
         }
         return filterItem;
     }
 
-    public final void saveFilterSetting(FilterItem filterItem){
+    public final void saveFilterSetting(FilterItem filterItem) {
         Gson gson = new Gson();
         String jFilter = gson.toJson(filterItem);
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -8,12 +8,12 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_title"
-        android:padding="@dimen/margin_10"
         android:textSize="@dimen/text_size_15"
         android:background="@drawable/bg_simple_text_view"
+        android:padding="@dimen/margin_10"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/common_text_field_h"
-        android:gravity="center_vertical"/>
+        android:layout_height="wrap_content"
+        android:gravity="center" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -172,7 +172,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
 
         selectAvatarDialog.setArguments(bundle);
-        selectAvatarDialog.show(context.getFragmentManager(), "SelectAvatarDialog");
+        selectAvatarDialog.show(context.getSupportFragmentManager(), "SelectAvatarDialog");
     }
 
 

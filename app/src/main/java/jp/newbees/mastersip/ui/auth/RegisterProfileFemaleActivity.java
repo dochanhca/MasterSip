@@ -360,7 +360,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void goToInputDataActivity(String title, String textContent) {

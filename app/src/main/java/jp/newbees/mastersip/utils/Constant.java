@@ -146,6 +146,7 @@ public final class Constant {
 
         public static final String DEFAULT_LANGUAGE = "ja";
         public static final int MIN_AGE = 18;
+        public static final int MAX_AGE = 120;
         public static final String SETTING_FILTER = "SETTING_FILTER";
     }
 

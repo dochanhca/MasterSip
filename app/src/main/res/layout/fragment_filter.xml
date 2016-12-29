@@ -98,6 +98,7 @@
                     android:text="@string/login_with_24h" />
 
                 <CheckBox
+                    android:id="@+id/cb_24h"
                     style="@style/style_img_right_text_field_common"
                     android:button="@drawable/cb_blue_selector" />
 

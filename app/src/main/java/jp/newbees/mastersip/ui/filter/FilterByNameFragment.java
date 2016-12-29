@@ -25,6 +25,10 @@ public class FilterByNameFragment extends BaseFragment {
         return R.layout.fragment_filter_by_name;
     }
 
+    public static FilterByNameFragment newInstance() {
+        return new FilterByNameFragment();
+    }
+
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         setFragmentTitle(getString(R.string.filter_by_name));
