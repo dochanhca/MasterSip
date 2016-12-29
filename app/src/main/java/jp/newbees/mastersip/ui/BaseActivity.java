@@ -115,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString(LoadingDialog.CONTENT_DIALOG, mCurrentContentLoading);
             loadingDialogData.setArguments(bundle);
-            loadingDialogData.show(getFragmentManager(), "DialogLoadingData");
+            loadingDialogData.show(getSupportFragmentManager(), "DialogLoadingData");
         }
     }
 

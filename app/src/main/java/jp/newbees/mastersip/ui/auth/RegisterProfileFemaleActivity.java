@@ -360,7 +360,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void goToInputDataActivity(String title, String textContent) {
@@ -377,36 +377,29 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         switch (inputDataType) {
             case TYPE_OF_MEN:
                 txtTypeOfMenContent.setText(content);
-                if (content.length() > 0) {
-                    imgDividerTypeOfMen.setVisibility(View.VISIBLE);
-                    txtTypeOfMenContent.setVisibility(View.VISIBLE);
-                } else {
-                    imgDividerTypeOfMen.setVisibility(View.GONE);
-                    txtTypeOfMenContent.setVisibility(View.GONE);
-                }
+                showTextViewIfHasData(content, imgDividerTypeOfMen, txtTypeOfMenContent);
                 break;
             case CHARM_POINT:
                 txtCharmPointContent.setText(content);
-                if (content.length() > 0) {
-                    imgDividerCharmPoint.setVisibility(View.VISIBLE);
-                    txtCharmPointContent.setVisibility(View.VISIBLE);
-                } else {
-                    imgDividerCharmPoint.setVisibility(View.GONE);
-                    txtCharmPointContent.setVisibility(View.GONE);
-                }
+                showTextViewIfHasData(content, imgDividerCharmPoint, txtCharmPointContent);
                 break;
             case STATUS:
                 txtStatusContent.setText(content);
-                if (content.length() > 0) {
-                    imgDividerStatus.setVisibility(View.VISIBLE);
-                    txtStatusContent.setVisibility(View.VISIBLE);
-                } else {
-                    imgDividerStatus.setVisibility(View.GONE);
-                    txtStatusContent.setVisibility(View.GONE);
-                }
+                showTextViewIfHasData(content, imgDividerStatus, txtStatusContent);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void showTextViewIfHasData(String content, ImageView dividerLine,
+                                       HiraginoTextView textView) {
+        if (content.length() > 0) {
+            dividerLine.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
+        } else {
+            dividerLine.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
         }
     }
 

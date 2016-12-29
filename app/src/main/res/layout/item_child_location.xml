@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_view"
+    style="@style/style_layout_text_field_common"
+    android:background="@color/white"
+    android:layout_marginTop="@dimen/margin_1">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_district_name"
+        style="@style/style_title_text_view_small"
+        android:text="@string/aomori" />
+
+    <CheckBox
+        android:id="@+id/cb_select"
+        style="@style/style_img_right_text_field_common"
+        android:button="@drawable/cb_blue_selector" />
+</RelativeLayout>

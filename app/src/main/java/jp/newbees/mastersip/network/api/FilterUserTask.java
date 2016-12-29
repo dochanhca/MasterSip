@@ -41,21 +41,21 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
         if (filterItem.getMinAge() >= 18) {
-            jParams.put(Constant.JSON.kAboveAge,filterItem.getMinAge());
+            jParams.put(Constant.JSON.kAboveAge, filterItem.getMinAge());
         }
-        if (filterItem.getMaxAge() > 0 ){
-            jParams.put(Constant.JSON.kAboveAge,filterItem.getMaxAge());
+        if (filterItem.getMaxAge() > 0) {
+            jParams.put(Constant.JSON.kAboveAge, filterItem.getMaxAge());
         }
         int numberOfProvinces = filterItem.getLocations().size();
         if (numberOfProvinces > 0) {
             JSONArray jsonArray = new JSONArray();
             for (int i = 0; i < numberOfProvinces; i++) {
-                jsonArray.put(filterItem.getLocations().get(i));
+                jsonArray.put(filterItem.getLocations().get(i).getSelectionItem().getId());
             }
             jParams.put(Constant.JSON.kProvinces, jsonArray);
         }
-        jParams.put(Constant.JSON.kOrderBy,filterItem.getOrderBy().getId());
-        jParams.put(Constant.JSON.kLogin24HourAgo,filterItem.isLogin24hours());
+        jParams.put(Constant.JSON.kOrderBy, filterItem.getOrderBy().getId());
+        jParams.put(Constant.JSON.kLogin24HourAgo, filterItem.isLogin24hours());
         jParams.put(Constant.JSON.kFilterType, filterItem.getFilterType());
 
         return jParams;
@@ -64,7 +64,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.FILTER_USER+"/"+userItem.getUserId()+"/"+nextPage;
+        return Constant.API.FILTER_USER + "/" + userItem.getUserId() + "/" + nextPage;
     }
 
     @Override
@@ -76,10 +76,10 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.kData);
         int nextPage = jData.getInt(Constant.JSON.kNextPage);
-        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(jData);
+        ArrayList<UserItem> userItems = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
-        result.put(LIST_USER,userItems);
+        result.put(LIST_USER, userItems);
         return result;
     }
 

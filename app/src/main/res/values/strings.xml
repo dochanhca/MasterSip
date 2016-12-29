@@ -75,6 +75,17 @@
     <string name="err_cant_get_location">Get Your location failed. Please try again</string>
     <string name="err_server_error">Interner server error</string>
 
+    <string name="hokkaido">北海道</string>
+    <string name="multi_choice_possible">※複数選択可</string>
+    <string name="tohoku">東北</string>
+    <string name="select_all">すべて選択</string>
+    <string name="aomori">青森</string>
+    <string name="iwate">岩手</string>
+    <string name="miyagi">宮城</string>
+    <string name="akita">秋田</string>
+    <string name="yamagata">山形</string>
+    <string name="foreign_country">海外</string>
+    <string name="region_selection">地域選択</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
@@ -132,7 +143,7 @@
         <item>深夜～早朝</item>
     </string-array>
 
-    <string-array name="province">
+    <string-array name="districts">
         <item>北海道</item>
         <item>青森県</item>
         <item>岩手県</item>
@@ -184,6 +195,7 @@
 
     <string-array name="type">
         <item>清楚</item>
+
         <item>おっとり系</item>
         <item>ロリ系</item>
         <item>癒し系</item>
@@ -196,5 +208,20 @@
         <item>妹系</item>
         <item>女王様系</item>
         <item>ヒミツ</item>
+    </string-array>
+
+    <string-array name="cities">
+        <item>東北</item>
+        <item>関東</item>
+        <item>中部</item>
+        <item>近畿</item>
+        <item>中国</item>
+        <item>四国</item>
+        <item>九州</item>
+        <item>海外</item>
+    </string-array>
+    <string-array name="sort_conditions">
+        <item>ログインが新しい順</item>
+        <item>登録が新しい順</item>
     </string-array>
 </resources>

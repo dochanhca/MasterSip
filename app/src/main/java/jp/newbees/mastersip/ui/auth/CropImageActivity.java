@@ -119,6 +119,6 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
 
     private void showDialogConfirm() {
         ConfirmCropImageDialog confirmCropImageDialog = new ConfirmCropImageDialog();
-        confirmCropImageDialog.show(getFragmentManager(), "ConfirmCropImageDialog");
+        confirmCropImageDialog.show(getSupportFragmentManager(), "ConfirmCropImageDialog");
     }
 }

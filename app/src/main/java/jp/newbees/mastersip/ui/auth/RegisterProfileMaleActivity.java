@@ -218,7 +218,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void goToInputDataActivity(String title, String textContent) {
@@ -234,6 +234,11 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
 
         txtStatusContent.setText(content);
 
+        showTextViewIfHasContent(content);
+
+    }
+
+    private void showTextViewIfHasContent(String content) {
         if (content.length() > 0) {
             imgDividerStatus.setVisibility(View.VISIBLE);
             txtStatusContent.setVisibility(View.VISIBLE);
@@ -241,9 +246,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
             imgDividerStatus.setVisibility(View.GONE);
             txtStatusContent.setVisibility(View.GONE);
         }
-
     }
-
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);

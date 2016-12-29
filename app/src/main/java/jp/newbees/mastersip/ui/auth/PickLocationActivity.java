@@ -83,7 +83,7 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         provinceItems = new ArrayList<>();
-        String[] provinces = getResources().getStringArray(R.array.province);
+        String[] provinces = getResources().getStringArray(R.array.districts);
         for (int i = 0; i < provinces.length; i++) {
             SelectionItem selectionItem = new SelectionItem(i + 1, provinces[i]);
             provinceItems.add(selectionItem);
@@ -206,6 +206,9 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                /*
+                if can't found any place show error message
+                 */
                 if (likelyPlaces.getCount() > 0) {
                     getProvincePresenter.getProvince(likelyPlaces.get(0).getPlace().getLatLng());
                 } else {
@@ -248,17 +251,15 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void putDataBack() {
-
         if (provinceItem != null) {
             Intent intent = new Intent();
             intent.putExtra(PROVINCE_ITEM, (Parcelable) provinceItem);
             setResult(RESULT_OK, intent);
         }
-
         finish();
     }
 }

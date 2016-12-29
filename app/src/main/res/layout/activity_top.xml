@@ -12,7 +12,7 @@
     <jp.newbees.mastersip.customviews.NavigationLayoutGroup
         android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/action_bar_h"
         android:background="@color/white"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
@@ -84,7 +84,6 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/navigation_bar"
-        android:layout_below="@id/action_bar" />
+        android:layout_above="@id/navigation_bar" />
     
 </RelativeLayout>

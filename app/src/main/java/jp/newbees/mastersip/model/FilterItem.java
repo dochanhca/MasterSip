@@ -15,10 +15,10 @@ import jp.newbees.mastersip.utils.Constant;
 public class FilterItem implements Parcelable, Serializable {
 
     public FilterItem() {
-        this(-1,-1, new ArrayList<SelectionItem>(), true, new SelectionItem(), Constant.API.ALL_USER);
+        this(-1,-1, new ArrayList<LocationItem>(), true, new SelectionItem(), Constant.API.ALL_USER);
     }
 
-    public FilterItem(int minAge, int maxAge, ArrayList<SelectionItem> locations, boolean isLogin24hours, SelectionItem orderBy, int filterType) {
+    public FilterItem(int minAge, int maxAge, ArrayList<LocationItem> locations, boolean isLogin24hours, SelectionItem orderBy, int filterType) {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.locations = locations;
@@ -43,11 +43,11 @@ public class FilterItem implements Parcelable, Serializable {
         this.maxAge = maxAge;
     }
 
-    public ArrayList<SelectionItem> getLocations() {
+    public ArrayList<LocationItem> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<SelectionItem> locations) {
+    public void setLocations(ArrayList<LocationItem> locations) {
         this.locations = locations;
     }
 
@@ -77,7 +77,7 @@ public class FilterItem implements Parcelable, Serializable {
 
     private int minAge;
     private int maxAge;
-    private ArrayList<SelectionItem> locations;
+    private ArrayList<LocationItem> locations;
     private boolean isLogin24hours;
     private SelectionItem orderBy;
     private int filterType;
@@ -102,7 +102,7 @@ public class FilterItem implements Parcelable, Serializable {
     protected FilterItem(Parcel in) {
         this.minAge = in.readInt();
         this.maxAge = in.readInt();
-        this.locations = in.createTypedArrayList(SelectionItem.CREATOR);
+        this.locations = in.createTypedArrayList(LocationItem.CREATOR);
         this.isLogin24hours = in.readByte() != 0;
         this.orderBy = in.readParcelable(SelectionItem.class.getClassLoader());
         this.filterType = in.readInt();
