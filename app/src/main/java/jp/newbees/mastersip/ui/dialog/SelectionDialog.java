@@ -2,14 +2,13 @@ package jp.newbees.mastersip.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import java.util.List;
 
@@ -64,16 +63,32 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {
+            this.onSelectionDialogClick = (OnSelectionDialogClick) getTargetFragment();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
         int width = (int) (Utils.getScreenWidth(getApplicationContext()) * 0.9);
         int height = (int) (Utils.getScreenHeight(getApplicationContext()) * 0.6);
 
+        WindowManager.LayoutParams lp = getDialog().getWindow().getAttributes();
+
+        lp.width = width;
+
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(width,
-                    height);
+            if (dialog.getWindow().getDecorView().getHeight() >= height) {
+                lp.height = height;
+            }
+            dialog.getWindow().setAttributes(lp);
         }
     }
 

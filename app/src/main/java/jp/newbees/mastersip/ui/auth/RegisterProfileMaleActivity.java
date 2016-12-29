@@ -218,7 +218,7 @@ public class RegisterProfileMaleActivity extends BaseActivity implements View.On
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
 
         selectionDialog.setArguments(bundle);
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
+        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
     }
 
     private void goToInputDataActivity(String title, String textContent) {

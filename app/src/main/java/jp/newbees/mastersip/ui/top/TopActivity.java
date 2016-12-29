@@ -100,11 +100,6 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void didFilterData(ArrayList<UserItem> userItems) {
 
     }

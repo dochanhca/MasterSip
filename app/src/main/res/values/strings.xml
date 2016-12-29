@@ -220,4 +220,8 @@
         <item>九州</item>
         <item>海外</item>
     </string-array>
+    <string-array name="sort_conditions">
+        <item>ログインが新しい順</item>
+        <item>登録が新しい順</item>
+    </string-array>
 </resources>
