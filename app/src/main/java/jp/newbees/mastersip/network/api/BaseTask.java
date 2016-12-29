@@ -41,7 +41,6 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     private Request<RESULT_DATA> request;
     //    private RequestQueue requestQueue;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private final String authorization;
     private final String registerToken;
     private RESULT_DATA dataResponse;
@@ -49,10 +48,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     public BaseTask(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
 
-        authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
-        registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
+        authorization = ConfigManager.getInstance().getAuthId();
+        registerToken = ConfigManager.getInstance().getRegisterToken();
         TAG = getClass().getName();
     }
 
@@ -153,9 +151,12 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                 .append(Constant.API.PREFIX_URL)
                 .append("/")
                 .append(getVersion())
-                .append("/").append(getUrl())
-                .append("?").append(Constant.JSON.kRegisterToken).append("=").append(registerToken)
-                .append("&").append(Constant.JSON.kClientAuthID).append("=").append(authorization);
+                .append("/").append(getUrl());
+
+        if (!registerToken.isEmpty() && !authorization.isEmpty()) {
+            urlBuilder.append("?").append(Constant.JSON.kRegisterToken).append("=").append(registerToken)
+                    .append("&").append(Constant.JSON.kClientAuthID).append("=").append(authorization);
+        }
         return urlBuilder.toString();
     }
 
@@ -264,13 +265,4 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     protected String getRegisterToken() {
         return registerToken;
     }
-
-    protected void saveUserItem(UserItem userItem) {
-        Gson gson = new Gson();
-        String jUser = gson.toJson(userItem);
-
-        editor.putString(Constant.Application.USER_ITEM, jUser);
-        editor.commit();
-    }
-
 }
