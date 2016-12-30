@@ -54,6 +54,9 @@ public class ToastExceptionVolleyHelper {
             case Constant.Error.SC_INTERNAL_SERVER_ERROR:
                 showShortToast(R.string.err_server_error);
                 return true;
+            case Constant.Error.WRONG_ORDER_BY_CODE:
+                showShortToast(R.string.err_wrong_order_by_code);
+                return true;
             default:
                 return false;
         }

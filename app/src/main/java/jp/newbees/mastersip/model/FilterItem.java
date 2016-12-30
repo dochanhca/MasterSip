@@ -15,7 +15,8 @@ import jp.newbees.mastersip.utils.Constant;
 public class FilterItem implements Parcelable, Serializable {
 
     public FilterItem() {
-        this(-1,-1, new ArrayList<LocationItem>(), false, new SelectionItem(Constant.Application.LAST_LOGIN_24HOUR,""), Constant.API.NEW_USER);
+        this(-1, -1, new ArrayList<LocationItem>(), true,
+                new SelectionItem(Constant.Application.LAST_LOGIN, ""), Constant.API.ALL_USER);
     }
 
     public FilterItem(int minAge, int maxAge, ArrayList<LocationItem> locations, boolean isLogin24hours, SelectionItem orderBy, int filterType) {
@@ -96,7 +97,6 @@ public class FilterItem implements Parcelable, Serializable {
         dest.writeParcelable(this.orderBy, flags);
         dest.writeInt(this.filterType);
     }
-
 
 
     protected FilterItem(Parcel in) {

@@ -86,6 +86,7 @@
     <string name="yamagata">山形</string>
     <string name="foreign_country">海外</string>
     <string name="region_selection">地域選択</string>
+    <string name="err_wrong_order_by_code">Wrong order by code</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
@@ -220,8 +221,7 @@
         <item>九州</item>
         <item>海外</item>
     </string-array>
-    <string-array name="sort_conditions">
-        <item>ログインが新しい順</item>
-        <item>登録が新しい順</item>
-    </string-array>
+
+    <string name="last_login">ログインが新しい順</string>
+    <string name="last_register">登録が新しい順</string>
 </resources>

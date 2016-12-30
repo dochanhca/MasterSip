@@ -13,7 +13,7 @@
             android:id="@+id/img_avatar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_boy_default" />
 
         <LinearLayout
@@ -23,7 +23,7 @@
             android:background="@drawable/bg_item_search_user">
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
-                android:id="@+id/txt_content"
+                android:id="@+id/txt_name"
                 style="@style/origin_style_content_text_view_tiny"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

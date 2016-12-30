@@ -10,12 +10,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -42,9 +42,13 @@ public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUse
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserItem item = datas.get(position);
+
+        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).thumbnail(0.1f).
-                placeholder(R.drawable.ic_boy_default).
-                error(R.drawable.ic_boy_default).into(holder.imgAvatar);
+                placeholder(defaultImageId).
+                error(defaultImageId).into(holder.imgAvatar);
+
         holder.txtTitle.setText(item.getUsername() + " " + Utils.getAge(item.getDateOfBirth()));
         holder.txtValue.setText(item.getMemo());
         holder.txtTime.setText(item.getAvailableTimeItem().getTitle());
@@ -57,7 +61,7 @@ public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUse
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        RoundedImageView imgAvatar;
+        ImageView imgAvatar;
         ImageView imgActionTop;
         TextView txtTime;
         TextView txtLocation;
@@ -68,12 +72,12 @@ public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUse
         public ViewHolder(View root) {
             super(root);
             imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
-            imgAvatar = (RoundedImageView) root.findViewById(R.id.img_avatar);
+            imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             txtTime = (TextView) root.findViewById(R.id.txt_time);
             txtLocation = (TextView) root.findViewById(R.id.txt_location);
             txtTitle = (TextView) root.findViewById(R.id.txt_title);
             txtValue = (TextView) root.findViewById(R.id.txt_value);
-            content = (RelativeLayout) root.findViewById(R.id.txt_content);
+            content = (RelativeLayout) root.findViewById(R.id.txt_name);
         }
     }
 

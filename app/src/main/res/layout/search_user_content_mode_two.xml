@@ -20,14 +20,14 @@
                 android:id="@+id/img_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_boy_default"/>
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
-                android:id="@+id/txt_content"
+                android:id="@+id/txt_name"
                 style="@style/origin_style_content_text_view_with_padding_LR"
                 android:layout_width="match_parent"
-                android:layout_alignParentBottom="true"
+                android:layout_alignBottom="@id/img_avatar"
                 android:background="@color/bg_item_search_user"
                 android:gravity="center"
                 android:maxLines="1"
@@ -49,6 +49,7 @@
             android:id="@+id/txt_about"
             style="@style/origin_style_content_text_view_small_with_padding_LR"
             android:layout_width="match_parent"
+            android:minHeight="@dimen/size_40dp"
             android:background="@drawable/bg_about_mode_two"
             android:ellipsize="end"
             android:maxLines="2"

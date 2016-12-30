@@ -20,7 +20,7 @@ public class LoadingDialog extends BaseDialog {
     @Override
     protected void initViews(View rootView, Bundle savedInstanceState) {
         String textContent = getArguments().getString(CONTENT_DIALOG);
-        mTextContent = (TextView) rootView.findViewById(R.id.txt_content);
+        mTextContent = (TextView) rootView.findViewById(R.id.txt_name);
         mTextContent.setText(textContent);
         setCancelable(false);
         hideLayoutActions();

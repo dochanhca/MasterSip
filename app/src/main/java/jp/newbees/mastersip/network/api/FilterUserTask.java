@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -44,7 +45,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
             jParams.put(Constant.JSON.kAboveAge, filterItem.getMinAge());
         }
         if (filterItem.getMaxAge() > 0) {
-            jParams.put(Constant.JSON.kAboveAge, filterItem.getMaxAge());
+            jParams.put(Constant.JSON.kBelowAge, filterItem.getMaxAge());
         }
         int numberOfProvinces = filterItem.getLocations().size();
         if (numberOfProvinces > 0) {
@@ -52,10 +53,17 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
             for (int i = 0; i < numberOfProvinces; i++) {
                 jsonArray.put(filterItem.getLocations().get(i).getSelectionItem().getId());
             }
-            jParams.put(Constant.JSON.kProvinces, jsonArray);
+
+            try {
+                String result = java.net.URLDecoder.decode(jsonArray.toString(), "UTF-8");
+                jParams.put(Constant.JSON.kProvinces, result);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
-        jParams.put(Constant.JSON.kOrderBy,filterItem.getOrderBy().getId());
-        jParams.put(Constant.JSON.kLogin24HourAgo,filterItem.isLogin24hours() ? 1 : 0);
+
+        jParams.put(Constant.JSON.kOrderBy, filterItem.getOrderBy().getId());
+        jParams.put(Constant.JSON.kLogin24HourAgo, filterItem.isLogin24hours() ? 1 : 0);
         jParams.put(Constant.JSON.kFilterType, filterItem.getFilterType());
 
         return jParams;

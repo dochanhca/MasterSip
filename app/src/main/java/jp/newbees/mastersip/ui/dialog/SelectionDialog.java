@@ -4,12 +4,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.newbees.mastersip.R;
@@ -25,15 +28,17 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSelectionAdapterClick {
 
-    public static final String TAG = "SelectionDialog";
-    public static final String LIST_SELECTION = "LIST SELECTION";
-    public static final String DIALOG_TILE = "DIALOG_TILE";
+    private static final String TAG = "SelectionDialog";
+    private static final String LIST_SELECTION = "LIST SELECTION";
+    private static final String DIALOG_TILE = "DIALOG_TILE";
+    private static final String SELECTED_ITEM = "SELECTED_ITEM";
     private RecyclerView recyclerView;
     private List<SelectionItem> data;
     private String title;
     private SelectionAdapter adapter;
 
-    private int selectedItem;
+    private int selectedItemIndex;
+    private SelectionItem selectionItem;
 
     public interface OnSelectionDialogClick {
         void onItemSelected(int position);
@@ -46,6 +51,8 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         recyclerView = (RecyclerView) rootView.findViewById(R.id.selection_list_view);
         data = getArguments().getParcelableArrayList(LIST_SELECTION);
         title = getArguments().getString(DIALOG_TILE);
+        selectionItem = getArguments().getParcelable(SELECTED_ITEM);
+        selectedItemIndex = selectionItem.getId() - 1;
 
         initRecyclerView();
 
@@ -56,7 +63,7 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         setOnPositiveListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onSelectionDialogClick.onItemSelected(selectedItem);
+                onSelectionDialogClick.onItemSelected(selectedItemIndex);
                 dismiss();
             }
         });
@@ -65,10 +72,12 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            this.onSelectionDialogClick = (OnSelectionDialogClick) getTargetFragment();
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+        if (getTargetFragment() != null) {
+            try {
+                this.onSelectionDialogClick = (OnSelectionDialogClick) getTargetFragment();
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+            }
         }
     }
 
@@ -99,16 +108,18 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
 
     @Override
     public void onItemSelected(int position) {
-        selectedItem = position;
+        selectedItemIndex = position;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            this.onSelectionDialogClick = (OnSelectionDialogClick) context;
-        } catch (ClassCastException e) {
-            //
+        if (getTargetFragment() == null) {
+            try {
+                this.onSelectionDialogClick = (OnSelectionDialogClick) context;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling Activity must implement DialogClickListener interface");
+            }
         }
     }
 
@@ -116,8 +127,37 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new SelectionAdapter(getActivity().getApplicationContext(), data);
+        adapter = new SelectionAdapter(getActivity().getApplicationContext(), data, selectedItemIndex);
         recyclerView.setAdapter(adapter);
     }
 
+    public static void openSelectionDialogFromFragment(Fragment fragment, int requestCode,
+                                                       FragmentManager fragmentManager,
+                                                       ArrayList<SelectionItem> sortConditions,
+                                                       String title, SelectionItem selectedItem) {
+        SelectionDialog selectionDialog = new SelectionDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortConditions);
+        bundle.putParcelable(SelectionDialog.SELECTED_ITEM, selectedItem);
+
+        selectionDialog.setArguments(bundle);
+        selectionDialog.setTargetFragment(fragment, requestCode);
+        selectionDialog.show(fragmentManager, "SelectionDialog");
+    }
+
+    public static void openSelectionDialogFromActivity(FragmentManager fragmentManager,
+                                                       ArrayList<SelectionItem> selectionItems,
+                                                       String title, SelectionItem selectedItem) {
+        SelectionDialog selectionDialog = new SelectionDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, selectionItems);
+        bundle.putParcelable(SelectionDialog.SELECTED_ITEM, selectedItem);
+
+        selectionDialog.setArguments(bundle);
+        selectionDialog.show(fragmentManager, "SelectionDialog");
+    }
 }

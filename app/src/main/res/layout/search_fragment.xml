@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
-    android:background="@color/cardview_shadow_end_color"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/cardview_shadow_end_color">
 
     <RelativeLayout
         android:id="@+id/header_search"
@@ -103,9 +103,9 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin"
             android:background="@drawable/bg_white_with_large_border"
-            android:scaleType="center"
             android:paddingLeft="@dimen/normal_margin"
             android:paddingRight="@dimen/normal_margin"
+            android:scaleType="center"
             android:src="@drawable/ic_4" />
     </RelativeLayout>
 
@@ -114,14 +114,21 @@
         android:layout_height="match_parent"
         android:layout_below="@id/filter">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_user"
-            android:clipToPadding="false"
-            android:background="@color/bg_content_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_content_search"
+                android:clipToPadding="false">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
     </RelativeLayout>
 
 </RelativeLayout>

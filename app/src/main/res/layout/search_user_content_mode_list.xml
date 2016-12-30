@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -9,28 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <FrameLayout
+        <android.support.v7.widget.CardView
             android:id="@+id/avatar_container"
-            android:layout_margin="@dimen/normal_margin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_avatar"
-                android:layout_width="@dimen/size_avatar_mode_list"
-                android:layout_height="@dimen/size_avatar_mode_list"
-                android:src="@drawable/ic_boy_default"
-                app:riv_corner_radius="@dimen/corner_item_search_user" />
-
-            <ImageView
-                android:id="@+id/img_action_top"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_margin"
+            app:cardCornerRadius="@dimen/corner_5">
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/tiny_margin"
-                android:layout_marginTop="@dimen/tiny_margin"
-                android:src="@drawable/ic_avatar_message_small" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/img_avatar"
+                    android:layout_width="@dimen/size_avatar_mode_list"
+                    android:layout_height="@dimen/size_avatar_mode_list"
+                    android:src="@drawable/ic_boy_default" />
 
-        </FrameLayout>
+                <ImageView
+                    android:id="@+id/img_action_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/tiny_margin"
+                    android:layout_marginTop="@dimen/tiny_margin"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_message_small" />
+            </FrameLayout>
+        </android.support.v7.widget.CardView>
 
         <TextView
             android:id="@+id/txt_time"

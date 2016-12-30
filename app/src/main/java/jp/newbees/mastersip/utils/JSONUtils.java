@@ -25,6 +25,7 @@ public class JSONUtils {
             UserItem userItem = new UserItem();
             userItem.setUsername(jUser.getString(Constant.JSON.kHandleName));
             userItem.setUserId(jUser.getString(Constant.JSON.kID));
+
             userItem.setMemo(jUser.getString(Constant.JSON.kSlogan));
 
             ImageItem avatar = new ImageItem();

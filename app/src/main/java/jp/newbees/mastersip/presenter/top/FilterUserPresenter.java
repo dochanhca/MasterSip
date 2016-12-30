@@ -17,8 +17,9 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/23/16.
  */
 
-public class SearchPresenter extends BasePresenter{
+public class FilterUserPresenter extends BasePresenter {
     private String nextPage = "0";
+    private boolean isLoadMore = false;
 
     private SearchView view;
 
@@ -26,17 +27,38 @@ public class SearchPresenter extends BasePresenter{
         void didFilterUser(ArrayList<UserItem> userItems);
 
         void didFilterUserError(int errorCode, String errorMessage);
+
+        void didLoadMoreUser(ArrayList<UserItem> users);
     }
 
-    public SearchPresenter(Context context, SearchView searchView) {
+    public FilterUserPresenter(Context context, SearchView searchView) {
         super(context);
         this.view = searchView;
     }
 
-    public void filterUser(){
+    public void filterUser() {
+        nextPage = "0";
+        filterUser(false);
+    }
+
+    private void filterUser(boolean isLoadMore) {
+        this.isLoadMore = isLoadMore;
+
         FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
         FilterUserTask filterUserTask = new FilterUserTask(context, filterItem, nextPage, getCurrentUserItem());
         requestToServer(filterUserTask);
+    }
+
+    public final void loadMoreUser() {
+        filterUser(true);
+    }
+
+    public final boolean canLoadMoreUser() {
+        if (!nextPage.isEmpty() && !nextPage.equals("0")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -45,13 +67,17 @@ public class SearchPresenter extends BasePresenter{
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
             ArrayList<UserItem> users = (ArrayList<UserItem>) data.get(FilterUserTask.LIST_USER);
             nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
-
-            view.didFilterUser(users);
+            if (isLoadMore) {
+                view.didLoadMoreUser(users);
+            } else {
+                view.didFilterUser(users);
+            }
         }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        Logger.e("SearchPresenter", errorCode + " - " + errorMessage);
+        Logger.e("FilterUserPresenter", errorCode + " - " + errorMessage);
+        view.didFilterUserError(errorCode, errorMessage);
     }
 }

@@ -14,9 +14,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.eventbus.FilterUserEvent;
 import jp.newbees.mastersip.eventbus.SelectLocationEvent;
 import jp.newbees.mastersip.model.AgeItem;
 import jp.newbees.mastersip.model.FilterItem;
@@ -65,6 +65,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private ArrayList<SelectionItem> sortCondition;
     private SelectionItem orderBy;
 
+    private ConfigManager configManager;
 
     public static FilterFragment newInstance() {
         FilterFragment fragment = new FilterFragment();
@@ -78,6 +79,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void init(View rootView, Bundle savedInstanceState) {
+        configManager = ConfigManager.getInstance();
+
         layoutAge = (ViewGroup) rootView.findViewById(R.id.layout_age);
         layoutLocation = (ViewGroup) rootView.findViewById(R.id.layout_location);
         layoutSort = (ViewGroup) rootView.findViewById(R.id.layout_sort);
@@ -98,19 +101,55 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         btnSearch.setOnClickListener(this);
         imgBack.setOnClickListener(this);
 
-        initData();
+        getFilterCondition();
     }
 
-    private void initData() {
-        filterItem = ConfigManager.getInstance().getFilterUser();
-
-        defaultAge = new AgeItem(new SelectionItem(-1, getString(R.string.do_not_care)), false);
+    private void getFilterCondition() {
+        // Order by
         sortCondition = new ArrayList<>();
-        String sorts[] = getActivity().getResources().getStringArray(R.array.sort_conditions);
-        for (int i = 0; i < sorts.length; i++) {
-            SelectionItem selectionItem = new SelectionItem(i + 1, sorts[i]);
-            sortCondition.add(selectionItem);
+        SelectionItem lastLogin = new SelectionItem(Constant.Application.LAST_LOGIN, getString(R.string.last_login));
+        SelectionItem lastRegister = new SelectionItem(Constant.Application.LAST_REGISTER, getString(R.string.last_register));
+        sortCondition.add(lastLogin);
+        sortCondition.add(lastRegister);
+
+        filterItem = configManager.getFilterUser();
+        selectedItems = filterItem.getLocations();
+
+        getAgeFromMemory();
+        updateView();
+        updateArea(selectedItems);
+    }
+
+    private void getAgeFromMemory() {
+        // if users don't select min -> max age
+        defaultAge = new AgeItem(new SelectionItem(-1, getString(R.string.do_not_care)), false);
+
+        if (filterItem.getMinAge() > 0) {
+            minAge = new AgeItem(new SelectionItem(filterItem.getMinAge(), filterItem.getMinAge() + ""), false);
+        } else {
+            minAge = defaultAge;
         }
+
+        if (filterItem.getMaxAge() > 0) {
+            maxAge = new AgeItem(new SelectionItem(filterItem.getMaxAge(), filterItem.getMaxAge() + ""), false);
+        } else {
+            maxAge = defaultAge;
+        }
+    }
+
+    private void updateView() {
+        String age = minAge.getSelectionItem().getTitle() + "~" + maxAge.getSelectionItem().getTitle();
+        txtAge.setText(age);
+
+        if (filterItem.getOrderBy().getTitle().length() == 0) {
+            // default sort condition is user last login
+            orderBy = new SelectionItem(Constant.Application.LAST_LOGIN, getString(R.string.last_login));
+        } else {
+            orderBy = filterItem.getOrderBy();
+        }
+
+        txtSort.setText(orderBy.getTitle());
+        cb24h.setChecked(filterItem.isLogin24hours());
     }
 
     @Override
@@ -123,7 +162,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
                 openSelectAgeDialog();
                 break;
             case R.id.layout_sort:
-                openSelectionDialog();
+                SelectionDialog.openSelectionDialogFromFragment(this, SELECT_DIALOG, getFragmentManager(),
+                        sortCondition, getString(R.string.sort), orderBy);
                 break;
             case R.id.btn_search:
                 getSearchCondition();
@@ -141,7 +181,9 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     public void onAgeSelected(int minAgeIndex, int maxAgeIndex) {
         minAge = ages.get(minAgeIndex);
         maxAge = ages.get(maxAgeIndex);
-        updateAgeTextView();
+
+        String age = minAge.getSelectionItem().getTitle() + "~" + maxAge.getSelectionItem().getTitle();
+        txtAge.setText(age);
     }
 
     /**
@@ -171,18 +213,22 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
      */
     @Subscribe(sticky = true)
     public void onSelectLocationEvent(SelectLocationEvent event) {
-        Logger.e(TAG, "on Event bus receive");
+        Logger.e(TAG, "onSelectLocationEvent receive: " + event.getLocationItems().size());
 
         selectedItems = new ArrayList<>();
         selectedItems.addAll(event.getLocationItems());
-        updateArea(event.getLocationItems());
+        updateArea(selectedItems);
     }
 
     public void updateArea(ArrayList<LocationItem> selectedItems) {
-//        ArrayList<LocationItem> temps = new ArrayList<>();
+        ArrayList<LocationItem> temps = new ArrayList<>();
+        for (LocationItem item : selectedItems) {
+            temps.add(item.clone());
+        }
+
         cities = getResources().getStringArray(R.array.cities);
 
-        for (LocationItem item : selectedItems) {
+        for (LocationItem item : temps) {
             if (item.getParentId() == LocationItem.NORTHEAST) {
                 northeast++;
             } else if (item.getParentId() == LocationItem.KANTO) {
@@ -201,34 +247,34 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         }
 
         if (northeast == LocationItem.NORTHEAST_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.NORTHEAST);
+            grossLocations(temps, LocationItem.NORTHEAST);
         }
 
         if (kanto == LocationItem.KANTO_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KANTO);
+            grossLocations(temps, LocationItem.KANTO);
         }
 
         if (middle == LocationItem.MIDDLE_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.MIDDLE);
+            grossLocations(temps, LocationItem.MIDDLE);
         }
 
         if (kinki == LocationItem.KINKI_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KINKI);
+            grossLocations(temps, LocationItem.KINKI);
         }
 
         if (china == LocationItem.CHINA_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.CHINA);
+            grossLocations(temps, LocationItem.CHINA);
         }
 
         if (shikoku == LocationItem.SHIKOKU_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.SHIKOKU);
+            grossLocations(temps, LocationItem.SHIKOKU);
         }
 
         if (kyushu == LocationItem.KYUSHU_DISTRICTS) {
-            grossLocations(selectedItems, LocationItem.KYUSHU);
+            grossLocations(temps, LocationItem.KYUSHU);
         }
 
-        showAreaToTextview(selectedItems);
+        showAreaToTextView(temps);
     }
 
 
@@ -251,16 +297,17 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         locationItems.add(locationItem);
     }
 
-    private void showAreaToTextview(ArrayList<LocationItem> temps) {
-        StringBuilder area = new StringBuilder();
-        for (int i = 0; i < temps.size(); i++) {
-            area.append(temps.get(i).getSelectionItem().getTitle());
-            if (i < temps.size() - 1) {
-                area.append(", ");
+    private void showAreaToTextView(ArrayList<LocationItem> temps) {
+        if (temps.size() == 0) {
+            txtArea.setText(getString(R.string.do_not_care));
+        } else {
+            StringBuilder area = new StringBuilder();
+            for (int i = 0; i < temps.size(); i++) {
+                area.append(temps.get(i).getSelectionItem().getTitle());
+                if (i < temps.size() - 1) {
+                    area.append(", ");
+                }
             }
-        }
-
-        if (area.length() > 0) {
             txtArea.setText(area.toString());
         }
     }
@@ -302,19 +349,6 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         selectMinMaxAgeDialog.show(getFragmentManager(), "SelectMinMaxAgeDialog");
     }
 
-    private void openSelectionDialog() {
-        SelectionDialog selectionDialog = new SelectionDialog();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, getString(R.string.sort));
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortCondition);
-
-        selectionDialog.setArguments(bundle);
-        selectionDialog.setTargetFragment(this, SELECT_DIALOG);
-
-        selectionDialog.show(getFragmentManager(), "SelectionDialog");
-    }
-
     private void initAges() {
         ages.add(defaultAge);
         for (int i = Constant.Application.MIN_AGE; i <= Constant.Application.MAX_AGE; i++) {
@@ -324,16 +358,15 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-    private void updateAgeTextView() {
-        String age = minAge.getSelectionItem().getTitle() + "~" + maxAge.getSelectionItem().getTitle();
-        txtAge.setText(age);
-    }
-
     private void getSearchCondition() {
         filterItem.setLogin24hours(cb24h.isChecked());
         filterItem.setMinAge(minAge.getSelectionItem().getId());
         filterItem.setMaxAge(maxAge.getSelectionItem().getId());
         filterItem.setOrderBy(orderBy);
         filterItem.setLocations(selectedItems);
+
+        configManager.saveFilterSetting(filterItem);
+        EventBus.getDefault().postSticky(new FilterUserEvent());
+        getFragmentManager().popBackStack();
     }
 }

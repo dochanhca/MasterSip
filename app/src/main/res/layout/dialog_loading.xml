@@ -17,7 +17,7 @@
         android:layout_alignParentLeft="true"/>
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
-        android:id="@+id/txt_content"
+        android:id="@+id/txt_name"
         android:layout_toRightOf="@+id/progress_wheel"
         android:text="@string/loading"
         android:paddingBottom="@dimen/margin_2"

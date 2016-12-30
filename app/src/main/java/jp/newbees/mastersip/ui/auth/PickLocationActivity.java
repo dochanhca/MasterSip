@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.auth;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -82,6 +83,9 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        provinceItem = getIntent().getParcelableExtra(PROVINCE_ITEM);
+        txtPosition.setText(provinceItem.getTitle());
+
         provinceItems = new ArrayList<>();
         String[] provinces = getResources().getStringArray(R.array.districts);
         for (int i = 0; i < provinces.length; i++) {
@@ -97,7 +101,6 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
-        //
 
         cbEnableLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -175,6 +178,9 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
 
     @Override
     public void onItemSelected(int position) {
+        if (position == -1) {
+            return;
+        }
         provinceItem = provinceItems.get(position);
         txtPosition.setText(provinceItem.getTitle());
     }
@@ -245,14 +251,8 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
     }
 
     private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
-        SelectionDialog selectionDialog = new SelectionDialog();
-
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
-
-        selectionDialog.setArguments(bundle);
-        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
+        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                data, title, provinceItem);
     }
 
     private void putDataBack() {
@@ -262,5 +262,13 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
             setResult(RESULT_OK, intent);
         }
         finish();
+    }
+
+    public static void startActivityPickLocation(Activity activity, SelectionItem selectedProvince) {
+        Intent intent = new Intent(activity.getApplicationContext(),
+                PickLocationActivity.class);
+        intent.putExtra(PROVINCE_ITEM, (Parcelable) selectedProvince);
+
+        activity.startActivityForResult(intent, PickLocationActivity.PICK_LOCATION_REQUEST_CODE);
     }
 }

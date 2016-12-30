@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/26/16.
@@ -43,9 +44,11 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         UserItem item = datas.get(position);
         holder.txtContent.setText(item.getUsername());
 
+        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
-                placeholder(R.drawable.ic_boy_default).
-                error(R.drawable.ic_boy_default).into(holder.imgAvatar);
+                placeholder(defaultImageId).
+                error(defaultImageId).into(holder.imgAvatar);
 
     }
 
@@ -60,7 +63,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
 
         public ViewHolder(View root, Context context) {
             super(root);
-            txtContent = (TextView) root.findViewById(R.id.txt_content);
+            txtContent = (TextView) root.findViewById(R.id.txt_name);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
 
             setImageHeight(context);

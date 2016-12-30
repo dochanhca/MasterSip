@@ -33,9 +33,10 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
         this.onSelectionAdapterClick = onSelectionAdapterClick;
     }
 
-    public SelectionAdapter(Context context, List<SelectionItem> data) {
+    public SelectionAdapter(Context context, List<SelectionItem> data, int selectedItem) {
         this.data = data;
         this.context = context;
+        this.selectedItem = selectedItem;
     }
 
     @Override

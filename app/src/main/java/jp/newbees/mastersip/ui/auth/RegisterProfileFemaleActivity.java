@@ -56,10 +56,10 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
     private ArrayList<SelectionItem> typeItems;
     private ArrayList<SelectionItem> availableTimeItems;
 
-    private SelectionItem provinceItem;
-    private SelectionItem jobItem;
-    private SelectionItem typeItem;
-    private SelectionItem availableTimeItem;
+    private SelectionItem provinceItem = new SelectionItem();
+    private SelectionItem jobItem = new SelectionItem();
+    private SelectionItem typeItem = new SelectionItem();
+    private SelectionItem availableTimeItem = new SelectionItem();
 
     private InputDataType inputDataType;
     private SelectDataType selectDataType;
@@ -134,7 +134,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
                 SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
-                selectLocation();
+                PickLocationActivity.startActivityPickLocation(this, provinceItem);
                 break;
             case R.id.layout_profession:
                 selectJob();
@@ -309,16 +309,11 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
         } else if (provinceItem == null) {
             showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
-        } else  {
+        } else {
             isDataValid = true;
         }
 
         return isDataValid;
-    }
-
-    private void selectLocation() {
-        Intent intent = new Intent(getApplicationContext(), PickLocationActivity.class);
-        startActivityForResult(intent, PickLocationActivity.PICK_LOCATION_REQUEST_CODE);
     }
 
     private void inputStatus() {
@@ -328,7 +323,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     private void selectAvailableTime() {
         selectDataType = SelectDataType.AVAILABLE_TIME;
-        openSelectionDialog(getString(R.string.available_time), availableTimeItems);
+        openSelectionDialog(getString(R.string.available_time), availableTimeItems, availableTimeItem);
     }
 
     private void inputCharmPoint() {
@@ -344,23 +339,19 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     private void selectType() {
         selectDataType = SelectDataType.TYPE;
-        openSelectionDialog(getString(R.string.type), typeItems);
+        openSelectionDialog(getString(R.string.type), typeItems, typeItem);
     }
 
     private void selectJob() {
         selectDataType = SelectDataType.JOB;
-        openSelectionDialog(getString(R.string.profession), femaleJobItems);
+        openSelectionDialog(getString(R.string.profession), femaleJobItems, jobItem);
     }
 
-    private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
-        SelectionDialog selectionDialog = new SelectionDialog();
+    private void openSelectionDialog(String title, ArrayList<SelectionItem> data,
+                                     SelectionItem selectedItem) {
 
-        Bundle bundle = new Bundle();
-        bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, data);
-
-        selectionDialog.setArguments(bundle);
-        selectionDialog.show(getSupportFragmentManager(), "SelectionDialog");
+        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                data, title, selectedItem);
     }
 
     private void goToInputDataActivity(String title, String textContent) {

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/27/16.
@@ -41,12 +42,14 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         UserItem item = datas.get(position);
-        holder.txtContent.setText(item.getUsername());
+        holder.txtName.setText(item.getUsername());
         holder.txtAbout.setText(item.getMemo());
 
+        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
-                placeholder(R.drawable.ic_boy_default).
-                error(R.drawable.ic_boy_default).into(holder.imgAvatar);
+                placeholder(defaultImageId).
+                error(defaultImageId).into(holder.imgAvatar);
     }
 
 
@@ -57,7 +60,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
-        TextView txtContent;
+        TextView txtName;
         ImageView imgActionTop;
         TextView txtAbout;
 
@@ -66,7 +69,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
             txtAbout = (TextView) root.findViewById(R.id.txt_about);
-            txtContent = (TextView) root.findViewById(R.id.txt_content);
+            txtName = (TextView) root.findViewById(R.id.txt_name);
 
             setImageHeight(context);
         }
