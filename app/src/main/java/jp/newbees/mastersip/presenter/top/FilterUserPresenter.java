@@ -36,21 +36,22 @@ public class FilterUserPresenter extends BasePresenter {
         this.view = searchView;
     }
 
-    public void filterUser() {
+    public void filterUser(int typeSearch){
         nextPage = "0";
-        filterUser(false);
+        filterUser(false, typeSearch);
     }
 
-    private void filterUser(boolean isLoadMore) {
+    private void filterUser(boolean isLoadMore, int typeSearch) {
         this.isLoadMore = isLoadMore;
 
         FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
+        filterItem.setFilterType(typeSearch);
         FilterUserTask filterUserTask = new FilterUserTask(context, filterItem, nextPage, getCurrentUserItem());
         requestToServer(filterUserTask);
     }
 
-    public final void loadMoreUser() {
-        filterUser(true);
+    public final void loadMoreUser(int typeSearch) {
+        filterUser(true, typeSearch);
     }
 
     public final boolean canLoadMoreUser() {

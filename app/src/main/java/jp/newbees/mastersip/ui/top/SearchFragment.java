@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,6 +29,7 @@ import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.filter.FilterFragment;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.GridSpacingItemDecoration;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Mockup;
@@ -61,6 +63,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     public final String TAG = getClass().getSimpleName();
 
+    private int currentTypeSearch = Constant.API.AVAILABLE_CALL;
+
     private FilterUserPresenter presenter;
     private static final int MODE_FOUR_COLUMN = 4;
     private static final int MODE_TWO_COLUMN = 2;
@@ -76,7 +80,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private ArrayList<UserItem> userItems = Mockup.getUserItems();
 
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
-    private android.support.v7.widget.RecyclerView.ItemDecoration mItemDecoration;
+    private RecyclerView.ItemDecoration mItemDecoration;
 
     private int visibleItemCount, totalItemCount, firstVisibleItem;
     private boolean isLoading;
@@ -90,14 +94,15 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             totalItemCount = layoutManager.getItemCount();
             firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
-            if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0) {
+            if (firstVisibleItem + visibleItemCount >= totalItemCount && !firstTimeLoadData && totalItemCount != 0) {
                 if (!isLoading && presenter.canLoadMoreUser()) {
                     isLoading = true;
 
                     ((BaseActivity) getActivity()).showLoading();
-                    presenter.loadMoreUser();
+                    presenter.loadMoreUser(currentTypeSearch);
                 }
             }
+            firstTimeLoadData = false;
         }
     };
 
@@ -113,16 +118,20 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();
-        presenter.filterUser();
+        presenter.filterUser(currentTypeSearch);
+//        changeUIContent(currentFilterMode);
 
         recyclerUser.addOnScrollListener(onScrollListener);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.filterUser();
+                presenter.filterUser(currentTypeSearch);
             }
         });
+
+        segmentedFilter.setOnCheckedChangeListener(mOnSegmentedFilterChangeListener);
+
     }
 
     public static SearchFragment newInstance() {
@@ -161,7 +170,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         Logger.e(TAG, "onFilterUserEvent receive");
 
         ((BaseActivity) getActivity()).showLoading();
-        presenter.filterUser();
+        presenter.filterUser(currentTypeSearch);
 
     }
 
@@ -292,4 +301,24 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 break;
         }
     }
+
+    private RadioGroup.OnCheckedChangeListener mOnSegmentedFilterChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.btn_filter_call_waiting:
+                    currentTypeSearch = Constant.API.AVAILABLE_CALL;
+                    break;
+                case R.id.btn_filter_new:
+                    currentTypeSearch = Constant.API.NEW_USER;
+                    break;
+                case R.id.btn_filter_all:
+                    currentTypeSearch = Constant.API.ALL_USER;
+                    break;
+            }
+            firstTimeLoadData = true;
+            ((BaseActivity) getActivity()).showLoading();
+            presenter.filterUser(currentTypeSearch);
+        }
+    };
 }

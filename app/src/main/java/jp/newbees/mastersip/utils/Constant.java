@@ -131,7 +131,7 @@ public final class Constant {
         public static final int INVALID_EMAIL = 1007;
         public static final int INVALID_TOKEN = 9999;
         public static final int NO_NETWORK = 50;
-        public static final int REQUEST_TIME_OUT = -2102;
+        public static final int REQUEST_TIME_OUT = REQUEST_TIMEOUT;
         public static final int SC_INTERNAL_SERVER_ERROR = 500;
         public static final int WRONG_ORDER_BY_CODE = 3003;
     }
