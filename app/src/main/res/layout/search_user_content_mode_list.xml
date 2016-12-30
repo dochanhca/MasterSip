@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -39,11 +40,12 @@
         <TextView
             android:id="@+id/txt_time"
             style="@style/origin_style_content_text_view_tiny"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/normal_margin"
-            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginRight="10dp"
             android:text="10 hour"
-            android:textColor="@color/text_color_gray" />
+            android:textColor="@color/text_color_gray"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_alignTop="@+id/ic_time" />
 
         <ImageView
             android:id="@+id/ic_time"
@@ -70,7 +72,7 @@
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_toLeftOf="@id/txt_location"
             android:paddingRight="@dimen/tiny_margin"
-            android:src="@drawable/ic_time" />
+            android:src="@drawable/ic_location" />
 
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
@@ -80,6 +82,7 @@
             android:layout_toRightOf="@id/avatar_container"
             android:paddingRight="@dimen/normal_margin"
             android:paddingTop="@dimen/small_margin"
+            android:paddingBottom="@dimen/small_margin"
             android:text="A falsis, demissio brevis devirginato."
             android:textColor="@color/black" />
 
@@ -93,7 +96,9 @@
             android:paddingRight="@dimen/normal_margin"
             android:paddingTop="@dimen/small_margin"
             android:text="Special sex studies most ascensions."
-            android:textColor="@color/text_color_gray" />
+            android:textColor="@color/text_color_gray"
+            android:maxLines="2"
+            android:ellipsize="end"/>
     </RelativeLayout>
 
     <View

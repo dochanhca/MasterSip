@@ -224,4 +224,5 @@
 
     <string name="last_login">ログインが新しい順</string>
     <string name="last_register">登録が新しい順</string>
+    <string name="search_result_displayed_here">ここに検索結果が表示されます。</string>
 </resources>

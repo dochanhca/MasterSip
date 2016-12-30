@@ -22,7 +22,7 @@ import static jp.newbees.mastersip.utils.Constant.API.SEARCH_BY_NAME_URL;
  * Created by vietbq on 12/22/16.
  */
 
-public class SearchNameTask extends BaseTask<HashMap<String, Object>> {
+public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
 
     public static final String NEXT_PAGE = "NEXT_PAGE";
     public static final String LIST_USER = "LIST_USER";
@@ -31,7 +31,7 @@ public class SearchNameTask extends BaseTask<HashMap<String, Object>> {
     private final int page;
     private final String name;
 
-    public SearchNameTask(Context context, UserItem userItem, int page, String name) {
+    public FilterNameTask(Context context, UserItem userItem, int page, String name) {
         super(context);
         this.userItem = userItem;
         this.page = page;
@@ -50,7 +50,7 @@ public class SearchNameTask extends BaseTask<HashMap<String, Object>> {
     @NonNull
     @Override
     protected String getUrl() {
-        String url = String.format("%s/%s",SEARCH_BY_NAME_URL,userItem.getUserId());
+        String url = String.format("%s/%s", SEARCH_BY_NAME_URL, userItem.getUserId());
         return url;
     }
 
@@ -63,10 +63,10 @@ public class SearchNameTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.kData);
         String nextPage = jData.getString(Constant.JSON.kNextPage);
-        ArrayList<UserItem> userItems  = JSONUtils.parseUsers(jData);
+        ArrayList<UserItem> userItems = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
-        result.put(LIST_USER,userItems);
+        result.put(LIST_USER, userItems);
         return result;
     }
 }

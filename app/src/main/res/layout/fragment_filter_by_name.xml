@@ -2,60 +2,93 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_gray_bg"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_action_bar" />
+    <include
+        android:id="@+id/layout_action_bar"
+        layout="@layout/layout_action_bar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/search_field_h"
-        android:layout_margin="@dimen/common_margin"
-        android:background="@drawable/bg_corner_layout">
+        android:layout_height="match_parent"
+        android:background="@color/color_gray_bg">
 
-        <ImageView
-            android:id="@+id/img_search"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layout_search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_field_h"
+            android:layout_margin="@dimen/common_margin"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/search_field_h"
+                android:layout_weight="1"
+                android:background="@drawable/bg_corner_layout">
+
+                <ImageView
+                    android:id="@+id/img_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:src="@drawable/ic_search" />
+
+                <jp.newbees.mastersip.customviews.HiraginoEditText
+                    android:id="@+id/edt_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/margin_5"
+                    android:layout_marginRight="@dimen/margin_50"
+                    android:layout_toRightOf="@+id/img_search"
+                    android:background="@color/transparent"
+                    android:gravity="left|center_vertical"
+                    android:hint="@string/pls_enter_name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:textColorHint="@color/text_color_gray_hint"
+                    android:textSize="@dimen/text_size_13" />
+
+                <ImageView
+                    android:id="@+id/img_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/margin_10"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/common_margin"
+                android:gravity="right|center_vertical"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_13"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_user"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margin_10"
-            android:src="@drawable/ic_search" />
+            android:layout_below="@+id/layout_search_bar"
+            android:layout_marginTop="@dimen/common_margin"></android.support.v7.widget.RecyclerView>
 
-        <jp.newbees.mastersip.customviews.HiraginoEditText
-            android:id="@+id/edt_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/margin_5"
-            android:layout_marginRight="@dimen/margin_50"
-            android:layout_toRightOf="@+id/img_search"
-            android:background="@color/transparent"
-            android:gravity="left|center_vertical"
-            android:hint="@string/pls_enter_name"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:textColorHint="@color/text_color_gray_hint"
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/search_result_displayed_here"
+            android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_13" />
-
-        <ImageView
-            android:id="@+id/img_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_10"
-            android:visibility="gone"
-            android:src="@drawable/ic_close" />
     </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin">
-
-    </android.support.v7.widget.RecyclerView>
-
-
 </LinearLayout>

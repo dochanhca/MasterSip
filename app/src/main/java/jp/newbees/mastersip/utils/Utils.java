@@ -1,8 +1,10 @@
 package jp.newbees.mastersip.utils;
 
 import android.content.Context;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.inputmethod.InputMethodManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,5 +67,10 @@ public class Utils {
         }
 
         return age;
+    }
+
+    public static void closeKeyboard(Context c, IBinder windowToken) {
+        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(windowToken, 0);
     }
 }

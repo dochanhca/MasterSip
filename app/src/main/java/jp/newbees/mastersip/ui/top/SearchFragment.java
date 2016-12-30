@@ -69,7 +69,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private AdapterSearchUserModeFour adapterSearchUserModeFour;
     private AdapterSearchUserModeTwo adapterSearchUserModeTwo;
-    private AdapterSearUserModeList adapterSearUserModeList;
+    private AdapterSearchUserModeList adapterSearUserModeList;
 
     private GridLayoutManager layoutManager;
 
@@ -192,7 +192,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private void setupListViewWithModeList() {
         if (adapterSearUserModeList == null) {
-            adapterSearUserModeList = new AdapterSearUserModeList(getContext(), userItems);
+            adapterSearUserModeList = new AdapterSearchUserModeList(getContext(), userItems);
         } else {
             adapterSearUserModeList.addAll(userItems);
         }
