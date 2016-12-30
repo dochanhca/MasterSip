@@ -11,7 +11,6 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/23/16.
@@ -78,7 +77,6 @@ public class FilterUserPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        Logger.e("FilterUserPresenter", errorCode + " - " + errorMessage);
         view.didFilterUserError(errorCode, errorMessage);
     }
 }

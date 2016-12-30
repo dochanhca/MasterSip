@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,6 +16,9 @@ public class DateTimeUtils {
             Locale.JAPAN);
 
     public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
+            Locale.ENGLISH);
+
+    public static final SimpleDateFormat SERVER_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
             Locale.ENGLISH);
 
     public static int subtractDateToYear(Date from, Date to) {
@@ -33,5 +37,15 @@ public class DateTimeUtils {
         Calendar cal = Calendar.getInstance(Locale.JAPANESE);
         cal.setTime(date);
         return cal;
+    }
+
+    public static Date convertStringToDate(String date, SimpleDateFormat format) {
+        Date d = null;
+        try {
+            d = format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d;
     }
 }

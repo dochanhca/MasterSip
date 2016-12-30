@@ -11,23 +11,27 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.ArrayList;
+import java.util.Locale;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 12/27/16.
  */
-public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUserModeList.ViewHolder> {
+public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearchUserModeList.ViewHolder> {
 
     private ArrayList<UserItem> datas;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public AdapterSearUserModeList(Context context, ArrayList<UserItem> datas) {
+    public AdapterSearchUserModeList(Context context, ArrayList<UserItem> datas) {
         this.datas = datas;
         this.context = context;
     }
@@ -42,6 +46,10 @@ public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUse
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserItem item = datas.get(position);
+        PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
+
+        String lastLogin = prettyTime.format(DateTimeUtils.convertStringToDate(item.getLastLogin(),
+                DateTimeUtils.SERVER_DATE_FORMAT));
 
         int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
 
@@ -51,7 +59,7 @@ public class AdapterSearUserModeList extends RecyclerView.Adapter<AdapterSearUse
 
         holder.txtTitle.setText(item.getUsername() + " " + Utils.getAge(item.getDateOfBirth()));
         holder.txtValue.setText(item.getMemo());
-        holder.txtTime.setText(item.getAvailableTimeItem().getTitle());
+        holder.txtTime.setText(lastLogin);
         holder.txtLocation.setText(item.getLocation().getTitle());
     }
 
