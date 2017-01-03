@@ -9,3 +9,5 @@
 .externalNativeBuild
 /slideDateTimePicker/build/
 /.idea
+local.properties
+.idea

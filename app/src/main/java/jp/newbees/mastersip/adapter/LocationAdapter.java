@@ -25,9 +25,21 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private LayoutInflater inflater;
     private List<LocationItem> locationItems;
 
+    /**
+     * Interface  when click item on Location list
+     */
     public interface OnLocationAdapterClick {
+        /**
+         * Callback when button select all pressed
+         * @param id
+         */
         void onSelectAllClick(int id);
 
+        /**
+         * Callback when item selected
+         * @param position
+         * @param isChecked
+         */
         void onSelectItemClick(int position, boolean isChecked);
     }
 
