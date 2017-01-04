@@ -6,6 +6,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +64,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     ImageView imgFilter;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.filter)
+    ViewGroup filter;
 
     public final String TAG = getClass().getSimpleName();
 
@@ -82,11 +88,17 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
     private RecyclerView.ItemDecoration mItemDecoration;
 
-    private int visibleItemCount, totalItemCount, firstVisibleItem;
+    private Animation slideDown;
+    private Animation slideUp;
+
+    private int visibleItemCount;
+    private int totalItemCount;
+    private int firstVisibleItem;
     private boolean isLoading;
 
     private boolean firstTimeLoadData = true;
 
+    private boolean isShowFilterAndNavigationBar = true;
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -102,9 +114,39 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                     presenter.loadMoreUser(currentTypeSearch);
                 }
             }
+
+            if (!firstTimeLoadData) {
+                if (scrollUp(dy) && isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = false;
+                    hideFilterAndNavigationBar();
+                } else if (scrollDown(dy) && !isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = true;
+                    showFilterAndNavigationBar();
+                }
+            }
+
             firstTimeLoadData = false;
         }
+
+        private boolean scrollUp(int dy) {
+            return dy > 0;
+        }
+
+        private boolean scrollDown(int dy) {
+            return dy < 0;
+        }
+
+        private void hideFilterAndNavigationBar() {
+            filter.startAnimation(slideUp);
+            ((TopActivity)getActivity()).hideNavigation();
+        }
+
+        private void showFilterAndNavigationBar() {
+            filter.startAnimation(slideDown);
+            ((TopActivity)getActivity()).showNavigation();
+        }
     };
+
 
     @Override
     protected int layoutId() {
@@ -113,16 +155,20 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
+        slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
+        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
+
         presenter = new FilterUserPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();
         presenter.filterUser(currentTypeSearch);
-//        changeUIContent(currentFilterMode);
 
         recyclerUser.addOnScrollListener(onScrollListener);
 
+        swipeRefreshLayout.setProgressViewOffset(false, (int) getResources().getDimension(R.dimen.header_filter_height),
+                2 * (int) getResources().getDimension(R.dimen.header_filter_height));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -131,9 +177,12 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         });
 
         segmentedFilter.setOnCheckedChangeListener(mOnSegmentedFilterChangeListener);
-
     }
 
+    /**
+     * create newInstance of Fragment
+     * @return
+     */
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle bundle = new Bundle();
@@ -150,6 +199,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             case R.id.header_search:
                 showFilterFragment();
                 break;
+            default:
+                break;
         }
     }
 
@@ -165,6 +216,10 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * on filter user event
+     * @param event
+     */
     @Subscribe(sticky = true)
     public void onFilterUserEvent(FilterUserEvent event) {
         Logger.e(TAG, "onFilterUserEvent receive");
@@ -195,6 +250,9 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 break;
             case MODE_LIST:
                 setupListViewWithModeList();
+                break;
+            default:
+                setupListViewWithModeFour();
                 break;
         }
     }
@@ -237,7 +295,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private void changeFilterImage() {
         StringBuilder uri = new StringBuilder("@drawable/ic_");
-        uri.append(currentFilterMode + "");
+        uri.append(Integer.toString(currentFilterMode));
         int imageResource = getResources().getIdentifier(uri.toString(), null, getActivity().getPackageName());
         imgFilter.setImageDrawable(getResources().getDrawable(imageResource));
     }
@@ -263,7 +321,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didFilterUser(ArrayList<UserItem> userItems) {
+    public void didFilterUser(List<UserItem> userItems) {
         Logger.e("SearchFragment", "userItems " + userItems.size());
         this.userItems.clear();
         this.userItems.addAll(userItems);
@@ -281,7 +339,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didLoadMoreUser(ArrayList<UserItem> users) {
+    public void didLoadMoreUser(List<UserItem> users) {
         userItems.addAll(users);
         notifyListUserChanged();
         isLoading = false;
@@ -298,6 +356,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 break;
             case MODE_TWO_COLUMN:
                 adapterSearchUserModeTwo.notifyDataSetChanged();
+                break;
+            default:
                 break;
         }
     }
@@ -321,4 +381,5 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             presenter.filterUser(currentTypeSearch);
         }
     };
+
 }

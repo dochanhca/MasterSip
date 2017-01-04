@@ -9,6 +9,11 @@
         <!--android:id="@+id/action_bar"-->
         <!--layout="@layout/layout_action_bar" />-->
 
+    <jp.newbees.mastersip.customviews.NonSwipeableViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <jp.newbees.mastersip.customviews.NavigationLayoutGroup
         android:id="@+id/navigation_bar"
         android:layout_width="match_parent"
@@ -80,10 +85,4 @@
             app:textColorSelected="@color/selected_color"/>
     </jp.newbees.mastersip.customviews.NavigationLayoutGroup>
 
-    <jp.newbees.mastersip.customviews.NonSwipeableViewPager
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/navigation_bar" />
-    
 </RelativeLayout>

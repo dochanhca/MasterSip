@@ -6,51 +6,34 @@
     android:background="@color/cardview_shadow_end_color">
 
     <RelativeLayout
-        android:id="@+id/header_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_search_height">
 
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:id="@+id/txt_search"
-            style="@style/style_content_text_view_tiny"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/header_search_height"
-            android:layout_marginBottom="@dimen/normal_margin"
-            android:layout_marginLeft="@dimen/normal_margin"
-            android:layout_marginRight="@dimen/normal_margin"
-            android:layout_marginTop="@dimen/normal_margin"
-            android:background="@drawable/bg_white_with_large_border"
-            android:drawableLeft="@drawable/ic_search"
-            android:drawablePadding="@dimen/normal_margin"
-            android:gravity="center"
-            android:paddingLeft="@dimen/normal_margin"
-            android:paddingRight="@dimen/normal_margin"
-            android:text="@string/search_condition" />
+            android:layout_height="wrap_content">
 
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:id="@+id/txt_phone"
-            style="@style/style_content_text_view_tiny"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/header_search_height"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/normal_margin"
-            android:background="@drawable/bg_white_with_large_border"
-            android:drawableTop="@drawable/ic_phone"
-            android:gravity="center"
-            android:paddingLeft="@dimen/xnormal_margin"
-            android:paddingRight="@dimen/xnormal_margin"
-            android:paddingTop="@dimen/margin_2"
-            android:text="@string/call_phone"
-            android:visibility="gone" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_content_search"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/header_search_height"
+                android:paddingTop="@dimen/header_search_height">
 
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header_search"
+        android:layout_marginTop="@dimen/header_search_height"
         android:background="@color/bg_green_normal">
 
         <jp.newbees.mastersip.customviews.SegmentedGroup
@@ -98,7 +81,7 @@
         <ImageView
             android:id="@+id/img_filter"
             android:layout_width="@dimen/header_search_width"
-            android:layout_height="@dimen/header_search_height"
+            android:layout_height="@dimen/header_filter_height"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin"
@@ -109,26 +92,47 @@
             android:src="@drawable/ic_4" />
     </RelativeLayout>
 
+
     <RelativeLayout
+        android:id="@+id/header_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/filter">
+        android:layout_height="@dimen/header_search_height"
+        android:background="@color/colorPrimary">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_search"
+            style="@style/style_content_text_view_tiny"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:background="@drawable/bg_white_with_large_border"
+            android:drawableLeft="@drawable/ic_search"
+            android:drawablePadding="@dimen/normal_margin"
+            android:gravity="center"
+            android:paddingLeft="@dimen/normal_margin"
+            android:paddingRight="@dimen/normal_margin"
+            android:text="@string/search_condition" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_user"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/bg_content_search"
-                android:clipToPadding="false">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_phone"
+            style="@style/style_content_text_view_tiny"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:background="@drawable/bg_white_with_large_border"
+            android:drawableTop="@drawable/ic_phone"
+            android:gravity="center"
+            android:paddingLeft="@dimen/xnormal_margin"
+            android:paddingRight="@dimen/xnormal_margin"
+            android:paddingTop="@dimen/margin_2"
+            android:text="@string/call_phone" />
 
-            </android.support.v7.widget.RecyclerView>
-
-        </android.support.v4.widget.SwipeRefreshLayout>
     </RelativeLayout>
 
 </RelativeLayout>
