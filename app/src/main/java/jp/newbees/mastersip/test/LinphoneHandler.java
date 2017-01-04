@@ -45,6 +45,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState cstate, String smessage) {
         this.write(cfg.getIdentity() + " : " + cstate.toString());
+        //NOTE 3 ;Su dung de LOGIN
     }
 
     public void show(LinphoneCore lc) {
@@ -71,6 +72,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void globalState(LinphoneCore lc, LinphoneCore.GlobalState state, String message) {
+        //NOTE 2
     }
 
     public void newSubscriptionRequest(LinphoneCore lc, LinphoneFriend lf, String url) {
@@ -80,6 +82,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
+        //NEU Incoming...
+        //NEU Outgoing...
+        //NEU Start Streaming
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
@@ -179,6 +184,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void messageReceived(LinphoneCore lc, LinphoneChatRoom cr, LinphoneChatMessage message) {
+        //TEXT
     }
 
     public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State new_call_state) {

@@ -71,6 +71,15 @@ public final class Constant {
         public final static String kUserProvinceId = "province_id";
         public final static String kUserProvinceName = "province_name";
         public final static String kName = "name";
+        public final static String kType = "type";
+        public final static String kContent = "content";
+        public final static String kExtensionSource = "extension_src";
+        public final static String kExtensionDestination = "extension_dest";
+        public final static String kRoomType = "room_type";
+        public final static String kResponse = "response";
+        public final static String kDeleted = "deleted";
+        public final static String kSender = "sender";
+        public final static String kText = "text";
     }
 
     public static final class API {
@@ -80,6 +89,7 @@ public final class Constant {
 
         private static final String DEVELOPMENT_IP = "52.197.14.30";
         private static final String PRODUCTION_IP = "52.197.138.1";
+
 
         public static String BASE_URL;
         public static final String PROTOCOL = "http";
@@ -93,6 +103,7 @@ public final class Constant {
         public static final String UPDATE_REGISTER_PROFILE = "user/update";
         public static final String GET_PROVINCE = "provinces/province";
         public static final String SEARCH_BY_NAME_URL = "searchuser";
+        public static final String CHAT_MESSAGE = "chat";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

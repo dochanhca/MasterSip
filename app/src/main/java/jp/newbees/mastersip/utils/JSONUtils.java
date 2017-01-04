@@ -6,11 +6,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import jp.newbees.mastersip.model.BaseChatItem;
+import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SipItem;
+import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_GIFT;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_IMAGE;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_TEXT;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CALL;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE;
+import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE_CALL;
+import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
 
 /**
  * Created by vietbq on 12/20/16.
@@ -126,4 +139,65 @@ public class JSONUtils {
             return -1;
         }
     }
+
+    public final static BaseChatItem parseChatItem(JSONObject jData,UserItem sender) throws JSONException {
+        BaseChatItem chatItem = new BaseChatItem();
+        int type = jData.getInt(Constant.JSON.kType);
+        switch (type) {
+            case CHAT_DELETED:
+                chatItem = parseDeletedChatItem(jData, sender);
+                break;
+            case CHAT_VOICE:
+//                chatItem = [self getAudioItem:dictChatItem ofExtension:extension];
+                break;
+            case CHAT_TEXT:
+                chatItem = parseTextChatItem(jData, sender);
+                break;
+            case CHAT_IMAGE:
+//                chatItem = [self getImgeItem:dictChatItem ofExtension:extension];
+                break;
+            case CHAT_GIFT:
+//                chatItem = [self getGifiItem:dictChatItem ofExtension:extension];
+                break;
+            case CHAT_VOICE_CALL:
+            case CHAT_VIDEO_CALL:
+            case CHAT_VIDEO_CHAT_CALL:
+//                chatItem = [self getCallItem:dictChatItem ofExtension:extension];
+                break;
+            default:
+                break;
+        }
+        return chatItem;
+    }
+
+    private final static DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
+        DeletedChatItem deletedChatItem = new DeletedChatItem();
+        JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.kDeleted);
+        String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
+        String content = jDeletedItem.getString(Constant.JSON.kContent);
+        if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
+            deletedChatItem.setSender(true);
+        }else {
+            deletedChatItem.setSender(false);
+        }
+        deletedChatItem.setMessage(content);
+        deletedChatItem.setRoomType(ROOM_CHAT_CHAT);
+        return deletedChatItem;
+    }
+
+    private final static TextChatItem parseTextChatItem(JSONObject jData, UserItem sender) throws JSONException {
+        JSONObject jText = jData.getJSONObject(Constant.JSON.kText);
+        String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
+        String content = jText.getString(Constant.JSON.kContent);
+        TextChatItem textChatItem = new TextChatItem(content);
+        if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
+            textChatItem.setSender(true);
+        }else {
+            textChatItem.setSender(false);
+        }
+        int roomType = jText.getInt(Constant.JSON.kRoomType);
+        textChatItem.setRoomType(roomType);
+        return textChatItem;
+    }
+
 }

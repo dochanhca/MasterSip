@@ -15,6 +15,10 @@ public class SipItem implements Parcelable , Serializable{
         this.secret = password;
     }
 
+    public SipItem(String extension) {
+        this(extension,"");
+    }
+
     public String getExtension() {
         return extension;
     }
@@ -48,7 +52,7 @@ public class SipItem implements Parcelable , Serializable{
     public SipItem() {
     }
 
-    protected SipItem(Parcel in) {
+    public SipItem(Parcel in) {
         this.extension = in.readString();
         this.secret = in.readString();
     }
