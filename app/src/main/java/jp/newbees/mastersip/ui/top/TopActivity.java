@@ -6,24 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
-
-import org.greenrobot.eventbus.EventBus;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.model.FilterItem;
-import jp.newbees.mastersip.model.LocationItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.filter.FilterFragment;
-import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -37,6 +31,9 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     private static final int FOOT_PRINT_FRAGMENT = 2;
     private static final int FLOW_FRAGMENT = 3;
     private static final int PROFILE_FRAGMENT = 4;
+
+    private Animation slide_down;
+    private Animation slide_up;
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
@@ -83,6 +80,9 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
+        slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
+
         topPresenter = new TopPresenter(getApplicationContext(),this);
         FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
         topPresenter.requestFilterData(filterItem);
@@ -92,6 +92,14 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     private void fillData() {
         myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(myPagerAdapter);
+    }
+
+    protected void showNavigation() {
+        navigationLayoutGroup.startAnimation(slide_up);
+    }
+
+    protected void hideNavigation() {
+        navigationLayoutGroup.startAnimation(slide_down);
     }
 
     @Override
