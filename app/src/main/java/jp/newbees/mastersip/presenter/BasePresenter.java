@@ -17,9 +17,11 @@ import jp.newbees.mastersip.utils.Constant;
 public abstract class BasePresenter {
 
     protected Context context;
+    protected String TAG;
 
     public BasePresenter(Context context){
         this.context = context;
+        this.TAG = this.getClass().getSimpleName();
     }
 
     protected void requestToServer(final BaseTask task){

@@ -58,7 +58,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         String url = genURL();
         url += genParamURL();
         if(Constant.Application.DEBUG) {
-            Logger.d(TAG,url);
+            Logger.e(TAG,url);
         }
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
             @Override
@@ -160,7 +160,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         return urlBuilder.toString();
     }
 
-    private String genParamURL(){
+    private String genParamURL()  {
         StringBuilder urlBuilder = new StringBuilder();
         if (getMethod() == Request.Method.GET) {
             try {
