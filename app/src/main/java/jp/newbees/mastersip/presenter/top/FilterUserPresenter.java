@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -23,11 +24,11 @@ public class FilterUserPresenter extends BasePresenter {
     private SearchView view;
 
     public interface SearchView {
-        void didFilterUser(ArrayList<UserItem> userItems);
+        void didFilterUser(List<UserItem> userItems);
 
         void didFilterUserError(int errorCode, String errorMessage);
 
-        void didLoadMoreUser(ArrayList<UserItem> users);
+        void didLoadMoreUser(List<UserItem> users);
     }
 
     public FilterUserPresenter(Context context, SearchView searchView) {
