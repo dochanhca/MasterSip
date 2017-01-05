@@ -10,6 +10,18 @@ import android.os.Parcelable;
 public class DeletedChatItem extends BaseChatItem implements Parcelable{
     private String message;
 
+    /**
+     * Default constructor
+     */
+    public DeletedChatItem() {
+        //Nothing
+    }
+
+    protected DeletedChatItem(Parcel in) {
+        super(in);
+        this.message = in.readString();
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -29,13 +41,7 @@ public class DeletedChatItem extends BaseChatItem implements Parcelable{
         dest.writeString(this.message);
     }
 
-    public DeletedChatItem() {
-    }
 
-    protected DeletedChatItem(Parcel in) {
-        super(in);
-        this.message = in.readString();
-    }
 
     public static final Creator<DeletedChatItem> CREATOR = new Creator<DeletedChatItem>() {
         @Override

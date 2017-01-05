@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
@@ -30,7 +31,11 @@ import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
  */
 public class JSONUtils {
 
-    public static ArrayList<UserItem> parseUsers(JSONObject data) throws JSONException {
+    private JSONUtils(){
+        //Prevent init object
+    }
+
+    public static List<UserItem> parseUsers(JSONObject data) throws JSONException {
         JSONArray jArray = data.getJSONArray(Constant.JSON.kUsers);
         ArrayList<UserItem> result = new ArrayList<>();
         for (int i=0, n=jArray.length(); i<n; i++){
@@ -66,7 +71,7 @@ public class JSONUtils {
             userItem.setLocation(location);
 
             SelectionItem job = new SelectionItem();
-            job.setTitle(getString(jUser,Constant.JSON.kJobName));
+            job.setTitle(JSONUtils.getString(jUser,Constant.JSON.kJobName));
             userItem.setJobItem(job);
 
             String lastLogin = jUser.getString(Constant.JSON.kLastLogin);
@@ -95,14 +100,15 @@ public class JSONUtils {
                     userItem.setTypeGirl(typeGirl);
                 }
             }
-//
-//            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
-//            ImageItem avatarItem = new ImageItem();
-//            int imageId = jAvatar.getInt(Constant.JSON.kID);
-//            String imagePath = jAvatar.getString(Constant.JSON.kPath);
-//            avatarItem.setImageId(imageId);
-//            avatarItem.setOriginUrl(imagePath);
-//            userItem.setAvatarItem(avatarItem);
+            /*
+            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
+            ImageItem avatarItem = new ImageItem();
+            int imageId = jAvatar.getInt(Constant.JSON.kID);
+            String imagePath = jAvatar.getString(Constant.JSON.kPath);
+            avatarItem.setImageId(imageId);
+            avatarItem.setOriginUrl(imagePath);
+            userItem.setAvatarItem(avatarItem);
+            */
             result.add(userItem);
         }
         return result;
@@ -116,7 +122,7 @@ public class JSONUtils {
         }
     }
 
-    public final static RelationshipItem parseRelationship(JSONObject jsonObject) throws JSONException {
+    public static final RelationshipItem parseRelationship(JSONObject jsonObject) throws JSONException {
         RelationshipItem relationshipItem = new RelationshipItem();
         int followed = jsonObject.getInt(Constant.JSON.kFollowed);
         boolean isNotification = jsonObject.getBoolean(Constant.JSON.kNotification);
@@ -132,7 +138,7 @@ public class JSONUtils {
      * @return Default value is -1
      * @throws JSONException
      */
-    private final static int getInt(JSONObject jsonObject, String name) throws JSONException {
+    private static final int getInt(JSONObject jsonObject, String name) throws JSONException {
         if (jsonObject.has(name)){
             return jsonObject.getInt(name);
         }else {
@@ -140,7 +146,7 @@ public class JSONUtils {
         }
     }
 
-    public final static BaseChatItem parseChatItem(JSONObject jData,UserItem sender) throws JSONException {
+    public static final BaseChatItem parseChatItem(JSONObject jData,UserItem sender) throws JSONException {
         BaseChatItem chatItem = new BaseChatItem();
         int type = jData.getInt(Constant.JSON.kType);
         switch (type) {
@@ -170,7 +176,7 @@ public class JSONUtils {
         return chatItem;
     }
 
-    private final static DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
+    private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
         JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.kDeleted);
         String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
@@ -185,7 +191,7 @@ public class JSONUtils {
         return deletedChatItem;
     }
 
-    private final static TextChatItem parseTextChatItem(JSONObject jData, UserItem sender) throws JSONException {
+    private static final TextChatItem parseTextChatItem(JSONObject jData, UserItem sender) throws JSONException {
         JSONObject jText = jData.getJSONObject(Constant.JSON.kText);
         String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
         String content = jText.getString(Constant.JSON.kContent);
