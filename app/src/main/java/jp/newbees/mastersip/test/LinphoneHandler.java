@@ -20,10 +20,13 @@ import org.linphone.core.LinphoneInfoMessage;
 import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
 import org.linphone.core.SubscriptionState;
-import org.linphone.core.tutorials.TutorialNotifier;
-import org.linphone.core.tutorials.TutorialRegistration;
 
 import java.nio.ByteBuffer;
+
+import jp.newbees.mastersip.linphone.LinPhoneNotifier;
+import jp.newbees.mastersip.linphone.RegisterVoIPManager;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -32,20 +35,18 @@ import java.nio.ByteBuffer;
 public class LinphoneHandler implements LinphoneCoreListener {
     private Context context;
     private boolean running;
-    private org.linphone.core.tutorials.TutorialNotifier TutorialNotifier;
+    private LinPhoneNotifier notifier;
 
-    public LinphoneHandler(TutorialNotifier TutorialNotifier, Context context) {
-        this.TutorialNotifier = TutorialNotifier;
+    public LinphoneHandler(LinPhoneNotifier notifier, Context context) {
+        this.notifier = notifier;
         this.context = context;
     }
 
-    public LinphoneHandler() {
-        this.TutorialNotifier = new TutorialNotifier();
-    }
 
-    public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState cstate, String smessage) {
-        this.write(cfg.getIdentity() + " : " + cstate.toString());
-        //NOTE 3 ;Su dung de LOGIN
+    public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
+        this.write(cfg.getIdentity() + " : " + state.toString());
+        Logger.e(getClass().getSimpleName(), state.toString());
+        RegisterVoIPManager.getInstance().registrationStateChanged(state, notifier);
     }
 
     public void show(LinphoneCore lc) {
@@ -102,36 +103,26 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void dtmfReceived(LinphoneCore lc, LinphoneCall call, int dtmf) {
     }
 
-    public static void main(String[] args) {
-        if(args.length != 2) {
-            throw new IllegalArgumentException("Bad number of arguments");
-        } else {
-            TutorialRegistration tutorial = new TutorialRegistration();
-
-            try {
-                String e = args[1];
-                String userSipPassword = args[2];
-                tutorial.launchTutorial(e, userSipPassword);
-            } catch (Exception var4) {
-                var4.printStackTrace();
-            }
-
-        }
-    }
-
-    public void launchTutorial(String sipAddress, String password) throws LinphoneCoreException {
+    /**
+     * Login to VoIP Server (such as Aterisk, FreeSWITCH ...)
+     * @param extension 10001
+     * @param password  abcxzy
+     * @throws LinphoneCoreException
+     */
+    public void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
+        extension = "sip:"+extension+"@"+ ConfigManager.getInstance().getDomain();
         LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
         LinphoneCore lc = lcFactory.createLinphoneCore(this, context);
 
         try {
-            LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
+            LinphoneAddress address = lcFactory.createLinphoneAddress(extension);
             String username = address.getUserName();
             String domain = address.getDomain();
             if(password != null) {
                 lc.addAuthInfo(lcFactory.createAuthInfo(username, password, (String)null, domain));
             }
 
-            LinphoneProxyConfig proxyCfg = lc.createProxyConfig(sipAddress, domain, (String)null, true);
+            LinphoneProxyConfig proxyCfg = lc.createProxyConfig(extension, domain, (String)null, true);
             proxyCfg.setExpires(2000);
             lc.addProxyConfig(proxyCfg);
             lc.setDefaultProxyConfig(proxyCfg);
@@ -180,7 +171,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void write(String s) {
-        this.TutorialNotifier.notify(s);
+        this.notifier.notify(s);
     }
 
     public void messageReceived(LinphoneCore lc, LinphoneChatRoom cr, LinphoneChatMessage message) {

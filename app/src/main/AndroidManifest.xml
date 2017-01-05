@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDGHE93m3lSKewntsAw-QKGkY97NS2k7Qs"/>
+            android:value="AIzaSyDGHE93m3lSKewntsAw-QKGkY97NS2k7Qs" />
 
         <activity android:name="jp.newbees.mastersip.test.TutorialRegistrationActivity">
 
@@ -89,14 +89,12 @@
         <activity
             android:name=".ui.auth.RegisterProfileMaleActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.auth.RegisterProfileFemaleActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.auth.LoginActivity"
@@ -110,25 +108,37 @@
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/AppThemeHasActionBar"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeHasActionBar"></activity>
         <activity
             android:name=".ui.auth.CropImageActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.auth.PickLocationActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.InputActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize">
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+
+        <activity
+            android:name=".ui.call.OutgoingVoiceActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
+
+        <activity
+            android:name=".ui.call.IncomingVoiceActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

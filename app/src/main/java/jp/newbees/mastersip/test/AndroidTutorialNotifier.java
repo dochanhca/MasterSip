@@ -27,4 +27,13 @@ public class AndroidTutorialNotifier extends TutorialNotifier {
             }
         });
     }
+
+    public void registerVoIPOK() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+    }
 }

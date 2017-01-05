@@ -86,6 +86,6 @@ dependencies {
     compile 'com.pnikosis:materialish-progress:1.7'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }
 

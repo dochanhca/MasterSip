@@ -129,6 +129,7 @@ public final class Constant {
         public static final int OUT_OF_MONEY = 1204;
         public static final int EXTENSION_OFFLINE = 1206;
         public static final int USER_NOT_EXIST = 1011;
+//
         public static final int SOCIAL_ID_IS_NOT_EXIST = 1100;
         public static final int EMAIL_OR_PASS_IS_WRONG = 1044;
         public static final int WRONG_CODE_RESET_PASS = 1039;
