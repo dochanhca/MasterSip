@@ -41,7 +41,7 @@
     <dimen name="search_field_h">45dp</dimen>
     <dimen name="radio_button_conner_radius">5dp</dimen>
     <dimen name="radio_button_stroke_border">1dp</dimen>
-    <dimen name="header_search_height">36dp</dimen>
+    <dimen name="header_search_height">50dp</dimen>
     <dimen name="action_filter_search_width">93dp</dimen>
     <dimen name="item_user_size_mode_four">80dp</dimen>
     <dimen name="corner_item_search_user">10dp</dimen>
@@ -53,4 +53,5 @@
     <dimen name="_15dp">15dp</dimen>
     <dimen name="header_search_width">50dp</dimen>
     <dimen name="margin_1">1dp</dimen>
+    <dimen name="header_filter_height">32dp</dimen>
 </resources>

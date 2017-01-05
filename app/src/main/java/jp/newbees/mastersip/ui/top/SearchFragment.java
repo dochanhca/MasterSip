@@ -6,6 +6,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -60,6 +63,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     ImageView imgFilter;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.filter)
+    ViewGroup filter;
 
     public final String TAG = getClass().getSimpleName();
 
@@ -82,11 +87,15 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
     private RecyclerView.ItemDecoration mItemDecoration;
 
+    private Animation slide_down;
+    private Animation slide_up;
+
     private int visibleItemCount, totalItemCount, firstVisibleItem;
     private boolean isLoading;
 
     private boolean firstTimeLoadData = true;
 
+    private boolean isShowFilterAndNavigationBar = true;
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -102,9 +111,21 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                     presenter.loadMoreUser(currentTypeSearch);
                 }
             }
+
+            if (!firstTimeLoadData) {
+                if (scrollUp(dy) && isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = false;
+                    hideFilterAndNavigationBar();
+                } else if (scrollDown(dy) && !isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = true;
+                    showFilterAndNavigationBar();
+                }
+            }
+
             firstTimeLoadData = false;
         }
     };
+
 
     @Override
     protected int layoutId() {
@@ -113,6 +134,9 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
+        slide_down = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
+        slide_up = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
+
         presenter = new FilterUserPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
         btnFilterCallWaiting.setChecked(true);
@@ -123,6 +147,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         recyclerUser.addOnScrollListener(onScrollListener);
 
+        swipeRefreshLayout.setProgressViewOffset(false, (int) getResources().getDimension(R.dimen.header_filter_height),
+                2 * (int) getResources().getDimension(R.dimen.header_filter_height));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -131,7 +157,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         });
 
         segmentedFilter.setOnCheckedChangeListener(mOnSegmentedFilterChangeListener);
-
     }
 
     public static SearchFragment newInstance() {
@@ -321,4 +346,23 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             presenter.filterUser(currentTypeSearch);
         }
     };
+
+    private boolean scrollUp(int dy) {
+        return dy > 0;
+    }
+
+    private boolean scrollDown(int dy) {
+        return dy < 0;
+    }
+
+    private void hideFilterAndNavigationBar() {
+        filter.startAnimation(slide_up);
+        ((TopActivity)getActivity()).hideNavigation();
+    }
+
+    private void showFilterAndNavigationBar() {
+        filter.startAnimation(slide_down);
+        ((TopActivity)getActivity()).showNavigation();
+    }
+
 }

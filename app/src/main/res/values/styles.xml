@@ -108,7 +108,7 @@
     </style>
 
     <style name="RadioButton">
-        <item name="android:minHeight">@dimen/header_search_height</item>
+        <item name="android:minHeight">@dimen/header_filter_height</item>
         <item name="android:minWidth">@dimen/action_filter_search_width</item>
         <item name="android:gravity">center</item>
         <item name="android:button">@null</item>
