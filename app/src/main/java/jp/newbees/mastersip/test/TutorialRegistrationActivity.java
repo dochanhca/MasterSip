@@ -7,10 +7,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.linphone.core.LinphoneCoreException;
-import org.linphone.core.tutorials.TutorialNotifier;
 import org.linphone.mediastream.Log;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinPhoneNotifier;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -39,7 +39,7 @@ public class TutorialRegistrationActivity extends TutorialHelloWorldActivity {
 
         // Output text to the outputText widget
         outputText = (TextView) findViewById(R.id.OutputText);
-        final TutorialNotifier notifier = new AndroidTutorialNotifier(mHandler, outputText);
+        final LinPhoneNotifier notifier = new LinPhoneNotifier(mHandler);
 
 
         // Create Tutorial object
@@ -73,7 +73,7 @@ public class TutorialRegistrationActivity extends TutorialHelloWorldActivity {
         public void run() {
             super.run();
             try {
-                tutorial.launchTutorial(
+                tutorial.loginVoIPServer(
                         sipAddressWidget.getText().toString(),
                         sipPasswordWidget.getText().toString());
             } catch (LinphoneCoreException e) {

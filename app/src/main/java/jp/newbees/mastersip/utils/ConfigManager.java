@@ -23,6 +23,7 @@ import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
 
 import static com.facebook.FacebookSdk.getCacheDir;
+import static jp.newbees.mastersip.utils.Constant.API.BASE_URL;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -33,7 +34,7 @@ final public class ConfigManager {
     private static ConfigManager instance;
     private final String deviceId;
     private final SharedPreferences sharedPreferences;
-
+    private String domain;
     private int imageDrawableCalleeId = -1;
 
     public final static void initConfig(Context context) {
@@ -70,6 +71,7 @@ final public class ConfigManager {
 
         //Init SharePreference
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        domain = BASE_URL;
     }
 
     public RequestQueue getRequestQueue() {
@@ -169,5 +171,9 @@ final public class ConfigManager {
                     : R.drawable.ic_boy_default;
         }
         return imageDrawableCalleeId;
+    }
+
+    public String getDomain() {
+        return domain;
     }
 }

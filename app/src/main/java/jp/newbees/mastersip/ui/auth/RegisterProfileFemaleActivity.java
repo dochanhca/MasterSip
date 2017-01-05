@@ -31,19 +31,16 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.UploadImageTask;
 import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenter;
 import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
-import jp.newbees.mastersip.ui.top.TopActivity;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by ducpv on 12/13/16.
  */
 
-public class RegisterProfileFemaleActivity extends BaseActivity implements View.OnClickListener,
+public class RegisterProfileFemaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
         UpdateRegisterProfilePresenter.View, UploadImagePresenter.View {
 
@@ -162,9 +159,7 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
 
     @Override
     public void onUpdateRegisterProfileSuccess(UserItem userItem) {
-        disMissLoading();
-        saveLoginState();
-        startTopScreenWithNewTask();
+        registerLinPhone(userItem.getSipItem().getExtension(), userItem.getSipItem().getSecret());
     }
 
     @Override
@@ -432,20 +427,6 @@ public class RegisterProfileFemaleActivity extends BaseActivity implements View.
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
 
         startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
-    }
-
-    private void startTopScreenWithNewTask() {
-        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(intent);
-    }
-
-    private void saveLoginState() {
-        getEditor().putBoolean(Constant.Application.LOGIN_FLAG, true);
-        getEditor().commit();
     }
 
     private void showAvatar() {

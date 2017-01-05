@@ -1,26 +1,27 @@
 package jp.newbees.mastersip.ui.call;
 
-import android.os.Bundle;
-
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class BaseCallActivity extends BaseActivity {
-    @Override
-    protected int layoutId() {
-        return 0;
-    }
+public abstract class BaseCallActivity extends BaseActivity {
 
-    @Override
-    protected void initViews(Bundle savedInstanceState) {
+    protected void setMuteMicrophone(boolean mute) {
 
     }
 
-    @Override
-    protected void initVariables(Bundle savedInstanceState) {
+    protected final void setSpeaker(boolean speaker) {
 
     }
+
+    protected final void hangupCall() {
+
+    }
+
+    protected final void setCamera(boolean camera) {
+
+    }
+
 }

@@ -225,4 +225,11 @@
     <string name="last_login">ログインが新しい順</string>
     <string name="last_register">登録が新しい順</string>
     <string name="search_result_displayed_here">ここに検索結果が表示されます。</string>
+    <string name="during_a_voice_call">音声通話で呼び出し中...</string>
+    <string name="mic">マイク</string>
+    <string name="speaker">スピーカー</string>
+    <string name="in_coming_voice_call">音声通話で着信中...</string>
+    <string name="begin">開始</string>
+    <string name="reject">拒否</string>
+    <string name="current_point">現在のポイント</string>
 </resources>
