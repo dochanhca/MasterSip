@@ -196,14 +196,8 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     }
 
     private void selectJob() {
-        openSelectionDialog(getString(R.string.profession), maleJobItems, jobItem);
-    }
-
-    private void openSelectionDialog(String title, ArrayList<SelectionItem> data,
-                                     SelectionItem selectedItem) {
-
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                data, title, selectedItem);
+                maleJobItems, getString(R.string.profession), jobItem);
     }
 
     private void goToInputDataActivity(String title, String textContent) {

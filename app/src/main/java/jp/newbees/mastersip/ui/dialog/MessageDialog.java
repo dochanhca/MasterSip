@@ -78,7 +78,7 @@ public class MessageDialog extends DialogFragment {
     }
 
     private void setDialogTitle() {
-        if (title.equals("")) {
+        if ("".equals(title)) {
             return;
         }
         txtTitle.setVisibility(View.VISIBLE);
@@ -86,7 +86,7 @@ public class MessageDialog extends DialogFragment {
     }
 
     private void setDialogContent() {
-        if (content.equals("")) {
+        if ("".equals(content)) {
             return;
         }
         txtContent.setVisibility(View.VISIBLE);
@@ -94,7 +94,7 @@ public class MessageDialog extends DialogFragment {
     }
 
     private void setDialogNote() {
-        if (note.equals("")) {
+        if ("".equals(note)) {
             return;
         }
         txtNote.setVisibility(View.VISIBLE);

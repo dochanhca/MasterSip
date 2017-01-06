@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -20,7 +21,7 @@ public class FilterByNamePresenter extends BasePresenter {
     private FilterByNameView view;
 
     public interface FilterByNameView {
-        void didFilterUser(ArrayList<UserItem> userItems);
+        void didFilterUser(List<UserItem> userItems);
 
         void didFilterUserError(int errorCode, String errorMessage);
 

@@ -12,8 +12,8 @@ import jp.newbees.mastersip.R;
 
 public class ConfirmCropImageDialog extends BaseDialog implements View.OnClickListener {
 
-    public static interface OnDialogConfirmCropImageClick {
-        abstract void onOkClick();
+    public interface OnDialogConfirmCropImageClick {
+        void onOkClick();
     }
 
     private OnDialogConfirmCropImageClick onDialogConfirmCropImageClick;

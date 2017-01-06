@@ -35,7 +35,16 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_content_four, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, context);
+        final ViewHolder viewHolder = new ViewHolder(view, context);
+
+        viewHolder.viewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = viewHolder.getAdapterPosition();
+                onItemClickListener.onItemClick(datas.get(position), position);
+            }
+        });
+
         return viewHolder;
     }
 
@@ -60,11 +69,13 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtContent;
         private ImageView imgAvatar;
+        private ViewGroup viewGroup;
 
         public ViewHolder(View root, Context context) {
             super(root);
             txtContent = (TextView) root.findViewById(R.id.txt_name);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
+            viewGroup = (ViewGroup) root.findViewById(R.id.view_group);
 
             setImageHeight(context);
         }
@@ -99,7 +110,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        onItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
 

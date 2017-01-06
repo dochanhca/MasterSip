@@ -35,7 +35,16 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.search_user_content_mode_two, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view, context);
+        final ViewHolder viewHolder = new ViewHolder(view, context);
+
+        viewHolder.viewGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = viewHolder.getAdapterPosition();
+                onItemClickListener.onItemClick(datas.get(position), position);
+            }
+        });
+
         return viewHolder;
     }
 
@@ -59,10 +68,11 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgAvatar;
-        TextView txtName;
-        ImageView imgActionTop;
-        TextView txtAbout;
+        private ImageView imgAvatar;
+        private TextView txtName;
+        private ImageView imgActionTop;
+        private TextView txtAbout;
+        private ViewGroup viewGroup;
 
         public ViewHolder(View root, Context context) {
             super(root);
@@ -70,6 +80,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
             imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
             txtAbout = (TextView) root.findViewById(R.id.txt_about);
             txtName = (TextView) root.findViewById(R.id.txt_name);
+            viewGroup = (ViewGroup) root.findViewById(R.id.view_group);
 
             setImageHeight(context);
         }
@@ -104,7 +115,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        onItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
 

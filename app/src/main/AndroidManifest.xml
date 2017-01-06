@@ -104,7 +104,8 @@
         <activity
             android:name=".ui.top.TopActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
