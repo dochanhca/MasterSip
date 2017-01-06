@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/gray_holo_dark"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_content"
+        style="@style/origin_style_content_text_view"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_blue"
+        android:padding="@dimen/normal_margin"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:text="Hercle, parma domesticus!."
+        android:textColor="@color/black" />
+</RelativeLayout>
