@@ -23,7 +23,7 @@ import org.linphone.core.SubscriptionState;
 
 import java.nio.ByteBuffer;
 
-import jp.newbees.mastersip.linphone.LinPhoneNotifier;
+import jp.newbees.mastersip.linphone.LinphoneNotifier;
 import jp.newbees.mastersip.linphone.RegisterVoIPManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -35,9 +35,9 @@ import jp.newbees.mastersip.utils.Logger;
 public class LinphoneHandler implements LinphoneCoreListener {
     private Context context;
     private boolean running;
-    private LinPhoneNotifier notifier;
+    private LinphoneNotifier notifier;
 
-    public LinphoneHandler(LinPhoneNotifier notifier, Context context) {
+    public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
         this.context = context;
     }

@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/xnormal_margin"
+    android:paddingLeft="@dimen/normal_margin">
 
-</LinearLayout>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_reply_avatar"
+        android:layout_width="@dimen/avatar_reply_chat_size"
+        android:layout_height="@dimen/avatar_reply_chat_size"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/comma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_reply_avatar"
+        android:src="@drawable/img_comma_reply_chat_item" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_content"
+        style="@style/origin_style_content_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/offset_comma"
+        android:layout_toRightOf="@id/comma"
+        android:background="@drawable/bg_white"
+        android:maxWidth="@dimen/max_chat_item_width"
+        android:padding="@dimen/normal_margin"
+        android:text="Hercle, parma doLotus exemplar hic prensionems pars est.Urias congregabo in vierium!Cum abactus ridetis, omnes idoleumes locus grandis, albus lunaes.mesticus!."
+        android:textColor="@color/black" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/txt_content"
+        android:layout_toRightOf="@id/txt_content"
+        android:paddingLeft="@dimen/small_margin"
+        android:text="12:34" />
+
+</RelativeLayout>

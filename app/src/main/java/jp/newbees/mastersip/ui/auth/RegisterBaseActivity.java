@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
-import jp.newbees.mastersip.linphone.LinPhoneNotifier;
+import jp.newbees.mastersip.linphone.LinphoneNotifier;
 import jp.newbees.mastersip.test.LinphoneHandler;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
@@ -31,7 +31,7 @@ public abstract class RegisterBaseActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final LinPhoneNotifier notifier = new LinPhoneNotifier(mHandler);
+        final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
 
         linphoneHandler = new LinphoneHandler(notifier, this);
 

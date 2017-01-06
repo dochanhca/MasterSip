@@ -11,11 +11,11 @@ import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
  * Created by ducpv on 1/4/17.
  */
 
-public class LinPhoneNotifier extends TutorialNotifier {
+public class LinphoneNotifier extends TutorialNotifier {
 
     private Handler mHandler;
 
-    public LinPhoneNotifier(Handler mHandler) {
+    public LinphoneNotifier(Handler mHandler) {
         this.mHandler = mHandler;
     }
 

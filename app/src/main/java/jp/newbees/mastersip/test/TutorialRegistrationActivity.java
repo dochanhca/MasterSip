@@ -10,7 +10,7 @@ import org.linphone.core.LinphoneCoreException;
 import org.linphone.mediastream.Log;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.linphone.LinPhoneNotifier;
+import jp.newbees.mastersip.linphone.LinphoneNotifier;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -39,7 +39,7 @@ public class TutorialRegistrationActivity extends TutorialHelloWorldActivity {
 
         // Output text to the outputText widget
         outputText = (TextView) findViewById(R.id.OutputText);
-        final LinPhoneNotifier notifier = new LinPhoneNotifier(mHandler);
+        final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
 
 
         // Create Tutorial object
