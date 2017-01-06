@@ -33,6 +33,7 @@ import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.filter.FilterFragment;
+import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.GridSpacingItemDecoration;
 import jp.newbees.mastersip.utils.Logger;
@@ -42,7 +43,9 @@ import jp.newbees.mastersip.utils.Mockup;
  * Created by vietbq on 12/6/16.
  */
 
-public class SearchFragment extends BaseFragment implements FilterUserPresenter.SearchView {
+public class SearchFragment extends BaseFragment implements FilterUserPresenter.SearchView,
+        AdapterSearchUserModeList.OnItemClickListener, AdapterSearchUserModeFour.OnItemClickListener,
+        AdapterSearchUserModeTwo.OnItemClickListener {
 
     @BindView(R.id.recycler_user)
     RecyclerView recyclerUser;
@@ -106,13 +109,12 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             totalItemCount = layoutManager.getItemCount();
             firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
-            if (firstVisibleItem + visibleItemCount >= totalItemCount && !firstTimeLoadData && totalItemCount != 0) {
-                if (!isLoading && presenter.canLoadMoreUser()) {
+            if (firstVisibleItem + visibleItemCount >= totalItemCount && !firstTimeLoadData
+                    && totalItemCount != 0 && !isLoading && presenter.canLoadMoreUser()) {
                     isLoading = true;
 
-                    ((BaseActivity) getActivity()).showLoading();
+                    showLoading();
                     presenter.loadMoreUser(currentTypeSearch);
-                }
             }
 
             if (!firstTimeLoadData) {
@@ -223,7 +225,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     public void onFilterUserEvent(FilterUserEvent event) {
         Logger.e(TAG, "onFilterUserEvent receive");
 
-        ((BaseActivity) getActivity()).showLoading();
+        showLoading();
         presenter.filterUser(currentTypeSearch);
 
     }
@@ -259,6 +261,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void setupListViewWithModeList() {
         if (adapterSearUserModeList == null) {
             adapterSearUserModeList = new AdapterSearchUserModeList(getContext(), userItems);
+            adapterSearUserModeList.setOnItemClickListener(this);
         } else {
             adapterSearUserModeList.addAll(userItems);
         }
@@ -270,6 +273,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void setupListViewWithModeTwo() {
         if (adapterSearchUserModeTwo == null) {
             adapterSearchUserModeTwo = new AdapterSearchUserModeTwo(getContext(), userItems);
+            adapterSearchUserModeTwo.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeTwo.addAll(userItems);
         }
@@ -282,6 +286,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void setupListViewWithModeFour() {
         if (adapterSearchUserModeFour == null) {
             adapterSearchUserModeFour = new AdapterSearchUserModeFour(getContext(), userItems);
+            adapterSearchUserModeFour.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeFour.addAll(userItems);
         }
@@ -319,6 +324,20 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 FilterFragment.class.getName()).commit();
     }
 
+    private void showProfileDetailFragment() {
+        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_search_container, profileDetailFragment,
+                ProfileDetailFragment.class.getName()).commit();
+    }
+
+    @Override
+    public void onItemClick(UserItem item, int position) {
+        showProfileDetailFragment();
+    }
+
     @Override
     public void didFilterUser(List<UserItem> userItems) {
         Logger.e("SearchFragment", "userItems " + userItems.size());
@@ -326,15 +345,15 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         this.userItems.addAll(userItems);
         changeUIContent(currentFilterMode);
         swipeRefreshLayout.setRefreshing(false);
-        ((BaseActivity) getActivity()).disMissLoading();
+        disMissLoading();
     }
 
     @Override
     public void didFilterUserError(int errorCode, String errorMessage) {
-        ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
+        showToastExceptionVolleyError(
                 errorCode, errorMessage);
         swipeRefreshLayout.setRefreshing(false);
-        ((BaseActivity) getActivity()).disMissLoading();
+        disMissLoading();
     }
 
     @Override
@@ -376,7 +395,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                     break;
             }
             firstTimeLoadData = true;
-            ((BaseActivity) getActivity()).showLoading();
+            showLoading();
             presenter.filterUser(currentTypeSearch);
         }
     };

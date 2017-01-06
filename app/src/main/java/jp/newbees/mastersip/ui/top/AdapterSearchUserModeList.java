@@ -39,7 +39,15 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_content_mode_list, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
+
+        viewHolder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = viewHolder.getAdapterPosition();
+                onItemClickListener.onItemClick(datas.get(position), position);
+            }
+        });
         return viewHolder;
     }
 
@@ -85,7 +93,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
             txtLocation = (TextView) root.findViewById(R.id.txt_location);
             txtTitle = (TextView) root.findViewById(R.id.txt_title);
             txtValue = (TextView) root.findViewById(R.id.txt_value);
-            content = (RelativeLayout) root.findViewById(R.id.txt_name);
+            content = (RelativeLayout) root.findViewById(R.id.content);
         }
     }
 
@@ -105,7 +113,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        onItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
 

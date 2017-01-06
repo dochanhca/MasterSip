@@ -9,8 +9,8 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
@@ -63,7 +63,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.kData);
         String nextPage = jData.getString(Constant.JSON.kNextPage);
-        ArrayList<UserItem> userItems = JSONUtils.parseUsers(jData);
+        List<UserItem> userItems = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER, userItems);

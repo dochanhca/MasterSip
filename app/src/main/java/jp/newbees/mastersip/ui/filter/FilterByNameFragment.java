@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.filter;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterByNamePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.ui.top.AdapterSearchUserModeList;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -26,7 +29,7 @@ import jp.newbees.mastersip.utils.Utils;
  */
 
 public class FilterByNameFragment extends BaseFragment implements View.OnClickListener,
-        FilterByNamePresenter.FilterByNameView, View.OnTouchListener {
+        FilterByNamePresenter.FilterByNameView, View.OnTouchListener, AdapterSearchUserModeList.OnItemClickListener {
 
     private ImageView imgClose;
     private EditText edtSearch;
@@ -99,6 +102,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     private void initRecycler() {
         adapterSearchUserModeList = new AdapterSearchUserModeList(getContext(), userItems);
+        adapterSearchUserModeList.setOnItemClickListener(this);
 
         recyclerUser.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerUser.setAdapter(adapterSearchUserModeList);
@@ -133,7 +137,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void didFilterUser(ArrayList<UserItem> datas) {
+    public void didFilterUser(List<UserItem> datas) {
         userItems.clear();
         userItems.addAll(datas);
         adapterSearchUserModeList.notifyDataSetChanged();
@@ -152,6 +156,11 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
                 errorCode, errorMessage);
     }
 
+    @Override
+    public void onItemClick(UserItem item, int position) {
+        showProfileDetailFragment();
+    }
+
     private void resetDataAndView() {
         resetData();
         hideSoftwareKeyboard();
@@ -168,5 +177,14 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     private void hideSoftwareKeyboard() {
         Utils.closeKeyboard(getActivity(), edtSearch.getWindowToken());
+    }
+
+    private void showProfileDetailFragment() {
+        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_search_container, profileDetailFragment,
+                ProfileDetailFragment.class.getName()).commit();
     }
 }

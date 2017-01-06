@@ -11,11 +11,12 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -63,6 +64,21 @@ public class OutgoingVoiceActivity extends BaseCallActivity {
     protected void initVariables(Bundle savedInstanceState) {
 
 
+    }
+
+    @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_on_off_mic:
+                break;
+            case R.id.btn_cancel_call:
+                this.finish();
+                break;
+            case R.id.btn_on_off_speaker:
+                break;
+            default:
+                break;
+        }
     }
 
     // start when user during a call
