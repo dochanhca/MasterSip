@@ -80,12 +80,28 @@ public final class Constant {
         public final static String kDeleted = "deleted";
         public final static String kSender = "sender";
         public final static String kText = "text";
+
+        public static final String K_CALLER = "caller";
+        public static final String K_RECEIVER = "receiver";
+        public static final String K_TYPE = "type";
+        public static final String K_KIND = "kind";
+        public static final String K_CALL_WAIT_ID = "call_wait_id";
+        public static final String K_MESSAGE_ID = "message_id";
+        public static final String K_MIN_POINT = "min_point";
+
     }
 
     public static final class API {
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
+
+        public static final int VOICE_CALL = 1;
+        public static final int VIDEO_CALL = 2;
+        public static final int VIDEO_CHAT = 7;
+
+        public static final int KIND_CHAT = 1;
+        public static final int KIND_OTHER = 2;
 
         private static final String DEVELOPMENT_IP = "52.197.14.30";
         private static final String PRODUCTION_IP = "52.197.138.1";
@@ -104,6 +120,7 @@ public final class Constant {
         public static final String GET_PROVINCE = "provinces/province";
         public static final String SEARCH_BY_NAME_URL = "searchuser";
         public static final String CHAT_MESSAGE = "chat";
+        public static final String CHECK_CALL = "calls/check-call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
