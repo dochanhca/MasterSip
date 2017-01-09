@@ -20,6 +20,18 @@ public class TextChatItem extends BaseChatItem implements Parcelable{
         this.message = message;
     }
 
+    public TextChatItem(String message, String extensionSender) {
+        this(message);
+        this.setOwner(genUserItemFromExtension(extensionSender));
+    }
+
+    private  final UserItem genUserItemFromExtension(String extension){
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extension);
+        userItem.setSipItem(sipItem);
+        return userItem;
+    }
+
     @Override
     public int describeContents() {
         return 0;

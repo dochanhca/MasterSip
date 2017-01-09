@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.test;
+package jp.newbees.mastersip.linphone;
 
 import android.content.Context;
 
@@ -23,8 +23,7 @@ import org.linphone.core.SubscriptionState;
 
 import java.nio.ByteBuffer;
 
-import jp.newbees.mastersip.linphone.LinPhoneNotifier;
-import jp.newbees.mastersip.linphone.RegisterVoIPManager;
+import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -35,9 +34,10 @@ import jp.newbees.mastersip.utils.Logger;
 public class LinphoneHandler implements LinphoneCoreListener {
     private Context context;
     private boolean running;
-    private LinPhoneNotifier notifier;
+    private LinphoneNotifier notifier;
+    private LinphoneCore linphoneCore;
 
-    public LinphoneHandler(LinPhoneNotifier notifier, Context context) {
+    public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
         this.context = context;
     }
@@ -104,56 +104,52 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     /**
+     * Gen SIP Address such as sip:1102@52.197.14.30
+     * @param extension 1102
+     * @return full address sip
+     */
+    private String genSipAddressByExtension(String extension) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("sip:").append(extension).append("@").append(ConfigManager.getInstance().getDomain());
+        return stringBuilder.toString();
+    }
+
+    /**
      * Login to VoIP Server (such as Aterisk, FreeSWITCH ...)
      * @param extension 10001
      * @param password  abcxzy
      * @throws LinphoneCoreException
      */
     public void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
-        extension = "sip:"+extension+"@"+ ConfigManager.getInstance().getDomain();
+        String sipAddress = this.genSipAddressByExtension(extension);
         LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
-        LinphoneCore lc = lcFactory.createLinphoneCore(this, context);
-
+        linphoneCore = lcFactory.createLinphoneCore(this, context);
         try {
-            LinphoneAddress address = lcFactory.createLinphoneAddress(extension);
+            LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
             String username = address.getUserName();
             String domain = address.getDomain();
             if(password != null) {
-                lc.addAuthInfo(lcFactory.createAuthInfo(username, password, (String)null, domain));
+                linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String)null, domain));
             }
 
-            LinphoneProxyConfig proxyCfg = lc.createProxyConfig(extension, domain, (String)null, true);
+            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, domain, (String)null, true);
             proxyCfg.setExpires(2000);
-            lc.addProxyConfig(proxyCfg);
-            lc.setDefaultProxyConfig(proxyCfg);
+            linphoneCore.addProxyConfig(proxyCfg);
+            linphoneCore.setDefaultProxyConfig(proxyCfg);
             this.running = true;
 
             while(this.running) {
-                lc.iterate();
+                linphoneCore.iterate();
                 this.sleep(50);
             }
 
-            lc.getDefaultProxyConfig().edit();
-            lc.getDefaultProxyConfig().enableRegister(false);
-            lc.getDefaultProxyConfig().done();
+            linphoneCore.getDefaultProxyConfig().edit();
+            linphoneCore.getDefaultProxyConfig().enableRegister(false);
+            linphoneCore.getDefaultProxyConfig().done();
 
-            while(lc.getDefaultProxyConfig().getState() != LinphoneCore.RegistrationState.RegistrationCleared) {
-                lc.iterate();
-                this.sleep(50);
-            }
-
-            lc.getDefaultProxyConfig().edit();
-            lc.getDefaultProxyConfig().enableRegister(true);
-            lc.getDefaultProxyConfig().done();
-
-            while(lc.getDefaultProxyConfig().getState() != LinphoneCore.RegistrationState.RegistrationOk
-                    && lc.getDefaultProxyConfig().getState() != LinphoneCore.RegistrationState.RegistrationFailed) {
-                lc.iterate();
-                this.sleep(50);
-            }
         } finally {
-            this.write("Shutting down linphone...");
-            lc.destroy();
+            Logger.e("LinphoneHandler","Shutting down linphone...");
+            linphoneCore.destroy();
         }
 
     }
@@ -162,7 +158,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         try {
             Thread.sleep((long)ms);
         } catch (InterruptedException var3) {
-            this.write("Interrupted!\nAborting");
+            Logger.e("LinphoneHandler","Interrupted!\nAborting");
         }
     }
 
@@ -174,8 +170,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
         this.notifier.notify(s);
     }
 
-    public void messageReceived(LinphoneCore lc, LinphoneChatRoom cr, LinphoneChatMessage message) {
-        //TEXT
+    public void messageReceived(LinphoneCore linphoneCore, LinphoneChatRoom chatRoom, LinphoneChatMessage message) {
+        String raw = message.getText();
+        PacketManager.getInstance().processData(raw);
     }
 
     public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State new_call_state) {
@@ -219,5 +216,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
+    }
+
+    public void sendMessage(String raw) {
+
     }
 }

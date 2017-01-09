@@ -19,7 +19,7 @@ public class RegisterVoIPManager {
     private RegisterVoIPManager() {
     }
 
-    public void registrationStateChanged(LinphoneCore.RegistrationState state, LinPhoneNotifier notifier) {
+    public void registrationStateChanged(LinphoneCore.RegistrationState state, LinphoneNotifier notifier) {
         if (state == LinphoneCore.RegistrationState.RegistrationOk) {
             notifier.registerVoIPSuccess();
         } else if (state == LinphoneCore.RegistrationState.RegistrationFailed){

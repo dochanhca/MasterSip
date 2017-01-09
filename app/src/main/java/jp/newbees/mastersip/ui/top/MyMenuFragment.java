@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.utils.Constant;
@@ -45,7 +46,7 @@ public class MyMenuFragment extends BaseFragment {
     }
 
     private void logout() {
-
+        stopLinphoneService();
         clearSharedPreferences();
 
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
@@ -60,6 +61,11 @@ public class MyMenuFragment extends BaseFragment {
 
         editor.clear();
         editor.commit();
+    }
+
+    private void stopLinphoneService(){
+        Intent intent = new Intent(getActivity(), LinphoneService.class);
+        getActivity().stopService(intent);
     }
 
 }

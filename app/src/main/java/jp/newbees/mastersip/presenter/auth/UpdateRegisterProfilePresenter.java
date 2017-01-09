@@ -5,13 +5,14 @@ import android.content.Context;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.UpdateProfileTask;
-import jp.newbees.mastersip.presenter.BasePresenter;
 
 /**
  * Created by vietbq on 12/15/16.
  */
 
-public class UpdateRegisterProfilePresenter extends BasePresenter {
+public class UpdateRegisterProfilePresenter extends RegisterBasePresenter {
+
+    private UserItem userItem;
 
     public interface View {
 
@@ -38,8 +39,8 @@ public class UpdateRegisterProfilePresenter extends BasePresenter {
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof UpdateProfileTask) {
-            UserItem userItem = ((UpdateProfileTask) task).getDataResponse();
-            view.onUpdateRegisterProfileSuccess(userItem);
+            userItem = ((UpdateProfileTask) task).getDataResponse();
+            loginVoIP();
         }
     }
 
@@ -47,4 +48,15 @@ public class UpdateRegisterProfilePresenter extends BasePresenter {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         view.onUpdateRegisterProfileFailure(errorCode, errorMessage);
     }
+
+    @Override
+    protected void onDidRegisterVoIPSuccess() {
+        view.onUpdateRegisterProfileSuccess(userItem);
+    }
+
+    @Override
+    protected void onDidRegisterVoIPError(int errorCode, String errorMessage) {
+        view.onUpdateRegisterProfileFailure(errorCode, errorMessage);
+    }
+
 }
