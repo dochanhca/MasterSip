@@ -63,5 +63,6 @@
     <dimen name="large_radius">10dp</dimen>
     <dimen name="offset_comma">-7dp</dimen>
     <dimen name="max_chat_item_width">250dp</dimen>
-    <dimen name="avatar_reply_chat_size">30dp</dimen>
+    <dimen name="avatar_reply_chat_size">40dp</dimen>
+    <dimen name="divider">1dp</dimen>
 </resources>

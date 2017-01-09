@@ -237,4 +237,8 @@
     <string name="voice_call">音声通話</string>
     <string name="video_call">ビデオ通話</string>
     <string name="are_you_sure_make_a_voice_call">音声通話を発信しますか。</string>
+    <string name="profile">プロフィール</string>
+    <string name="follow">フォローする</string>
+    <string name="gift">ギフトを贈る</string>
+    <string name="photo">背景 のコピー 11</string>
 </resources>

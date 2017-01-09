@@ -28,6 +28,9 @@ public class BaseChatItem implements Parcelable, Serializable {
         public final static int CHAT_VIDEO_CHAT_CALL = 7;
         public final static int CHAT_GIFT = 9;
 
+        public final static int CHAT_TEXT_REPLY = 10;
+
+
         protected ChatType(Parcel in) {
         }
 

@@ -10,6 +10,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.top.ChatActivity;
 
 /**
  * Created by ducpv on 1/5/17.
@@ -44,7 +45,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
                 getFragmentManager().popBackStack();
                 break;
             case R.id.layout_chat:
-                //start chat activity
+                ChatActivity.start(getContext());
                 break;
             case R.id.layout_voice_call:
                 ConfirmVoiceCallDialog.openConfirmVoiceCallDialogFromFragment(this,

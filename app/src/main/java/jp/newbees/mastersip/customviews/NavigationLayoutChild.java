@@ -24,6 +24,7 @@ public class NavigationLayoutChild extends LinearLayout {
     private ImageView imgIcon;
     private TextView txtValue;
     private TextView txtBoxValue;
+    private View divider;
 
     private TypedArray typedArray;
     private String text;
@@ -33,6 +34,8 @@ public class NavigationLayoutChild extends LinearLayout {
     private int iconNormal;
     private int boxValue;
     private boolean showBoxValue;
+    private boolean showDivider = false;
+    private int dividerColor;
 
     private static final boolean SELECTED = true;
     private static final boolean NORMAL = false;
@@ -77,12 +80,19 @@ public class NavigationLayoutChild extends LinearLayout {
                 attrs,
                 R.styleable.NavigationLayout);
 
-        textColorSelected = typedArray.getColor(R.styleable.NavigationLayout_textColorSelected, Color.BLUE);
-        iconSelected = typedArray.getResourceId(R.styleable.NavigationLayout_iconSelected, R.drawable.ic_back_button);
-
         textColorNormal = typedArray.getColor(R.styleable.NavigationLayout_textColorNormal, Color.GRAY);
         iconNormal = typedArray.getResourceId(R.styleable.NavigationLayout_iconNormal, R.drawable.ic_back_button);
         text = typedArray.getString(R.styleable.NavigationLayout_text);
+
+        textColorSelected = textColorNormal;
+        iconSelected = iconNormal;
+        if (typedArray.hasValue(R.styleable.NavigationLayout_textColorSelected)) {
+            textColorSelected = typedArray.getColor(R.styleable.NavigationLayout_textColorSelected, Color.BLUE);
+        }
+
+        if (typedArray.hasValue(R.styleable.NavigationLayout_iconSelected)) {
+            iconSelected = typedArray.getResourceId(R.styleable.NavigationLayout_iconSelected, R.drawable.ic_back_button);
+        }
 
         showBoxValue = typedArray.getBoolean(R.styleable.NavigationLayout_showBoxValue, false);
 
@@ -102,6 +112,7 @@ public class NavigationLayoutChild extends LinearLayout {
         txtValue = (TextView) findViewById(R.id.txt);
         txtValue.setText(text);
         txtBoxValue = (TextView) findViewById(R.id.txt_box);
+        divider = findViewById(R.id.divider);
 
         findViewById(R.id.container).setOnClickListener(mOnIconClickListener);
 
@@ -137,6 +148,7 @@ public class NavigationLayoutChild extends LinearLayout {
             imgIcon.setImageResource(iconNormal);
             txtValue.setTextColor(textColorNormal);
         }
+
         setShowBoxValue(showBoxValue);
     }
 
@@ -166,5 +178,27 @@ public class NavigationLayoutChild extends LinearLayout {
     public void setShowBoxValue(boolean isShow) {
         this.showBoxValue = isShow;
         txtBoxValue.setVisibility(isShow ? VISIBLE : GONE);
+    }
+
+    public boolean isShowDivider() {
+        return showDivider;
+    }
+
+    public void setShowDivider(boolean showDivider) {
+        this.showDivider = showDivider;
+        if (showDivider) {
+            divider.setVisibility(VISIBLE);
+            divider.setBackgroundColor(dividerColor);
+        } else {
+            divider.setVisibility(GONE);
+        }
+    }
+
+    public int getDividerColor() {
+        return dividerColor;
+    }
+
+    public void setDividerColor(int dividerColor) {
+        this.dividerColor = dividerColor;
     }
 }
