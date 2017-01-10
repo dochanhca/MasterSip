@@ -22,9 +22,9 @@ public class CheckCallTask extends BaseTask {
 
     private final String callerExtension;
     private final String receiverExtension;
-    private final int type;
-    private final int kind;
-    private final String callWaitId;
+    private  int type;
+    private  int kind;
+    private  String callWaitId;
 
     public CheckCallTask(Context context, String caller, String receiver, int callType, int kind,
                          String callWaitId) {
@@ -36,13 +36,14 @@ public class CheckCallTask extends BaseTask {
         this.callWaitId = callWaitId;
     }
 
+
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParam = new JSONObject();
-        jParam.put(Constant.JSON.K_CALLER, callerExtension);
-        jParam.put(Constant.JSON.K_RECEIVER, receiverExtension);
-        jParam.put(Constant.JSON.K_TYPE, type);
+        jParam.put(Constant.JSON.CALLER, callerExtension);
+        jParam.put(Constant.JSON.RECEIVER, receiverExtension);
+        jParam.put(Constant.JSON.TYPE, type);
         jParam.put(Constant.JSON.K_KIND, kind);
         return jParam;
     }
@@ -60,7 +61,7 @@ public class CheckCallTask extends BaseTask {
 
     @Override
     protected Map<String, Object> didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         Map<String, Object> result = new HashMap<>();
 
         int messageId = jData.getInt(Constant.JSON.K_MESSAGE_ID);

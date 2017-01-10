@@ -21,10 +21,10 @@ public final class Constant {
         public final static String kDeviceInfo = "device_info";
         public final static String kCode = "code";
         public final static String kMessage = "message";
-        public final static String kData = "data";
+        public final static String DATA = "data";
         public final static String kUserId = "user_id";
         public final static String kUploadType = "upload_for";
-        public final static String kHandleName = "handle_name";
+        public final static String HANDLE_NAME = "handle_name";
         public final static String kPhoneNumber = "phonenumber";
         public final static String kProvinceId = "province_id";
         public final static String kAvatarId = "avatar_id";
@@ -81,15 +81,17 @@ public final class Constant {
         public final static String kSender = "sender";
         public final static String kText = "text";
 
-        public static final String K_CALLER = "caller";
-        public static final String K_RECEIVER = "receiver";
-        public static final String K_TYPE = "type";
+        public static final String CALLER = "caller";
+        public static final String RECEIVER = "receiver";
+        public static final String TYPE = "type";
         public static final String K_KIND = "kind";
         public static final String K_CALL_WAIT_ID = "call_wait_id";
         public static final String K_MESSAGE_ID = "message_id";
         public static final String K_MIN_POINT = "min_point";
 
         public static final String ACTION = "action";
+        public static final String EXTENSION_ID = "extension_id";
+        public static final String URL_AVATAR = "url_avatar";
     }
 
     public static final class API {
@@ -109,6 +111,7 @@ public final class Constant {
         private static final String PRODUCTION_IP = "52.197.138.1";
 
 
+
         public static String BASE_URL;
         public static final String PROTOCOL = "http";
 
@@ -123,6 +126,7 @@ public final class Constant {
         public static final String SEARCH_BY_NAME_URL = "searchuser";
         public static final String CHAT_MESSAGE = "chat";
         public static final String CHECK_CALL = "calls/check-call";
+        public static final String CHECK_TYPE_INCOMING_CALL = "calls/check-type-call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

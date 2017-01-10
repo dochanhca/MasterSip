@@ -7,8 +7,12 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.eventbus.CallEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -27,6 +31,7 @@ public class LinphoneService extends Service{
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG,"onCreate");
+        EventBus.getDefault().register(this);
         mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
         linphoneHandler = new LinphoneHandler(notifier, this.getApplicationContext());
@@ -63,9 +68,24 @@ public class LinphoneService extends Service{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
         Logger.e(TAG,"Stop Linphone Service");
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onCallStateChanged(CallEvent callEvent){
+        if (callEvent.getCallEvent() == CallEvent.ACTION_ACCEPT_CALL){
+            handleAcceptCall();
+        }
+    }
+
+    private void handleAcceptCall(){
+        try {
+            linphoneHandler.acceptCall();
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

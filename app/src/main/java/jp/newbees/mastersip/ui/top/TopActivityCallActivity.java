@@ -9,21 +9,16 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import java.util.ArrayList;
-
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.model.FilterItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.ui.BaseCallActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends BaseActivity implements View.OnClickListener, TopPresenter.TopView {
+public class TopActivityCallActivity extends BaseCallActivity implements View.OnClickListener {
 
     private TopPresenter topPresenter;
     private static final int SEARCH_FRAGMENT = 0;
@@ -82,10 +77,6 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     protected void initVariables(Bundle savedInstanceState) {
         slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
         slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
-
-        topPresenter = new TopPresenter(getApplicationContext(),this);
-        FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
-        topPresenter.requestFilterData(filterItem);
         fillData();
     }
 
@@ -104,16 +95,6 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
 
     @Override
     public void onClick(View v) {
-
-    }
-
-    @Override
-    public void didFilterData(ArrayList<UserItem> userItems) {
-
-    }
-
-    @Override
-    public void didErrorFilterData(int errorCode, String errorMessage) {
 
     }
 
@@ -145,4 +126,5 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
             return navigationLayoutGroup.getChildCount();
         }
     }
+
 }

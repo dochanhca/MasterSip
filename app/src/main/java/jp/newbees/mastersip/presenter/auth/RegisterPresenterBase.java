@@ -19,8 +19,8 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/9/17.
  */
 
-public abstract class RegisterBasePresenter extends BasePresenter {
-    public RegisterBasePresenter(Context context) {
+public abstract class RegisterPresenterBase extends BasePresenter {
+    public RegisterPresenterBase(Context context) {
         super(context);
     }
 

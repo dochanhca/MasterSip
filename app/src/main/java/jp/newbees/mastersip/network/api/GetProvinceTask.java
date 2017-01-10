@@ -48,7 +48,7 @@ public class GetProvinceTask extends BaseTask {
 
     @Override
     protected SelectionItem didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
 
         int provinceId = jData.getInt(Constant.JSON.kReceiveProvinceId);
         String provinceName = jData.getString(Constant.JSON.kProvinceName);

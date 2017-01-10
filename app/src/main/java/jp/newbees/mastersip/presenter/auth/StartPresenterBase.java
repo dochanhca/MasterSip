@@ -8,7 +8,7 @@ import jp.newbees.mastersip.network.api.BaseTask;
  * Created by vietbq on 1/9/17.
  */
 
-public class StartPresenter extends RegisterBasePresenter {
+public class StartPresenterBase extends RegisterPresenterBase {
     private StartView startView;
 
     public interface StartView {
@@ -16,7 +16,7 @@ public class StartPresenter extends RegisterBasePresenter {
         void didErrorVoIP(String errorMessage);
     }
 
-    public StartPresenter(Context context, StartView startView) {
+    public StartPresenterBase(Context context, StartView startView) {
         super(context);
         this.startView = startView;
     }

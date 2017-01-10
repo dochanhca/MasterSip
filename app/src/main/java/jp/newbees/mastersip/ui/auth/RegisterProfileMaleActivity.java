@@ -29,7 +29,7 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.UploadImageTask;
-import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenter;
+import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenterBase;
 import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
@@ -42,7 +42,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
 
 public class RegisterProfileMaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
-        UploadImagePresenter.View, UpdateRegisterProfilePresenter.View {
+        UploadImagePresenter.View, UpdateRegisterProfilePresenterBase.View {
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
@@ -55,7 +55,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     private UserItem userItem;
 
-    private UpdateRegisterProfilePresenter updateRegisterProfilePresenter;
+    private UpdateRegisterProfilePresenterBase updateRegisterProfilePresenter;
     private UploadImagePresenter uploadImagePresenter;
 
 
@@ -74,7 +74,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     protected void initVariables(Bundle savedInstanceState) {
         userItem = getUserItem();
 
-        updateRegisterProfilePresenter = new UpdateRegisterProfilePresenter(getApplicationContext(),
+        updateRegisterProfilePresenter = new UpdateRegisterProfilePresenterBase(getApplicationContext(),
                 this);
         uploadImagePresenter = new UploadImagePresenter(getApplicationContext(), this);
 

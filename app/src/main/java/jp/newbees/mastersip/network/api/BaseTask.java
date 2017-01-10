@@ -117,7 +117,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     sipError = validData(data);
                     if (null == sipError) {
                         JSONObject jsonObject = new JSONObject(data);
-//                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.kData);
+//                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.DATA);
                         result = didResponse(jsonObject);
                         return Response.success(result, getCacheEntry());
                     } else {

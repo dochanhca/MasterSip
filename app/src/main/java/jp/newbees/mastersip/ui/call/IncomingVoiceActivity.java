@@ -14,17 +14,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.ui.BaseCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class IncomingVoiceActivity extends BaseActivity {
+public class IncomingVoiceActivity extends BaseCallActivity {
 
     @BindView(R.id.profile_image)
     CircleImageView profileImage;

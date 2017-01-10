@@ -17,6 +17,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.ui.BaseCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**

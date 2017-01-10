@@ -2,6 +2,7 @@ package jp.newbees.mastersip.linphone;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
 import org.linphone.core.LinphoneAddress;
 import org.linphone.core.LinphoneAuthInfo;
 import org.linphone.core.LinphoneCall;
@@ -23,6 +24,7 @@ import org.linphone.core.SubscriptionState;
 
 import java.nio.ByteBuffer;
 
+import jp.newbees.mastersip.eventbus.CallEvent;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -32,6 +34,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class LinphoneHandler implements LinphoneCoreListener {
+    private static final String TAG = "LinphoneHandler";
     private Context context;
     private boolean running;
     private LinphoneNotifier notifier;
@@ -83,12 +86,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        //NEU Incoming...
-        //NEU Outgoing...
-        //NEU Start Streaming
+        Logger.e(TAG,msg);
+        int state = cstate.value();
+        String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
+        CallEvent callEvent = new CallEvent(state,callerExtension);
+        EventBus.getDefault().post(callEvent);
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
+        Logger.e(TAG,stats.toString());
     }
 
     public void ecCalibrationStatus(LinphoneCore lc, LinphoneCore.EcCalibratorStatus status, int delay_ms, Object data) {
@@ -220,5 +226,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public void sendMessage(String raw) {
 
+    }
+
+    public void acceptCall() throws LinphoneCoreException {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        linphoneCore.acceptCall(currentCall);
     }
 }

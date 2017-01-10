@@ -142,12 +142,12 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         private void hideFilterAndNavigationBar() {
             filter.startAnimation(slideUp);
-            ((TopActivity)getActivity()).hideNavigation();
+            ((TopActivityCallActivity)getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
             filter.startAnimation(slideDown);
-            ((TopActivity)getActivity()).showNavigation();
+            ((TopActivityCallActivity)getActivity()).showNavigation();
         }
     };
 
@@ -230,7 +230,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         showLoading();
         presenter.filterUser(currentTypeSearch);
-
     }
 
     @Subscribe(sticky = true)
