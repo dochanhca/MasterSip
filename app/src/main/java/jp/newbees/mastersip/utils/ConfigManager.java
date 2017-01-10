@@ -182,4 +182,16 @@ final public class ConfigManager {
         editor.putBoolean(Constant.Application.LOGIN_FLAG, flag);
         editor.commit();
     }
+
+    public void resetSettings() {
+        imageDrawableCalleeId = -1;
+        clearUser();
+    }
+
+    private void clearUser() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.clear();
+        editor.commit();
+    }
 }

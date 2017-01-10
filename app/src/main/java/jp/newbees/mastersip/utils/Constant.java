@@ -104,8 +104,8 @@ public final class Constant {
         public static final int KIND_CHAT = 1;
         public static final int KIND_OTHER = 2;
 
-//        private static final String DEVELOPMENT_IP = "52.197.14.30";
-        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        private static final String DEVELOPMENT_IP = "52.197.14.30";
+//        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
 
