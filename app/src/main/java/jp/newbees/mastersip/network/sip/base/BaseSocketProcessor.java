@@ -6,7 +6,7 @@ import android.os.Message;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
-import jp.newbees.mastersip.eventbus.EventManage;
+import jp.newbees.mastersip.event.EventManage;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.utils.Logger;
 

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.top.TopActivityCallActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 
 /**
  * Created by ducpv on 1/4/17.
@@ -20,7 +20,7 @@ public abstract class RegisterBaseActivity extends BaseActivity {
     }
 
     protected void startTopScreenWithNewTask() {
-        Intent intent = new Intent(getApplicationContext(), TopActivityCallActivity.class);
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

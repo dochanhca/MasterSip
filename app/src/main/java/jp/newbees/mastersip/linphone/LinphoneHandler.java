@@ -20,11 +20,12 @@ import org.linphone.core.LinphoneFriendList;
 import org.linphone.core.LinphoneInfoMessage;
 import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
+import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
 
 import java.nio.ByteBuffer;
 
-import jp.newbees.mastersip.eventbus.CallEvent;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -44,7 +45,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         this.notifier = notifier;
         this.context = context;
     }
-
 
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
         this.write(cfg.getIdentity() + " : " + state.toString());
@@ -89,8 +89,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
         Logger.e(TAG,msg);
         int state = cstate.value();
         String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
-        CallEvent callEvent = new CallEvent(state,callerExtension);
-        EventBus.getDefault().post(callEvent);
+        ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state,callerExtension);
+        EventBus.getDefault().post(receivingCallEvent);
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
@@ -143,6 +143,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.addProxyConfig(proxyCfg);
             linphoneCore.setDefaultProxyConfig(proxyCfg);
             this.running = true;
+
+            linphoneCore.enableSpeaker(false);
+            linphoneCore.muteMic(false);
+            linphoneCore.enableChat();
+            linphoneCore.setAudioPort(-1);
+            linphoneCore.setVideoPort(-1);
 
             while(this.running) {
                 linphoneCore.iterate();
@@ -224,12 +230,46 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
     }
 
-    public void sendMessage(String raw) {
-
+    public void sendRaw(String raw) {
     }
 
-    public void acceptCall() throws LinphoneCoreException {
+    public final void acceptCall() throws LinphoneCoreException {
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         linphoneCore.acceptCall(currentCall);
     }
+
+    public final void endCall() {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        linphoneCore.terminateCall(currentCall);
+    }
+
+    public final void rejectCall() {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        linphoneCore.declineCall(currentCall, Reason.Busy);
+    }
+
+    /**
+     *
+     * @param mute
+     */
+    public final void muteMicrophone(boolean mute) {
+        linphoneCore.muteMic(mute);
+    }
+
+    /**
+     *
+     * @param speaker
+     */
+    public final void enableSpeaker(boolean speaker) {
+        linphoneCore.enableSpeaker(speaker);
+    }
+
+    /**
+     *
+     * @param video
+     */
+    public final void enableVideo(boolean video) {
+        linphoneCore.enableVideo(video,video);
+    }
+
 }

@@ -103,7 +103,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.top.TopActivityCallActivity"
+            android:name=".ui.top.TopActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>
@@ -128,7 +128,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
 
         <activity
-            android:name=".ui.call.OutgoingVoiceActivity"
+            android:name=".ui.call.OutgoingVoiceActivityWaiting"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <!--<intent-filter>-->
@@ -138,7 +138,7 @@
         </activity>
 
         <activity
-            android:name=".ui.call.IncomingVoiceActivity"
+            android:name=".ui.call.IncomingVoiceCallActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
     </application>

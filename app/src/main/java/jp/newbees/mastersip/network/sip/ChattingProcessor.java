@@ -3,7 +3,7 @@ package jp.newbees.mastersip.network.sip;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.eventbus.EventManage;
+import jp.newbees.mastersip.event.EventManage;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.model.UserItem;

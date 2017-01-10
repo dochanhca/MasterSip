@@ -2,13 +2,11 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 
-import jp.newbees.mastersip.ui.BaseCallActivity;
-
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class OutgoingVideoVideoActivity extends BaseCallActivity {
+public class OutgoingVideoVideoActivityWaiting extends BaseWaitingCallActivity {
 
     @Override
     protected int layoutId() {

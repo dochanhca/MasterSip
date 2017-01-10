@@ -12,7 +12,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
-import jp.newbees.mastersip.eventbus.CallEvent;
+import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -73,13 +74,53 @@ public class LinphoneService extends Service{
         Logger.e(TAG,"Stop Linphone Service");
     }
 
+    /**
+     * This method invoked by EventBus when user accept or reject a call
+     * @param acceptCallEvent
+     */
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onCallStateChanged(CallEvent callEvent){
-        if (callEvent.getCallEvent() == CallEvent.ACTION_ACCEPT_CALL){
-            handleAcceptCall();
+    public void onSendingCallEvent(SendingCallEvent acceptCallEvent) {
+        switch (acceptCallEvent.getEvent()) {
+            case SendingCallEvent.ACCEPT_CALL:
+                handleAcceptCall();
+                break;
+            case SendingCallEvent.REJECT_CALL:
+                handleRejectCall();
+                break;
+            case SendingCallEvent.END_CALL:
+                handleEndCall();
+                break;
+            default:
+                break;
         }
     }
 
+    /**
+     * This method invoked by EventBus when enable or disable Speaker
+     * @param speakerEvent
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onSpeakerEvent(SpeakerEvent speakerEvent) {
+        linphoneHandler.enableSpeaker(speakerEvent.isEnable());
+    }
+
+    /**
+     * End current call
+     */
+    private void handleEndCall() {
+        linphoneHandler.endCall();
+    }
+
+    /**
+     * Reject a incoming call
+     */
+    private void handleRejectCall() {
+        linphoneHandler.rejectCall();
+    }
+
+    /**
+     * Accept a incoming call
+     */
     private void handleAcceptCall(){
         try {
             linphoneHandler.acceptCall();

@@ -8,7 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
+import jp.newbees.mastersip.ui.call.OutgoingVoiceActivityWaiting;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 
 /**
@@ -59,7 +59,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
 
     @Override
     public void onOkClick() {
-        Intent intent = new Intent(getActivity().getApplicationContext(), OutgoingVoiceActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), OutgoingVoiceActivityWaiting.class);
         startActivity(intent);
     }
 }

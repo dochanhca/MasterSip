@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.presenter.BasePresenter;

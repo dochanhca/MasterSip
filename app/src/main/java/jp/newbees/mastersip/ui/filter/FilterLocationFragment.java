@@ -15,7 +15,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.LocationAdapter;
-import jp.newbees.mastersip.eventbus.SelectLocationEvent;
+import jp.newbees.mastersip.event.SelectLocationEvent;
 import jp.newbees.mastersip.model.LocationItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.ui.BaseFragment;

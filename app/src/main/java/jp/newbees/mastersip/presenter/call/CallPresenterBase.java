@@ -6,14 +6,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Map;
-
-import jp.newbees.mastersip.eventbus.CallEvent;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -22,46 +19,34 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class CallPresenterBase extends BasePresenter {
     private CallView view;
+
     public CallPresenterBase(Context context, CallView view) {
         super(context);
         this.view = view;
     }
 
+    public final void acceptVoiceCall() {
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
+    }
 
+    public void rejectCall() {
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
+    }
 
-    public interface CallView {
-        void incomingVoiceCall(UserItem caller);
+    public final void muteMicrophone(boolean mute) {
 
-        void incomingVideoCall(UserItem caller);
+    }
 
-        void incomingVideoChatCall(UserItem caller);
+    public final void enableSpeaker(boolean enable) {
+
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        if (task instanceof CheckIncomingCallTask) {
-            Map<String, Object> result = (Map<String, Object>) task.getDataResponse();
-            int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
-            UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
-            handleIncomingCallType(callType, caller);
-        }
+
     }
 
-    private void handleIncomingCallType(int callType, UserItem caller){
-        switch (callType){
-            case Constant.API.VOICE_CALL:
-                view.incomingVoiceCall(caller);
-                break;
-            case Constant.API.VIDEO_CALL:
-                view.incomingVideoCall(caller);
-                break;
-            case Constant.API.VIDEO_CHAT:
-                view.incomingVideoChatCall(caller);
-                break;
-            default:
-                break;
-        }
-    }
+
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
@@ -77,46 +62,41 @@ public class CallPresenterBase extends BasePresenter {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCallEvent(CallEvent callEvent) {
-        switch (callEvent.getCallEvent()) {
-            case CallEvent.OUTGOING_CALL:
+    public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
+        switch (receivingCallEvent.getCallEvent()) {
+            case ReceivingCallEvent.OUTGOING_CALL:
                 onOutgoingCall();
                 break;
-            case CallEvent.INCOMING_CALL:
-                onIncomingCall(callEvent.getCallerExtension());
+            case ReceivingCallEvent.CONNECTED_CALL:
+            case ReceivingCallEvent.STREAMING_CALL:
+                onStartStreamCall();
                 break;
-            case CallEvent.ACTION_ACCEPT_CALL:
-                onAcceptCall(callEvent.getCallerExtension());
-                break;
-            case CallEvent.CANCEL_CALL:
-                onCancelCall(Constant.Error.VOIP_ERROR, "Call canceled");
-                break;
-            case CallEvent.BUSY_CALL:
-                onBusyCall();
+            case ReceivingCallEvent.END_CALL:
+                onEndCall();
                 break;
         }
     }
 
-    protected void onIncomingCall(String callerExtension) {
-        String calleeExtension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        CheckIncomingCallTask checkCallTask = new CheckIncomingCallTask(context, callerExtension, calleeExtension);
-        requestToServer(checkCallTask);
+    private void onEndCall() {
+
     }
+
+    private void onStartStreamCall() {
+
+    }
+
+
 
     protected void onOutgoingCall() {
         // TO DO
     }
 
-    protected void onBusyCall() {
-        //TO DO
-    }
 
-    protected void onAcceptCall(String callerExtension) {
-        //TO DO
-    }
+    public interface CallView {
+        void incomingVoiceCall(UserItem caller);
 
-    protected void onCancelCall(int errorCode, String messageCode) {
-        //TO DO
-    }
+        void incomingVideoCall(UserItem caller);
 
+        void incomingVideoChatCall(UserItem caller);
+    }
 }

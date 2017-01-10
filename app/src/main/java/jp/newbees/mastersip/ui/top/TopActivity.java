@@ -12,13 +12,13 @@ import android.view.animation.AnimationUtils;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.presenter.TopPresenter;
-import jp.newbees.mastersip.ui.BaseCallActivity;
+import jp.newbees.mastersip.ui.call.BaseWaitingCallActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivityCallActivity extends BaseCallActivity implements View.OnClickListener {
+public class TopActivity extends BaseWaitingCallActivity implements View.OnClickListener {
 
     private TopPresenter topPresenter;
     private static final int SEARCH_FRAGMENT = 0;

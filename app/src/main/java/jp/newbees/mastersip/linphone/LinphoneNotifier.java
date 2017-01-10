@@ -5,7 +5,7 @@ import android.os.Handler;
 import org.greenrobot.eventbus.EventBus;
 import org.linphone.core.tutorials.TutorialNotifier;
 
-import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
