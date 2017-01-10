@@ -50,8 +50,8 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     private ArrayList<SelectionItem> maleJobItems;
 
-    private SelectionItem provinceItem = new SelectionItem();
-    private SelectionItem jobItem = new SelectionItem();
+    private SelectionItem provinceItem;
+    private SelectionItem jobItem;
 
     private UserItem userItem;
 
@@ -101,6 +101,9 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
                 SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
+                if (provinceItem == null) {
+                    provinceItem = new SelectionItem();
+                }
                 PickLocationActivity.startActivityPickLocation(this, provinceItem);
                 break;
             case R.id.layout_profession:
@@ -143,7 +146,9 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
             case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
-                    txtArea.setText(provinceItem.getTitle());
+                    if (provinceItem.getTitle().length() > 0) {
+                        txtArea.setText(provinceItem.getTitle());
+                    }
                 }
         }
     }
@@ -197,6 +202,9 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     }
 
     private void selectJob() {
+        if (jobItem == null) {
+            jobItem = new SelectionItem();
+        }
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
                 maleJobItems, getString(R.string.profession), jobItem);
     }
@@ -316,7 +324,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         String userName = edtNickname.getText().toString().trim();
         if (userName.length() == 0) {
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
-        } else if (provinceItem == null) {
+        } else if (provinceItem == null || provinceItem.getId() == 0) {
             showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
         } else {
             isDataValid = true;
