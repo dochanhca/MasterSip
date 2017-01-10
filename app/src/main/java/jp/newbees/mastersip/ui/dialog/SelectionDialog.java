@@ -63,7 +63,9 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         setOnPositiveListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onSelectionDialogClick.onItemSelected(selectedItemIndex);
+                if (selectedItemIndex >= 0) {
+                    onSelectionDialogClick.onItemSelected(selectedItemIndex);
+                }
                 dismiss();
             }
         });
