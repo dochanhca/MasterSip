@@ -194,4 +194,8 @@ final public class ConfigManager {
         editor.clear();
         editor.commit();
     }
+
+    public boolean firstTimeAskingForPermission(String permission) {
+        return false;
+    }
 }

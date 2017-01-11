@@ -51,6 +51,7 @@ public class LinphoneService extends Service{
             @Override
             public void run() {
                 try {
+                    Logger.e("LinephonService","Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                     linphoneHandler.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
                 } catch (LinphoneCoreException e) {

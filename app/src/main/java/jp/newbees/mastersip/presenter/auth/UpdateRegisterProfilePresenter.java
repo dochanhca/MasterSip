@@ -10,7 +10,7 @@ import jp.newbees.mastersip.network.api.UpdateProfileTask;
  * Created by vietbq on 12/15/16.
  */
 
-public class UpdateRegisterProfilePresenterBase extends RegisterPresenterBase {
+public class UpdateRegisterProfilePresenter extends RegisterPresenterBase {
 
     private UserItem userItem;
 
@@ -24,7 +24,7 @@ public class UpdateRegisterProfilePresenterBase extends RegisterPresenterBase {
     private final Context context;
     private final View view;
 
-    public UpdateRegisterProfilePresenterBase(Context context, View view) {
+    public UpdateRegisterProfilePresenter(Context context, View view) {
         super(context);
         this.context = context;
         this.view = view;

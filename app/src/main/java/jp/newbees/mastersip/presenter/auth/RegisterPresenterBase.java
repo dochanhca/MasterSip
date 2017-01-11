@@ -36,6 +36,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
 
     public void loginVoIP() {
         EventBus.getDefault().register(this);
+        Logger.e(TAG,"Start Linphone Service");
         Intent intent = new Intent(context,LinphoneService.class);
         context.startService(intent);
     }
@@ -50,10 +51,17 @@ public abstract class RegisterPresenterBase extends BasePresenter {
             saveLoginState(true);
             onDidRegisterVoIPSuccess();
         } else {
+            stopLinphoneService();
+            ConfigManager.getInstance().resetSettings();
             saveLoginState(false);
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR,"Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void stopLinphoneService(){
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.stopService(intent);
     }
 
     private void saveLoginState(boolean loginState) {

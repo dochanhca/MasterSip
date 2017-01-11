@@ -108,17 +108,20 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
                 super.acceptCall();
                 break;
             case R.id.btn_on_off_mic:
+                super.muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
                 super.endCall();
                 break;
             case R.id.btn_on_off_speaker:
+                super.enableSpeaker(btnOnOffSpeaker.isChecked());
                 break;
         }
     }
 
     @Override
     public void onCallConnected() {
+        enableSpeaker(btnOnOffSpeaker.isChecked());
         this.showCallingView();
     }
 }
