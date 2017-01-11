@@ -25,7 +25,7 @@ public class BaseHandleCallPresenter extends BasePresenter {
         this.view = view;
     }
 
-    public final void acceptCall(){
+    public final void acceptCall() {
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
     }
 
@@ -60,7 +60,7 @@ public class BaseHandleCallPresenter extends BasePresenter {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.CONNECTED_CALL:
                 handleCallConnected();
-            break;
+                break;
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;
@@ -87,6 +87,7 @@ public class BaseHandleCallPresenter extends BasePresenter {
 
     public interface HandleCallView {
         public void onCallConnected();
+
         public void onCallEnd();
     }
 }

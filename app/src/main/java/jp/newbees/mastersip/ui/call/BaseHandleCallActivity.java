@@ -9,7 +9,7 @@ import jp.newbees.mastersip.ui.BaseActivity;
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleCallActivity extends BaseActivity implements BaseHandleCallPresenter.HandleCallView{
+public abstract class BaseHandleCallActivity extends BaseActivity implements BaseHandleCallPresenter.HandleCallView {
 
     private BaseHandleCallPresenter presenter;
 
@@ -17,7 +17,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Bas
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = new BaseHandleCallPresenter(getApplicationContext(),this);
+        this.presenter = new BaseHandleCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
     }
 
@@ -43,7 +43,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Bas
         this.presenter.enableSpeaker(enable);
     }
 
-    public final void muteMicrophone(boolean mute){
+    public final void muteMicrophone(boolean mute) {
         this.presenter.muteMicrophone(mute);
     }
 

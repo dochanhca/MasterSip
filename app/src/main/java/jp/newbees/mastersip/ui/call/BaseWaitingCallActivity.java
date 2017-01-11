@@ -13,13 +13,13 @@ import jp.newbees.mastersip.ui.BaseActivity;
 
 public abstract class BaseWaitingCallActivity extends BaseActivity implements BaseWaitingCallPresenter.IncomingCallView {
 
-    private static final String CALLER = "CALLER";
+    public static final String CALLER = "CALLER";
     private BaseWaitingCallPresenter incomingCallPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        incomingCallPresenter = new BaseWaitingCallPresenter(getApplicationContext(),this);
+        incomingCallPresenter = new BaseWaitingCallPresenter(getApplicationContext(), this);
         incomingCallPresenter.registerCallEvent();
     }
 
@@ -31,7 +31,7 @@ public abstract class BaseWaitingCallActivity extends BaseActivity implements Ba
 
     @Override
     public void incomingVoiceCall(UserItem caller) {
-        Intent intent = new Intent(this, IncomingVoiceCallActivity.class);
+        Intent intent = new Intent(getApplicationContext(), IncomingVoiceCallActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CALLER, caller);
         intent.putExtras(bundle);

@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.model.SipItem;
@@ -103,6 +104,15 @@ public class LinphoneService extends Service{
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public final void onSpeakerEvent(SpeakerEvent speakerEvent) {
         linphoneHandler.enableSpeaker(speakerEvent.isEnable());
+    }
+
+    /**
+     * This method invoked by EventBus when enable or disable Mic
+     * @param microphoneEvent
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onMicrophoneEvent(MicrophoneEvent microphoneEvent) {
+        linphoneHandler.muteMicrophone(microphoneEvent.isMute());
     }
 
     /**

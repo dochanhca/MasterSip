@@ -54,6 +54,7 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
     ViewGroup layoutVoiceCallingAction;
 
     private Handler timerHandler = new Handler();
+    private UserItem caller;
 
     @Override
     protected int layoutId() {
@@ -70,7 +71,18 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        caller = getIntent().getExtras().getParcelable(BaseWaitingCallActivity.CALLER);
 
+        txtUserName.setText(caller.getUsername());
+
+        int imageID = ConfigManager.getInstance().getImageCalleeDefault();
+        if (caller.getAvatarItem() != null) {
+            Glide.with(this).load(caller.getAvatarItem().getOriginUrl())
+                    .error(imageID).placeholder(imageID)
+                    .centerCrop()
+                    .into(profileImage);
+        }
+        profileImage.setImageResource(imageID);
     }
 
     /**
@@ -85,7 +97,6 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
      * start when user during a call
      */
     private void showCallingView() {
-
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -94,7 +105,6 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
         layoutVoiceCallingAction.setVisibility(View.VISIBLE);
         layoutReceivingCallAction.setVisibility(View.GONE);
         imgLoading.setVisibility(View.GONE);
-
     }
 
 
@@ -121,6 +131,7 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
 
     @Override
     public void onCallConnected() {
+        countingCallDuration();
         enableSpeaker(btnOnOffSpeaker.isChecked());
         this.showCallingView();
     }

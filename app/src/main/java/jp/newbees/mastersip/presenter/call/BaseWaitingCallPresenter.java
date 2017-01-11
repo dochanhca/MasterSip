@@ -54,8 +54,8 @@ public class BaseWaitingCallPresenter extends BasePresenter {
         }
     }
 
-    private void handleIncomingCallType(int callType, UserItem caller){
-        switch (callType){
+    private void handleIncomingCallType(int callType, UserItem caller) {
+        switch (callType) {
             case Constant.API.VOICE_CALL:
                 incomingCallView.incomingVoiceCall(caller);
                 break;
