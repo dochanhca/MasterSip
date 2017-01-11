@@ -351,4 +351,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
+    public final void call(String callee, boolean enableVideo) {
+        try {
+            String addressSip = genSipAddressByExtension(callee);
+            LinphoneAddress lAddress = linphoneCore.interpretUrl(addressSip);
+            LinphoneCallParams params = linphoneCore.createCallParams(null);
+            params.setVideoEnabled(enableVideo);
+            linphoneCore.inviteAddressWithParams(lAddress, params);
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+    }
 }

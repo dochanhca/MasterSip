@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import jp.newbees.mastersip.BuildConfig;
 import jp.newbees.mastersip.R;
@@ -36,6 +37,8 @@ final public class ConfigManager {
     private final SharedPreferences sharedPreferences;
     private String domain;
     private int imageDrawableCalleeId = -1;
+    private HashMap<String, UserItem> callees;
+    private int currentCallType;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -72,6 +75,7 @@ final public class ConfigManager {
         //Init SharePreference
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         domain = BASE_URL;
+        callees = new HashMap<>();
     }
 
     public RequestQueue getRequestQueue() {
@@ -185,6 +189,7 @@ final public class ConfigManager {
 
     public void resetSettings() {
         imageDrawableCalleeId = -1;
+        callees.clear();
         clearUser();
     }
 
@@ -197,5 +202,14 @@ final public class ConfigManager {
 
     public boolean firstTimeAskingForPermission(String permission) {
         return false;
+    }
+
+    public UserItem getCurrentCallee(String calleeExtension) {
+        UserItem callee = callees.get(calleeExtension);
+        return callee;
+    }
+
+    public int getCurrentCallType() {
+        return currentCallType;
     }
 }

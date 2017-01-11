@@ -18,13 +18,14 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
+public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @BindView(R.id.profile_image)
     CircleImageView profileImage;
@@ -71,7 +72,7 @@ public class IncomingVoiceCallActivity extends BaseHandleCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        caller = getIntent().getExtras().getParcelable(BaseWaitingCallActivity.CALLER);
+        caller = getIntent().getExtras().getParcelable(CallCenterActivity.CALLER);
 
         txtUserName.setText(caller.getUsername());
 

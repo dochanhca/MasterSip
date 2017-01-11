@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -24,16 +25,13 @@ public class CheckCallTask extends BaseTask {
     private final String receiverExtension;
     private  int type;
     private  int kind;
-    private  String callWaitId;
 
-    public CheckCallTask(Context context, String caller, String receiver, int callType, int kind,
-                         String callWaitId) {
+    public CheckCallTask(Context context, UserItem caller, UserItem callee, int callType, int kind) {
         super(context);
-        callerExtension = caller;
-        receiverExtension = receiver;
+        this.callerExtension = caller.getSipItem().getExtension();
+        this.receiverExtension = callee.getSipItem().getExtension();
         this.type = callType;
         this.kind = kind;
-        this.callWaitId = callWaitId;
     }
 
 

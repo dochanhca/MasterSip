@@ -1,23 +1,23 @@
-package jp.newbees.mastersip.ui.call;
+package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
 
-import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
+import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleCallActivity extends BaseActivity implements BaseHandleCallPresenter.HandleCallView {
+public abstract class BaseHandleIncomingCallActivity extends BaseActivity implements BaseHandleIncomingCallPresenter.IncomingCallView {
 
-    private BaseHandleCallPresenter presenter;
+    private BaseHandleIncomingCallPresenter presenter;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = new BaseHandleCallPresenter(getApplicationContext(), this);
+        this.presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
     }
 

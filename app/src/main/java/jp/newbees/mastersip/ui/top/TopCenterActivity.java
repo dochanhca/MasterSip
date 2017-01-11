@@ -12,18 +12,18 @@ import android.view.animation.AnimationUtils;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.presenter.TopPresenter;
-import jp.newbees.mastersip.ui.call.BaseWaitingCallActivity;
+import jp.newbees.mastersip.ui.call.CallCenterActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends BaseWaitingCallActivity implements View.OnClickListener, TopPresenter.TopView {
+public class TopCenterActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView {
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
 
-    private static final String TAG = "TopActivity";
+    private static final String TAG = "TopCenterActivity";
     private TopPresenter topPresenter;
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
@@ -101,6 +101,8 @@ public class TopActivity extends BaseWaitingCallActivity implements View.OnClick
     public void onClick(View v) {
 
     }
+
+
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
         public MyPagerAdapter(FragmentManager fm) {

@@ -133,7 +133,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     }
 
 //    private void startTopScreenWithNewTask() {
-//        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+//        Intent intent = new Intent(getApplicationContext(), TopCenterActivity.class);
 //
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

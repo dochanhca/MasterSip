@@ -12,11 +12,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.call.CallEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -113,6 +115,37 @@ public class LinphoneService extends Service{
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public final void onMicrophoneEvent(MicrophoneEvent microphoneEvent) {
         linphoneHandler.muteMicrophone(microphoneEvent.isMute());
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onCallEvent(CallEvent callEvent) {
+        switch (callEvent.getCallType()){
+            case Constant.API.VOICE_CALL:
+                this.handleVoiceCall(callEvent.getCallee());
+                break;
+            case Constant.API.VIDEO_CALL:
+                this.handleVideoVideoCall(callEvent.getCallee());
+                break;
+            case Constant.API.VIDEO_CHAT:
+                this.handleVideoChatCall(callEvent.getCallee());
+                break;
+        }
+    }
+
+    private void handleVoiceCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
+        linphoneHandler.call(callee,false);
+    }
+
+    private void handleVideoVideoCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
+    }
+
+    private void handleVideoChatCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.Map;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -20,12 +21,12 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by vietbq on 1/10/17.
  */
 
-public class BaseWaitingCallPresenter extends BasePresenter {
-    private IncomingCallView incomingCallView;
+public class BaseCenterCallPresenter extends BasePresenter {
+    private CenterCallView centerCallView;
 
-    public BaseWaitingCallPresenter(Context context, IncomingCallView incomingCallView) {
+    public BaseCenterCallPresenter(Context context, CenterCallView centerCallView) {
         super(context);
-        this.incomingCallView = incomingCallView;
+        this.centerCallView = centerCallView;
     }
 
     @Override
@@ -35,6 +36,8 @@ public class BaseWaitingCallPresenter extends BasePresenter {
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             handleIncomingCallType(callType, caller);
+        }else if(task instanceof CheckCallTask) {
+
         }
     }
 
@@ -49,6 +52,9 @@ public class BaseWaitingCallPresenter extends BasePresenter {
             case ReceivingCallEvent.INCOMING_CALL:
                 onIncomingCall(receivingCallEvent.getCallerExtension());
                 break;
+            case ReceivingCallEvent.OUTGOING_CALL:
+                onOutgoingCall(receivingCallEvent.getCallerExtension());
+                break;
             default:
                 break;
         }
@@ -57,23 +63,28 @@ public class BaseWaitingCallPresenter extends BasePresenter {
     private void handleIncomingCallType(int callType, UserItem caller) {
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                incomingCallView.incomingVoiceCall(caller);
+                centerCallView.incomingVoiceCall(caller);
                 break;
             case Constant.API.VIDEO_CALL:
-                incomingCallView.incomingVideoCall(caller);
+                centerCallView.incomingVideoCall(caller);
                 break;
             case Constant.API.VIDEO_CHAT:
-                incomingCallView.incomingVideoChatCall(caller);
+                centerCallView.incomingVideoChatCall(caller);
                 break;
             default:
                 break;
         }
     }
 
-    protected void onIncomingCall(String callerExtension) {
+    private void onIncomingCall(String callerExtension) {
         String calleeExtension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
         CheckIncomingCallTask checkCallTask = new CheckIncomingCallTask(context, callerExtension, calleeExtension);
         requestToServer(checkCallTask);
+    }
+
+    private void onOutgoingCall(String calleeExtension) {
+        UserItem callee = ConfigManager.getInstance().getCurrentCallee(calleeExtension);
+        centerCallView.outgoingVoiceCall(callee);
     }
 
     public void registerCallEvent() {
@@ -84,11 +95,13 @@ public class BaseWaitingCallPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    public interface IncomingCallView {
+    public interface CenterCallView {
         void incomingVoiceCall(UserItem caller);
 
         void incomingVideoCall(UserItem caller);
 
         void incomingVideoChatCall(UserItem caller);
+
+        void outgoingVoiceCall(UserItem callee);
     }
 }

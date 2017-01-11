@@ -32,10 +32,9 @@ public class CheckCallPresenter extends BasePresenter {
     }
 
     public void checkCall(String caller, String receiver, int callType, int kind) {
-        CheckCallTask checkCallTask = new CheckCallTask(context, caller, receiver, callType, kind,
-                callWaitId);
-
-        requestToServer(checkCallTask);
+//        CheckCallTask checkCallTask = new CheckCallTask(context, caller, receiver, callType, kind,
+//                callWaitId);
+//        requestToServer(checkCallTask);
     }
 
     @Override
