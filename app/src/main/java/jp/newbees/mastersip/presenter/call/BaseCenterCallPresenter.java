@@ -68,7 +68,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
             case Constant.API.VIDEO_CALL:
                 centerCallView.incomingVideoCall(caller);
                 break;
-            case Constant.API.VIDEO_CHAT:
+            case Constant.API.VIDEO_CHAT_CALL:
                 centerCallView.incomingVideoChatCall(caller);
                 break;
             default:

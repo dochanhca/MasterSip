@@ -20,6 +20,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public abstract class RegisterPresenterBase extends BasePresenter {
+    private boolean hasRunVoIPService;
     public RegisterPresenterBase(Context context) {
         super(context);
     }
@@ -35,11 +36,15 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     }
 
     public void loginVoIP() {
-        EventBus.getDefault().register(this);
-        Logger.e(TAG,"Start Linphone Service");
-        Intent intent = new Intent(context,LinphoneService.class);
-        context.startService(intent);
+        if (hasRunVoIPService == false) {
+            hasRunVoIPService = true;
+            EventBus.getDefault().register(this);
+            Logger.e(TAG,"Start Linphone Service");
+            Intent intent = new Intent(context,LinphoneService.class);
+            context.startService(intent);
+        }
     }
+
 
     /**
      * @param event listener Register VoIP response

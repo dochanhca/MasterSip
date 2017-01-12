@@ -208,11 +208,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.getDefaultProxyConfig().enableRegister(false);
             linphoneCore.getDefaultProxyConfig().done();
 
+        }catch (NullPointerException e) {
+            Logger.e(TAG, "linphoneCore is " + linphoneCore);
         } finally {
             Logger.e("LinphoneHandler", "Shutting down linphone...");
             linphoneCore.destroy();
         }
-
     }
 
     private void setFrontCamAsDefault() {

@@ -84,14 +84,16 @@ public final class Constant {
         public static final String CALLER = "caller";
         public static final String RECEIVER = "receiver";
         public static final String TYPE = "type";
-        public static final String K_KIND = "kind";
-        public static final String K_CALL_WAIT_ID = "call_wait_id";
-        public static final String K_MESSAGE_ID = "message_id";
-        public static final String K_MIN_POINT = "min_point";
+        public static final String KIND = "kind";
+        public static final String CALL_WAIT_ID = "call_wait_id";
+        public static final String MESSAGE_ID = "message_id";
+        public static final String MIN_POINT = "min_point";
 
         public static final String ACTION = "action";
         public static final String EXTENSION_ID = "extension_id";
         public static final String URL_AVATAR = "url_avatar";
+        public static final String EXTENSION = "extension";
+        public static final String RECEIVER_STATUS = "receiver_status";
     }
 
     public static final class API {
@@ -101,10 +103,10 @@ public final class Constant {
 
         public static final int VOICE_CALL = 1;
         public static final int VIDEO_CALL = 2;
-        public static final int VIDEO_CHAT = 7;
+        public static final int VIDEO_CHAT_CALL = 7;
 
-        public static final int KIND_CHAT = 1;
-        public static final int KIND_OTHER = 2;
+        public static final int CALL_FROM_CHAT_ROOM = 1;
+        public static final int CALL_FROM_OTHER = 2;
 
         private static final String DEVELOPMENT_IP = "52.197.14.30";
 //        private static final String DEVELOPMENT_IP = "52.197.138.1";
@@ -127,6 +129,7 @@ public final class Constant {
         public static final String CHAT_MESSAGE = "chat";
         public static final String CHECK_CALL = "calls/check-call";
         public static final String CHECK_TYPE_INCOMING_CALL = "calls/check-type-call";
+        public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

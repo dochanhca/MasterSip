@@ -66,6 +66,6 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
 
     @Override
     public void onOkClick() {
-        profileDetailPresenter.voiceCall(userItem);
+        profileDetailPresenter.checkVoiceCall(userItem);
     }
 }

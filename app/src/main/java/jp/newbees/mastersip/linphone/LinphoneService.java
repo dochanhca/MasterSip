@@ -126,7 +126,7 @@ public class LinphoneService extends Service{
             case Constant.API.VIDEO_CALL:
                 this.handleVideoVideoCall(callEvent.getCallee());
                 break;
-            case Constant.API.VIDEO_CHAT:
+            case Constant.API.VIDEO_CHAT_CALL:
                 this.handleVideoChatCall(callEvent.getCallee());
                 break;
         }
