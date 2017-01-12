@@ -1,8 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -12,7 +10,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.StartActivity;
-import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -47,21 +45,12 @@ public class MyMenuFragment extends BaseFragment {
 
     private void logout() {
         stopLinphoneService();
-        clearSharedPreferences();
-
+        ConfigManager.getInstance().resetSettings();
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
         startActivity(intent);
         getActivity().finish();
     }
 
-    private void clearSharedPreferences() {
-        SharedPreferences sharedPreferences = getActivity().
-                getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.clear();
-        editor.commit();
-    }
 
     private void stopLinphoneService(){
         Intent intent = new Intent(getActivity(), LinphoneService.class);

@@ -10,7 +10,7 @@ import jp.newbees.mastersip.network.api.UpdateProfileTask;
  * Created by vietbq on 12/15/16.
  */
 
-public class UpdateRegisterProfilePresenter extends RegisterBasePresenter {
+public class UpdateRegisterProfilePresenter extends RegisterPresenterBase {
 
     private UserItem userItem;
 

@@ -7,10 +7,18 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.call.CallEvent;
+import jp.newbees.mastersip.event.call.MicrophoneEvent;
+import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -27,6 +35,7 @@ public class LinphoneService extends Service{
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG,"onCreate");
+        EventBus.getDefault().register(this);
         mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
         linphoneHandler = new LinphoneHandler(notifier, this.getApplicationContext());
@@ -45,6 +54,7 @@ public class LinphoneService extends Service{
             @Override
             public void run() {
                 try {
+                    Logger.e("LinephonService","Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                     linphoneHandler.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
                 } catch (LinphoneCoreException e) {
@@ -63,9 +73,104 @@ public class LinphoneService extends Service{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
         Logger.e(TAG,"Stop Linphone Service");
     }
 
+    /**
+     * This method invoked by EventBus when user accept or reject a call
+     * @param acceptCallEvent
+     */
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onSendingCallEvent(SendingCallEvent acceptCallEvent) {
+        switch (acceptCallEvent.getEvent()) {
+            case SendingCallEvent.ACCEPT_CALL:
+                handleAcceptCall();
+                break;
+            case SendingCallEvent.REJECT_CALL:
+                handleRejectCall();
+                break;
+            case SendingCallEvent.END_CALL:
+                handleEndCall();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * This method invoked by EventBus when enable or disable Speaker
+     * @param speakerEvent
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onSpeakerEvent(SpeakerEvent speakerEvent) {
+        linphoneHandler.enableSpeaker(speakerEvent.isEnable());
+    }
+
+    /**
+     * This method invoked by EventBus when enable or disable Mic
+     * @param microphoneEvent
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onMicrophoneEvent(MicrophoneEvent microphoneEvent) {
+        linphoneHandler.muteMicrophone(microphoneEvent.isMute());
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onCallEvent(CallEvent callEvent) {
+        switch (callEvent.getCallType()){
+            case Constant.API.VOICE_CALL:
+                this.handleVoiceCall(callEvent.getCallee());
+                break;
+            case Constant.API.VIDEO_CALL:
+                this.handleVideoVideoCall(callEvent.getCallee());
+                break;
+            case Constant.API.VIDEO_CHAT_CALL:
+                this.handleVideoChatCall(callEvent.getCallee());
+                break;
+        }
+    }
+
+    private void handleVoiceCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
+        linphoneHandler.call(callee,false);
+    }
+
+    private void handleVideoVideoCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
+    }
+
+    private void handleVideoChatCall(String callee) {
+        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.muteMicrophone(false);
+    }
+
+    /**
+     * End current call
+     */
+    private void handleEndCall() {
+        linphoneHandler.endCall();
+    }
+
+    /**
+     * Reject a incoming call
+     */
+    private void handleRejectCall() {
+        linphoneHandler.rejectCall();
+    }
+
+    /**
+     * Accept a incoming call
+     */
+    private void handleAcceptCall(){
+        try {
+            linphoneHandler.acceptCall();
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

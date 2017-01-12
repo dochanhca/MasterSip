@@ -53,10 +53,10 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
     private ArrayList<SelectionItem> typeItems;
     private ArrayList<SelectionItem> availableTimeItems;
 
-    private SelectionItem provinceItem = new SelectionItem();
-    private SelectionItem jobItem = new SelectionItem();
-    private SelectionItem typeItem = new SelectionItem();
-    private SelectionItem availableTimeItem = new SelectionItem();
+    private SelectionItem provinceItem;
+    private SelectionItem jobItem;
+    private SelectionItem typeItem;
+    private SelectionItem availableTimeItem;
 
     private InputDataType inputDataType;
     private SelectDataType selectDataType;
@@ -131,6 +131,9 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
                 SelectAvatarDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
+                if (provinceItem == null) {
+                    provinceItem = new SelectionItem();
+                }
                 PickLocationActivity.startActivityPickLocation(this, provinceItem);
                 break;
             case R.id.layout_profession:
@@ -210,7 +213,9 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
             case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
-                    txtArea.setText(provinceItem.getTitle());
+                    if (provinceItem.getTitle().length() >0) {
+                        txtArea.setText(provinceItem.getTitle());
+                    }
                 }
         }
     }
@@ -303,7 +308,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         String userName = edtNickname.getText().toString().trim();
         if (userName.length() == 0) {
             showMessageDialog("", getString(R.string.err_user_name_empty), "", false);
-        } else if (provinceItem == null) {
+        } else if (provinceItem == null || provinceItem.getId() == 0) {
             showMessageDialog("", getString(R.string.err_pls_select_area), "", false);
         } else {
             isDataValid = true;
@@ -319,6 +324,9 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     private void selectAvailableTime() {
         selectDataType = SelectDataType.AVAILABLE_TIME;
+        if (availableTimeItem == null) {
+            availableTimeItem = new SelectionItem();
+        }
         openSelectionDialog(getString(R.string.available_time), availableTimeItems, availableTimeItem);
     }
 
@@ -335,11 +343,17 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     private void selectType() {
         selectDataType = SelectDataType.TYPE;
+        if (typeItem == null) {
+            typeItem = new SelectionItem();
+        }
         openSelectionDialog(getString(R.string.type), typeItems, typeItem);
     }
 
     private void selectJob() {
         selectDataType = SelectDataType.JOB;
+        if (jobItem == null) {
+            jobItem = new SelectionItem();
+        }
         openSelectionDialog(getString(R.string.profession), femaleJobItems, jobItem);
     }
 

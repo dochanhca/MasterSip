@@ -82,7 +82,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
 
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         String nextPage = jData.getString(Constant.JSON.kNextPage);
         List<UserItem> userItems  = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();

@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,24 +7,28 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.top.ChatActivity;
+
+import static jp.newbees.mastersip.utils.Constant.Application.USER_ITEM;
 
 /**
  * Created by ducpv on 1/5/17.
  */
 
-public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick {
+public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ProfileDetailPresenter.ProfileDetailsView {
 
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
     private static final String USER = "USER";
+    private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
 
     public static ProfileDetailFragment newInstance(UserItem userItem) {
         Bundle args = new Bundle();
-        args.putSerializable(USER,userItem);
+        args.putParcelable(USER_ITEM, userItem);
         ProfileDetailFragment fragment = new ProfileDetailFragment();
         fragment.setArguments(args);
         return fragment;
@@ -39,8 +42,9 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-        setFragmentTitle("User Name Here");
-        userItem = getArguments().getParcelable(USER);
+        profileDetailPresenter = new ProfileDetailPresenter(getContext(),this);
+        userItem = getArguments().getParcelable(USER_ITEM);
+        setFragmentTitle(userItem.getUsername());
     }
 
     @OnClick({R.id.img_back, R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call})
@@ -65,7 +69,6 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
 
     @Override
     public void onOkClick() {
-        Intent intent = new Intent(getActivity().getApplicationContext(), OutgoingVoiceActivity.class);
-        startActivity(intent);
+        profileDetailPresenter.checkVoiceCall(userItem);
     }
 }

@@ -27,7 +27,8 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
-import jp.newbees.mastersip.eventbus.FilterUserEvent;
+import jp.newbees.mastersip.event.EventManage;
+import jp.newbees.mastersip.event.FilterUserEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
@@ -141,12 +142,12 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         private void hideFilterAndNavigationBar() {
             filter.startAnimation(slideUp);
-            ((TopActivity)getActivity()).hideNavigation();
+            ((TopCenterActivity)getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
             filter.startAnimation(slideDown);
-            ((TopActivity)getActivity()).showNavigation();
+            ((TopCenterActivity)getActivity()).showNavigation();
         }
     };
 
@@ -228,7 +229,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         showLoading();
         presenter.filterUser(currentTypeSearch);
-
     }
 
     @Subscribe(sticky = true)
@@ -340,8 +340,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void onItemClick(UserItem item, int position) {
-        showProfileDetailFragment(item);
+    public void onItemClick(UserItem userItem, int position) {
+        showProfileDetailFragment(userItem);
     }
 
     @Override

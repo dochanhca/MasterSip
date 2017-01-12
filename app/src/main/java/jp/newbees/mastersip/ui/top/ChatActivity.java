@@ -29,7 +29,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelaytiveLayout;
-import jp.newbees.mastersip.eventbus.EventManage;
+import jp.newbees.mastersip.event.EventManage;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
@@ -249,14 +249,14 @@ public class ChatActivity extends BaseActivity {
         recyclerChat.setAdapter(chatAdapter);
         chatAdapter.notifyDataSetChanged();
 
-        EventManage.getInstance().registerChattingEventName(fromExtension, Constant.API.KIND_CHAT, this);
+        EventManage.getInstance().registerChattingEventName(fromExtension, Constant.API.CALL_FROM_CHAT_ROOM, this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        String eventName = EventManage.getInstance().genChattingEventName(fromExtension, Constant.API.KIND_CHAT);
+        String eventName = EventManage.getInstance().genChattingEventName(fromExtension, Constant.API.CALL_FROM_CHAT_ROOM);
         EventManage.getInstance().unregisterEventName(eventName);
     }
 

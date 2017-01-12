@@ -42,7 +42,7 @@ public class JSONUtils {
         for (int i=0, n=jArray.length(); i<n; i++){
             JSONObject jUser = jArray.getJSONObject(i);
             UserItem userItem = new UserItem();
-            userItem.setUsername(jUser.getString(Constant.JSON.kHandleName));
+            userItem.setUsername(jUser.getString(Constant.JSON.HANDLE_NAME));
             userItem.setUserId(jUser.getString(Constant.JSON.kID));
 
             userItem.setMemo(jUser.getString(Constant.JSON.kSlogan));
@@ -210,7 +210,7 @@ public class JSONUtils {
         int roomType = jText.getInt(Constant.JSON.kRoomType);
         textChatItem.setRoomType(roomType);
         textChatItem.setChatType(CHAT_TEXT);
-        textChatItem.setMessageId(jData.getInt(Constant.JSON.K_MESSAGE_ID));
+        textChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
 
         UserItem userItem = new UserItem();
         SipItem sipItem = new SipItem(extensionSender);

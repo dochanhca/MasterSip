@@ -2,11 +2,14 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 
+import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
+
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class OutgoingVideoChatActivity extends BaseCallActivity {
+public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
+
     @Override
     protected int layoutId() {
         return 0;
@@ -19,6 +22,16 @@ public class OutgoingVideoChatActivity extends BaseCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onCallConnected() {
+
+    }
+
+    @Override
+    public void onCallEnd() {
 
     }
 }

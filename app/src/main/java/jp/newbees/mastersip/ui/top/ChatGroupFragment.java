@@ -67,14 +67,14 @@ public class ChatGroupFragment extends BaseFragment implements CheckCallPresente
             UserItem userItem = ConfigManager.getInstance().getCurrentUser();
             String callerExtesion = userItem.getSipItem().getExtension();
             Logger.e(getClass().getSimpleName(), callerExtesion);
-            checkCallPresenter.checkCall(callerExtesion, "1104", Constant.API.VOICE_CALL,
-                    Constant.API.KIND_CHAT);
+//            checkCallPresenter.checkCall(callerExtesion, "1104", Constant.API.VOICE_CALL,
+//                    Constant.API.KIND_CHAT);
         }
     }
 
     @Override
     public void didCheckCall(Map<String, Object> result) {
-        Toast.makeText(getActivity().getApplicationContext(), "" + (int) result.get(Constant.JSON.K_MESSAGE_ID),
+        Toast.makeText(getActivity().getApplicationContext(), "" + (int) result.get(Constant.JSON.MESSAGE_ID),
                 Toast.LENGTH_SHORT).show();
     }
 

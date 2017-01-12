@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.eventbus;
+package jp.newbees.mastersip.event;
 
 import org.greenrobot.eventbus.EventBus;
 

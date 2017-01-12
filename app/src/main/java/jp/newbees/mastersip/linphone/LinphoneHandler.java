@@ -1,10 +1,13 @@
 package jp.newbees.mastersip.linphone;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.linphone.core.LinphoneAddress;
 import org.linphone.core.LinphoneAuthInfo;
 import org.linphone.core.LinphoneCall;
+import org.linphone.core.LinphoneCallParams;
 import org.linphone.core.LinphoneCallStats;
 import org.linphone.core.LinphoneChatMessage;
 import org.linphone.core.LinphoneChatRoom;
@@ -19,10 +22,16 @@ import org.linphone.core.LinphoneFriendList;
 import org.linphone.core.LinphoneInfoMessage;
 import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
+import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
+import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -32,6 +41,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class LinphoneHandler implements LinphoneCoreListener {
+    private static final String TAG = "LinphoneHandler";
     private Context context;
     private boolean running;
     private LinphoneNotifier notifier;
@@ -42,10 +52,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
         this.context = context;
     }
 
-
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
         this.write(cfg.getIdentity() + " : " + state.toString());
-        Logger.e(getClass().getSimpleName(), state.toString());
+        Logger.e("" + this + getClass().getSimpleName(), state.toString());
         RegisterVoIPManager.getInstance().registrationStateChanged(state, notifier);
     }
 
@@ -83,12 +92,23 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        //NEU Incoming...
-        //NEU Outgoing...
-        //NEU Start Streaming
+        Logger.e(TAG, msg);
+        int state = cstate.value();
+        if (cstate == LinphoneCall.State.CallReleased) {
+            resetDefaultSpeaker();
+        }
+        String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
+        ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callerExtension);
+        EventBus.getDefault().post(receivingCallEvent);
+    }
+
+    private void resetDefaultSpeaker() {
+        linphoneCore.enableSpeaker(true);
+        linphoneCore.muteMic(false);
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
+        Logger.e(TAG, stats.toString());
     }
 
     public void ecCalibrationStatus(LinphoneCore lc, LinphoneCore.EcCalibratorStatus status, int delay_ms, Object data) {
@@ -105,6 +125,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     /**
      * Gen SIP Address such as sip:1102@52.197.14.30
+     *
      * @param extension 1102
      * @return full address sip
      */
@@ -114,8 +135,48 @@ public class LinphoneHandler implements LinphoneCoreListener {
         return stringBuilder.toString();
     }
 
+    private void createLinphoneCore() {
+        try {
+            String basePath = context.getFilesDir().getAbsolutePath();
+            copyAssetsFromPackage(basePath);
+            linphoneCore = LinphoneCoreFactory.instance().createLinphoneCore(this, basePath + "/.linphonerc", basePath + "/linphonerc", null, context);
+            initLinphoneCoreValues(basePath);
+            setUserAgent();
+            setFrontCamAsDefault();
+            linphoneCore.setNetworkReachable(true); // Let's assume it's true
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void copyAssetsFromPackage(String basePath) throws IOException {
+        LinphonUtils.copyIfNotExist(context, R.raw.oldphone_mono, basePath + "/oldphone_mono.wav");
+        LinphonUtils.copyIfNotExist(context, R.raw.ringback, basePath + "/ringback.wav");
+        LinphonUtils.copyIfNotExist(context, R.raw.toy_mono, basePath + "/toy_mono.wav");
+        LinphonUtils.copyIfNotExist(context, R.raw.linphonerc_default, basePath + "/.linphonerc");
+        LinphonUtils.copyFromPackage(context, R.raw.linphonerc_factory, new File(basePath + "/linphonerc").getName());
+        LinphonUtils.copyIfNotExist(context, R.raw.lpconfig, basePath + "/lpconfig.xsd");
+        LinphonUtils.copyIfNotExist(context, R.raw.rootca, basePath + "/rootca.pem");
+    }
+
+    private void initLinphoneCoreValues(String basePath) {
+        linphoneCore.setContext(context);
+        linphoneCore.setRing(null);
+        linphoneCore.enableSpeaker(true);
+        linphoneCore.muteMic(false);
+//        linphoneCore.setRootCA(basePath + "/rootca.pem");
+        linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
+//        linphoneCore.setChatDatabasePath(basePath + "/linphone-history.db");
+
+        int availableCores = Runtime.getRuntime().availableProcessors();
+        linphoneCore.setCpuCount(availableCores);
+    }
+
     /**
      * Login to VoIP Server (such as Aterisk, FreeSWITCH ...)
+     *
      * @param extension 10001
      * @param password  abcxzy
      * @throws LinphoneCoreException
@@ -123,22 +184,22 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
         String sipAddress = this.genSipAddressByExtension(extension);
         LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
-        linphoneCore = lcFactory.createLinphoneCore(this, context);
+        createLinphoneCore();
         try {
             LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
             String username = address.getUserName();
             String domain = address.getDomain();
-            if(password != null) {
-                linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String)null, domain));
+            if (password != null) {
+                linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String) null, domain));
             }
 
-            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, domain, (String)null, true);
+            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, domain, (String) null, true);
             proxyCfg.setExpires(2000);
             linphoneCore.addProxyConfig(proxyCfg);
             linphoneCore.setDefaultProxyConfig(proxyCfg);
             this.running = true;
 
-            while(this.running) {
+            while (this.running) {
                 linphoneCore.iterate();
                 this.sleep(50);
             }
@@ -147,18 +208,41 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.getDefaultProxyConfig().enableRegister(false);
             linphoneCore.getDefaultProxyConfig().done();
 
+        }catch (NullPointerException e) {
+            Logger.e(TAG, "linphoneCore is " + linphoneCore);
         } finally {
-            Logger.e("LinphoneHandler","Shutting down linphone...");
+            Logger.e("LinphoneHandler", "Shutting down linphone...");
             linphoneCore.destroy();
         }
+    }
 
+    private void setFrontCamAsDefault() {
+        int camId = 0;
+        AndroidCameraConfiguration.AndroidCamera[] cameras = AndroidCameraConfiguration.retrieveCameras();
+        for (AndroidCameraConfiguration.AndroidCamera androidCamera : cameras) {
+            if (androidCamera.frontFacing)
+                camId = androidCamera.id;
+        }
+        linphoneCore.setVideoDevice(camId);
+    }
+
+    private void setUserAgent() {
+        try {
+            String versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            if (versionName == null) {
+                versionName = String.valueOf(context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
+            }
+            linphoneCore.setUserAgent("Android MasterSip", versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sleep(int ms) {
         try {
-            Thread.sleep((long)ms);
+            Thread.sleep((long) ms);
         } catch (InterruptedException var3) {
-            Logger.e("LinphoneHandler","Interrupted!\nAborting");
+            Logger.e("LinphoneHandler", "Interrupted!\nAborting");
         }
     }
 
@@ -218,7 +302,65 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
     }
 
-    public void sendMessage(String raw) {
+    public void sendRaw(String raw) {
+    }
 
+    public final void acceptCall() throws LinphoneCoreException {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        linphoneCore.acceptCall(currentCall);
+    }
+
+    public final void endCall() {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        linphoneCore.terminateCall(currentCall);
+    }
+
+    public final void rejectCall() {
+        LinphoneCall currentCall = linphoneCore.getCurrentCall();
+        if (null != currentCall) {
+            linphoneCore.declineCall(currentCall, Reason.Busy);
+        }
+    }
+
+    /**
+     * @param mute
+     */
+    public final void muteMicrophone(boolean mute) {
+        linphoneCore.muteMic(mute);
+    }
+
+    /**
+     * @param speaker
+     */
+    public final void enableSpeaker(boolean speaker) {
+        linphoneCore.enableSpeaker(speaker);
+    }
+
+    /**
+     * @param video
+     */
+    public final void enableVideo(boolean video) {
+        try {
+            LinphoneCall linphoneCall = linphoneCore.getCurrentCall();
+            LinphoneCallParams params = linphoneCore.createCallParams(linphoneCall);
+            params.setVideoEnabled(video);
+            linphoneCore.acceptCallUpdate(linphoneCall, params);
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final void call(String callee, boolean enableVideo) {
+        try {
+            String addressSip = genSipAddressByExtension(callee);
+            LinphoneAddress lAddress = linphoneCore.interpretUrl(addressSip);
+            LinphoneCallParams params = linphoneCore.createCallParams(null);
+            params.setVideoEnabled(enableVideo);
+            linphoneCore.inviteAddressWithParams(lAddress, params);
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
     }
 }

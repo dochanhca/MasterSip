@@ -62,7 +62,7 @@ public class TipPageActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void redirectToUpdateProfile() {
-        Intent intent = new Intent(getApplicationContext(),
+        Intent intent = new Intent(this,
                 RegisterProfileFemaleActivity.class);
         startActivity(intent);
     }

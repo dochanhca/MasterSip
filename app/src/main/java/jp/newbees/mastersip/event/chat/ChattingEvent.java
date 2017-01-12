@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.eventbus;
+package jp.newbees.mastersip.event.chat;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 

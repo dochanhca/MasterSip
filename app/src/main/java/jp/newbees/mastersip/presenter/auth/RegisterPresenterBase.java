@@ -7,7 +7,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -19,8 +19,9 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/9/17.
  */
 
-public abstract class RegisterBasePresenter extends BasePresenter {
-    public RegisterBasePresenter(Context context) {
+public abstract class RegisterPresenterBase extends BasePresenter {
+    private boolean hasRunVoIPService;
+    public RegisterPresenterBase(Context context) {
         super(context);
     }
 
@@ -35,10 +36,15 @@ public abstract class RegisterBasePresenter extends BasePresenter {
     }
 
     public void loginVoIP() {
-        EventBus.getDefault().register(this);
-        Intent intent = new Intent(context,LinphoneService.class);
-        context.startService(intent);
+        if (hasRunVoIPService == false) {
+            hasRunVoIPService = true;
+            EventBus.getDefault().register(this);
+            Logger.e(TAG,"Start Linphone Service");
+            Intent intent = new Intent(context,LinphoneService.class);
+            context.startService(intent);
+        }
     }
+
 
     /**
      * @param event listener Register VoIP response
@@ -50,10 +56,17 @@ public abstract class RegisterBasePresenter extends BasePresenter {
             saveLoginState(true);
             onDidRegisterVoIPSuccess();
         } else {
+            stopLinphoneService();
+            ConfigManager.getInstance().resetSettings();
             saveLoginState(false);
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR,"Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void stopLinphoneService(){
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.stopService(intent);
     }
 
     private void saveLoginState(boolean loginState) {

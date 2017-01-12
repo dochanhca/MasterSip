@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.eventbus.FilterUserEvent;
-import jp.newbees.mastersip.eventbus.SelectLocationEvent;
+import jp.newbees.mastersip.event.FilterUserEvent;
+import jp.newbees.mastersip.event.SelectLocationEvent;
 import jp.newbees.mastersip.model.AgeItem;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.LocationItem;

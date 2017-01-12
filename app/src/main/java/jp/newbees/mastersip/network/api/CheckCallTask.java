@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -19,31 +20,33 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public class CheckCallTask extends BaseTask {
+    public final static String CALL_TYPE = "Call TYPE";
+    public static final String CALLEE = "CALLEE";
+    public static final String CALLEE_ONLINE = "CALLEE_ONLINE";
+    private static final String MESSAGE_ID = "MESSAGE_ID";
 
     private final String callerExtension;
-    private final String receiverExtension;
-    private final int type;
-    private final int kind;
-    private final String callWaitId;
+    private final UserItem callee;
+    private  int type;
+    private  int kind;
 
-    public CheckCallTask(Context context, String caller, String receiver, int callType, int kind,
-                         String callWaitId) {
+    public CheckCallTask(Context context, UserItem caller, UserItem callee, int callType, int callFrom) {
         super(context);
-        callerExtension = caller;
-        receiverExtension = receiver;
+        this.callerExtension = caller.getSipItem().getExtension();
+        this.callee = callee;
         this.type = callType;
-        this.kind = kind;
-        this.callWaitId = callWaitId;
+        this.kind = callFrom;
     }
+
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParam = new JSONObject();
-        jParam.put(Constant.JSON.K_CALLER, callerExtension);
-        jParam.put(Constant.JSON.K_RECEIVER, receiverExtension);
-        jParam.put(Constant.JSON.K_TYPE, type);
-        jParam.put(Constant.JSON.K_KIND, kind);
+        jParam.put(Constant.JSON.CALLER, callerExtension);
+        jParam.put(Constant.JSON.RECEIVER, callee.getSipItem().getExtension());
+        jParam.put(Constant.JSON.TYPE, type);
+        jParam.put(Constant.JSON.KIND, kind);
         return jParam;
     }
 
@@ -60,21 +63,30 @@ public class CheckCallTask extends BaseTask {
 
     @Override
     protected Map<String, Object> didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         Map<String, Object> result = new HashMap<>();
+        result.put(CALL_TYPE, type);
+        result.put(CALLEE, callee);
 
-        int messageId = jData.getInt(Constant.JSON.K_MESSAGE_ID);
-
-        result.put(Constant.JSON.K_MESSAGE_ID, messageId);
-
-        if (!jData.isNull(Constant.JSON.K_MIN_POINT)) {
-            int minPoint = jData.getInt(Constant.JSON.K_MIN_POINT);
-            result.put(Constant.JSON.K_MIN_POINT, minPoint);
+        if (!jData.isNull(Constant.JSON.MESSAGE_ID)) {
+            int messageId = jData.getInt(Constant.JSON.MESSAGE_ID);
+            result.put(MESSAGE_ID, messageId);
         }
 
-        if (!jData.isNull(Constant.JSON.K_CALL_WAIT_ID)) {
-            String callWaitId = jData.getString(Constant.JSON.K_CALL_WAIT_ID);
-            result.put(Constant.JSON.K_CALL_WAIT_ID, callWaitId);
+        if (jData.isNull(Constant.JSON.RECEIVER_STATUS)) {
+            result.put(CheckCallTask.CALLEE_ONLINE, true);
+        }else {
+            result.put(CheckCallTask.CALLEE_ONLINE, false);
+        }
+
+        if (!jData.isNull(Constant.JSON.MIN_POINT)) {
+            int minPoint = jData.getInt(Constant.JSON.MIN_POINT);
+            result.put(Constant.JSON.MIN_POINT, minPoint);
+        }
+
+        if (!jData.isNull(Constant.JSON.CALL_WAIT_ID)) {
+            String callWaitId = jData.getString(Constant.JSON.CALL_WAIT_ID);
+            result.put(Constant.JSON.CALL_WAIT_ID, callWaitId);
         }
         return result;
     }

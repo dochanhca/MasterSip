@@ -66,7 +66,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
 
     @Override
     protected BaseChatItem didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         JSONObject jResponse = jData.getJSONObject(Constant.JSON.kResponse);
         BaseChatItem chatItem = JSONUtils.parseChatItem(jResponse,this.sender);
         return chatItem;

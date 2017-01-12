@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.eventbus;
+package jp.newbees.mastersip.event;
 
 /**
  * Created by ducpv on 1/4/17.

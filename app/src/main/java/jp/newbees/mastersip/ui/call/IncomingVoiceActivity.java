@@ -12,19 +12,20 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class IncomingVoiceActivity extends BaseActivity {
+public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @BindView(R.id.profile_image)
     CircleImageView profileImage;
@@ -54,6 +55,7 @@ public class IncomingVoiceActivity extends BaseActivity {
     ViewGroup layoutVoiceCallingAction;
 
     private Handler timerHandler = new Handler();
+    private UserItem caller;
 
     @Override
     protected int layoutId() {
@@ -63,7 +65,6 @@ public class IncomingVoiceActivity extends BaseActivity {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ButterKnife.bind(this);
-
         Glide.with(this).load(R.drawable.pinpoint)
                 .asGif()
                 .into(imgLoading);
@@ -71,7 +72,18 @@ public class IncomingVoiceActivity extends BaseActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        caller = getIntent().getExtras().getParcelable(CallCenterActivity.CALLER);
 
+        txtUserName.setText(caller.getUsername());
+
+        int imageID = ConfigManager.getInstance().getImageCalleeDefault();
+        if (caller.getAvatarItem() != null) {
+            Glide.with(this).load(caller.getAvatarItem().getOriginUrl())
+                    .error(imageID).placeholder(imageID)
+                    .centerCrop()
+                    .into(profileImage);
+        }
+        profileImage.setImageResource(imageID);
     }
 
     /**
@@ -85,8 +97,7 @@ public class IncomingVoiceActivity extends BaseActivity {
     /**
      * start when user during a call
      */
-    private void updateView() {
-
+    private void showCallingView() {
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -95,6 +106,34 @@ public class IncomingVoiceActivity extends BaseActivity {
         layoutVoiceCallingAction.setVisibility(View.VISIBLE);
         layoutReceivingCallAction.setVisibility(View.GONE);
         imgLoading.setVisibility(View.GONE);
+    }
 
+
+    @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_reject_call:
+                super.rejectCall();
+                break;
+            case R.id.btn_accept_call:
+                super.acceptCall();
+                break;
+            case R.id.btn_on_off_mic:
+                super.muteMicrophone(btnOnOffMic.isChecked());
+                break;
+            case R.id.btn_cancel_call:
+                super.endCall();
+                break;
+            case R.id.btn_on_off_speaker:
+                super.enableSpeaker(btnOnOffSpeaker.isChecked());
+                break;
+        }
+    }
+
+    @Override
+    public void onCallConnected() {
+        countingCallDuration();
+        enableSpeaker(btnOnOffSpeaker.isChecked());
+        this.showCallingView();
     }
 }

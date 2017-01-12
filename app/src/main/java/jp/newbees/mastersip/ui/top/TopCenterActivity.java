@@ -9,22 +9,21 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import java.util.ArrayList;
-
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.model.FilterItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.ui.call.CallCenterActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends BaseActivity implements View.OnClickListener, TopPresenter.TopView {
+public class TopCenterActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView {
+    public static final int PERMISSIONS_REQUEST_CAMERA = 202;
+    public static final int PERMISSIONS_ENABLED_CAMERA = 203;
+    public static final int PERMISSIONS_ENABLED_MIC = 204;
 
+    private static final String TAG = "TopCenterActivity";
     private TopPresenter topPresenter;
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
@@ -46,15 +45,14 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
         }
     };
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
         }
 
         @Override
         public void onPageSelected(int position) {
             navigationLayoutGroup.setSelectedItem(position);
-
         }
 
         @Override
@@ -70,7 +68,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        initHeader(getString(R.string.top_activity));
+        topPresenter = new TopPresenter(getApplicationContext(),this);
         navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -82,11 +80,8 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
     protected void initVariables(Bundle savedInstanceState) {
         slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
         slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
-
-        topPresenter = new TopPresenter(getApplicationContext(),this);
-        FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
-        topPresenter.requestFilterData(filterItem);
         fillData();
+        topPresenter.requestPermissions();
     }
 
     private void fillData() {
@@ -107,15 +102,7 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
 
     }
 
-    @Override
-    public void didFilterData(ArrayList<UserItem> userItems) {
 
-    }
-
-    @Override
-    public void didErrorFilterData(int errorCode, String errorMessage) {
-
-    }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
         public MyPagerAdapter(FragmentManager fm) {
@@ -143,6 +130,22 @@ public class TopActivity extends BaseActivity implements View.OnClickListener, T
         @Override
         public int getCount() {
             return navigationLayoutGroup.getChildCount();
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CAMERA:
+                topPresenter.didGrantedCameraPermission();
+                break;
+            case PERMISSIONS_ENABLED_CAMERA:
+//                disableVideo(grantResults[0] != PackageManager.PERMISSION_GRANTED);
+                break;
+            case PERMISSIONS_ENABLED_MIC:
+                break;
         }
     }
 }

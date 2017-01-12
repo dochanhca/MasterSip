@@ -67,7 +67,7 @@ public class RegisterTask extends BaseTask<UserItem> {
 
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
-        JSONObject jData = data.getJSONObject(Constant.JSON.kData);
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
 
         String extension = jData.getString(Constant.JSON.kExtension);
         String password = jData.getString(Constant.JSON.kPassword);

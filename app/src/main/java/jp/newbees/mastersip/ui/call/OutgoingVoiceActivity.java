@@ -17,14 +17,16 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class OutgoingVoiceActivity extends BaseCallActivity {
+public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
+    public static final String CALLEE = "CALLEE";
     @BindView(R.id.profile_image)
     CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
@@ -45,6 +47,7 @@ public class OutgoingVoiceActivity extends BaseCallActivity {
     HiraginoTextView txtPoint;
 
     private Handler timerHandler = new Handler();
+    private UserItem callee;
 
     @Override
     protected int layoutId() {
@@ -54,7 +57,6 @@ public class OutgoingVoiceActivity extends BaseCallActivity {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ButterKnife.bind(this);
-
         Glide.with(this).load(R.drawable.pinpoint)
                 .asGif()
                 .into(imgLoading);
@@ -72,7 +74,7 @@ public class OutgoingVoiceActivity extends BaseCallActivity {
             case R.id.btn_on_off_mic:
                 break;
             case R.id.btn_cancel_call:
-                this.finish();
+                endCall();
                 break;
             case R.id.btn_on_off_speaker:
                 break;
@@ -94,5 +96,15 @@ public class OutgoingVoiceActivity extends BaseCallActivity {
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCallConnected() {
+        this.updateView();
+    }
+
+    @Override
+    public void onCallEnd() {
+        this.finish();
     }
 }
