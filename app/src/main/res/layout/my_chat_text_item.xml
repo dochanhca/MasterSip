@@ -27,6 +27,8 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_time"
+        style="@style/style_content_text_view_tiny"
+        android:textColor="@color/dark_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/txt_content"

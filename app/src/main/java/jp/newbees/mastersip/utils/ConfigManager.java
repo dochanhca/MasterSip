@@ -176,4 +176,10 @@ final public class ConfigManager {
     public String getDomain() {
         return domain;
     }
+
+    public void saveLoginFlag(boolean flag) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.LOGIN_FLAG, flag);
+        editor.commit();
+    }
 }

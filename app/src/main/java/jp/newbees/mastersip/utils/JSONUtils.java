@@ -10,6 +10,7 @@ import java.util.List;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SipItem;
@@ -191,19 +192,48 @@ public class JSONUtils {
         return deletedChatItem;
     }
 
-    private static final TextChatItem parseTextChatItem(JSONObject jData, UserItem sender) throws JSONException {
+    private static final TextChatItem parseTextChatItem(JSONObject jData, UserItem me) throws JSONException {
         JSONObject jText = jData.getJSONObject(Constant.JSON.kText);
-        String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.kSender);
+
+        String extensionSender = jSender.getString(Constant.JSON.kExtension);
         String content = jText.getString(Constant.JSON.kContent);
+
         TextChatItem textChatItem = new TextChatItem(content);
-        if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
+
+        if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
             textChatItem.setSender(true);
         }else {
             textChatItem.setSender(false);
         }
+
         int roomType = jText.getInt(Constant.JSON.kRoomType);
         textChatItem.setRoomType(roomType);
+        textChatItem.setChatType(CHAT_TEXT);
+        textChatItem.setMessageId(jData.getInt(Constant.JSON.K_MESSAGE_ID));
+
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extensionSender);
+
+        ImageItem imageItem = new ImageItem();
+        imageItem.setThumbUrl(jSender.getString(Constant.JSON.kAvatar));
+        imageItem.setOriginUrl(jSender.getString(Constant.JSON.kAvatar));
+        userItem.setAvatarItem(imageItem);
+        userItem.setSipItem(sipItem);
+
+        textChatItem.setOwner(userItem);
+        textChatItem.setFullDate(jData.getString(Constant.JSON.kDate));
+        textChatItem.setShortDate(DateTimeUtils.getShortTime(textChatItem.getFullDate()));
         return textChatItem;
     }
 
+
+    public static PacketItem parsePacketItem(String raw) throws JSONException {
+        JSONObject jData = new JSONObject(raw);
+        String action = jData.getString(Constant.JSON.ACTION);
+        String message = jData.getString(Constant.JSON.kMessage);
+        JSONObject response = jData.getJSONObject(Constant.JSON.kResponse);
+        PacketItem packetItem = new PacketItem(action, message, response.toString());
+        return packetItem;
+    }
 }

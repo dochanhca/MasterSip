@@ -28,6 +28,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
 import jp.newbees.mastersip.eventbus.FilterUserEvent;
+import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -230,6 +231,11 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     }
 
+    @Subscribe(sticky = true)
+    public void onChatMessageEvent(BaseChatItem baseChatItem) {
+
+    }
+
     private void changeMode() {
         setCurrentToNextFilterMode();
         changeFilterImage();
@@ -324,8 +330,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 FilterFragment.class.getName()).commit();
     }
 
-    private void showProfileDetailFragment() {
-        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance();
+    private void showProfileDetailFragment(UserItem userItem) {
+        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance(userItem);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
@@ -335,7 +341,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     public void onItemClick(UserItem item, int position) {
-        showProfileDetailFragment();
+        showProfileDetailFragment(item);
     }
 
     @Override

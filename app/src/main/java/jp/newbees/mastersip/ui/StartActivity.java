@@ -7,23 +7,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.andexert.library.RippleView;
-
 import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
-import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.presenter.auth.StartPresenter;
 import jp.newbees.mastersip.ui.auth.LoginActivity;
+import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
-import jp.newbees.mastersip.ui.top.TopActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class StartActivity extends BaseActivity implements View.OnClickListener {
+public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenter.StartView {
 
     public static final String IS_REGISTERED = "IS_REGISTERED";
 
@@ -33,6 +30,7 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
 
     private ViewPager pagerTutorial;
     private TutorialPagerAdapter tutorialPagerAdapter;
+    private StartPresenter startPresenter;
 
     @Override
     protected int layoutId() {
@@ -41,12 +39,7 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        if (checkUserLogin()) {
-            startTopScreenWithNewTask();
-        } else {
-            handleRegisterException();
-        }
-
+        startPresenter = new StartPresenter(getApplicationContext(),this);
         btnRegister = (Button) findViewById(R.id.btn_register);
         btnLogin = (Button) findViewById(R.id.btn_login);
         imgFbLogin = (ImageView) findViewById(R.id.img_fb_login);
@@ -62,6 +55,16 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
 
         tutorialPagerAdapter = new TutorialPagerAdapter(getApplicationContext(), getDrawableIds());
         pagerTutorial.setAdapter(tutorialPagerAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (checkUserLogin()) {
+            startPresenter.loginVoIP();
+        } else {
+            handleRegisterException();
+        }
     }
 
     @Override
@@ -119,12 +122,22 @@ public class StartActivity extends BaseActivity implements View.OnClickListener 
         startActivity(intent);
     }
 
-    private void startTopScreenWithNewTask() {
-        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(intent);
+    @Override
+    public void didLoginVoIP() {
+        startTopScreenWithNewTask();
     }
+
+    @Override
+    public void didErrorVoIP(String errorMessage) {
+
+    }
+
+//    private void startTopScreenWithNewTask() {
+//        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+//
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//
+//        startActivity(intent);
+//    }
 }

@@ -55,6 +55,7 @@ public final class Constant {
         public final static String kExtendInfo = "extend_info";
         public final static String kFavoriteType = "favorite_type";
         public final static String kPath = "path";
+        public final static String kDate = "date";
 
         public final static String kLat = "lat";
         public final static String kLong = "long";
@@ -89,6 +90,7 @@ public final class Constant {
         public static final String K_MESSAGE_ID = "message_id";
         public static final String K_MIN_POINT = "min_point";
 
+        public static final String ACTION = "action";
     }
 
     public static final class API {
@@ -103,8 +105,8 @@ public final class Constant {
         public static final int KIND_CHAT = 1;
         public static final int KIND_OTHER = 2;
 
-        //        private static final String DEVELOPMENT_IP = "52.197.14.30";
-        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        private static final String DEVELOPMENT_IP = "52.197.14.30";
+//        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
 
@@ -164,6 +166,7 @@ public final class Constant {
         public static final int REQUEST_TIME_OUT = REQUEST_TIMEOUT;
         public static final int SC_INTERNAL_SERVER_ERROR = 500;
         public static final int WRONG_ORDER_BY_CODE = 3003;
+        public static final int VOIP_ERROR = 5000;
     }
 
     public final class Application {
@@ -183,4 +186,12 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
     }
 
+    public class SOCKET {
+        public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
+        public static final String ACTION_CHATTING = "chatting";
+    }
+
+    public class EVENT {
+        public static final String ACTION_CHATTING = "ACTION_CHATTING";
+    }
 }

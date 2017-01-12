@@ -10,6 +10,7 @@ import org.linphone.core.LinphoneCoreException;
 import org.linphone.mediastream.Log;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.linphone.LinphoneNotifier;
 
 /**

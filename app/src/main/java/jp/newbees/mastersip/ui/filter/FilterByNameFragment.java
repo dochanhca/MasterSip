@@ -158,7 +158,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onItemClick(UserItem item, int position) {
-        showProfileDetailFragment();
+        showProfileDetailFragment(item);
     }
 
     private void resetDataAndView() {
@@ -179,8 +179,8 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
         Utils.closeKeyboard(getActivity(), edtSearch.getWindowToken());
     }
 
-    private void showProfileDetailFragment() {
-        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance();
+    private void showProfileDetailFragment(UserItem userItem) {
+        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance(userItem);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);

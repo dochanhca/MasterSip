@@ -19,7 +19,7 @@ public class BaseChatItem implements Parcelable, Serializable {
 
     public static final class ChatType implements Parcelable{
         public final static int CHAT_DELETED = 0;
-        public final static int CHAT_VOICE = 1;
+        public final static int CHAT_VOICE = 1; //!!!
         public final static int CHAT_TEXT = 2;
         public final static int CHAT_VIDEO = 3;
         public final static int CHAT_IMAGE = 4;
@@ -27,9 +27,6 @@ public class BaseChatItem implements Parcelable, Serializable {
         public final static int CHAT_VIDEO_CALL = 6;
         public final static int CHAT_VIDEO_CHAT_CALL = 7;
         public final static int CHAT_GIFT = 9;
-
-        public final static int CHAT_TEXT_REPLY = 10;
-
 
         protected ChatType(Parcel in) {
         }
@@ -166,8 +163,8 @@ public class BaseChatItem implements Parcelable, Serializable {
         return sender;
     }
 
-    public void setSender(UserItem sender) {
-        this.sender = sender;
+    public void setOwner(UserItem owner) {
+        this.sender = owner;
     }
 
     //    @property (nonatomic) NSString *imageNameDefault;
@@ -182,12 +179,12 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.sendee = sendee;
     }
 
-    private boolean isSender; //isHost
+    private boolean isOwner; //isHost
     private int roomId;
     private int messageId;
     private String fullDate;
 
-    private ChatType chatType;
+    private int chatType;
 
     private int cellIndex;
     private String cellIdentifier; //For cell;
@@ -198,12 +195,12 @@ public class BaseChatItem implements Parcelable, Serializable {
     private String shortTimeStamp;
 
 
-    public boolean isSender() {
-        return isSender;
+    public boolean isOwner() {
+        return isOwner;
     }
 
     public void setSender(boolean sender) {
-        isSender = sender;
+        isOwner = sender;
     }
 
     public int getRoomId() {
@@ -230,11 +227,11 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.fullDate = fullDate;
     }
 
-    public ChatType getChatType() {
+    public int getChatType() {
         return chatType;
     }
 
-    public void setChatType(ChatType chatType) {
+    public void setChatType(int chatType) {
         this.chatType = chatType;
     }
 
@@ -298,11 +295,11 @@ public class BaseChatItem implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.sender, flags);
         dest.writeParcelable(this.sendee, flags);
-        dest.writeByte(this.isSender ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOwner ? (byte) 1 : (byte) 0);
         dest.writeInt(this.roomId);
         dest.writeInt(this.messageId);
         dest.writeString(this.fullDate);
-        dest.writeParcelable(this.chatType, flags);
+        dest.writeInt(this.chatType);
         dest.writeInt(this.cellIndex);
         dest.writeString(this.cellIdentifier);
         dest.writeParcelable(this.messageState, flags);
@@ -314,11 +311,11 @@ public class BaseChatItem implements Parcelable, Serializable {
     protected BaseChatItem(Parcel in) {
         this.sender = in.readParcelable(UserItem.class.getClassLoader());
         this.sendee = in.readParcelable(UserItem.class.getClassLoader());
-        this.isSender = in.readByte() != 0;
+        this.isOwner = in.readByte() != 0;
         this.roomId = in.readInt();
         this.messageId = in.readInt();
         this.fullDate = in.readString();
-        this.chatType = in.readParcelable(ChatType.class.getClassLoader());
+        this.chatType = in.readInt();
         this.cellIndex = in.readInt();
         this.cellIdentifier = in.readString();
         this.messageState = in.readParcelable(MessageState.class.getClassLoader());

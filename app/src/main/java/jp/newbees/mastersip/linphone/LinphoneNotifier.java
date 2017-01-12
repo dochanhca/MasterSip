@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.linphone.core.tutorials.TutorialNotifier;
 
 import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 1/4/17.
@@ -14,6 +15,7 @@ import jp.newbees.mastersip.eventbus.RegisterVoIPEvent;
 public class LinphoneNotifier extends TutorialNotifier {
 
     private Handler mHandler;
+    private String TAG = "LinphoneNotifier";
 
     public LinphoneNotifier(Handler mHandler) {
         this.mHandler = mHandler;
@@ -32,7 +34,7 @@ public class LinphoneNotifier extends TutorialNotifier {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                // do something
+                Logger.e(TAG,"registerVoIPSuccess");
                 EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
             }
         });
@@ -42,7 +44,6 @@ public class LinphoneNotifier extends TutorialNotifier {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                // do something
                 EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_FAILED));
             }
         });

@@ -170,7 +170,8 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     @Override
     public void onUpdateRegisterProfileSuccess(UserItem userItem) {
-        registerLinPhone(userItem.getSipItem().getExtension(), userItem.getSipItem().getSecret());
+        disMissLoading();
+        startTopScreenWithNewTask();
     }
 
     @Override
