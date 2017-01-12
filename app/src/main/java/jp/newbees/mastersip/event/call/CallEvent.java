@@ -5,6 +5,7 @@ package jp.newbees.mastersip.event.call;
  */
 
 public class CallEvent {
+
     private int callType;
 
     public CallEvent(int callType, String callee) {

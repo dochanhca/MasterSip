@@ -68,8 +68,8 @@ public class CheckCallTask extends BaseTask {
         result.put(CALL_TYPE, type);
         result.put(CALLEE, callee);
 
-        if (!jData.isNull(Constant.JSON.MESSAGE_ID)) {
-            int messageId = jData.getInt(Constant.JSON.MESSAGE_ID);
+        if (!jData.getString(Constant.JSON.MESSAGE_ID).isEmpty()) {
+            int messageId = Integer.parseInt(jData.getString(Constant.JSON.MESSAGE_ID));
             result.put(MESSAGE_ID, messageId);
         }
 

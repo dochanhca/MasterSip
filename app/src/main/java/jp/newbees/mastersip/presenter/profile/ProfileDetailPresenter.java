@@ -11,7 +11,9 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/11/17.
@@ -36,7 +38,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        Logger.e(TAG, errorMessage);
     }
 
     private void handleResponseCheckCall(BaseTask task) {
@@ -53,6 +55,7 @@ public class ProfileDetailPresenter extends BasePresenter {
      * @param callee
      */
     private void makeVoiceCall(UserItem callee) {
+        ConfigManager.getInstance().setCurrentCallee(callee);
         String extension = callee.getSipItem().getExtension();
         EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, extension));
     }

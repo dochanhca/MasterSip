@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_profile"
         android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         android:text="@string/during_a_voice_call"
         android:textColor="@color/text_color_gray_light"
         android:textSize="@dimen/text_size_15" />

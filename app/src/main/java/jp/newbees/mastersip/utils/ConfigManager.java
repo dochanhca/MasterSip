@@ -209,7 +209,15 @@ final public class ConfigManager {
         return callee;
     }
 
+    public void removeCurrentCallee(String calleeExtension) {
+        callees.remove(calleeExtension);
+    }
+
     public int getCurrentCallType() {
         return currentCallType;
+    }
+
+    public void setCurrentCallee(UserItem callee) {
+        callees.put(callee.getSipItem().getExtension(), callee);
     }
 }

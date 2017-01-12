@@ -133,7 +133,7 @@ public class LinphoneService extends Service{
     }
 
     private void handleVoiceCall(String callee) {
-        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.enableSpeaker(false);
         linphoneHandler.muteMicrophone(false);
         linphoneHandler.call(callee,false);
     }

@@ -6,8 +6,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
@@ -52,12 +54,22 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
             case ReceivingCallEvent.CONNECTED_CALL:
                 handleCallConnected();
                 break;
+            case ReceivingCallEvent.RELEASE_CALL:
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;
+
             default:
                 break;
         }
+    }
+
+    public final void enableSpeaker(boolean enable) {
+        EventBus.getDefault().post(new SpeakerEvent(enable));
+    }
+
+    public final void muteMicrophone(boolean mute) {
+        EventBus.getDefault().post(new MicrophoneEvent(mute));
     }
 
     private void handleCallEnd() {

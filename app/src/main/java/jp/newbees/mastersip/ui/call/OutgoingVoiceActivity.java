@@ -64,7 +64,18 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
+        callee = getIntent().getExtras().getParcelable(CALLEE);
 
+        txtUserName.setText(callee.getUsername());
+
+        int imageID = ConfigManager.getInstance().getImageCalleeDefault();
+        if (callee.getAvatarItem() != null) {
+            Glide.with(this).load(callee.getAvatarItem().getOriginUrl())
+                    .error(imageID).placeholder(imageID)
+                    .centerCrop()
+                    .into(profileImage);
+        }
+        profileImage.setImageResource(imageID);
 
     }
 
@@ -72,11 +83,13 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_on_off_mic:
+                super.muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
                 endCall();
                 break;
             case R.id.btn_on_off_speaker:
+                super.enableSpeaker(btnOnOffSpeaker.isChecked());
                 break;
             default:
                 break;
@@ -100,6 +113,7 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
+        countingCallDuration();
         this.updateView();
     }
 

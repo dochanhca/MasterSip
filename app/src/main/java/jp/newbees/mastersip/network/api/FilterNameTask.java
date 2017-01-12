@@ -9,6 +9,8 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
 
     private final UserItem userItem;
     private final int page;
-    private final String name;
+    private String name;
 
     public FilterNameTask(Context context, UserItem userItem, int page, String name) {
         super(context);
@@ -41,6 +43,11 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
+        try {
+            name = URLEncoder.encode(name, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         JSONObject jParams = new JSONObject();
         jParams.put(Constant.JSON.kNextPage, page);
         jParams.put(Constant.JSON.kName, name);

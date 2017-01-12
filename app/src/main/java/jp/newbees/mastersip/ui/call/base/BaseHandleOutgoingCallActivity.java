@@ -11,8 +11,6 @@ import jp.newbees.mastersip.ui.BaseActivity;
 
 public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements BaseHandleOutgoingCallPresenter.OutgoingCallView{
     private BaseHandleOutgoingCallPresenter presenter;
-    private boolean enableSpeaker;
-    private boolean muteMicrophone;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,11 +30,11 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     }
 
     public final void enableSpeaker(boolean enable) {
-        enableSpeaker = enable;
+        this.presenter.enableSpeaker(enable);
     }
 
     public final void muteMicrophone(boolean mute) {
-        muteMicrophone = mute;
+        this.presenter.muteMicrophone(mute);
     }
 
     public final void changeCamera() {

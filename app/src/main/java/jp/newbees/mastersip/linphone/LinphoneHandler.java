@@ -92,9 +92,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        Logger.e(TAG, msg);
+        Logger.e(TAG, msg + " - " + cstate.toString());
         int state = cstate.value();
-        if (cstate == LinphoneCall.State.CallReleased) {
+        if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
         }
         String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
