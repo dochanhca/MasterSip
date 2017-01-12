@@ -6,12 +6,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/11/17.
@@ -26,18 +31,25 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
     }
 
 
-    public void endCall() {
+    public void endCall(UserItem callee, int callType) {
+        requestCancelCall(callee, callType);
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+    }
+
+    private void requestCancelCall(UserItem callee, int callType) {
+        String caller = getCurrentUserItem().getSipItem().getExtension();
+        String waitingCallId = ConfigManager.getInstance().getWaitingCallId();
+        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),caller,callee.getSipItem().getExtension(),callType,waitingCallId);
+        requestToServer(cancelCallTask);
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
-
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        Logger.e(TAG, errorMessage);
     }
 
     public final void registerEvents() {
@@ -48,7 +60,7 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.CONNECTED_CALL:
@@ -62,6 +74,11 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
             default:
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onCoinChangedEvent(CoinChangedEvent event) {
+        view.onCoinChanged(event);
     }
 
     public final void enableSpeaker(boolean enable) {
@@ -82,8 +99,10 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
 
 
     public interface OutgoingCallView {
-        public void onCallConnected();
+        void onCallConnected();
 
-        public void onCallEnd();
+        void onCallEnd();
+
+        void onCoinChanged(CoinChangedEvent event);
     }
 }

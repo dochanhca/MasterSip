@@ -50,11 +50,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Logger.e(TAG, "Create");
-
         setupSharePreference();
-
         setContentView(layoutId());
         initViews(savedInstanceState);
         initVariables(savedInstanceState);

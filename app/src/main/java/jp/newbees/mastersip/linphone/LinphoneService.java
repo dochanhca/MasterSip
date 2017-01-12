@@ -13,7 +13,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.event.call.CallEvent;
+import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.model.SipItem;
@@ -99,6 +101,18 @@ public class LinphoneService extends Service{
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public final void onCheckFlashedCall(FlashedEvent flashedEvent) {
+        boolean calling = linphoneHandler.isCalling();
+        if (!calling) {
+            handleFlashedCall();
+        }
+    }
+
+    private void handleFlashedCall() {
+        EventBus.getDefault().post(new ReceivingCallEvent(ReceivingCallEvent.FLASHED_CALL));
+    }
+
     /**
      * This method invoked by EventBus when enable or disable Speaker
      * @param speakerEvent
@@ -119,7 +133,9 @@ public class LinphoneService extends Service{
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public final void onCallEvent(CallEvent callEvent) {
-        switch (callEvent.getCallType()){
+        int callType = callEvent.getCallType();
+        ConfigManager.getInstance().setCurrentCallType(callType);
+        switch (callType){
             case Constant.API.VOICE_CALL:
                 this.handleVoiceCall(callEvent.getCallee());
                 break;

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
+import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -67,6 +68,10 @@ public class PacketManager {
             processor = new ChattingProcessor();
             processor.setHandler(handler);
             processor.setPacketItem(data);
+        } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_COIN_CHANGED)) {
+            processor = new CoinChangedProcessor();
+            processor.setHandler(handler);
+            processor.setPacketItem(data);
         }
         return processor;
     }
@@ -84,6 +89,7 @@ public class PacketManager {
 
     public final void processData(String raw) {
         try {
+            Logger.e(TAG, raw);
             PacketItem packetItem = JSONUtils.parsePacketItem(raw);
             BaseSocketProcessor processor = getProcessor(packetItem);
             if (processor != null) {

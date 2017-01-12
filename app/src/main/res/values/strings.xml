@@ -231,9 +231,10 @@
     <string name="in_coming_voice_call">音声通話で着信中...</string>
     <string name="begin">開始</string>
     <string name="reject">拒否</string>
-    <string name="current_point">現在のポイント</string>
+    <string name="current_point">現在のポイント : </string>
     <string name="chat">チャット</string>
     <string name="voice_call">音声通話</string>
     <string name="video_call">ビデオ通話</string>
     <string name="are_you_sure_make_a_voice_call">音声通話を発信しますか。</string>
+    <string name="pt">pts</string>
 </resources>

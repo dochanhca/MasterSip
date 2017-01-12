@@ -15,10 +15,12 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -26,7 +28,6 @@ import jp.newbees.mastersip.utils.ConfigManager;
 
 public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
-    public static final String CALLEE = "CALLEE";
     @BindView(R.id.profile_image)
     CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
@@ -47,7 +48,6 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
     HiraginoTextView txtPoint;
 
     private Handler timerHandler = new Handler();
-    private UserItem callee;
 
     @Override
     protected int layoutId() {
@@ -64,13 +64,10 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        callee = getIntent().getExtras().getParcelable(CALLEE);
-
-        txtUserName.setText(callee.getUsername());
-
+        txtUserName.setText(getCallee().getUsername());
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
-        if (callee.getAvatarItem() != null) {
-            Glide.with(this).load(callee.getAvatarItem().getOriginUrl())
+        if (getCallee().getAvatarItem() != null) {
+            Glide.with(this).load(getCallee().getAvatarItem().getOriginUrl())
                     .error(imageID).placeholder(imageID)
                     .centerCrop()
                     .into(profileImage);
@@ -120,5 +117,19 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
     @Override
     public void onCallEnd() {
         this.finish();
+    }
+
+    @Override
+    public void onCoinChanged(CoinChangedEvent event) {
+        StringBuilder point = new StringBuilder();
+        point.append(" ")
+                .append(String.valueOf(event.getCoin()))
+                .append(getString(R.string.pt));
+        txtPoint.setText(point);
+    }
+
+    @Override
+    protected int getCallType() {
+        return Constant.API.VOICE_CALL;
     }
 }

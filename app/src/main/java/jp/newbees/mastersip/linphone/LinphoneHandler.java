@@ -46,6 +46,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private boolean running;
     private LinphoneNotifier notifier;
     private LinphoneCore linphoneCore;
+    private boolean calling;
 
     public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
@@ -108,7 +109,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
-        Logger.e(TAG, stats.toString());
     }
 
     public void ecCalibrationStatus(LinphoneCore lc, LinphoneCore.EcCalibratorStatus status, int delay_ms, Object data) {
@@ -362,5 +362,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
         } catch (LinphoneCoreException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isCalling() {
+        return linphoneCore.isIncall();
+    }
+
+    public void setCalling(boolean calling) {
+        this.calling = calling;
     }
 }

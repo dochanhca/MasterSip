@@ -94,6 +94,9 @@ public final class Constant {
         public static final String URL_AVATAR = "url_avatar";
         public static final String EXTENSION = "extension";
         public static final String RECEIVER_STATUS = "receiver_status";
+
+        public static final String COINT = "coint";
+        public static final String WAIT_CALL_ID = "wait_call_id";
     }
 
     public static final class API {
@@ -112,8 +115,6 @@ public final class Constant {
 //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
-
-
         public static String BASE_URL;
         public static final String PROTOCOL = "http";
 
@@ -130,6 +131,7 @@ public final class Constant {
         public static final String CHECK_CALL = "calls/check-call";
         public static final String CHECK_TYPE_INCOMING_CALL = "calls/check-type-call";
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
+        public static final String CANCEL_CALL_URL = "calls/cancel-call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -195,6 +197,7 @@ public final class Constant {
     public class SOCKET {
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
+        public static final String ACTION_COIN_CHANGED = "coin_changed";
     }
 
     public class EVENT {

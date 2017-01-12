@@ -31,6 +31,7 @@ import static jp.newbees.mastersip.utils.Constant.API.BASE_URL;
  */
 
 final public class ConfigManager {
+    private static final String WAITING_ID = "WAITING_ID";
     private final RequestQueue requestQueue;
     private static ConfigManager instance;
     private final String deviceId;
@@ -39,6 +40,7 @@ final public class ConfigManager {
     private int imageDrawableCalleeId = -1;
     private HashMap<String, UserItem> callees;
     private int currentCallType;
+    private HashMap<String, String> waitingCallId;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -76,6 +78,7 @@ final public class ConfigManager {
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         domain = BASE_URL;
         callees = new HashMap<>();
+        waitingCallId = new HashMap<>();
     }
 
     public RequestQueue getRequestQueue() {
@@ -189,6 +192,7 @@ final public class ConfigManager {
 
     public void resetSettings() {
         imageDrawableCalleeId = -1;
+        waitingCallId.clear();
         callees.clear();
         clearUser();
     }
@@ -219,5 +223,21 @@ final public class ConfigManager {
 
     public void setCurrentCallee(UserItem callee) {
         callees.put(callee.getSipItem().getExtension(), callee);
+    }
+
+    public String getWaitingCallId() {
+        if (waitingCallId.containsKey(WAITING_ID)) {
+            return waitingCallId.remove(WAITING_ID);
+        }else {
+            return "";
+        }
+    }
+
+    public void setWaitingCallId(String waitingCallId) {
+        this.waitingCallId.put(WAITING_ID, waitingCallId);
+    }
+
+    public void setCurrentCallType(int callType) {
+        this.currentCallType = callType;
     }
 }

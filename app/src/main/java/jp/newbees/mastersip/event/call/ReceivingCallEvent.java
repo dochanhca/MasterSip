@@ -11,6 +11,7 @@ public class ReceivingCallEvent {
     public static final int CONNECTED_CALL = 6;
     public static final int STREAMING_CALL = 7;
     public static final int RELEASE_CALL = 18;
+    public static final int FLASHED_CALL = 99;
 
     private int callEvent;
     private String callerExtension;

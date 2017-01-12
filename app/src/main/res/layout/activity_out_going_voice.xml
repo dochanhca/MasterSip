@@ -46,6 +46,7 @@
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/margin_2"
             android:text="@string/current_point"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_15"
@@ -55,9 +56,10 @@
             android:id="@+id/txt_point"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="：500pts"
+            android:paddingBottom="@dimen/margin_2"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_15"
+            android:text=" 0pts"
             android:layout_marginRight="@dimen/margin_10"/>
     </LinearLayout>
 

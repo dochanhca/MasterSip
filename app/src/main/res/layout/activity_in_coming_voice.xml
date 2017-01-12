@@ -17,7 +17,7 @@
         android:layout_below="@+id/layout_profile"
         android:layout_centerHorizontal="true"
         android:text="@string/in_coming_voice_call"
-        android:textColor="@color/text_color_gray"
+        android:textColor="@color/text_color_gray_light"
         android:textSize="@dimen/text_size_15" />
 
     <ImageView
@@ -53,9 +53,9 @@
             android:id="@+id/txt_point"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="：500pts"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_15"
+            android:text=" 0pts"
             android:layout_marginRight="@dimen/margin_10"/>
     </LinearLayout>
 

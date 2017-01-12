@@ -103,7 +103,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.top.TopCenterActivity"
+            android:name=".ui.top.TopActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>

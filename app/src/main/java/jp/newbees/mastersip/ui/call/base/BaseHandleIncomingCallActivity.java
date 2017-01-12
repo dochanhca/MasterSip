@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 
@@ -17,8 +18,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+
         this.presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.checkFlashCall();
     }
 
     @Override
@@ -52,4 +61,13 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         this.finish();
     }
 
+    @Override
+    public void onFlashedCall() {
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Prevent user press back button when during a call
+    }
 }

@@ -45,6 +45,12 @@ public class ProfileDetailPresenter extends BasePresenter {
         HashMap<String, Object> result = (HashMap<String, Object>) task.getDataResponse();
         int callType = (int) result.get(CheckCallTask.CALL_TYPE);
         UserItem callee = (UserItem) result.get(CheckCallTask.CALLEE);
+
+        if (result.containsKey(CheckCallTask.WAITING_CALL_ID)) {
+            String waitingCallID = (String) result.get(CheckCallTask.WAITING_CALL_ID);
+            ConfigManager.getInstance().setWaitingCallId(waitingCallID);
+        }
+
         if (callType == Constant.API.VOICE_CALL) {
             makeVoiceCall(callee);
         }
@@ -52,6 +58,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Make a voice call
+     *
      * @param callee
      */
     private void makeVoiceCall(UserItem callee) {
@@ -62,6 +69,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Check callee before make a voice call
+     *
      * @param callee
      */
     public final void checkVoiceCall(UserItem callee) {
@@ -70,6 +78,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Check callee before make a video call
+     *
      * @param userItem
      */
     public final void checkVideoCall(UserItem userItem) {
@@ -79,6 +88,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Check callee before make a video chat call
+     *
      * @param userItem
      */
     public final void checkVideoChatCall(UserItem userItem) {
@@ -88,6 +98,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Send request check call to server
+     *
      * @param callee
      * @param callType
      */

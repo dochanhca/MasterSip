@@ -24,11 +24,12 @@ public class CheckCallTask extends BaseTask {
     public static final String CALLEE = "CALLEE";
     public static final String CALLEE_ONLINE = "CALLEE_ONLINE";
     private static final String MESSAGE_ID = "MESSAGE_ID";
+    public final static String WAITING_CALL_ID = "WAITING_CALL_ID";
 
     private final String callerExtension;
     private final UserItem callee;
-    private  int type;
-    private  int kind;
+    private int type;
+    private int kind;
 
     public CheckCallTask(Context context, UserItem caller, UserItem callee, int callType, int callFrom) {
         super(context);
@@ -73,20 +74,20 @@ public class CheckCallTask extends BaseTask {
             result.put(MESSAGE_ID, messageId);
         }
 
-        if (jData.isNull(Constant.JSON.RECEIVER_STATUS)) {
-            result.put(CheckCallTask.CALLEE_ONLINE, true);
-        }else {
+        if (jData.has(Constant.JSON.RECEIVER_STATUS)) {
             result.put(CheckCallTask.CALLEE_ONLINE, false);
+        } else {
+            result.put(CheckCallTask.CALLEE_ONLINE, true);
         }
 
-        if (!jData.isNull(Constant.JSON.MIN_POINT)) {
+        if (jData.has(Constant.JSON.MIN_POINT)) {
             int minPoint = jData.getInt(Constant.JSON.MIN_POINT);
             result.put(Constant.JSON.MIN_POINT, minPoint);
         }
 
-        if (!jData.isNull(Constant.JSON.CALL_WAIT_ID)) {
+        if (jData.has(Constant.JSON.CALL_WAIT_ID)) {
             String callWaitId = jData.getString(Constant.JSON.CALL_WAIT_ID);
-            result.put(Constant.JSON.CALL_WAIT_ID, callWaitId);
+            result.put(WAITING_CALL_ID, callWaitId);
         }
         return result;
     }

@@ -84,7 +84,16 @@ public class BaseCenterCallPresenter extends BasePresenter {
 
     private void onOutgoingCall(String calleeExtension) {
         UserItem callee = ConfigManager.getInstance().getCurrentCallee(calleeExtension);
-        centerCallView.outgoingVoiceCall(callee);
+        int callType = ConfigManager.getInstance().getCurrentCallType();
+        switch (callType) {
+            case Constant.API.VOICE_CALL:
+                centerCallView.outgoingVoiceCall(callee);
+                break;
+            case Constant.API.VIDEO_CALL:
+                break;
+            case Constant.API.VIDEO_CHAT_CALL:
+                break;
+        }
     }
 
     public void registerCallEvent() {

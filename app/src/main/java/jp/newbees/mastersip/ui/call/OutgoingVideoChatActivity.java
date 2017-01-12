@@ -2,7 +2,9 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -33,5 +35,15 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
     @Override
     public void onCallEnd() {
 
+    }
+
+    @Override
+    public void onCoinChanged(CoinChangedEvent event) {
+
+    }
+
+    @Override
+    protected int getCallType() {
+        return Constant.API.VIDEO_CHAT_CALL;
     }
 }
