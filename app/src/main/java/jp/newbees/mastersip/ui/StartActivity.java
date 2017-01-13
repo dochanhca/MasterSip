@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -130,15 +131,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     public void didErrorVoIP(String errorMessage) {
+        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
 
     }
-
-//    private void startTopScreenWithNewTask() {
-//        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-//
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//
-//        startActivity(intent);
-//    }
 }

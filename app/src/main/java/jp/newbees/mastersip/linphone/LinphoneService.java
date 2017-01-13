@@ -29,16 +29,15 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class LinphoneService extends Service{
 
-    private Handler mHandler;
     private LinphoneHandler linphoneHandler;
-    private final static String TAG = "LinphoneService";
+    private final String TAG = "LinphoneService";
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG,"onCreate");
         EventBus.getDefault().register(this);
-        mHandler = new Handler(Looper.getMainLooper());
+        Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
         linphoneHandler = new LinphoneHandler(notifier, this.getApplicationContext());
     }
@@ -137,13 +136,15 @@ public class LinphoneService extends Service{
         ConfigManager.getInstance().setCurrentCallType(callType);
         switch (callType){
             case Constant.API.VOICE_CALL:
-                this.handleVoiceCall(callEvent.getCallee());
+                handleVoiceCall(callEvent.getCallee());
                 break;
             case Constant.API.VIDEO_CALL:
-                this.handleVideoVideoCall(callEvent.getCallee());
+                handleVideoVideoCall(callEvent.getCallee());
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                this.handleVideoChatCall(callEvent.getCallee());
+                handleVideoChatCall(callEvent.getCallee());
+                break;
+            default:
                 break;
         }
     }
@@ -157,11 +158,13 @@ public class LinphoneService extends Service{
     private void handleVideoVideoCall(String callee) {
         linphoneHandler.enableSpeaker(true);
         linphoneHandler.muteMicrophone(false);
+        linphoneHandler.call(callee,true);
     }
 
     private void handleVideoChatCall(String callee) {
         linphoneHandler.enableSpeaker(true);
         linphoneHandler.muteMicrophone(false);
+        linphoneHandler.call(callee,true);
     }
 
     /**

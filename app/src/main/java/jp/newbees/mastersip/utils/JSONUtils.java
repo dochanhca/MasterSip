@@ -202,10 +202,12 @@ public class JSONUtils {
 
     private static final TextChatItem parseTextChatItem(JSONObject jData, UserItem me) throws JSONException {
         JSONObject jText = jData.getJSONObject(Constant.JSON.TEXT);
-        String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.K_EXTENSION);
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
+
+        String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
         String content = jText.getString(Constant.JSON.CONTENT);
 
-        TextChatItem textChatItem = new TextChatItem(content, extensionSender);
+        TextChatItem textChatItem = new TextChatItem(content);
 
         if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
             textChatItem.setSender(true);
@@ -216,6 +218,20 @@ public class JSONUtils {
         int roomType = jText.getInt(Constant.JSON.ROOM_TYPE);
         textChatItem.setRoomType(roomType);
         textChatItem.setChatType(CHAT_TEXT);
+        textChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
+
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extensionSender);
+
+        ImageItem imageItem = new ImageItem();
+        imageItem.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
+        imageItem.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
+        userItem.setAvatarItem(imageItem);
+        userItem.setSipItem(sipItem);
+
+        textChatItem.setOwner(userItem);
+        textChatItem.setFullDate(jData.getString(Constant.JSON.K_DATE));
+        textChatItem.setShortDate(DateTimeUtils.getShortTime(textChatItem.getFullDate()));
         return textChatItem;
     }
 
@@ -227,5 +243,14 @@ public class JSONUtils {
         JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;
+    }
+
+    public static BaseChatItem parseDateOnUpdateMessageState(JSONObject jData) throws JSONException {
+        BaseChatItem baseChatItem = new BaseChatItem();
+        baseChatItem.setMessageState(jData.getInt(Constant.JSON.STATUS));
+        baseChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
+        baseChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
+        baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
+        return baseChatItem;
     }
 }

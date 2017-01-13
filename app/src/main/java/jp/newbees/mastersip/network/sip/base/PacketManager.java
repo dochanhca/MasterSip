@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.network.UpdateMessageStateProcesser;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
 import jp.newbees.mastersip.utils.Constant;
@@ -34,7 +35,7 @@ public class PacketManager {
     private Handler handler;
     private String TAG;
 
-    private PacketManager(){
+    private PacketManager() {
         TAG = this.getClass().getSimpleName();
         //Prevent init object
         processorQueue = new LinkedBlockingDeque<>();
@@ -57,31 +58,40 @@ public class PacketManager {
         };
     }
 
-    public static void initInstance(){
+    public static void initInstance() {
         instance = new PacketManager();
     }
 
     public final BaseSocketProcessor getProcessor(PacketItem data) {
         String action = data.getAction();
         BaseSocketProcessor processor = null;
-        if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_CHATTING)){
-            processor = new ChattingProcessor();
-            processor.setHandler(handler);
-            processor.setPacketItem(data);
-        } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_COIN_CHANGED)) {
-            processor = new CoinChangedProcessor();
+        switch (action) {
+            case Constant.SOCKET.ACTION_CHATTING:
+                processor = new ChattingProcessor();
+                break;
+            case Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE:
+                processor = new UpdateMessageStateProcesser();
+                break;
+            case Constant.SOCKET.ACTION_COIN_CHANGED:
+                processor = new CoinChangedProcessor();
+                break;
+            default:
+                break;
+        }
+        if (processor != null) {
             processor.setHandler(handler);
             processor.setPacketItem(data);
         }
+
         return processor;
     }
 
-    private void executeProcessor(BaseSocketProcessor processor){
+    private void executeProcessor(BaseSocketProcessor processor) {
         processorThreadPool.execute(processor);
     }
 
     public static PacketManager getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new PacketManager();
         }
         return instance;
@@ -94,8 +104,8 @@ public class PacketManager {
             BaseSocketProcessor processor = getProcessor(packetItem);
             if (processor != null) {
                 this.executeProcessor(processor);
-            }else {
-                Logger.e(TAG,"No processor handle ACTION " + packetItem.getAction());
+            } else {
+                Logger.e(TAG, "No processor handle ACTION " + packetItem.getAction());
             }
         } catch (JSONException e) {
             e.printStackTrace();

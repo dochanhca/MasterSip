@@ -6,6 +6,9 @@ package jp.newbees.mastersip.event;
 
 public class FilterUserEvent  {
 
+    /**
+     * Event Filter user
+     */
     public FilterUserEvent() {
     }
 }

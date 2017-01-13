@@ -68,7 +68,6 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
     protected BaseChatItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         JSONObject jResponse = jData.getJSONObject(Constant.JSON.RESPONSE);
-        BaseChatItem chatItem = JSONUtils.parseChatItem(jResponse,this.sender);
-        return chatItem;
+        return JSONUtils.parseChatItem(jResponse,this.sender);
     }
 }

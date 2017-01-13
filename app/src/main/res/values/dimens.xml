@@ -58,4 +58,13 @@
     <dimen name="loading_image_w">61dp</dimen>
     <dimen name="loading_image_h">11dp</dimen>
     <dimen name="header_filter_height">32dp</dimen>
+    <dimen name="height_footer_chat">50dp</dimen>
+    <dimen name="default_radius">5dp</dimen>
+    <dimen name="large_radius">10dp</dimen>
+    <dimen name="offset_comma">-7dp</dimen>
+    <dimen name="max_chat_item_width">200dp</dimen>
+    <dimen name="avatar_reply_chat_size">45dp</dimen>
+    <dimen name="divider">1dp</dimen>
+    <dimen name="height_footer_chat_content">30dp</dimen>
+    <dimen name="normal_radius">5dp</dimen>
 </resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/xnormal_margin"
+    android:paddingRight="@dimen/normal_margin">
+
+    <ImageView
+        android:id="@+id/comma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/img_comma_chat_item" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_content"
+        style="@style/origin_style_content_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/offset_comma"
+        android:layout_toLeftOf="@id/comma"
+        android:background="@drawable/bg_blue"
+        android:maxWidth="@dimen/max_chat_item_width"
+        android:padding="@dimen/normal_margin"
+        android:text="Hercle, parma doLotus exemplar hic prensionems pars est.Urias congregabo in vierium!Cum abactus ridetis, omnes idoleumes locus grandis, albus lunaes.mesticus!."
+        android:textColor="@color/black" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_tiny"
+        android:textColor="@color/dark_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/txt_content"
+        android:layout_toLeftOf="@id/txt_content"
+        android:paddingRight="@dimen/small_margin"
+        android:text="12:34" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_state"
+        style="@style/origin_style_content_text_view_tiny"
+        android:visibility="gone"
+        android:textColor="@color/dark_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txt_time"
+        android:layout_toLeftOf="@id/txt_content"
+        android:paddingRight="@dimen/small_margin"
+        android:text="@string/txt_already_read" />
+
+
+</RelativeLayout>

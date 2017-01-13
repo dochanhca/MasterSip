@@ -86,7 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract void initVariables(Bundle savedInstanceState);
 
-    protected void initHeader(String title) {
+    public void initHeader(String title) {
         txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
         imgBack = (ImageView) findViewById(R.id.img_back);
 
@@ -97,8 +97,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
+
+    public void showSwitchModeInHeader(View.OnClickListener onSwitchModeListener) {
+        View view = findViewById(R.id.switch_mode_in_header);
+        view.setVisibility(View.VISIBLE);
+        view.setOnClickListener(onSwitchModeListener);
+    }
+
 
     public final void showLoading() {
         this.showLoading(getString(R.string.loading));

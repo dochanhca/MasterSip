@@ -232,10 +232,16 @@
     <string name="begin">開始</string>
     <string name="reject">拒否</string>
     <string name="current_point">現在のポイント : </string>
+    <string name="filter_call_in_message">音声通話</string>
     <string name="chat">チャット</string>
     <string name="voice_call">音声通話</string>
     <string name="video_call">ビデオ通話</string>
     <string name="are_you_sure_make_a_voice_call">音声通話を発信しますか。</string>
+    <string name="profile">プロフィール</string>
+    <string name="follow">フォローする</string>
+    <string name="gift">ギフトを贈る</string>
+    <string name="photo">背景 のコピー 11</string>
+    <string name="txt_already_read">既読</string>
     <string name="pt">pts</string>
     <string name="search">検索</string>
 </resources>

@@ -8,6 +8,8 @@
         <attr name="state" format="boolean" />
         <attr name="showBoxValue" format="boolean" />
         <attr name="text" format="string"/>
+        <attr name="showDivider" format="boolean" />
+        <attr name="dividerColor" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="SegmentedGroup" >

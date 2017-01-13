@@ -7,13 +7,12 @@ package jp.newbees.mastersip.event.call;
 public class CallEvent {
 
     private int callType;
+    private String callee;
 
     public CallEvent(int callType, String callee) {
         this.callType = callType;
         this.callee = callee;
     }
-
-    private String callee;
 
     public int getCallType() {
         return callType;

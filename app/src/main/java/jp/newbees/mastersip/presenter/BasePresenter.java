@@ -9,6 +9,7 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.TaskManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -37,6 +38,7 @@ public abstract class BasePresenter {
                 if (errorCode == Constant.Error.INVALID_TOKEN) {
                     handleInvalidToken();
                 } else {
+                    Logger.e(TAG, errorCode + " : " + errorMessage);
                     didErrorRequestTask(task,errorCode,errorMessage);
                 }
             }

@@ -20,11 +20,11 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public class CheckCallTask extends BaseTask {
-    public final static String CALL_TYPE = "Call TYPE";
+    public static final String CALL_TYPE = "Call TYPE";
     public static final String CALLEE = "CALLEE";
     public static final String CALLEE_ONLINE = "CALLEE_ONLINE";
     private static final String MESSAGE_ID = "MESSAGE_ID";
-    public final static String WAITING_CALL_ID = "WAITING_CALL_ID";
+    public static final String WAITING_CALL_ID = "WAITING_CALL_ID";
 
     private final String callerExtension;
     private final UserItem callee;
@@ -38,7 +38,6 @@ public class CheckCallTask extends BaseTask {
         this.type = callType;
         this.kind = callFrom;
     }
-
 
     @Nullable
     @Override

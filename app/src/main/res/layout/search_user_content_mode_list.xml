@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/txt_time"
-            style="@style/origin_style_content_text_view_tiny"
+            style="@style/origin_style_content_text_view_xtiny"
             android:layout_marginRight="10dp"
             android:text="10 hour"
             android:textColor="@color/text_color_gray"
@@ -58,7 +58,7 @@
 
         <TextView
             android:id="@+id/txt_location"
-            style="@style/origin_style_content_text_view_tiny"
+            style="@style/origin_style_content_text_view_xtiny"
             android:layout_marginRight="@dimen/normal_margin"
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_toLeftOf="@id/ic_time"
