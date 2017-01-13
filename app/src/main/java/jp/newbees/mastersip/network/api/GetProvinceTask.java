@@ -30,8 +30,8 @@ public class GetProvinceTask extends BaseTask {
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParam = new JSONObject();
-        jParam.put(Constant.JSON.kLong,location.longitude);
-        jParam.put(Constant.JSON.kLat, location.latitude);
+        jParam.put(Constant.JSON.LONG,location.longitude);
+        jParam.put(Constant.JSON.LAT, location.latitude);
         return jParam;
     }
 
@@ -50,8 +50,8 @@ public class GetProvinceTask extends BaseTask {
     protected SelectionItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
 
-        int provinceId = jData.getInt(Constant.JSON.kReceiveProvinceId);
-        String provinceName = jData.getString(Constant.JSON.kProvinceName);
+        int provinceId = jData.getInt(Constant.JSON.K_RECEIVE_PROVINCE_ID);
+        String provinceName = jData.getString(Constant.JSON.K_PROVINCE_NAME);
 
         SelectionItem selectionItem = new SelectionItem(provinceId, provinceName);
         return selectionItem;

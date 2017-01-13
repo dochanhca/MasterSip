@@ -42,10 +42,10 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
         if (filterItem.getMinAge() >= 18) {
-            jParams.put(Constant.JSON.kAboveAge, filterItem.getMinAge());
+            jParams.put(Constant.JSON.ABOVE_AGE, filterItem.getMinAge());
         }
         if (filterItem.getMaxAge() > 0) {
-            jParams.put(Constant.JSON.kBelowAge, filterItem.getMaxAge());
+            jParams.put(Constant.JSON.BELOW_AGE, filterItem.getMaxAge());
         }
         int numberOfProvinces = filterItem.getLocations().size();
         if (numberOfProvinces > 0) {
@@ -56,15 +56,15 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
 
             try {
                 String result = java.net.URLDecoder.decode(jsonArray.toString(), "UTF-8");
-                jParams.put(Constant.JSON.kProvinces, result);
+                jParams.put(Constant.JSON.PROVINCES, result);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
 
-        jParams.put(Constant.JSON.kOrderBy, filterItem.getOrderBy().getId());
-        jParams.put(Constant.JSON.kLogin24HourAgo, filterItem.isLogin24hours() ? 1 : 0);
-        jParams.put(Constant.JSON.kFilterType, filterItem.getFilterType());
+        jParams.put(Constant.JSON.ORDER_BY, filterItem.getOrderBy().getId());
+        jParams.put(Constant.JSON.K_LOGIN_24_HOUR_AGO, filterItem.isLogin24hours() ? 1 : 0);
+        jParams.put(Constant.JSON.K_FILTER_TYPE, filterItem.getFilterType());
 
         return jParams;
     }
@@ -83,7 +83,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        String nextPage = jData.getString(Constant.JSON.kNextPage);
+        String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
         List<UserItem> userItems  = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);

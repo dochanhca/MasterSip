@@ -29,7 +29,7 @@
             android:orientation="vertical"
             app:iconNormal="@drawable/ic_memer_off"
             app:iconSelected="@drawable/ic_member_on"
-            app:text = "@string/member"
+            app:text = "@string/search"
             app:state ="true"
             app:textColorNormal="@color/dark_gray"
             app:textColorSelected="@color/selected_color">

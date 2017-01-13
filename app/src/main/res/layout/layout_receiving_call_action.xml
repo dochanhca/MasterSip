@@ -16,7 +16,7 @@
             android:id="@+id/btn_reject_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_cancel_call" />
+            android:src="@drawable/bg_ic_cancel_call" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
             android:id="@+id/btn_accept_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_accept_call"
+            android:src="@drawable/bg_ic_accept_call"
             />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView

@@ -22,6 +22,7 @@ import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.ui.top.AdapterSearchUserModeList;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -45,6 +46,10 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     private boolean isLoading;
 
+    private boolean firstTimeLoadData = true;
+
+    private boolean isShowFilterAndNavigationBar = true;
+
     private TextWatcher onTextChangedListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -64,6 +69,41 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (!firstTimeLoadData) {
+                if (scrollUp(dy) && isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = false;
+                    hideFilterAndNavigationBar();
+                } else if (scrollDown(dy) && !isShowFilterAndNavigationBar) {
+                    isShowFilterAndNavigationBar = true;
+                    showFilterAndNavigationBar();
+                }
+            }
+
+            firstTimeLoadData = false;
+        }
+
+        private boolean scrollUp(int dy) {
+            return dy > 0;
+        }
+
+        private boolean scrollDown(int dy) {
+            return dy < 0;
+        }
+
+        private void hideFilterAndNavigationBar() {
+            ((TopActivity)getActivity()).hideNavigation();
+//            recyclerUser.setPaddingRelative(0 ,0,0,0);
+        }
+
+        private void showFilterAndNavigationBar() {
+            ((TopActivity)getActivity()).showNavigation();
+//            recyclerUser.setPaddingRelative(0 ,0,0,0);
         }
     };
 
@@ -106,6 +146,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
         recyclerUser.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerUser.setAdapter(adapterSearchUserModeList);
+        recyclerUser.addOnScrollListener(onScrollListener);
     }
 
     @Override

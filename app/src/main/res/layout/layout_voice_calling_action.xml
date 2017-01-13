@@ -41,7 +41,7 @@
             android:id="@+id/btn_cancel_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_cancel_call" />
+            android:src="@drawable/bg_ic_cancel_call" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:layout_width="wrap_content"

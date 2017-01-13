@@ -31,9 +31,9 @@ public class LoginEmailTask extends BaseTask<UserItem> {
     protected JSONObject genParams() throws JSONException {
         String deviceId = getDeviceId();
         JSONObject jData = new JSONObject();
-        jData.put(Constant.JSON.kDeviceId,deviceId);
-        jData.put(Constant.JSON.kPassword,this.password);
-        jData.put(Constant.JSON.kEmail, this.email);
+        jData.put(Constant.JSON.DEVICE_ID,deviceId);
+        jData.put(Constant.JSON.PASSWORD,this.password);
+        jData.put(Constant.JSON.EMAIL, this.email);
         return jData;
     }
 
