@@ -6,7 +6,6 @@ import android.os.Message;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
-import jp.newbees.mastersip.event.EventManage;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -64,13 +63,6 @@ public abstract class BaseSocketProcessor<T extends Object> implements Runnable{
 
     public T getResult() {
         return result;
-    }
-
-    protected final void postEventByName(T result, String eventName) {
-        boolean needPostEvent = EventManage.getInstance().hasRegistered(eventName);
-        if (needPostEvent){
-            EventBus.getDefault().post(result);
-        }
     }
 
     protected final void postEvent(T result) {

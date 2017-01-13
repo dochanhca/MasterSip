@@ -86,6 +86,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ViewHolderTextMessage viewHolderTextMessage = (ViewHolderTextMessage) holder;
                     viewHolderTextMessage.txtTime.setText(textChatItem.getShortDate());
                     viewHolderTextMessage.txtContent.setText(textChatItem.getMessage());
+                    viewHolderTextMessage.txtState.setVisibility(
+                            textChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
+                                    View.VISIBLE : View.GONE);
                 }
                 break;
         }
@@ -109,11 +112,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class ViewHolderTextMessage extends RecyclerView.ViewHolder {
         private TextView txtContent;
         private TextView txtTime;
+        private TextView txtState;
 
         public ViewHolderTextMessage(View root) {
             super(root);
             txtContent = (TextView) root.findViewById(R.id.txt_content);
             txtTime = (TextView) root.findViewById(R.id.txt_time);
+            txtState = (TextView) root.findViewById(R.id.txt_state);
         }
     }
 
@@ -152,5 +157,44 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(BaseChatItem item, int position);
+    }
+
+    public BaseChatItem getLastSenderUnreadMessage() {
+        for (int i = getItemCount() - 1; i > 0; i--) {
+            BaseChatItem baseChatItem = datas.get(i);
+            if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+                return baseChatItem;
+            }
+        }
+        return null;
+    }
+
+    public void updateSenderLastMessageStateToRead() {
+        for (int i = getItemCount() - 1; i > 0; i--) {
+            BaseChatItem baseChatItem = datas.get(i);
+            if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+                baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
+                return;
+            }
+        }
+    }
+
+    public void updateStateMessageToRead(BaseChatItem readChatItem) {
+        boolean hasReadChatItem = false;
+        for (int i = getItemCount() - 1; i >= 0; i--) {
+            BaseChatItem baseChatItem = datas.get(i);
+            if (baseChatItem.getMessageId() == readChatItem.getMessageId()) {
+                hasReadChatItem = true;
+                baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
+            }
+            if (hasReadChatItem && !baseChatItem.isOwner()) {
+                if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
+                    return;
+                } else {
+                    baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

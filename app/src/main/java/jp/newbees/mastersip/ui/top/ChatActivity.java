@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -29,12 +30,13 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelaytiveLayout;
-import jp.newbees.mastersip.event.EventManage;
+import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
+import jp.newbees.mastersip.eventbus.StateMessageChangeEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 
@@ -43,6 +45,8 @@ import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
  */
 public class ChatActivity extends BaseActivity {
     private static final String USER = "USER";
+    public static final String TAG = "ChatActivity";
+
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
@@ -75,6 +79,8 @@ public class ChatActivity extends BaseActivity {
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
 
+    private boolean isResume = false;
+
     private View.OnClickListener mOnSwitchModeClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -93,6 +99,18 @@ public class ChatActivity extends BaseActivity {
             if (isSoftKeyboardOpened) {
                 slideUpCustomActionheaderInChat();
             }
+        }
+    };
+    private ChatPresenter.UpdateStateMessageToServerListener mOnUpdateStateMessageToServerListener = new ChatPresenter.UpdateStateMessageToServerListener() {
+        @Override
+        public void didUpdateStateMessageToServer() {
+            chatAdapter.updateSenderLastMessageStateToRead();
+
+        }
+
+        @Override
+        public void didUpdateStateMessageToServerError(int errorCode, String errorMessage) {
+            Logger.e(TAG, errorCode + " : " + errorMessage);
         }
     };
 
@@ -234,7 +252,7 @@ public class ChatActivity extends BaseActivity {
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener);
+        presenter = new ChatPresenter(this, mOnChatListener, mOnUpdateStateMessageToServerListener);
 
         user = getIntent().getParcelableExtra(USER);
         fromExtension = user.getSipItem().getExtension();
@@ -243,21 +261,43 @@ public class ChatActivity extends BaseActivity {
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
         layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+//        layoutManager.setReverseLayout(true);
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setItemAnimator(new DefaultItemAnimator());
         recyclerChat.setNestedScrollingEnabled(false);
         recyclerChat.setAdapter(chatAdapter);
         chatAdapter.notifyDataSetChanged();
 
-        EventManage.getInstance().registerChattingEventName(fromExtension, Constant.API.CALL_FROM_CHAT_ROOM, this);
+        EventBus.getDefault().register(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        String eventName = EventManage.getInstance().genChattingEventName(fromExtension, Constant.API.CALL_FROM_CHAT_ROOM);
-        EventManage.getInstance().unregisterEventName(eventName);
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isResume = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isResume = true;
+        updateStateLastMessage();
+
+    }
+
+    private void updateStateLastMessage() {
+        BaseChatItem lastSenderMessage = chatAdapter.getLastSenderUnreadMessage();
+        if (lastSenderMessage != null) {
+            presenter.updateStateMessage(lastSenderMessage.getMessageId());
+        }
     }
 
     public static void start(Context context, UserItem userItem) {
@@ -267,12 +307,19 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Subscribe()
-    public void onChatMessageEvent(BaseChatItem baseChatItem) {
+    public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
         donotHideSoftKeyboard = true;
-        chatAdapter.add(baseChatItem);
+        chatAdapter.add(newChatMessageEvent.getBaseChatItem());
         recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        if (isResume) {
+            presenter.updateStateMessage(newChatMessageEvent.getBaseChatItem().getMessageId());
+        }
     }
 
+    @Subscribe()
+    public void onStateMessageChange(StateMessageChangeEvent stateMessageChangeEvent) {
+        chatAdapter.updateStateMessageToRead(stateMessageChangeEvent.getBaseChatItem());
+    }
 
     @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send})
     public void onClick(View view) {

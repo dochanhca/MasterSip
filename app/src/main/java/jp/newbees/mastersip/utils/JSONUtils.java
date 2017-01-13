@@ -236,4 +236,13 @@ public class JSONUtils {
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;
     }
+
+    public static BaseChatItem parseDateOnUpdateMessageState(JSONObject jData) throws JSONException {
+        BaseChatItem baseChatItem = new BaseChatItem();
+        baseChatItem.setMessageState(jData.getInt(Constant.JSON.kStatus));
+        baseChatItem.setRoomId(jData.getInt(Constant.JSON.kRoomId));
+        baseChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
+        baseChatItem.setRoomType(jData.getInt(Constant.JSON.kRoomType));
+        return baseChatItem;
+    }
 }

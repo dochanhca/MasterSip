@@ -27,7 +27,7 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_time"
-        style="@style/style_content_text_view_tiny"
+        style="@style/origin_style_content_text_view_tiny"
         android:textColor="@color/dark_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,5 +35,18 @@
         android:layout_toLeftOf="@id/txt_content"
         android:paddingRight="@dimen/small_margin"
         android:text="12:34" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_state"
+        style="@style/origin_style_content_text_view_tiny"
+        android:visibility="gone"
+        android:textColor="@color/dark_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txt_time"
+        android:layout_toLeftOf="@id/txt_content"
+        android:paddingRight="@dimen/small_margin"
+        android:text="@string/txt_already_read" />
+
 
 </RelativeLayout>

@@ -241,4 +241,5 @@
     <string name="follow">フォローする</string>
     <string name="gift">ギフトを贈る</string>
     <string name="photo">背景 のコピー 11</string>
+    <string name="txt_already_read">既読</string>
 </resources>

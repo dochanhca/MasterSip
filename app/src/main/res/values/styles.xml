@@ -162,8 +162,12 @@
         <item name="android:paddingRight">@dimen/normal_margin</item>
     </style>
 
-    <style name="origin_style_content_text_view_tiny" parent="origin_style_content_text_view_small">
+    <style name="origin_style_content_text_view_xtiny" parent="origin_style_content_text_view_small">
         <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="origin_style_content_text_view_tiny" parent="origin_style_content_text_view_small">
+        <item name="android:textSize">@dimen/text_size_tiny</item>
 
     </style>
 </resources>
