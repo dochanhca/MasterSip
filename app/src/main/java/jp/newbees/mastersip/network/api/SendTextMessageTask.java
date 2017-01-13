@@ -32,7 +32,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
     public SendTextMessageTask(Context context, TextChatItem textChatItem) {
         super(context);
         this.textChatItem = textChatItem;
-        this.sender = this.textChatItem.getSender();
+        this.sender = this.textChatItem.getOwner();
     }
 
     @Nullable
@@ -47,7 +47,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
         JSONObject jParams = new JSONObject();
         jParams.put(Constant.JSON.K_TYPE, CHAT_TEXT);
         jParams.put(Constant.JSON.CONTENT, message);
-        jParams.put(Constant.JSON.EXTENSION_SRC, this.textChatItem.getSender().getSipItem().getExtension());
+        jParams.put(Constant.JSON.EXTENSION_SRC, this.textChatItem.getOwner().getSipItem().getExtension());
         jParams.put(Constant.JSON.EXTENSION_DEST, this.textChatItem.getSendee().getSipItem().getExtension());
         jParams.put(Constant.JSON.ROOM_TYPE, this.textChatItem.getRoomType());
         return jParams;

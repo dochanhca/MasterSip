@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -10,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by ducpv on 12/15/16.
@@ -72,5 +74,16 @@ public class Utils {
     public static void closeKeyboard(Context c, IBinder windowToken) {
         InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(windowToken, 0);
+    }
+
+    public static Locale getCurrentLocale(Context context) {
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = context.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            locale = context.getResources().getConfiguration().locale;
+        }
+
+        return locale;
     }
 }

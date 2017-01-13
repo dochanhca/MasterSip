@@ -180,7 +180,7 @@ public final class Constant {
     }
 
     public final class Application {
-        public static final boolean DEBUG = true;
+        public static final boolean DEBUG = false;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";

@@ -75,8 +75,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolderTextMessageReply.txtContent.setText(textChatItem.getMessage());
 
                     int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-                    if (!item.getSender().getAvatarItem().getThumbUrl().equalsIgnoreCase("")) {
-                        Glide.with(context).load(item.getSendee().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
+                    if (item.getOwner().getAvatarItem() != null) {
+                        Glide.with(context).load(item.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
                                 error(defaultImageId).into(viewHolderTextMessageReply.imgAvatar);
                     } else {
                         viewHolderTextMessageReply.imgAvatar.setImageResource(defaultImageId);
