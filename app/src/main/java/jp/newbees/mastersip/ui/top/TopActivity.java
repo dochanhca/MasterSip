@@ -18,12 +18,12 @@ import jp.newbees.mastersip.ui.call.CallCenterActivity;
  * Created by vietbq on 12/6/16.
  */
 
-public class TopCenterActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView {
+public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView {
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
 
-    private static final String TAG = "TopCenterActivity";
+    private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;

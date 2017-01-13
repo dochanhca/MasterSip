@@ -6,6 +6,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
+import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
@@ -64,9 +66,21 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;
+            case ReceivingCallEvent.FLASHED_CALL:
+                handleFlashedCall();
+                break;
             default:
                 break;
         }
+    }
+
+    private void handleFlashedCall() {
+        view.onFlashedCall();
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onCoinChangedEvent(CoinChangedEvent event) {
+        view.onCoinChanged(event);
     }
 
     private void handleCallEnd() {
@@ -85,9 +99,17 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    public interface IncomingCallView {
-        public void onCallConnected();
+    public void checkFlashCall() {
+        EventBus.getDefault().post(new FlashedEvent());
+    }
 
-        public void onCallEnd();
+    public interface IncomingCallView {
+        void onCallConnected();
+
+        void onCallEnd();
+
+        void onCoinChanged(CoinChangedEvent event);
+
+        void onFlashedCall();
     }
 }

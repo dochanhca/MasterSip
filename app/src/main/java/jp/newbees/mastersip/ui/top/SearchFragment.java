@@ -28,7 +28,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
 import jp.newbees.mastersip.event.FilterUserEvent;
-import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -141,12 +140,12 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         private void hideFilterAndNavigationBar() {
             filter.startAnimation(slideUp);
-            ((TopCenterActivity)getActivity()).hideNavigation();
+            ((TopActivity)getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
             filter.startAnimation(slideDown);
-            ((TopCenterActivity)getActivity()).showNavigation();
+            ((TopActivity)getActivity()).showNavigation();
         }
     };
 
@@ -228,11 +227,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         showLoading();
         presenter.filterUser(currentTypeSearch);
-    }
-
-    @Subscribe(sticky = true)
-    public void onChatMessageEvent(BaseChatItem baseChatItem) {
-
     }
 
     private void changeMode() {

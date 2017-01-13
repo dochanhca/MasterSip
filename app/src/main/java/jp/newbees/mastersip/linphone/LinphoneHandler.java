@@ -46,6 +46,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private boolean running;
     private LinphoneNotifier notifier;
     private LinphoneCore linphoneCore;
+    private boolean calling;
 
     public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
@@ -92,9 +93,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        Logger.e(TAG, msg);
+        Logger.e(TAG, msg + " - " + cstate.toString());
         int state = cstate.value();
-        if (cstate == LinphoneCall.State.CallReleased) {
+        if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
         }
         String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
@@ -108,7 +109,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
-        Logger.e(TAG, stats.toString());
     }
 
     public void ecCalibrationStatus(LinphoneCore lc, LinphoneCore.EcCalibratorStatus status, int delay_ms, Object data) {
@@ -365,5 +365,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
         } catch (LinphoneCoreException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isCalling() {
+        return linphoneCore.isIncall();
+    }
+
+    public void setCalling(boolean calling) {
+        this.calling = calling;
     }
 }

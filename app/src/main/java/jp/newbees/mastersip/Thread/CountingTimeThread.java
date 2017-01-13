@@ -16,7 +16,7 @@ public class CountingTimeThread implements Runnable {
     private long startTime = 0L;
     long timeInMilliseconds = 0L;
 
-//    long timeSwapBuff = 0L; Using time swap buff if need stop and restart couting
+    //    long timeSwapBuff = 0L; Using time swap buff if need stop and restart couting
     long updatedTime = 0L;
 
     public CountingTimeThread(TextView txtTimer, Handler handler) {
@@ -35,9 +35,7 @@ public class CountingTimeThread implements Runnable {
         int mins = secs / 60;
         secs = secs % 60;
 
-        String minutes = Integer.toString(mins);
-
-        txtTimer.setText(minutes + ":"
+        txtTimer.setText(String.format("%02d", mins) + ":"
                 + String.format("%02d", secs));
         timerHandler.postDelayed(this, 0);
     }

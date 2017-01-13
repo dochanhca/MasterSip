@@ -11,7 +11,9 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/11/17.
@@ -36,13 +38,19 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        Logger.e(TAG, errorMessage);
     }
 
     private void handleResponseCheckCall(BaseTask task) {
         HashMap<String, Object> result = (HashMap<String, Object>) task.getDataResponse();
         int callType = (int) result.get(CheckCallTask.CALL_TYPE);
         UserItem callee = (UserItem) result.get(CheckCallTask.CALLEE);
+
+        if (result.containsKey(CheckCallTask.WAITING_CALL_ID)) {
+            String waitingCallID = (String) result.get(CheckCallTask.WAITING_CALL_ID);
+            ConfigManager.getInstance().setWaitingCallId(waitingCallID);
+        }
+
         if (callType == Constant.API.VOICE_CALL) {
             makeVoiceCall(callee);
         }
@@ -50,15 +58,18 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Make a voice call
+     *
      * @param callee
      */
     private void makeVoiceCall(UserItem callee) {
+        ConfigManager.getInstance().setCurrentCallee(callee);
         String extension = callee.getSipItem().getExtension();
         EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, extension));
     }
 
     /**
      * Check callee before make a voice call
+     *
      * @param callee
      */
     public final void checkVoiceCall(UserItem callee) {
@@ -67,6 +78,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Check callee before make a video call
+     *
      * @param userItem
      */
     public final void checkVideoCall(UserItem userItem) {
@@ -76,6 +88,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Check callee before make a video chat call
+     *
      * @param userItem
      */
     public final void checkVideoChatCall(UserItem userItem) {
@@ -85,6 +98,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     /**
      * Send request check call to server
+     *
      * @param callee
      * @param callType
      */

@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.ui.top.TopCenterActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -40,7 +40,7 @@ public class TopPresenter extends BasePresenter {
         Logger.e("TopPresenter", "[Permission] Camera permission is " + (camera == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
 
         if (camera != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.CAMERA, TopCenterActivity.PERMISSIONS_REQUEST_CAMERA);
+            requestPermission(Manifest.permission.CAMERA, TopActivity.PERMISSIONS_REQUEST_CAMERA);
         } else {
             requestMicrophonePermission();
         }
@@ -50,7 +50,7 @@ public class TopPresenter extends BasePresenter {
         int recordAudio = context.getPackageManager().checkPermission(Manifest.permission.RECORD_AUDIO, context.getPackageName());
         Logger.e("TopPresenter", "[Permission] Record audio permission is " + (recordAudio == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
         if (recordAudio != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.RECORD_AUDIO, TopCenterActivity.PERMISSIONS_ENABLED_MIC);
+            requestPermission(Manifest.permission.RECORD_AUDIO, TopActivity.PERMISSIONS_ENABLED_MIC);
         }
     }
 

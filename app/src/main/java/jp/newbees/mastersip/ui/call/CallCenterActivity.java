@@ -56,5 +56,4 @@ public abstract class CallCenterActivity extends BaseActivity implements BaseCen
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
 }

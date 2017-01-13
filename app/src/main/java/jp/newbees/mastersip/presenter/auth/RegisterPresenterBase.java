@@ -75,5 +75,6 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     }
 
     protected abstract void onDidRegisterVoIPSuccess();
+
     protected abstract void onDidRegisterVoIPError(int errorCode, String errorMessage);
 }
