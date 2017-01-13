@@ -1,15 +1,22 @@
 package jp.newbees.mastersip.customviews;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import jp.newbees.mastersip.R;
 
 /**
  * Created by thangit14 on 12/9/16.
  */
 
 public class NavigationLayoutGroup extends LinearLayout {
+    private boolean showDivider = false;
+    private int dividerColor;
+
     private OnChildItemClickListener onChildItemClickListener;
 
     private OnClickListener mOnItemClickListener = new OnClickListener() {
@@ -21,6 +28,7 @@ public class NavigationLayoutGroup extends LinearLayout {
             }
         }
     };
+    private TypedArray typedArray;
 
     private void updateViewChild(View child) {
         for (int i = 0; i < getChildCount(); i++) {
@@ -48,23 +56,45 @@ public class NavigationLayoutGroup extends LinearLayout {
 
     public NavigationLayoutGroup(Context context) {
         super(context);
-        setupView();
     }
 
     public NavigationLayoutGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setupView();
+        setupView(attrs);
     }
 
     public NavigationLayoutGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setupView();
+        setupView(attrs);
     }
 
-    private void setupView() {
+    private void setupView(AttributeSet attrs) {
         setWeightSum(getChildCount());
         setOrientation(HORIZONTAL);
-//        setBackgroundColor(Color.TRANSPARENT);
+
+        typedArray = getContext().obtainStyledAttributes(
+                attrs,
+                R.styleable.NavigationLayout);
+
+        if (typedArray.hasValue(R.styleable.NavigationLayout_showDivider)) {
+            showDivider = typedArray.getBoolean(R.styleable.NavigationLayout_showDivider, false);
+        }
+
+        if (typedArray.hasValue(R.styleable.NavigationLayout_dividerColor)) {
+            dividerColor = typedArray.getColor(R.styleable.NavigationLayout_dividerColor, Color.BLACK);
+        }
+
+    }
+
+    private void showDividerOnChildView() {
+        for (int i = 0; i < getChildCount() - 1; i++) {
+            if (getChildAt(i) instanceof NavigationLayoutChild) {
+                NavigationLayoutChild navigationLayoutChild = (NavigationLayoutChild) getChildAt(i);
+
+                navigationLayoutChild.setShowDivider(true);
+                navigationLayoutChild.setDividerColor(dividerColor);
+            }
+        }
     }
 
     private void setupChildView() {
@@ -86,6 +116,9 @@ public class NavigationLayoutGroup extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setupChildView();
+        if (showDivider) {
+            showDividerOnChildView();
+        }
     }
 
     public interface OnChildItemClickListener {

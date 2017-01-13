@@ -302,7 +302,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
     }
 
-    public void sendRaw(String raw) {
+    public void sendPacket(String raw) {
+        LinphoneAddress linphoneAddress = linphoneCore.getRemoteAddress();
+        LinphoneChatRoom linphoneChatRoom = linphoneCore.getChatRoom(linphoneAddress);
+        linphoneChatRoom.sendMessage(raw);
     }
 
     public final void acceptCall() throws LinphoneCoreException {

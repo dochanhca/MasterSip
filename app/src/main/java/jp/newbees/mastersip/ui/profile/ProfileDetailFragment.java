@@ -8,8 +8,10 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.top.ChatActivity;
 
 import static jp.newbees.mastersip.utils.Constant.Application.USER_ITEM;
 
@@ -20,6 +22,7 @@ import static jp.newbees.mastersip.utils.Constant.Application.USER_ITEM;
 public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ProfileDetailPresenter.ProfileDetailsView {
 
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
+    private static final String USER = "USER";
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
 
@@ -51,7 +54,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
                 getFragmentManager().popBackStack();
                 break;
             case R.id.layout_chat:
-                //start chat activity
+                ChatActivity.start(getContext(), userItem);
                 break;
             case R.id.layout_voice_call:
                 ConfirmVoiceCallDialog.openConfirmVoiceCallDialogFromFragment(this,

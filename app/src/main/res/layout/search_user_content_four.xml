@@ -25,7 +25,7 @@
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
                 android:id="@+id/txt_name"
-                style="@style/origin_style_content_text_view_tiny"
+                style="@style/origin_style_content_text_view_xtiny"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/tiny_margin"

@@ -27,7 +27,6 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
-import jp.newbees.mastersip.event.EventManage;
 import jp.newbees.mastersip.event.FilterUserEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
@@ -209,7 +208,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     @Override
     public void onResume() {
         super.onResume();
-        EventManage.getInstance().registerEventName("xxxxx");
         EventBus.getDefault().register(this);
     }
 

@@ -119,7 +119,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                 case FOOT_PRINT_FRAGMENT:
                     return FootPrintFragment.newInstance();
                 case FLOW_FRAGMENT:
-                    return FlowFragment.newInstance();
+//                    return FlowFragment.newInstance();
                 case PROFILE_FRAGMENT:
                     return MyMenuFragment.newInstance();
                 default:

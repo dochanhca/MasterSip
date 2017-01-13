@@ -55,6 +55,7 @@ public final class Constant {
         public final static String kExtendInfo = "extend_info";
         public final static String kFavoriteType = "favorite_type";
         public final static String kPath = "path";
+        public final static String kDate = "date";
 
         public final static String kLat = "lat";
         public final static String kLong = "long";
@@ -80,6 +81,7 @@ public final class Constant {
         public final static String kDeleted = "deleted";
         public final static String kSender = "sender";
         public final static String kText = "text";
+        public final static String kRoomId = "room_id";
 
         public static final String CALLER = "caller";
         public static final String RECEIVER = "receiver";
@@ -198,6 +200,7 @@ public final class Constant {
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
+        public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
     }
 
     public class EVENT {

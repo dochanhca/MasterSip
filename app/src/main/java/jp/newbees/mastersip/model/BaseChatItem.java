@@ -189,7 +189,7 @@ public class BaseChatItem implements Parcelable, Serializable {
     private int cellIndex;
     private String cellIdentifier; //For cell;
 //    @property (nonatomic) BOOL isSendFalse;
-    private MessageState messageState;
+    private int messageState;
     private int roomType;
     private String shortDate;
     private String shortTimeStamp;
@@ -251,11 +251,11 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.cellIdentifier = cellIdentifier;
     }
 
-    public MessageState getMessageState() {
+    public int getMessageState() {
         return messageState;
     }
 
-    public void setMessageState(MessageState messageState) {
+    public void setMessageState(int messageState) {
         this.messageState = messageState;
     }
 
@@ -302,7 +302,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         dest.writeInt(this.chatType);
         dest.writeInt(this.cellIndex);
         dest.writeString(this.cellIdentifier);
-        dest.writeParcelable(this.messageState, flags);
+        dest.writeInt(this.messageState);
         dest.writeInt(this.roomType);
         dest.writeString(this.shortDate);
         dest.writeString(this.shortTimeStamp);
@@ -318,7 +318,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.chatType = in.readInt();
         this.cellIndex = in.readInt();
         this.cellIdentifier = in.readString();
-        this.messageState = in.readParcelable(MessageState.class.getClassLoader());
+        this.messageState = in.readInt();
         this.roomType = in.readInt();
         this.shortDate = in.readString();
         this.shortTimeStamp = in.readString();

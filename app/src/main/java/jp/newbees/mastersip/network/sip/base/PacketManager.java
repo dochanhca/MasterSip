@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.network.UpdateMessageStateProcesser;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
 import jp.newbees.mastersip.utils.Constant;
@@ -64,8 +65,15 @@ public class PacketManager {
     public final BaseSocketProcessor getProcessor(PacketItem data) {
         String action = data.getAction();
         BaseSocketProcessor processor = null;
-        if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_CHATTING)){
-            processor = new ChattingProcessor();
+        switch (action) {
+            case Constant.SOCKET.ACTION_CHATTING:
+                processor = new ChattingProcessor();
+                break;
+            case Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE:
+                processor = new UpdateMessageStateProcesser();
+                break;
+        }
+        if (processor != null) {
             processor.setHandler(handler);
             processor.setPacketItem(data);
         } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_COIN_CHANGED)) {
