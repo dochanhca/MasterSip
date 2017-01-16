@@ -107,15 +107,16 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Now user should be able to use camera
+                this.dismissAllowingStateLoss();
                 openCamera();
-                this.dismiss();
+
             }
         } else if (requestCode == GALLERY_PERMISSION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Now user should be able to use gallery
+                this.dismissAllowingStateLoss();
                 openGallery();
-                this.dismiss();
             }
         }
     }

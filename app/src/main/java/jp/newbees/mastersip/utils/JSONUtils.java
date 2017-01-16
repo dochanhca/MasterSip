@@ -32,80 +32,89 @@ import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
  */
 public class JSONUtils {
 
-    private JSONUtils(){
+    private JSONUtils() {
         //Prevent init object
     }
 
     public static List<UserItem> parseUsers(JSONObject data) throws JSONException {
-        JSONArray jArray = data.getJSONArray(Constant.JSON.kUsers);
+        JSONArray jArray = data.getJSONArray(Constant.JSON.USERS);
         ArrayList<UserItem> result = new ArrayList<>();
-        for (int i=0, n=jArray.length(); i<n; i++){
+        for (int i = 0, n = jArray.length(); i < n; i++) {
             JSONObject jUser = jArray.getJSONObject(i);
             UserItem userItem = new UserItem();
             userItem.setUsername(jUser.getString(Constant.JSON.HANDLE_NAME));
-            userItem.setUserId(jUser.getString(Constant.JSON.kID));
+            userItem.setUserId(jUser.getString(Constant.JSON.ID));
 
-            userItem.setMemo(jUser.getString(Constant.JSON.kSlogan));
+            if (!jUser.isNull(Constant.JSON.SLOGAN)) {
+                userItem.setMemo(jUser.getString(Constant.JSON.SLOGAN));
+            }
 
             ImageItem avatar = new ImageItem();
-            avatar.setImageId(getInt(jUser, Constant.JSON.kAvatarId));
-            avatar.setOriginUrl(jUser.getString(Constant.JSON.kAvatar));
+            avatar.setImageId(getInt(jUser, Constant.JSON.AVATAR_ID));
+            avatar.setOriginUrl(jUser.getString(Constant.JSON.AVATAR));
             userItem.setAvatarItem(avatar);
 
             SipItem sipItem = new SipItem();
-            sipItem.setExtension(jUser.getString(Constant.JSON.kExtension));
+            sipItem.setExtension(jUser.getString(Constant.JSON.K_EXTENSION));
             userItem.setSipItem(sipItem);
 
-            if (jUser.has(Constant.JSON.kRelationship)) {
-                JSONObject jRelationship = jUser.getJSONObject(Constant.JSON.kRelationship);
+            if (jUser.has(Constant.JSON.RELATIONS)) {
+                JSONObject jRelationship = jUser.getJSONObject(Constant.JSON.RELATIONS);
                 RelationshipItem relationshipItem = parseRelationship(jRelationship);
                 userItem.setRelationshipItem(relationshipItem);
             }
 
-            String birthDay = jUser.getString(Constant.JSON.kBirthday);
+            String birthDay = jUser.getString(Constant.JSON.K_BIRTHDAY);
             userItem.setDateOfBirth(birthDay);
 
             SelectionItem location = new SelectionItem();
-            JSONObject jProvince = jUser.getJSONObject(Constant.JSON.kProvince);
-            location.setId(jProvince.getInt(Constant.JSON.kUserProvinceId));
-            location.setTitle(jProvince.getString(Constant.JSON.kUserProvinceName));
+            JSONObject jProvince = jUser.getJSONObject(Constant.JSON.PROVINCE);
+
+            if (!jProvince.isNull(Constant.JSON.USER_PROVINCE_ID)) {
+                location.setId(jProvince.getInt(Constant.JSON.USER_PROVINCE_ID));
+            }
+
+            if (!jProvince.isNull(Constant.JSON.PROVINCE_NAME)) {
+                location.setTitle(jProvince.getString(Constant.JSON.PROVINCE_NAME));
+            }
+
             userItem.setLocation(location);
 
             SelectionItem job = new SelectionItem();
-            job.setTitle(JSONUtils.getString(jUser,Constant.JSON.kJobName));
+            job.setTitle(JSONUtils.getString(jUser, Constant.JSON.JOB_NAME));
             userItem.setJobItem(job);
 
-            String lastLogin = jUser.getString(Constant.JSON.kLastLogin);
+            String lastLogin = jUser.getString(Constant.JSON.LAST_LOGIN);
             userItem.setLastLogin(lastLogin);
 
-            int status = getInt(jUser,Constant.JSON.kStatus);
+            int status = getInt(jUser, Constant.JSON.STATUS);
             userItem.setStatus(status);
 
 
-            int gender = getInt(jUser,Constant.JSON.kUserGender);
+            int gender = getInt(jUser, Constant.JSON.K_USER_GENDER);
             userItem.setGender(gender);
-            if (jUser.has(Constant.JSON.kExtendInfo)) {
-                JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.kExtendInfo);
+            if (jUser.has(Constant.JSON.EXTEND_INFO)) {
+                JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.EXTEND_INFO);
                 if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
-                    String charmPoint = jExtendInfo.getString(Constant.JSON.kCharmPoint);
+                    String charmPoint = jExtendInfo.getString(Constant.JSON.CHARM_POINT);
                     userItem.setCharmingPoint(charmPoint);
-                    String freeTime = jExtendInfo.getString(Constant.JSON.kFreeTime);
+                    String freeTime = jExtendInfo.getString(Constant.JSON.FREE_TIME);
                     SelectionItem availableTime = new SelectionItem();
                     availableTime.setTitle(freeTime);
                     userItem.setAvailableTimeItem(availableTime);
-                    String typeBoy = jExtendInfo.getString(Constant.JSON.kTypeBoy);
+                    String typeBoy = jExtendInfo.getString(Constant.JSON.TYPE_BOY);
                     userItem.setTypeBoy(typeBoy);
-                    String favoriteType = jExtendInfo.getString(Constant.JSON.kFavoriteType);
+                    String favoriteType = jExtendInfo.getString(Constant.JSON.FAVORITE_TYPE);
                     SelectionItem typeGirl = new SelectionItem();
                     typeGirl.setTitle(favoriteType);
                     userItem.setTypeGirl(typeGirl);
                 }
             }
             /*
-            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.kAvatar);
+            JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.AVATAR);
             ImageItem avatarItem = new ImageItem();
-            int imageId = jAvatar.getInt(Constant.JSON.kID);
-            String imagePath = jAvatar.getString(Constant.JSON.kPath);
+            int imageId = jAvatar.getInt(Constant.JSON.ID);
+            String imagePath = jAvatar.getString(Constant.JSON.PATH);
             avatarItem.setImageId(imageId);
             avatarItem.setOriginUrl(imagePath);
             userItem.setAvatarItem(avatarItem);
@@ -116,40 +125,39 @@ public class JSONUtils {
     }
 
     private static String getString(JSONObject jsonObject, String name) throws JSONException {
-        if (jsonObject.has(name)){
+        if (jsonObject.has(name)) {
             return jsonObject.getString(name);
-        }else {
+        } else {
             return "";
         }
     }
 
     public static final RelationshipItem parseRelationship(JSONObject jsonObject) throws JSONException {
         RelationshipItem relationshipItem = new RelationshipItem();
-        int followed = jsonObject.getInt(Constant.JSON.kFollowed);
-        boolean isNotification = jsonObject.getBoolean(Constant.JSON.kNotification);
+        int followed = jsonObject.getInt(Constant.JSON.FOLLOWED);
+        boolean isNotification = jsonObject.getBoolean(Constant.JSON.ONLINE_NOTIFICATION);
         relationshipItem.setFollowed(followed);
         relationshipItem.setNotification(isNotification);
         return relationshipItem;
     }
 
     /**
-     *
      * @param jsonObject
      * @param name
      * @return Default value is -1
      * @throws JSONException
      */
     private static final int getInt(JSONObject jsonObject, String name) throws JSONException {
-        if (jsonObject.has(name)){
+        if (jsonObject.has(name)) {
             return jsonObject.getInt(name);
-        }else {
+        } else {
             return -1;
         }
     }
 
-    public static final BaseChatItem parseChatItem(JSONObject jData,UserItem sender) throws JSONException {
+    public static final BaseChatItem parseChatItem(JSONObject jData, UserItem sender) throws JSONException {
         BaseChatItem chatItem = new BaseChatItem();
-        int type = jData.getInt(Constant.JSON.kType);
+        int type = jData.getInt(Constant.JSON.K_TYPE);
         switch (type) {
             case CHAT_DELETED:
                 chatItem = parseDeletedChatItem(jData, sender);
@@ -179,12 +187,12 @@ public class JSONUtils {
 
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
-        JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.kDeleted);
-        String extensionSender = jData.getJSONObject(Constant.JSON.kSender).getString(Constant.JSON.kExtension);
-        String content = jDeletedItem.getString(Constant.JSON.kContent);
+        JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.DELETED);
+        String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.K_EXTENSION);
+        String content = jDeletedItem.getString(Constant.JSON.CONTENT);
         if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
             deletedChatItem.setSender(true);
-        }else {
+        } else {
             deletedChatItem.setSender(false);
         }
         deletedChatItem.setMessage(content);
@@ -193,36 +201,36 @@ public class JSONUtils {
     }
 
     private static final TextChatItem parseTextChatItem(JSONObject jData, UserItem me) throws JSONException {
-        JSONObject jText = jData.getJSONObject(Constant.JSON.kText);
-        JSONObject jSender = jData.getJSONObject(Constant.JSON.kSender);
+        JSONObject jText = jData.getJSONObject(Constant.JSON.TEXT);
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
 
-        String extensionSender = jSender.getString(Constant.JSON.kExtension);
-        String content = jText.getString(Constant.JSON.kContent);
+        String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
+        String content = jText.getString(Constant.JSON.CONTENT);
 
         TextChatItem textChatItem = new TextChatItem(content);
 
         if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
             textChatItem.setSender(true);
-        }else {
+        } else {
             textChatItem.setSender(false);
         }
 
-        int roomType = jText.getInt(Constant.JSON.kRoomType);
+        int roomType = jText.getInt(Constant.JSON.ROOM_TYPE);
         textChatItem.setRoomType(roomType);
         textChatItem.setChatType(CHAT_TEXT);
         textChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
-        textChatItem.setRoomId(jData.getInt(Constant.JSON.kRoomId));
+        textChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
         UserItem userItem = new UserItem();
         SipItem sipItem = new SipItem(extensionSender);
 
         ImageItem imageItem = new ImageItem();
-        imageItem.setThumbUrl(jSender.getString(Constant.JSON.kAvatar));
-        imageItem.setOriginUrl(jSender.getString(Constant.JSON.kAvatar));
+        imageItem.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
+        imageItem.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
         userItem.setAvatarItem(imageItem);
         userItem.setSipItem(sipItem);
 
         textChatItem.setOwner(userItem);
-        textChatItem.setFullDate(jData.getString(Constant.JSON.kDate));
+        textChatItem.setFullDate(jData.getString(Constant.JSON.K_DATE));
         textChatItem.setShortDate(DateTimeUtils.getShortTime(textChatItem.getFullDate()));
         return textChatItem;
     }
@@ -230,32 +238,32 @@ public class JSONUtils {
     public static String genRawToChangeMessageState(BaseChatItem baseChatItem, String fromExtension) throws JSONException {
         JSONObject jData = new JSONObject();
         jData.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE);
-        jData.put(Constant.JSON.kMessage, fromExtension);
+        jData.put(Constant.JSON.K_MESSAGE, fromExtension);
         JSONObject jResponse = new JSONObject();
-        jResponse.put(Constant.JSON.kRoomId, baseChatItem.getRoomId());
-        jResponse.put(Constant.JSON.kRoomType, baseChatItem.getRoomType());
+        jResponse.put(Constant.JSON.ROOM_ID, baseChatItem.getRoomId());
+        jResponse.put(Constant.JSON.ROOM_TYPE, baseChatItem.getRoomType());
         jResponse.put(Constant.JSON.MESSAGE_ID, baseChatItem.getMessageId());
         jResponse.put(Constant.JSON.kFromExtension, fromExtension);
-        jResponse.put(Constant.JSON.kStatus, BaseChatItem.MessageState.STT_READ);
-        jData.put(Constant.JSON.kResponse, jResponse);
+        jResponse.put(Constant.JSON.STATUS, BaseChatItem.MessageState.STT_READ);
+        jData.put(Constant.JSON.RESPONSE, jResponse);
         return jData.toString();
     }
 
     public static PacketItem parsePacketItem(String raw) throws JSONException {
         JSONObject jData = new JSONObject(raw);
         String action = jData.getString(Constant.JSON.ACTION);
-        String message = jData.getString(Constant.JSON.kMessage);
-        JSONObject response = jData.getJSONObject(Constant.JSON.kResponse);
+        String message = jData.getString(Constant.JSON.K_MESSAGE);
+        JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;
     }
 
     public static BaseChatItem parseDateOnUpdateMessageState(JSONObject jData) throws JSONException {
         BaseChatItem baseChatItem = new BaseChatItem();
-        baseChatItem.setMessageState(jData.getInt(Constant.JSON.kStatus));
-        baseChatItem.setRoomId(jData.getInt(Constant.JSON.kRoomId));
+        baseChatItem.setMessageState(jData.getInt(Constant.JSON.STATUS));
+        baseChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
         baseChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
-        baseChatItem.setRoomType(jData.getInt(Constant.JSON.kRoomType));
+        baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
         return baseChatItem;
     }
 }

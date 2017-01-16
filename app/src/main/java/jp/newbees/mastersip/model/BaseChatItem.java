@@ -159,7 +159,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         }
     };
 
-    public UserItem getSender() {
+    public UserItem getOwner() {
         return sender;
     }
 

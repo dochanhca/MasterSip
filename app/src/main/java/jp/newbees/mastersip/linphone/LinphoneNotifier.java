@@ -15,7 +15,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class LinphoneNotifier extends TutorialNotifier {
 
     private Handler mHandler;
-    private String TAG = "LinphoneNotifier";
+    private final String TAG = "LinphoneNotifier";
 
     public LinphoneNotifier(Handler mHandler) {
         this.mHandler = mHandler;

@@ -32,7 +32,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
     public SendTextMessageTask(Context context, TextChatItem textChatItem) {
         super(context);
         this.textChatItem = textChatItem;
-        this.sender = this.textChatItem.getSender();
+        this.sender = this.textChatItem.getOwner();
     }
 
     @Nullable
@@ -45,11 +45,11 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
             e.printStackTrace();
         }
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.kType, CHAT_TEXT);
-        jParams.put(Constant.JSON.kContent , message);
-        jParams.put(Constant.JSON.kExtensionSource, this.textChatItem.getSender().getSipItem().getExtension());
-        jParams.put(Constant.JSON.kExtensionDestination, this.textChatItem.getSendee().getSipItem().getExtension());
-        jParams.put(Constant.JSON.kRoomType, this.textChatItem.getRoomType());
+        jParams.put(Constant.JSON.K_TYPE, CHAT_TEXT);
+        jParams.put(Constant.JSON.CONTENT, message);
+        jParams.put(Constant.JSON.EXTENSION_SRC, this.textChatItem.getOwner().getSipItem().getExtension());
+        jParams.put(Constant.JSON.EXTENSION_DEST, this.textChatItem.getSendee().getSipItem().getExtension());
+        jParams.put(Constant.JSON.ROOM_TYPE, this.textChatItem.getRoomType());
         return jParams;
     }
 
@@ -67,8 +67,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
     @Override
     protected BaseChatItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        JSONObject jResponse = jData.getJSONObject(Constant.JSON.kResponse);
-        BaseChatItem chatItem = JSONUtils.parseChatItem(jResponse,this.sender);
-        return chatItem;
+        JSONObject jResponse = jData.getJSONObject(Constant.JSON.RESPONSE);
+        return JSONUtils.parseChatItem(jResponse,this.sender);
     }
 }

@@ -49,8 +49,8 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
             e.printStackTrace();
         }
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.kNextPage, page);
-        jParams.put(Constant.JSON.kName, name);
+        jParams.put(Constant.JSON.NEXT_PAGE, page);
+        jParams.put(Constant.JSON.NAME, name);
         return jParams;
     }
 
@@ -69,7 +69,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     @Override
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        String nextPage = jData.getString(Constant.JSON.kNextPage);
+        String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
         List<UserItem> userItems = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);

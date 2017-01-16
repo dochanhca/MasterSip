@@ -54,7 +54,8 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserItem item = datas.get(position);
-        PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
+        Locale locale = Utils.getCurrentLocale(context);
+        PrettyTime prettyTime = new PrettyTime(locale);
 
         String lastLogin = prettyTime.format(DateTimeUtils.convertStringToDate(item.getLastLogin(),
                 DateTimeUtils.SERVER_DATE_FORMAT));

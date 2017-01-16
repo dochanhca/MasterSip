@@ -6,6 +6,7 @@ package jp.newbees.mastersip.network.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
@@ -15,10 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -30,14 +28,12 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -69,16 +65,13 @@ public abstract class BaseUploadTask<T extends Object> {
     }
 
     public final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
-        String url = "http://" + Constant.API.BASE_URL + "/" + Constant.API.PREFIX_URL + "/"
-                + Constant.API.VERSION + "/" + genURL()
-                + "?" + Constant.JSON.kRegisterToken + "=" + registerToken
-                + "&" + Constant.JSON.kClientAuthID + "=" + authorization;;
+        String url = genURL();
 
         Logger.e(TAG, "URL request : " + url);
 
         buildMultipartEntity();
 
-        mRequest = new Request<T>(genMethod(), url, new Response.ErrorListener() {
+        mRequest = new Request<T>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 /**
@@ -153,9 +146,9 @@ public abstract class BaseUploadTask<T extends Object> {
 
     private SipError validData(String data) throws JSONException {
         JSONObject jsonObject = new JSONObject(data);
-        int code = jsonObject.getInt(Constant.JSON.kCode);
+        int code = jsonObject.getInt(Constant.JSON.CODE);
         if (code != REQUEST_OK) {
-            String message = jsonObject.getString(Constant.JSON.kMessage);
+            String message = jsonObject.getString(Constant.JSON.K_MESSAGE);
             SipError sipError = new SipError(code, message);
             return sipError;
         } else {
@@ -168,7 +161,7 @@ public abstract class BaseUploadTask<T extends Object> {
         mEntityBuilder.addBinaryBody(getNameEntity(), getInputStream(), ContentType.create("image/jpeg"), getFileName());
         mEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         mEntityBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
-        HashMap<String, Integer> params = genBodyParam();
+        Map<String, Object> params = genBodyParam();
         if (null != params) {
             Set<String> keySet = params.keySet();
             for (Iterator<String> key = keySet.iterator(); key.hasNext(); ) {
@@ -177,37 +170,45 @@ public abstract class BaseUploadTask<T extends Object> {
                 mEntityBuilder.addTextBody(name, value);
             }
         }
-//        setCommonParams();
     }
 
-    private void setCommonParams() {
-        Gson gson = new Gson();
-        String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
-        String registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
-        UserItem userItem;
-        if (jUser != null) {
-            Type type = new TypeToken<UserItem>() {
-            }.getType();
-            userItem = gson.fromJson(jUser, type);
-//            mEntityBuilder.addTextBody(Constant.JSON.kClientAuthID, userItem.getUserId());
-            mEntityBuilder.addTextBody(Constant.JSON.kRegisterToken, registerToken);
+    @NonNull
+    private String genURL() {
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append(Constant.API.PROTOCOL)
+                .append("://")
+                .append(Constant.API.BASE_URL)
+                .append("/")
+                .append(Constant.API.PREFIX_URL)
+                .append("/")
+                .append(getVersion())
+                .append("/").append(getUrl());
+
+        if (!registerToken.isEmpty() && !authorization.isEmpty()) {
+            urlBuilder.append("?").append(Constant.JSON.REGIST_TOKEN).append("=").append(registerToken)
+                    .append("&").append(Constant.JSON.CLIENT_AUTH_ID).append("=").append(authorization);
         }
+        return urlBuilder.toString();
+    }
+
+    protected String getVersion(){
+        return Constant.API.VERSION;
     }
 
     protected abstract String getNameEntity();
 
     protected abstract T didResponse(JSONObject data) throws JSONException;
 
-    public abstract String genURL();
+    public abstract String getUrl();
 
-    public abstract int genMethod();
+    public abstract int getMethod();
 
     protected abstract InputStream getInputStream();
 
     protected abstract String getFileName();
 
     @Nullable
-    protected abstract HashMap<String, Integer> genBodyParam();
+    protected abstract Map<String, Object> genBodyParam();
 
     public T getDataResponse() {
         return dataResponse;

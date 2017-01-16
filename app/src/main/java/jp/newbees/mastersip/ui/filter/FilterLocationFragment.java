@@ -103,7 +103,7 @@ public class FilterLocationFragment extends BaseFragment implements
     }
 
     private void putDataBack() {
-        ArrayList<LocationItem> selectedItems = new ArrayList<>();
+        List<LocationItem> selectedItems = new ArrayList<>();
         for (LocationItem item : locationItems) {
             if (item.isChecked()) {
                 selectedItems.add(item);

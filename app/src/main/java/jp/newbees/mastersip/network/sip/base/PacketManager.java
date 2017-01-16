@@ -35,7 +35,7 @@ public class PacketManager {
     private Handler handler;
     private String TAG;
 
-    private PacketManager(){
+    private PacketManager() {
         TAG = this.getClass().getSimpleName();
         //Prevent init object
         processorQueue = new LinkedBlockingDeque<>();
@@ -58,7 +58,7 @@ public class PacketManager {
         };
     }
 
-    public static void initInstance(){
+    public static void initInstance() {
         instance = new PacketManager();
     }
 
@@ -75,20 +75,23 @@ public class PacketManager {
             case Constant.SOCKET.ACTION_COIN_CHANGED:
                 processor = new CoinChangedProcessor();
                 break;
+            default:
+                break;
         }
         if (processor != null) {
             processor.setHandler(handler);
             processor.setPacketItem(data);
         }
+
         return processor;
     }
 
-    private void executeProcessor(BaseSocketProcessor processor){
+    private void executeProcessor(BaseSocketProcessor processor) {
         processorThreadPool.execute(processor);
     }
 
     public static PacketManager getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new PacketManager();
         }
         return instance;
@@ -101,8 +104,8 @@ public class PacketManager {
             BaseSocketProcessor processor = getProcessor(packetItem);
             if (processor != null) {
                 this.executeProcessor(processor);
-            }else {
-                Logger.e(TAG,"No processor handle ACTION " + packetItem.getAction());
+            } else {
+                Logger.e(TAG, "No processor handle ACTION " + packetItem.getAction());
             }
         } catch (JSONException e) {
             e.printStackTrace();

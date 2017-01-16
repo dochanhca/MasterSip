@@ -3,7 +3,6 @@ package jp.newbees.mastersip.ui.dialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,7 +14,6 @@ import java.util.List;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.MaxAgeAdapter;
 import jp.newbees.mastersip.adapter.MinAgeAdapter;
-import jp.newbees.mastersip.adapter.SelectionAdapter;
 import jp.newbees.mastersip.model.AgeItem;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Utils;
@@ -56,7 +54,7 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
         recyclerMaxAge = (RecyclerView) rootView.findViewById(R.id.recycler_max_age);
         minAge = getArguments().getParcelableArrayList(SelectMinMaxAgeDialog.LIST_AGE);
         maxAge = new ArrayList<>();
-        for (AgeItem age: minAge) {
+        for (AgeItem age : minAge) {
             maxAge.add(age.clone());
         }
 
@@ -115,7 +113,7 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
          */
         selectedMinAge = minAge.get(minAgePosition).getSelectionItem().getId();
         for (AgeItem age : maxAge) {
-            if (age.getSelectionItem().getId() < selectedMinAge) {
+            if (age.getSelectionItem().getId() < selectedMinAge && age.getSelectionItem().getId() > -1) {
                 age.setDisable(true);
             } else {
                 age.setDisable(false);

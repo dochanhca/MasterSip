@@ -25,7 +25,7 @@ public class RegisterVoIPManager {
         } else if (state == LinphoneCore.RegistrationState.RegistrationFailed){
             notifier.registerVoIPFailed();
         } else if (state == LinphoneCore.RegistrationState.RegistrationCleared) {
-
+            //TODO
         }
     }
 }

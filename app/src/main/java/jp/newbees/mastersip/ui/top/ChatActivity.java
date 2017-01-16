@@ -47,7 +47,6 @@ public class ChatActivity extends BaseActivity {
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
 
-
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
     @BindView(R.id.custom_action_header_in_chat)
@@ -68,18 +67,19 @@ public class ChatActivity extends BaseActivity {
     SoftKeyboardLsnedRelaytiveLayout container;
 
     private ChatAdapter chatAdapter;
-    private LinearLayoutManager layoutManager;
 
     private ChatPresenter presenter;
 
     private UserItem user;
-    private String fromExtension;
+
     private boolean donotHideSoftKeyboard = false;
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
 
     private boolean isResume = false;
+//    private Animation slideDown;
+//    private Animation slideUp;
 
     private View.OnClickListener mOnSwitchModeClickListener = new View.OnClickListener() {
         @Override
@@ -125,6 +125,21 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
+    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
+        @Override
+        public void didSendChatToServer(BaseChatItem baseChatItem) {
+            chatAdapter.add(baseChatItem);
+            edtChat.setEnabled(true);
+            txtSend.setEnabled(true);
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
+
+        @Override
+        public void didChatError(int errorCode, String errorMessage) {
+            donotHideSoftKeyboard = true;
+
+        }
+    };
     private TextView.OnEditorActionListener mOnChatEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -176,37 +191,37 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
-    private void slideDownCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
-        if (!isCustomActionHeaderInChatOpened) {
-            customActionHeaderInChat.startAnimation(slideDown);
-        }
-        isCustomActionHeaderInChatOpened = true;
-    }
+//    private void slideDownCustomActionheaderInChat() {
+//        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+//        if (!isCustomActionHeaderInChatOpened) {
+//            customActionHeaderInChat.startAnimation(slideDown);
+//        }
+//        isCustomActionHeaderInChatOpened = true;
+//    }
+//
+//    private void slideUpCustomActionheaderInChat() {
+//        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+//        if (isCustomActionHeaderInChatOpened) {
+//            customActionHeaderInChat.startAnimation(slideUp);
+//        }
+//        isCustomActionHeaderInChatOpened = false;
+//    }
 
-    private void slideUpCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
-        if (isCustomActionHeaderInChatOpened) {
-            customActionHeaderInChat.startAnimation(slideUp);
-        }
-        isCustomActionHeaderInChatOpened = false;
-    }
-
-    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
-        @Override
-        public void didSendChatToServer(BaseChatItem baseChatItem) {
-            chatAdapter.add(baseChatItem);
-            edtChat.setEnabled(true);
-            txtSend.setEnabled(true);
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        }
-
-        @Override
-        public void didChatError(int errorCode, String errorMessage) {
-            donotHideSoftKeyboard = true;
-
-        }
-    };
+//    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
+//        @Override
+//        public void didSendChatToServer(BaseChatItem baseChatItem) {
+//            chatAdapter.add(baseChatItem);
+//            edtChat.setEnabled(true);
+//            txtSend.setEnabled(true);
+//            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+//        }
+//
+//        @Override
+//        public void didChatError(int errorCode, String errorMessage) {
+//            donotHideSoftKeyboard = true;
+//
+//        }
+//    };
     private Animation slideDown;
     private Animation slideUp;
 
@@ -256,14 +271,12 @@ public class ChatActivity extends BaseActivity {
         presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener);
 
         user = getIntent().getParcelableExtra(USER);
-        fromExtension = user.getSipItem().getExtension();
 
         initHeader(user.getUsername());
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
-//        layoutManager.setReverseLayout(true);
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setItemAnimator(new DefaultItemAnimator());
         recyclerChat.setNestedScrollingEnabled(false);
@@ -293,6 +306,32 @@ public class ChatActivity extends BaseActivity {
         updateStateLastMessage();
 
     }
+
+    private void slideDownCustomActionheaderInChat() {
+        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+        if (!isCustomActionHeaderInChatOpened) {
+            customActionHeaderInChat.startAnimation(slideDown);
+        }
+        isCustomActionHeaderInChatOpened = true;
+    }
+
+    private void slideUpCustomActionheaderInChat() {
+        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+        if (isCustomActionHeaderInChatOpened) {
+            customActionHeaderInChat.startAnimation(slideUp);
+        }
+        isCustomActionHeaderInChatOpened = false;
+    }
+
+//    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
+//        if (isCallActionHeaderInChatOpened) {
+//            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
+//                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+//        } else {
+//            recyclerChat.setPadding(0, 0,
+//                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+//        }
+//    }
 
     private void updateStateLastMessage() {
         BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
@@ -330,13 +369,19 @@ public class ChatActivity extends BaseActivity {
             case R.id.action_video:
                 break;
             case R.id.txt_send:
-                String newMessage = edtChat.getText().toString();
-                if (!newMessage.equalsIgnoreCase("")) {
-                    donotHideSoftKeyboard = true;
-                    edtChat.setText("");
-                    presenter.sendText(newMessage, user);
-                }
+                doSendMessage();
                 break;
+            default:
+                break;
+        }
+    }
+
+    private void doSendMessage() {
+        String newMessage = edtChat.getText().toString();
+        if (!newMessage.equalsIgnoreCase("")) {
+            donotHideSoftKeyboard = true;
+            edtChat.setText("");
+            presenter.sendText(newMessage, user);
         }
     }
 }

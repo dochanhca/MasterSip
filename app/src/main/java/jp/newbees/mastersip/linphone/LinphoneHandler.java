@@ -41,12 +41,11 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class LinphoneHandler implements LinphoneCoreListener {
-    private static final String TAG = "LinphoneHandler";
+    private final String TAG = getClass().getSimpleName();
     private Context context;
     private boolean running;
     private LinphoneNotifier notifier;
     private LinphoneCore linphoneCore;
-    private boolean calling;
 
     public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
@@ -144,9 +143,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             setUserAgent();
             setFrontCamAsDefault();
             linphoneCore.setNetworkReachable(true); // Let's assume it's true
-        } catch (LinphoneCoreException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (LinphoneCoreException|IOException e) {
             e.printStackTrace();
         }
     }
@@ -166,9 +163,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setRing(null);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
-//        linphoneCore.setRootCA(basePath + "/rootca.pem");
         linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
-//        linphoneCore.setChatDatabasePath(basePath + "/linphone-history.db");
 
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
@@ -211,7 +206,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }catch (NullPointerException e) {
             Logger.e(TAG, "linphoneCore is " + linphoneCore);
         } finally {
-            Logger.e("LinphoneHandler", "Shutting down linphone...");
+            Logger.e(TAG, "Shutting down linphone...");
             linphoneCore.destroy();
         }
     }
@@ -242,7 +237,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         try {
             Thread.sleep((long) ms);
         } catch (InterruptedException var3) {
-            Logger.e("LinphoneHandler", "Interrupted!\nAborting");
+            Logger.e(TAG, "Interrupted!\nAborting");
         }
     }
 
@@ -375,9 +370,5 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public boolean isCalling() {
         return linphoneCore.isIncall();
-    }
-
-    public void setCalling(boolean calling) {
-        this.calling = calling;
     }
 }

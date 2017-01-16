@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -24,11 +24,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int OFFSET_RETURN_TYPE = 100;
 
-    private ArrayList<BaseChatItem> datas;
+    private List<BaseChatItem> datas;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public ChatAdapter(Context context, ArrayList<BaseChatItem> datas) {
+    public ChatAdapter(Context context, List<BaseChatItem> datas) {
         this.datas = datas;
         this.context = context;
     }
@@ -75,8 +75,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolderTextMessageReply.txtContent.setText(textChatItem.getMessage());
 
                     int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-                    if (!item.getSender().getAvatarItem().getThumbUrl().equalsIgnoreCase("")) {
-                        Glide.with(context).load(item.getSendee().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
+                    if (item.getOwner().getAvatarItem() != null) {
+                        Glide.with(context).load(item.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
                                 error(defaultImageId).into(viewHolderTextMessageReply.imgAvatar);
                     } else {
                         viewHolderTextMessageReply.imgAvatar.setImageResource(defaultImageId);
@@ -90,6 +90,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             textChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
                                     View.VISIBLE : View.GONE);
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -145,13 +147,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void clearAndAddNewData(ArrayList<BaseChatItem> datas) {
+    public void clearAndAddNewData(List<BaseChatItem> datas) {
         this.datas = datas;
         notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        onItemClickListener = onItemClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
 

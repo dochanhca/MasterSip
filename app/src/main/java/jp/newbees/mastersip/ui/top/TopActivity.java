@@ -89,11 +89,11 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         viewPager.setAdapter(myPagerAdapter);
     }
 
-    protected void showNavigation() {
+    public void showNavigation() {
         navigationLayoutGroup.startAnimation(slide_up);
     }
 
-    protected void hideNavigation() {
+    public void hideNavigation() {
         navigationLayoutGroup.startAnimation(slide_down);
     }
 

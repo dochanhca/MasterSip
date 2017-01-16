@@ -1,6 +1,6 @@
 package jp.newbees.mastersip.event;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.model.LocationItem;
 
@@ -10,13 +10,13 @@ import jp.newbees.mastersip.model.LocationItem;
 
 public class SelectLocationEvent {
 
-    private ArrayList<LocationItem> locationItems;
+    private List<LocationItem> locationItems;
 
-    public SelectLocationEvent(ArrayList<LocationItem> locationItems) {
+    public SelectLocationEvent(List<LocationItem> locationItems) {
         this.locationItems = locationItems;
     }
 
-    public ArrayList<LocationItem> getLocationItems() {
+    public List<LocationItem> getLocationItems() {
         return locationItems;
     }
 }

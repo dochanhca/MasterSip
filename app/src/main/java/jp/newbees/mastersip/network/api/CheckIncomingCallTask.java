@@ -24,12 +24,11 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
 
-    private  String callerExtension;
-    private  String receiverExtension;
-    private Map<String, Object> result;
+    private String callerExtension;
+    private String receiverExtension;
 
-    public final static String INCOMING_CALL_TYPE = "INCOMING_CALL_TYPE";
-    public final static String CALLER = "CALLER";
+    public static final String INCOMING_CALL_TYPE = "INCOMING_CALL_TYPE";
+    public static final String CALLER = "CALLER";
 
     public CheckIncomingCallTask(Context context, String callerExtension, String receiverExtension) {
         super(context);
@@ -59,13 +58,13 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
 
     @Override
     protected Map<String, Object> didResponse(JSONObject data) throws JSONException {
-        Logger.e(TAG,"Data from check call "+data.toString());
+        Logger.e(TAG, "Data from check call " + data.toString());
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         JSONObject jCaller = jData.getJSONObject(Constant.JSON.CALLER);
         int inComingCallType = jData.getInt(Constant.JSON.TYPE);
         UserItem caller = getCaller(jCaller);
-        result = new HashMap<>();
-        result.put(INCOMING_CALL_TYPE,inComingCallType);
+        Map<String, Object> result = new HashMap<>();
+        result.put(INCOMING_CALL_TYPE, inComingCallType);
         result.put(CALLER, caller);
         return result;
     }
@@ -76,7 +75,7 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
         String handleName = jCaller.getString(Constant.JSON.HANDLE_NAME);
 
         SipItem sipItem = new SipItem(extensionId);
-        if(jCaller.isNull(Constant.JSON.URL_AVATAR) == false){
+        if (jCaller.isNull(Constant.JSON.URL_AVATAR) == false) {
             String urlAvatar = jCaller.getString(Constant.JSON.URL_AVATAR);
             ImageItem avatar = new ImageItem();
             avatar.setOriginUrl(urlAvatar);

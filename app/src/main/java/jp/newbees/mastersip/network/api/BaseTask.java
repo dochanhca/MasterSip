@@ -154,8 +154,8 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                 .append("/").append(getUrl());
 
         if (!registerToken.isEmpty() && !authorization.isEmpty()) {
-            urlBuilder.append("?").append(Constant.JSON.kRegisterToken).append("=").append(registerToken)
-                    .append("&").append(Constant.JSON.kClientAuthID).append("=").append(authorization);
+            urlBuilder.append("?").append(Constant.JSON.REGIST_TOKEN).append("=").append(registerToken)
+                    .append("&").append(Constant.JSON.CLIENT_AUTH_ID).append("=").append(authorization);
         }
         return urlBuilder.toString();
     }
@@ -178,9 +178,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
 
     private SipError validData(String data) throws JSONException {
         JSONObject jsonObject = new JSONObject(data);
-        int code = jsonObject.getInt(Constant.JSON.kCode);
+        int code = jsonObject.getInt(Constant.JSON.CODE);
         if (code != REQUEST_OK) {
-            String message = jsonObject.getString(Constant.JSON.kMessage);
+            String message = jsonObject.getString(Constant.JSON.K_MESSAGE);
             SipError sipError = new SipError(code, message);
             return sipError;
         } else {
@@ -197,8 +197,8 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             Type type = new TypeToken<UserItem>() {
             }.getType();
             userItem = gson.fromJson(jUser, type);
-            jParams.put(Constant.JSON.kClientAuthID, userItem.getUserId());
-            jParams.put(Constant.JSON.kRegisterToken, registerToken);
+            jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
+            jParams.put(Constant.JSON.REGIST_TOKEN, registerToken);
         }
     }
 
@@ -211,8 +211,8 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             Type type = new TypeToken<UserItem>() {
             }.getType();
             userItem = gson.fromJson(jUser, type);
-            jParams.put(Constant.JSON.kClientAuthID, userItem.getUserId());
-            jParams.put(Constant.JSON.kRegisterToken, registerToken);
+            jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
+            jParams.put(Constant.JSON.REGIST_TOKEN, registerToken);
         }
     }
 
