@@ -211,7 +211,7 @@ public class JSONUtils {
         textChatItem.setRoomType(roomType);
         textChatItem.setChatType(CHAT_TEXT);
         textChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
-
+        textChatItem.setRoomId(jData.getInt(Constant.JSON.kRoomId));
         UserItem userItem = new UserItem();
         SipItem sipItem = new SipItem(extensionSender);
 
@@ -227,6 +227,19 @@ public class JSONUtils {
         return textChatItem;
     }
 
+    public static String genRawToChangeMessageState(BaseChatItem baseChatItem, String fromExtension) throws JSONException {
+        JSONObject jData = new JSONObject();
+        jData.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE);
+        jData.put(Constant.JSON.kMessage, fromExtension);
+        JSONObject jResponse = new JSONObject();
+        jResponse.put(Constant.JSON.kRoomId, baseChatItem.getRoomId());
+        jResponse.put(Constant.JSON.kRoomType, baseChatItem.getRoomType());
+        jResponse.put(Constant.JSON.MESSAGE_ID, baseChatItem.getMessageId());
+        jResponse.put(Constant.JSON.kFromExtension, fromExtension);
+        jResponse.put(Constant.JSON.kStatus, BaseChatItem.MessageState.STT_READ);
+        jData.put(Constant.JSON.kResponse, jResponse);
+        return jData.toString();
+    }
 
     public static PacketItem parsePacketItem(String raw) throws JSONException {
         JSONObject jData = new JSONObject(raw);

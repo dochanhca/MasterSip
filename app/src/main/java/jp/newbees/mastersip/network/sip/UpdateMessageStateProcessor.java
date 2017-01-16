@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.network;
+package jp.newbees.mastersip.network.sip;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,7 @@ import jp.newbees.mastersip.utils.JSONUtils;
  * Created by thangit14 on 1/12/17.
  */
 
-public class UpdateMessageStateProcesser extends BaseSocketProcessor<StateMessageChangeEvent> {
+public class UpdateMessageStateProcessor extends BaseSocketProcessor<StateMessageChangeEvent> {
 
     @Override
     protected void didProcess(StateMessageChangeEvent data) {

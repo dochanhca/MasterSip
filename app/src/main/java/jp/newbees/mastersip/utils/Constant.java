@@ -82,6 +82,7 @@ public final class Constant {
         public final static String kSender = "sender";
         public final static String kText = "text";
         public final static String kRoomId = "room_id";
+        public final static String kFromExtension = "from_extension";
 
         public static final String CALLER = "caller";
         public static final String RECEIVER = "receiver";

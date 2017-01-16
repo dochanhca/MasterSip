@@ -103,9 +103,9 @@ public class ChatActivity extends BaseActivity {
     };
     private ChatPresenter.UpdateStateMessageToServerListener mOnUpdateStateMessageToServerListener = new ChatPresenter.UpdateStateMessageToServerListener() {
         @Override
-        public void didUpdateStateMessageToServer() {
-            chatAdapter.updateSenderLastMessageStateToRead();
-
+        public void didUpdateStateMessageToServer(BaseChatItem baseChatItem) {
+            chatAdapter.updateSendeeLastMessageStateToRead();
+            presenter.updateStateMessageSenderUsingLinPhone(baseChatItem, user);
         }
 
         @Override
@@ -113,6 +113,7 @@ public class ChatActivity extends BaseActivity {
             Logger.e(TAG, errorCode + " : " + errorMessage);
         }
     };
+
 
     private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
         if (isCallActionHeaderInChatOpened) {
@@ -294,9 +295,9 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void updateStateLastMessage() {
-        BaseChatItem lastSenderMessage = chatAdapter.getLastSenderUnreadMessage();
+        BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
         if (lastSenderMessage != null) {
-            presenter.updateStateMessage(lastSenderMessage.getMessageId());
+            presenter.updateStateMessageToServer(lastSenderMessage);
         }
     }
 
@@ -312,13 +313,13 @@ public class ChatActivity extends BaseActivity {
         chatAdapter.add(newChatMessageEvent.getBaseChatItem());
         recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         if (isResume) {
-            presenter.updateStateMessage(newChatMessageEvent.getBaseChatItem().getMessageId());
+            presenter.updateStateMessageToServer(newChatMessageEvent.getBaseChatItem());
         }
     }
 
     @Subscribe()
-    public void onStateMessageChange(StateMessageChangeEvent stateMessageChangeEvent) {
-        chatAdapter.updateStateMessageToRead(stateMessageChangeEvent.getBaseChatItem());
+    public void onStateMessageChange(final StateMessageChangeEvent stateMessageChangeEvent) {
+        chatAdapter.updateOwnerStateMessageToRead(stateMessageChangeEvent.getBaseChatItem());
     }
 
     @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send})

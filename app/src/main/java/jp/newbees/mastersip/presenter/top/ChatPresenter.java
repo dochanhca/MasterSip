@@ -2,6 +2,9 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
+
+import jp.newbees.mastersip.eventbus.ChangeStateMessageSenderEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -35,7 +38,7 @@ public class ChatPresenter extends BasePresenter {
     }
 
     public interface UpdateStateMessageToServerListener {
-        void didUpdateStateMessageToServer();
+        void didUpdateStateMessageToServer(BaseChatItem baseChatItem);
 
         void didUpdateStateMessageToServerError(int errorCode, String errorMessage);
     }
@@ -47,9 +50,14 @@ public class ChatPresenter extends BasePresenter {
         requestToServer(messageTask);
     }
 
-    public final void updateStateMessage(int messageID) {
-        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, messageID);
+    public final void updateStateMessageToServer(BaseChatItem baseChatItem) {
+        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, baseChatItem);
         requestToServer(updateStateMessageTask);
+    }
+
+    public void updateStateMessageSenderUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        EventBus.getDefault().post(new ChangeStateMessageSenderEvent(baseChatItem, currentUser, sender));
     }
 
     @Override
@@ -58,7 +66,8 @@ public class ChatPresenter extends BasePresenter {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             chatPresenterListener.didSendChatToServer(result);
         } else if (task instanceof UpdateStateMessageTask) {
-            updateStateMessageToServerListener.didUpdateStateMessageToServer();
+            BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
+            updateStateMessageToServerListener.didUpdateStateMessageToServer(result);
         }
     }
 

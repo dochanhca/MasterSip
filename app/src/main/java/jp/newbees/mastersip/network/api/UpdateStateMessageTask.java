@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -16,21 +17,21 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by vietbq on 1/12/17.
  */
 
-public class UpdateStateMessageTask extends BaseTask<Void> {
-    private int messageId;
+public class UpdateStateMessageTask extends BaseTask<BaseChatItem> {
+    private BaseChatItem baseChatItem;
     private String senderExtension;
 
-    public UpdateStateMessageTask(Context context, int messageId) {
+    public UpdateStateMessageTask(Context context, BaseChatItem baseChatItem) {
         super(context);
-        this.messageId = messageId;
         this.senderExtension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        this.baseChatItem = baseChatItem;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.MESSAGE_ID, messageId);
+        jParams.put(Constant.JSON.MESSAGE_ID, baseChatItem.getMessageId());
         jParams.put(Constant.JSON.EXTENSION, senderExtension);
         return jParams;
     }
@@ -47,8 +48,8 @@ public class UpdateStateMessageTask extends BaseTask<Void> {
     }
 
     @Override
-    protected Void didResponse(JSONObject data) throws JSONException {
-        return null;
+    protected BaseChatItem didResponse(JSONObject data) throws JSONException {
+        return baseChatItem;
     }
 
 }
