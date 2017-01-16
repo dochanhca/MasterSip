@@ -31,7 +31,7 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelaytiveLayout;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
-import jp.newbees.mastersip.eventbus.StateMessageChangeEvent;
+import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
@@ -101,15 +101,15 @@ public class ChatActivity extends BaseActivity {
             }
         }
     };
-    private ChatPresenter.UpdateStateMessageToServerListener mOnUpdateStateMessageToServerListener = new ChatPresenter.UpdateStateMessageToServerListener() {
+    private ChatPresenter.SendingReadMessageToServerListener mOnSendingReadMessageToServerListener = new ChatPresenter.SendingReadMessageToServerListener() {
         @Override
-        public void didUpdateStateMessageToServer(BaseChatItem baseChatItem) {
+        public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
             chatAdapter.updateSendeeLastMessageStateToRead();
-            presenter.updateStateMessageSenderUsingLinPhone(baseChatItem, user);
+            presenter.sendingReadMessageUsingLinPhone(baseChatItem, user);
         }
 
         @Override
-        public void didUpdateStateMessageToServerError(int errorCode, String errorMessage) {
+        public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
             Logger.e(TAG, errorCode + " : " + errorMessage);
         }
     };
@@ -253,7 +253,7 @@ public class ChatActivity extends BaseActivity {
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener, mOnUpdateStateMessageToServerListener);
+        presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener);
 
         user = getIntent().getParcelableExtra(USER);
         fromExtension = user.getSipItem().getExtension();
@@ -297,7 +297,7 @@ public class ChatActivity extends BaseActivity {
     private void updateStateLastMessage() {
         BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
         if (lastSenderMessage != null) {
-            presenter.updateStateMessageToServer(lastSenderMessage);
+            presenter.sendingReadMessageToServer(lastSenderMessage);
         }
     }
 
@@ -313,13 +313,13 @@ public class ChatActivity extends BaseActivity {
         chatAdapter.add(newChatMessageEvent.getBaseChatItem());
         recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         if (isResume) {
-            presenter.updateStateMessageToServer(newChatMessageEvent.getBaseChatItem());
+            presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
         }
     }
 
     @Subscribe()
-    public void onStateMessageChange(final StateMessageChangeEvent stateMessageChangeEvent) {
-        chatAdapter.updateOwnerStateMessageToRead(stateMessageChangeEvent.getBaseChatItem());
+    public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
+        chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
     }
 
     @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send})

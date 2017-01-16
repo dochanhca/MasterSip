@@ -3,7 +3,7 @@ package jp.newbees.mastersip.network.sip;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.eventbus.StateMessageChangeEvent;
+import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.base.BaseSocketProcessor;
@@ -13,17 +13,17 @@ import jp.newbees.mastersip.utils.JSONUtils;
  * Created by thangit14 on 1/12/17.
  */
 
-public class UpdateMessageStateProcessor extends BaseSocketProcessor<StateMessageChangeEvent> {
+public class ReceivingReadMessageProcessor extends BaseSocketProcessor<ReceivingReadMessageEvent> {
 
     @Override
-    protected void didProcess(StateMessageChangeEvent data) {
+    protected void didProcess(ReceivingReadMessageEvent data) {
         this.postEvent(data);
     }
 
     @Override
-    protected StateMessageChangeEvent doInBackgroundData(PacketItem packetItem) throws JSONException {
+    protected ReceivingReadMessageEvent doInBackgroundData(PacketItem packetItem) throws JSONException {
         JSONObject jData = new JSONObject(packetItem.getData());
         BaseChatItem baseChatItem = JSONUtils.parseDateOnUpdateMessageState(jData);
-        return new StateMessageChangeEvent(baseChatItem);
+        return new ReceivingReadMessageEvent(baseChatItem);
     }
 }

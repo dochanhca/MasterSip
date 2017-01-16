@@ -19,7 +19,7 @@ import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
-import jp.newbees.mastersip.eventbus.ChangeStateMessageSenderEvent;
+import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -196,11 +196,11 @@ public class LinphoneService extends Service {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onChangeMessageStateSenderEvent(ChangeStateMessageSenderEvent changeStateMessageSenderEvent) {
+    public final void onSendingReadMessageEvent(SendingReadMessageEvent sendingReadMessageEvent) {
         try {
-            String fromExtension = changeStateMessageSenderEvent.getCurrentUser().getSipItem().getExtension();
-            String toExtension = changeStateMessageSenderEvent.getReplyUser().getSipItem().getExtension();
-            String raw = JSONUtils.genRawToChangeMessageState(changeStateMessageSenderEvent.getBaseChatItem(), fromExtension);
+            String fromExtension = sendingReadMessageEvent.getCurrentUser().getSipItem().getExtension();
+            String toExtension = sendingReadMessageEvent.getReplyUser().getSipItem().getExtension();
+            String raw = JSONUtils.genRawToChangeMessageState(sendingReadMessageEvent.getBaseChatItem(), fromExtension);
             linphoneHandler.sendPacket(raw, toExtension);
         } catch (JSONException e) {
             e.printStackTrace();
