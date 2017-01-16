@@ -19,7 +19,7 @@ public class DateTimeUtils {
             Locale.ENGLISH);
 
     public static final SimpleDateFormat SERVER_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-            Locale.ENGLISH);
+            Locale.JAPANESE);
 
     public static final SimpleDateFormat SHORT_TIME_FORMAT = new SimpleDateFormat("HH:mm",
             Locale.ENGLISH);
