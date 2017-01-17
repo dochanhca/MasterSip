@@ -148,7 +148,7 @@ public abstract class BaseUploadTask<T extends Object> {
         JSONObject jsonObject = new JSONObject(data);
         int code = jsonObject.getInt(Constant.JSON.CODE);
         if (code != REQUEST_OK) {
-            String message = jsonObject.getString(Constant.JSON.K_MESSAGE);
+            String message = jsonObject.getString(Constant.JSON.MESSAGE);
             SipError sipError = new SipError(code, message);
             return sipError;
         } else {

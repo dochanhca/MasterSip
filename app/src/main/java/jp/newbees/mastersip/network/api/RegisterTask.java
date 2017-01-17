@@ -43,8 +43,8 @@ public class RegisterTask extends BaseTask<UserItem> {
         String appVersion = ConfigManager.getInstance().getApplicationVersion();
         String deviceInfo = ConfigManager.getInstance().getDeviceInfo();
 
-        jParam.put(Constant.JSON.K_BIRTHDAY,dob);
-        jParam.put(Constant.JSON.K_GENDER,gender);
+        jParam.put(Constant.JSON.BIRTHDAY,dob);
+        jParam.put(Constant.JSON.GENDER,gender);
         jParam.put(Constant.JSON.SOCIAL_ID,facebooklID);
         jParam.put(Constant.JSON.DEVICE_ID,deviceId);
         jParam.put(Constant.JSON.OS_VERSION,osVersion);
@@ -69,7 +69,7 @@ public class RegisterTask extends BaseTask<UserItem> {
     protected UserItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
 
-        String extension = jData.getString(Constant.JSON.K_EXTENSION);
+        String extension = jData.getString(Constant.JSON.EXTENSION);
         String password = jData.getString(Constant.JSON.PASSWORD);
         String userId = jData.getString(Constant.JSON.USER_ID);
         String registerToken = jData.getString(Constant.JSON.REGIST_TOKEN);

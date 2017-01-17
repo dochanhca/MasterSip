@@ -80,7 +80,7 @@ public class UploadImageTask extends BaseUploadTask<ImageItem> {
     protected Map<String, Object> genBodyParam() {
         Map<String, Object> params = new HashMap<>();
         params.put(Constant.JSON.USER_ID, userId);
-        params.put(Constant.JSON.K_UPLOAD_TYPE, typeUpload);
+        params.put(Constant.JSON.UPLOAD_TYPE, typeUpload);
         return params;
     }
 }

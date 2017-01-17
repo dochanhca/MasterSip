@@ -50,8 +50,8 @@ public class GetProvinceTask extends BaseTask {
     protected SelectionItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
 
-        int provinceId = jData.getInt(Constant.JSON.K_RECEIVE_PROVINCE_ID);
-        String provinceName = jData.getString(Constant.JSON.K_PROVINCE_NAME);
+        int provinceId = jData.getInt(Constant.JSON.RECEIVE_PROVINCE_ID);
+        String provinceName = jData.getString(Constant.JSON.PROVINCE_NAME_V2);
 
         SelectionItem selectionItem = new SelectionItem(provinceId, provinceName);
         return selectionItem;

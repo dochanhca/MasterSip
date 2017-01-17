@@ -48,8 +48,6 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
-    private Bitmap bitmapAvatar;
-    private int imageId;
 
     private ArrayList<SelectionItem> femaleJobItems;
     private ArrayList<SelectionItem> typeItems;
@@ -332,7 +330,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     private void inputStatus() {
         inputDataType = InputDataType.STATUS;
-        goToInputDataActivity(getString(R.string.status), txtStatusContent.getText().toString());
+        this.goToInputDataActivity(getString(R.string.status), txtStatusContent.getText().toString());
     }
 
     private void selectAvailableTime() {
@@ -340,18 +338,18 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         if (availableTimeItem == null) {
             availableTimeItem = new SelectionItem();
         }
-        openSelectionDialog(getString(R.string.available_time), availableTimeItems, availableTimeItem);
+        this.openSelectionDialog(getString(R.string.available_time), availableTimeItems, availableTimeItem);
     }
 
     private void inputCharmPoint() {
         inputDataType = InputDataType.CHARM_POINT;
 
-        goToInputDataActivity(getString(R.string.charm_point), txtCharmPointContent.getText().toString());
+        this.goToInputDataActivity(getString(R.string.charm_point), txtCharmPointContent.getText().toString());
     }
 
     private void inputTypeOfMen() {
         inputDataType = InputDataType.TYPE_OF_MEN;
-        goToInputDataActivity(getString(R.string.type_of_men), txtTypeOfMenContent.getText().toString());
+        this.goToInputDataActivity(getString(R.string.type_of_men), txtTypeOfMenContent.getText().toString());
     }
 
     private void selectType() {
@@ -359,7 +357,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         if (typeItem == null) {
             typeItem = new SelectionItem();
         }
-        openSelectionDialog(getString(R.string.type), typeItems, typeItem);
+        this.openSelectionDialog(getString(R.string.type), typeItems, typeItem);
     }
 
     private void selectJob() {
@@ -367,7 +365,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         if (jobItem == null) {
             jobItem = new SelectionItem();
         }
-        openSelectionDialog(getString(R.string.profession), femaleJobItems, jobItem);
+        this.openSelectionDialog(getString(R.string.profession), femaleJobItems, jobItem);
     }
 
     private void openSelectionDialog(String title, ArrayList<SelectionItem> data,

@@ -33,7 +33,7 @@ import static jp.newbees.mastersip.utils.Constant.Application.MIN_AGE;
  * Created by vietbq on 1/9/17.
  */
 
-public class StartPresenterBase extends RegisterPresenterBase {
+public class StartPresenter extends RegisterPresenterBase {
     private StartView startView;
 
     public interface StartView {
@@ -44,7 +44,7 @@ public class StartPresenterBase extends RegisterPresenterBase {
         void didLoginFacebookButNotRegisterOnServer(UserItem userItem);
     }
 
-    public StartPresenterBase(Context context, StartView startView) {
+    public StartPresenter(Context context, StartView startView) {
         super(context);
         this.startView = startView;
     }
@@ -87,22 +87,7 @@ public class StartPresenterBase extends RegisterPresenterBase {
         FacebookUtils.getGraphMeRequestAsync(accessToken, new Utility.GraphMeRequestWithCacheCallback() {
             @Override
             public void onSuccess(JSONObject userInfo) {
-                try {
-                    String name = userInfo.getString("name");
-                    if (userInfo.has("birthday")) {
-                        String birthday = userInfo.getString("birthday");
-                        userItem.setDateOfBirth(birthday);
-                    }else {
-                        userItem.setDateOfBirth(null);
-                    }
-                    String gender = userInfo.getString("gender");
-                    userItem.setUsername(name);
-                    userItem.setGender(gender.equalsIgnoreCase("female") ? UserItem.FEMALE : UserItem.MALE);
-                    checkPictureFacebook(userItem, accessToken);
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                handleFacebookUserInfo(userInfo, userItem, accessToken);
             }
             @Override
             public void onFailure(FacebookException error) {
@@ -111,23 +96,42 @@ public class StartPresenterBase extends RegisterPresenterBase {
         });
     }
 
-    private void checkPictureFacebook(final UserItem userItem, String accessToken) {
+    private void handleFacebookUserInfo(final JSONObject userInfo,final UserItem userItem,final String accessToken) {
+        try {
+            String name = userInfo.getString("name");
+            if (userInfo.has("birthday")) {
+                String birthday = userInfo.getString("birthday");
+                userItem.setDateOfBirth(birthday);
+            }else {
+                userItem.setDateOfBirth(null);
+            }
+            String gender = userInfo.getString("gender");
+            userItem.setUsername(name);
+            userItem.setGender(gender.equalsIgnoreCase("female") ? UserItem.FEMALE : UserItem.MALE);
+            this.getAvatarFacebook(userItem, accessToken);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAvatarFacebook(final UserItem userItem, String accessToken) {
         FacebookUtils.getGraphPictureRequest(accessToken, new Utility.GraphMeRequestWithCacheCallback() {
             @Override
             public void onSuccess(JSONObject userInfo) {
-                ImageItem avatar = getAvatarFacebook(userInfo,userItem);
+                ImageItem avatar = parseAvatarFacebook(userInfo,userItem);
                 userItem.setAvatarItem(avatar);
-                checkLoginFacebook(userItem);
+                requestLoginFacebook(userItem);
             }
 
             @Override
             public void onFailure(FacebookException error) {
-                checkLoginFacebook(userItem);
+                requestLoginFacebook(userItem);
             }
         });
     }
 
-    private ImageItem getAvatarFacebook(JSONObject userInfo, UserItem userItem) {
+    private ImageItem parseAvatarFacebook(JSONObject userInfo, UserItem userItem) {
         ImageItem avatarItem = new ImageItem();
         try {
             JSONObject jData = userInfo.getJSONObject("data");
@@ -146,7 +150,7 @@ public class StartPresenterBase extends RegisterPresenterBase {
 
 
 
-    private void checkLoginFacebook(UserItem userItem) {
+    private void requestLoginFacebook(UserItem userItem) {
         LoginFacebookTask task = new LoginFacebookTask(getContext(),userItem);
         requestToServer(task);
     }
@@ -178,11 +182,11 @@ public class StartPresenterBase extends RegisterPresenterBase {
         if (userItem.getDateOfBirth() == null) {
             startView.didLoginFacebookMissingBirthday(userItem);
         } else if (userItem.getDateOfBirth() != null) {
-            if (!isAbove18Age(userItem.getDateOfBirth())) {
+            if (isAbove18Age(userItem.getDateOfBirth())) {
+                this.registerUser(userItem);
+            }else {
                 String errorMessageBelow18Age = context.getString(R.string.err_facebook_age_below_18);
                 startView.didLoadFacebookFailure(errorMessageBelow18Age);
-            }else {
-                this.registerUser(userItem);
             }
         } else {
             this.registerUser(userItem);

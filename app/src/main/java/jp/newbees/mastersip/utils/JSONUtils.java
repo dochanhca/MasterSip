@@ -55,7 +55,7 @@ public class JSONUtils {
             userItem.setAvatarItem(avatar);
 
             SipItem sipItem = new SipItem();
-            sipItem.setExtension(jUser.getString(Constant.JSON.K_EXTENSION));
+            sipItem.setExtension(jUser.getString(Constant.JSON.EXTENSION));
             userItem.setSipItem(sipItem);
 
             if (jUser.has(Constant.JSON.RELATIONS)) {
@@ -64,7 +64,7 @@ public class JSONUtils {
                 userItem.setRelationshipItem(relationshipItem);
             }
 
-            String birthDay = jUser.getString(Constant.JSON.K_BIRTHDAY);
+            String birthDay = jUser.getString(Constant.JSON.BIRTHDAY);
             userItem.setDateOfBirth(birthDay);
 
             SelectionItem location = new SelectionItem();
@@ -157,7 +157,7 @@ public class JSONUtils {
 
     public static final BaseChatItem parseChatItem(JSONObject jData, UserItem sender) throws JSONException {
         BaseChatItem chatItem = new BaseChatItem();
-        int type = jData.getInt(Constant.JSON.K_TYPE);
+        int type = jData.getInt(Constant.JSON.TYPE);
         switch (type) {
             case CHAT_DELETED:
                 chatItem = parseDeletedChatItem(jData, sender);
@@ -188,7 +188,7 @@ public class JSONUtils {
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
         JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.DELETED);
-        String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.K_EXTENSION);
+        String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.EXTENSION);
         String content = jDeletedItem.getString(Constant.JSON.CONTENT);
         if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
             deletedChatItem.setSender(true);
@@ -230,7 +230,7 @@ public class JSONUtils {
         userItem.setSipItem(sipItem);
 
         textChatItem.setOwner(userItem);
-        textChatItem.setFullDate(jData.getString(Constant.JSON.K_DATE));
+        textChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
         textChatItem.setShortDate(DateTimeUtils.getShortTime(textChatItem.getFullDate()));
         return textChatItem;
     }
@@ -238,7 +238,7 @@ public class JSONUtils {
     public static String genRawToChangeMessageState(BaseChatItem baseChatItem, String fromExtension) throws JSONException {
         JSONObject jData = new JSONObject();
         jData.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE);
-        jData.put(Constant.JSON.K_MESSAGE, fromExtension);
+        jData.put(Constant.JSON.MESSAGE, fromExtension);
         JSONObject jResponse = new JSONObject();
         jResponse.put(Constant.JSON.ROOM_ID, baseChatItem.getRoomId());
         jResponse.put(Constant.JSON.ROOM_TYPE, baseChatItem.getRoomType());
@@ -252,7 +252,7 @@ public class JSONUtils {
     public static PacketItem parsePacketItem(String raw) throws JSONException {
         JSONObject jData = new JSONObject(raw);
         String action = jData.getString(Constant.JSON.ACTION);
-        String message = jData.getString(Constant.JSON.K_MESSAGE);
+        String message = jData.getString(Constant.JSON.MESSAGE);
         JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;

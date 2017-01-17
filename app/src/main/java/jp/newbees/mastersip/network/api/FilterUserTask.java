@@ -63,8 +63,8 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
         }
 
         jParams.put(Constant.JSON.ORDER_BY, filterItem.getOrderBy().getId());
-        jParams.put(Constant.JSON.K_LOGIN_24_HOUR_AGO, filterItem.isLogin24hours() ? 1 : 0);
-        jParams.put(Constant.JSON.K_FILTER_TYPE, filterItem.getFilterType());
+        jParams.put(Constant.JSON.LOGIN_24_HOUR_AGO, filterItem.isLogin24hours() ? 1 : 0);
+        jParams.put(Constant.JSON.FILTER_TYPE, filterItem.getFilterType());
 
         return jParams;
     }

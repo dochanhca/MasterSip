@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.auth.StartPresenterBase;
+import jp.newbees.mastersip.presenter.auth.StartPresenter;
 import jp.newbees.mastersip.ui.auth.LoginActivity;
 import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
@@ -27,7 +27,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/6/16.
  */
 
-public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenterBase.StartView {
+public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenter.StartView {
 
     public static final String IS_REGISTERED = "IS_REGISTERED";
     private static final String TAG = "StartActivity";
@@ -38,7 +38,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     private ViewPager pagerTutorial;
     private TutorialPagerAdapter tutorialPagerAdapter;
-    private StartPresenterBase startPresenter;
+    private StartPresenter startPresenter;
     private CallbackManager callbackManager;
 
     @Override
@@ -48,7 +48,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        startPresenter = new StartPresenterBase(getApplicationContext(),this);
+        startPresenter = new StartPresenter(getApplicationContext(),this);
         btnRegister = (Button) findViewById(R.id.btn_register);
         btnLogin = (Button) findViewById(R.id.btn_login);
         imgFbLogin = (ImageView) findViewById(R.id.img_fb_login);
