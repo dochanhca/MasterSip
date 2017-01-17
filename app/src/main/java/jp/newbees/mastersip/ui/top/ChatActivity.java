@@ -348,11 +348,14 @@ public class ChatActivity extends BaseActivity {
 
     @Subscribe()
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
-        donotHideSoftKeyboard = true;
-        chatAdapter.add(newChatMessageEvent.getBaseChatItem());
-        recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        if (isResume) {
-            presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
+        BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
+        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), user)) {
+            donotHideSoftKeyboard = true;
+            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            if (isResume) {
+                presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
+            }
         }
     }
 

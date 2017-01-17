@@ -79,4 +79,8 @@ public class ChatPresenter extends BasePresenter {
             sendingReadMessageToServerListener.didSendingReadMessageToServerError(errorCode, errorMessage);
         }
     }
+
+    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
+        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
+    }
 }
