@@ -78,9 +78,15 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     }
 
     @Override
-    protected void init(View rootView, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         configManager = ConfigManager.getInstance();
+        filterItem = configManager.getFilterUser();
+        getAgeFromMemory();
+    }
 
+    @Override
+    protected void init(View rootView, Bundle savedInstanceState) {
         layoutAge = (ViewGroup) rootView.findViewById(R.id.layout_age);
         layoutLocation = (ViewGroup) rootView.findViewById(R.id.layout_location);
         layoutSort = (ViewGroup) rootView.findViewById(R.id.layout_sort);
@@ -101,6 +107,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         btnSearch.setOnClickListener(this);
         imgBack.setOnClickListener(this);
 
+//        filterItem = configManager.getFilterUser();
         getFilterCondition();
     }
 
@@ -112,10 +119,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         sortCondition.add(lastLogin);
         sortCondition.add(lastRegister);
 
-        filterItem = configManager.getFilterUser();
         selectedItems = filterItem.getLocations();
 
-        getAgeFromMemory();
         updateView();
         updateArea(selectedItems);
     }
@@ -213,10 +218,25 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
      */
     @Subscribe(sticky = true)
     public void onSelectLocationEvent(SelectLocationEvent event) {
-        Logger.e(TAG, "onSelectLocationEvent receive: " + event.getLocationItems().size());
+        Logger.e(TAG, "onSelectLocationEvent receive: " + event.getLocationItems().size() + "-"
+                + event.isFromFilterLocationFragment());
+
+        handleLocationsReceived(event);
+    }
+
+    private void handleLocationsReceived(SelectLocationEvent event) {
+        if (!event.isFromFilterLocationFragment()) {
+            return;
+        }
 
         selectedItems = new ArrayList<>();
-        selectedItems.addAll(event.getLocationItems());
+        for (LocationItem item : event.getLocationItems()) {
+            if (!selectedItems.contains(item)) {
+                selectedItems.add(item);
+            }
+        }
+        event.getLocationItems().clear();
+        event.setFromFilterLocationFragment(false);
         updateArea(selectedItems);
     }
 
@@ -320,7 +340,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         args.putParcelableArrayList(SELECTED_LOCATION, selectedItems);
         FilterLocationFragment filterLocationFragment = FilterLocationFragment.newInstance(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        setTransitionAnimation(transaction);
         transaction.replace(R.id.fragment_search_container, filterLocationFragment,
                 FilterLocationFragment.class.getName())
                 .addToBackStack(null).commit();
@@ -329,7 +349,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private void showFilterByNameFragment() {
         FilterByNameFragment filterByNameFragment = FilterByNameFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        setTransitionAnimation(transaction);
         transaction.replace(R.id.fragment_search_container, filterByNameFragment)
                 .addToBackStack(null).commit();
     }
@@ -340,8 +360,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(SelectMinMaxAgeDialog.LIST_AGE, ages);
-        bundle.putInt(SelectMinMaxAgeDialog.MIN_AGE_SELECTED, filterItem.getMinAge());
-        bundle.putInt(SelectMinMaxAgeDialog.MAX_AGE_SELECTED, filterItem.getMaxAge());
+        bundle.putInt(SelectMinMaxAgeDialog.MIN_AGE_SELECTED, minAge.getSelectionItem().getId());
+        bundle.putInt(SelectMinMaxAgeDialog.MAX_AGE_SELECTED, maxAge.getSelectionItem().getId());
         SelectMinMaxAgeDialog selectMinMaxAgeDialog = new SelectMinMaxAgeDialog();
         selectMinMaxAgeDialog.setArguments(bundle);
         selectMinMaxAgeDialog.setTargetFragment(this, SELECT_AGE_DIALOG);
