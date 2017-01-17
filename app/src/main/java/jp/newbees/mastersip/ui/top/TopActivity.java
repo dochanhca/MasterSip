@@ -90,10 +90,12 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     }
 
     public void showNavigation() {
+        clearViewAnimation(navigationLayoutGroup,slide_up,View.VISIBLE);
         navigationLayoutGroup.startAnimation(slide_up);
     }
 
     public void hideNavigation() {
+        clearViewAnimation(navigationLayoutGroup,slide_down,View.GONE);
         navigationLayoutGroup.startAnimation(slide_down);
     }
 
@@ -101,8 +103,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public void onClick(View v) {
 
     }
-
-
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
         public MyPagerAdapter(FragmentManager fm) {

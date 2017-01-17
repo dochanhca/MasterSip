@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
@@ -62,6 +63,16 @@ public abstract class BaseFragment extends Fragment {
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {
         ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
                 errorCode, errorMessage);
+    }
+
+    /**
+     * clear animation and set visible of view after animation finish
+     * @param view
+     * @param anim
+     * @param visibility
+     */
+    protected void clearViewAnimation(final View view, Animation anim, final int visibility) {
+        ((BaseActivity) getActivity()).clearViewAnimation(view, anim, visibility);
     }
 
     protected void setTransitionAnimation(FragmentTransaction transaction) {

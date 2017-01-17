@@ -139,11 +139,13 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         }
 
         private void hideFilterAndNavigationBar() {
+            clearViewAnimation(filter, slideUp, View.GONE);
             filter.startAnimation(slideUp);
             ((TopActivity)getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
+            clearViewAnimation(filter, slideUp, View.VISIBLE);
             filter.startAnimation(slideDown);
             ((TopActivity)getActivity()).showNavigation();
         }
