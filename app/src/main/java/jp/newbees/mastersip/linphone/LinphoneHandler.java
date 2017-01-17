@@ -297,10 +297,16 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
     }
 
-    public void sendPacket(String raw) {
-        LinphoneAddress linphoneAddress = linphoneCore.getRemoteAddress();
-        LinphoneChatRoom linphoneChatRoom = linphoneCore.getChatRoom(linphoneAddress);
-        linphoneChatRoom.sendMessage(raw);
+    public void sendPacket(String raw, String callee) {
+        try {
+            String addressSip = genSipAddressByExtension(callee);
+            LinphoneAddress lAddress = linphoneCore.interpretUrl(addressSip);
+            LinphoneChatRoom linphoneChatRoom = linphoneCore.getChatRoom(lAddress);
+            linphoneChatRoom.sendMessage(raw);
+        } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public final void acceptCall() throws LinphoneCoreException {

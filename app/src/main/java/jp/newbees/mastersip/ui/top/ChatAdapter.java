@@ -161,8 +161,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onItemClick(BaseChatItem item, int position);
     }
 
-    public BaseChatItem getLastSenderUnreadMessage() {
-        for (int i = getItemCount() - 1; i > 0; i--) {
+    public BaseChatItem getLastSendeeUnreadMessage() {
+        for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = datas.get(i);
             if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 return baseChatItem;
@@ -171,8 +171,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null;
     }
 
-    public void updateSenderLastMessageStateToRead() {
-        for (int i = getItemCount() - 1; i > 0; i--) {
+    public void updateSendeeLastMessageStateToRead() {
+        for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = datas.get(i);
             if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
@@ -181,7 +181,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void updateStateMessageToRead(BaseChatItem readChatItem) {
+    public void updateOwnerStateMessageToRead(BaseChatItem readChatItem) {
         boolean hasReadChatItem = false;
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = datas.get(i);
@@ -189,8 +189,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 hasReadChatItem = true;
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
             }
-            if (hasReadChatItem && !baseChatItem.isOwner()) {
+            if (hasReadChatItem && baseChatItem.isOwner()) {
                 if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
+                    notifyDataSetChanged();
                     return;
                 } else {
                     baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);

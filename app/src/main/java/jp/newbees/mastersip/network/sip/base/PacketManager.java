@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
-import jp.newbees.mastersip.network.UpdateMessageStateProcesser;
+import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
 import jp.newbees.mastersip.utils.Constant;
@@ -70,7 +70,7 @@ public class PacketManager {
                 processor = new ChattingProcessor();
                 break;
             case Constant.SOCKET.ACTION_CHANGE_MESSAGE_STATE:
-                processor = new UpdateMessageStateProcesser();
+                processor = new ReceivingReadMessageProcessor();
                 break;
             case Constant.SOCKET.ACTION_COIN_CHANGED:
                 processor = new CoinChangedProcessor();

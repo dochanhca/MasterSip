@@ -5,10 +5,10 @@ import jp.newbees.mastersip.model.BaseChatItem;
 /**
  * Created by thangit14 on 1/12/17.
  */
-public class StateMessageChangeEvent {
+public class ReceivingReadMessageEvent {
     private BaseChatItem baseChatItem;
 
-    public StateMessageChangeEvent(BaseChatItem baseChatItem) {
+    public ReceivingReadMessageEvent(BaseChatItem baseChatItem) {
         this.baseChatItem = baseChatItem;
     }
 

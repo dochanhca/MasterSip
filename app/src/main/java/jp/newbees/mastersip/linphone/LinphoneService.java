@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.event.call.CallEvent;
@@ -18,16 +19,18 @@ import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
+import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service{
+public class LinphoneService extends Service {
 
     private LinphoneHandler linphoneHandler;
     private final String TAG = "LinphoneService";
@@ -35,7 +38,7 @@ public class LinphoneService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.e(TAG,"onCreate");
+        Logger.e(TAG, "onCreate");
         EventBus.getDefault().register(this);
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
@@ -44,18 +47,18 @@ public class LinphoneService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.e(TAG,"OnStartCommand");
+        Logger.e(TAG, "OnStartCommand");
         SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
         loginToVoIP(sipItem);
         return super.onStartCommand(intent, flags, startId);
     }
 
     private void loginToVoIP(final SipItem sipItem) {
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Logger.e("LinephonService","Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                    Logger.e("LinephonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                     linphoneHandler.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
                 } catch (LinphoneCoreException e) {
@@ -76,11 +79,12 @@ public class LinphoneService extends Service{
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
-        Logger.e(TAG,"Stop Linphone Service");
+        Logger.e(TAG, "Stop Linphone Service");
     }
 
     /**
      * This method invoked by EventBus when user accept or reject a call
+     *
      * @param acceptCallEvent
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -114,6 +118,7 @@ public class LinphoneService extends Service{
 
     /**
      * This method invoked by EventBus when enable or disable Speaker
+     *
      * @param speakerEvent
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -123,6 +128,7 @@ public class LinphoneService extends Service{
 
     /**
      * This method invoked by EventBus when enable or disable Mic
+     *
      * @param microphoneEvent
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -134,7 +140,7 @@ public class LinphoneService extends Service{
     public final void onCallEvent(CallEvent callEvent) {
         int callType = callEvent.getCallType();
         ConfigManager.getInstance().setCurrentCallType(callType);
-        switch (callType){
+        switch (callType) {
             case Constant.API.VOICE_CALL:
                 handleVoiceCall(callEvent.getCallee());
                 break;
@@ -152,7 +158,7 @@ public class LinphoneService extends Service{
     private void handleVoiceCall(String callee) {
         linphoneHandler.enableSpeaker(false);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(callee,false);
+        linphoneHandler.call(callee, false);
     }
 
     private void handleVideoVideoCall(String callee) {
@@ -184,10 +190,22 @@ public class LinphoneService extends Service{
     /**
      * Accept a incoming call
      */
-    private void handleAcceptCall(){
+    private void handleAcceptCall() {
         try {
             linphoneHandler.acceptCall();
         } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onSendingReadMessageEvent(SendingReadMessageEvent sendingReadMessageEvent) {
+        try {
+            String fromExtension = sendingReadMessageEvent.getCurrentUser().getSipItem().getExtension();
+            String toExtension = sendingReadMessageEvent.getReplyUser().getSipItem().getExtension();
+            String raw = JSONUtils.genRawToChangeMessageState(sendingReadMessageEvent.getBaseChatItem(), fromExtension);
+            linphoneHandler.sendPacket(raw, toExtension);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
