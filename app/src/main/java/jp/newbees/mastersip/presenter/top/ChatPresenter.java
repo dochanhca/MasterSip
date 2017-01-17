@@ -2,6 +2,9 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.EventBus;
+
+import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -18,13 +21,13 @@ import jp.newbees.mastersip.utils.ConfigManager;
 public class ChatPresenter extends BasePresenter {
 
     private ChatPresenterListener chatPresenterListener;
-    private UpdateStateMessageToServerListener updateStateMessageToServerListener;
+    private SendingReadMessageToServerListener sendingReadMessageToServerListener;
 
     public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener,
-                         UpdateStateMessageToServerListener updateStateMessageToServerListener) {
+                         SendingReadMessageToServerListener sendingReadMessageToServerListener) {
         super(context);
         this.chatPresenterListener = chatPresenterListener;
-        this.updateStateMessageToServerListener = updateStateMessageToServerListener;
+        this.sendingReadMessageToServerListener = sendingReadMessageToServerListener;
     }
 
     public interface ChatPresenterListener{
@@ -34,10 +37,10 @@ public class ChatPresenter extends BasePresenter {
 
     }
 
-    public interface UpdateStateMessageToServerListener {
-        void didUpdateStateMessageToServer();
+    public interface SendingReadMessageToServerListener {
+        void didSendingReadMessageToServer(BaseChatItem baseChatItem);
 
-        void didUpdateStateMessageToServerError(int errorCode, String errorMessage);
+        void didSendingReadMessageToServerError(int errorCode, String errorMessage);
     }
 
     public final void sendText(String content,UserItem sendee){
@@ -47,9 +50,14 @@ public class ChatPresenter extends BasePresenter {
         requestToServer(messageTask);
     }
 
-    public final void updateStateMessage(int messageID) {
-        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, messageID);
+    public final void sendingReadMessageToServer(BaseChatItem baseChatItem) {
+        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, baseChatItem);
         requestToServer(updateStateMessageTask);
+    }
+
+    public void sendingReadMessageUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        EventBus.getDefault().post(new SendingReadMessageEvent(baseChatItem, currentUser, sender));
     }
 
     @Override
@@ -58,7 +66,8 @@ public class ChatPresenter extends BasePresenter {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             chatPresenterListener.didSendChatToServer(result);
         } else if (task instanceof UpdateStateMessageTask) {
-            updateStateMessageToServerListener.didUpdateStateMessageToServer();
+            BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
+            sendingReadMessageToServerListener.didSendingReadMessageToServer(result);
         }
     }
 
@@ -67,7 +76,11 @@ public class ChatPresenter extends BasePresenter {
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
-            updateStateMessageToServerListener.didUpdateStateMessageToServerError(errorCode, errorMessage);
+            sendingReadMessageToServerListener.didSendingReadMessageToServerError(errorCode, errorMessage);
         }
+    }
+
+    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
+        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
     }
 }

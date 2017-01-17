@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -207,8 +208,35 @@ public abstract class BaseActivity extends AppCompatActivity {
         return gson.fromJson(jUser, UserItem.class);
     }
 
-    protected void onImageBackPressed (){
+    protected void onImageBackPressed () {
         //Default do not anything
     }
+
+    /**
+     * clear animation and set visible of view after animation finish
+     * @param view
+     * @param anim
+     * @param visibility
+     */
+    protected void clearViewAnimation(final View view, Animation anim, final int visibility) {
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.clearAnimation();
+                view.setVisibility(visibility);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
 }
+
 

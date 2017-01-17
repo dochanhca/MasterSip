@@ -139,11 +139,13 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         }
 
         private void hideFilterAndNavigationBar() {
+            clearViewAnimation(filter, slideUp, View.GONE);
             filter.startAnimation(slideUp);
             ((TopActivity)getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
+            clearViewAnimation(filter, slideUp, View.VISIBLE);
             filter.startAnimation(slideDown);
             ((TopActivity)getActivity()).showNavigation();
         }
@@ -317,7 +319,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void showFilterFragment() {
         FilterFragment filterFragment = FilterFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, filterFragment,
                 FilterFragment.class.getName()).commit();
@@ -326,7 +329,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void showProfileDetailFragment(UserItem userItem) {
         ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance(userItem);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, profileDetailFragment,
                 ProfileDetailFragment.class.getName()).commit();

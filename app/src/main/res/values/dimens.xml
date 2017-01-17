@@ -67,4 +67,5 @@
     <dimen name="divider">1dp</dimen>
     <dimen name="height_footer_chat_content">30dp</dimen>
     <dimen name="normal_radius">5dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
 </resources>
