@@ -7,8 +7,6 @@ import android.view.View;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.filter.FilterFragment;
-import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 
 /**
  * Created by ducpv on 12/27/16.
@@ -16,12 +14,23 @@ import jp.newbees.mastersip.ui.filter.FilterLocationFragment;
 
 public class SearchContainerFragment extends BaseFragment {
 
+    private static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
+    private static final int SEARCH_FRAGMENT = 0;
+    private int mCurrentlyShowingFragment;
+
     public static SearchContainerFragment newInstance() {
         SearchContainerFragment fragment = new SearchContainerFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_FRAGMENT, mCurrentlyShowingFragment);
+    }
+
 
     @Override
     protected int layoutId() {
@@ -36,7 +45,13 @@ public class SearchContainerFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showSearchFragment();
+        if (savedInstanceState == null) {
+            showSearchFragment();
+            mCurrentlyShowingFragment = SEARCH_FRAGMENT;
+        } else {
+            mCurrentlyShowingFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
+        }
+
     }
 
     private void showSearchFragment() {

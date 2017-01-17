@@ -112,14 +112,7 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
          * If user choose min age = 40, disable all max age < 40
          */
         selectedMinAge = minAge.get(minAgePosition).getSelectionItem().getId();
-        for (AgeItem age : maxAge) {
-            if (age.getSelectionItem().getId() < selectedMinAge && age.getSelectionItem().getId() > -1) {
-                age.setDisable(true);
-            } else {
-                age.setDisable(false);
-            }
-        }
-        maxAgeAdapter.notifyDataSetChanged();
+        preventSelectMaxAgeLessThanMinAge();
     }
 
 
@@ -130,14 +123,7 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
          * If user choose max age = 40, disable all min age > 40
          */
         selectedMaxAge = maxAge.get(maxAgePosition).getSelectionItem().getId();
-        for (AgeItem age : minAge) {
-            if (age.getSelectionItem().getId() > selectedMaxAge) {
-                age.setDisable(true);
-            } else {
-                age.setDisable(false);
-            }
-        }
-        minAgeAdapter.notifyDataSetChanged();
+        preventSelectMinAgeBiggerMaxAge();
     }
 
     private void initRecyclerView() {
@@ -153,11 +139,35 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
         recyclerMinAge.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         minAgeAdapter = new MinAgeAdapter(getActivity().getApplicationContext(), minAge, minAgePosition);
         recyclerMinAge.setAdapter(minAgeAdapter);
+        preventSelectMinAgeBiggerMaxAge();
 
         calculateRecyclerViewWidth(recyclerMaxAge);
         recyclerMaxAge.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         maxAgeAdapter = new MaxAgeAdapter(getActivity().getApplicationContext(), maxAge, maxAgePosition);
         recyclerMaxAge.setAdapter(maxAgeAdapter);
+        preventSelectMaxAgeLessThanMinAge();
+    }
+
+    private void preventSelectMinAgeBiggerMaxAge() {
+        for (AgeItem age : minAge) {
+            if (age.getSelectionItem().getId() > selectedMaxAge && selectedMaxAge != -1) {
+                age.setDisable(true);
+            } else {
+                age.setDisable(false);
+            }
+        }
+        minAgeAdapter.notifyDataSetChanged();
+    }
+
+    private void preventSelectMaxAgeLessThanMinAge() {
+        for (AgeItem age : maxAge) {
+            if (age.getSelectionItem().getId() < selectedMinAge && age.getSelectionItem().getId() > -1) {
+                age.setDisable(true);
+            } else {
+                age.setDisable(false);
+            }
+        }
+        maxAgeAdapter.notifyDataSetChanged();
     }
 
     private void calculateRecyclerViewWidth(RecyclerView recyclerView) {

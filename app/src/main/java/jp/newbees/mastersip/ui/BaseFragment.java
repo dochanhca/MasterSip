@@ -3,12 +3,14 @@ package jp.newbees.mastersip.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -18,14 +20,17 @@ public abstract class BaseFragment extends Fragment {
     protected View mRoot;
 
     protected TextView txtActionBarTitle;
+    private String TAG = getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.e(TAG, "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Logger.e(TAG, "onCreateView");
         mRoot = inflater.inflate(layoutId(), null);
         init(mRoot, savedInstanceState);
         return mRoot;
@@ -57,5 +62,10 @@ public abstract class BaseFragment extends Fragment {
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {
         ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
                 errorCode, errorMessage);
+    }
+
+    protected void setTransitionAnimation(FragmentTransaction transaction) {
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
     }
 }
