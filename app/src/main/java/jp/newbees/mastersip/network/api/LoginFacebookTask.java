@@ -15,14 +15,14 @@ import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
- * Created by vietbq on 12/12/16.
+ * Created by vietbq on 1/16/17.
  */
 
-public class RegisterTask extends BaseTask<UserItem> {
+public class LoginFacebookTask extends BaseTask<UserItem> {
 
-    private UserItem userItem;
+    private final UserItem userItem;
 
-    public RegisterTask(Context context, UserItem userItem) {
+    public LoginFacebookTask(Context context, UserItem userItem) {
         super(context);
         this.userItem = userItem;
     }
@@ -30,34 +30,19 @@ public class RegisterTask extends BaseTask<UserItem> {
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
-        JSONObject jParam = new JSONObject();
-        String dob = userItem.getDateOfBirth();
-        Number gender = new Integer(userItem.getGender());
-
-        String facebooklID = userItem.getFacebookId();
-        if (null == facebooklID || facebooklID.isEmpty()){
-            facebooklID = "0";
-        }
         String deviceId = ConfigManager.getInstance().getDeviceId();
-        String osVersion = ConfigManager.getInstance().getOSVersion();
-        String appVersion = ConfigManager.getInstance().getApplicationVersion();
-        String deviceInfo = ConfigManager.getInstance().getDeviceInfo();
-
-        jParam.put(Constant.JSON.K_BIRTHDAY,dob);
-        jParam.put(Constant.JSON.K_GENDER,gender);
-        jParam.put(Constant.JSON.SOCIAL_ID,facebooklID);
-        jParam.put(Constant.JSON.DEVICE_ID,deviceId);
-        jParam.put(Constant.JSON.OS_VERSION,osVersion);
-        jParam.put(Constant.JSON.APP_VERSION,appVersion);
-        jParam.put(Constant.JSON.DEVICE_INFO,deviceInfo);
-
-        return jParam;
+        String facebookId = userItem.getFacebookId();
+        JSONObject jParams = new JSONObject();
+        jParams.put(Constant.JSON.SECRET_KEY, "AUTOGENCONFIGINFILE");
+        jParams.put(Constant.JSON.DEVICE_ID, deviceId);
+        jParams.put(Constant.JSON.SOCIAL_ID, facebookId);
+        return jParams;
     }
 
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.REGISTER;
+        return Constant.API.LOGIN_FACEBOOK_URL;
     }
 
     @Override
@@ -81,6 +66,11 @@ public class RegisterTask extends BaseTask<UserItem> {
         ConfigManager.getInstance().saveRegisterToken(registerToken);
         ConfigManager.getInstance().saveAuthId(userId);
         ConfigManager.getInstance().saveUser(userItem);
-        return this.userItem;
+
+        return userItem;
+    }
+
+    public final UserItem getUserItem() {
+        return userItem;
     }
 }

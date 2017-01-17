@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.andexert.library.RippleView;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
@@ -116,6 +118,17 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         for (int i = 0; i < availableTimes.length; i++) {
             SelectionItem selectionItem = new SelectionItem(i + 1, availableTimes[i]);
             availableTimeItems.add(selectionItem);
+        }
+
+        handleFacebookAvatar();
+    }
+
+    private void handleFacebookAvatar() {
+        if (userItem.getAvatarItem() != null && userItem.getFacebookId() != null) {
+            this.showAvatar();
+            int defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
+            Glide.with(this).load(userItem.getAvatarItem().getOriginUrl()).asBitmap()
+                    .error(defaultAvatar).placeholder(defaultAvatar).into(imgAvatar);
         }
     }
 

@@ -13,6 +13,7 @@
     <string name="err_gender_empty">性別が空白です。</string>
     <string name="err_dob_empty">生年月日が空白です。</string>
     <string name="err_age_less_than_18">１８歳未満の方は登録できません。</string>
+    <string name="err_facebook_age_below_18">お客様のfacebook情報では登録できません。SIPでは18歳未満のご利用を禁止しています。</string>
     <string name="enter_nickname">なまえの入力</string>
     <string name="tokyo">東京都</string>
     <string name="part_time">フリーター</string>
@@ -244,4 +245,7 @@
     <string name="txt_already_read">既読</string>
     <string name="pt">pts</string>
     <string name="search">検索</string>
+
+    <!--FacebookSDK-->
+    <string name="facebook_app_id">1786574714906949</string>
 </resources>

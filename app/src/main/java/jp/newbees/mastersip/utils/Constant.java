@@ -99,6 +99,7 @@ public final class Constant {
 
         public static final String COINT = "coint";
         public static final String WAIT_CALL_ID = "wait_call_id";
+        public static final String SECRET_KEY = "secretKey";
     }
 
     public static final class API {
@@ -134,6 +135,7 @@ public final class Constant {
         public static final String CHECK_TYPE_INCOMING_CALL = "calls/check-type-call";
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
+        public static final String LOGIN_FACEBOOK_URL = "loginfb";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -180,7 +182,7 @@ public final class Constant {
     }
 
     public final class Application {
-        public static final boolean DEBUG = false;
+        public static final boolean DEBUG = true;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";

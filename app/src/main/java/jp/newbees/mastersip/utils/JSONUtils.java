@@ -253,4 +253,5 @@ public class JSONUtils {
         baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
         return baseChatItem;
     }
+
 }

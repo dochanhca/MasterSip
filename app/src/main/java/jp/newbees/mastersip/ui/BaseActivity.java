@@ -94,6 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onImageBackPressed();
                 finish();
             }
         });
@@ -204,6 +205,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
         return gson.fromJson(jUser, UserItem.class);
+    }
+
+    protected void onImageBackPressed (){
+        //Default do not anything
     }
 }
 
