@@ -23,6 +23,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.auth.RegisterPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.StartActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 
@@ -32,6 +33,9 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
 
 public class RegisterDateOfBirthActivity extends BaseActivity implements View.OnClickListener, RegisterPresenter.RegisterView {
 
+    public static final String USER_ITEM = "USER_ITEM";
+    private final static int MALE = 0;
+    private final static int FEMALE = 1;
     private Button btnTerm;
     private Button btnPolicy;
     private ImageView imgAccepPolicy;
@@ -53,6 +57,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private RegisterPresenter registerPresenter;
 
     private boolean isRegistered;
+    private UserItem userItem;
 
     @Override
     protected int layoutId() {
@@ -61,8 +66,9 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-
-
+        if (getIntent().hasExtra(USER_ITEM)) {
+            userItem = getIntent().getExtras().getParcelable(USER_ITEM);
+        }
         btnTerm = (Button) findViewById(R.id.btn_term_of_services);
         btnPolicy = (Button) findViewById(R.id.btn_policy);
         imgAccepPolicy = (ImageView) findViewById(R.id.img_accep_policy);
@@ -92,6 +98,15 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         defaultDate = calendar.getTime();
 
         handleRegisterException();
+        updateGenderForFacebookUser();
+    }
+
+    private void updateGenderForFacebookUser(){
+        if (userItem!=null) {
+            layoutGender.setClickable(false);
+            String gender = userItem.getGender() == UserItem.MALE ? genders[MALE] : genders[FEMALE];
+            txtGender.setText(gender);
+        }
     }
 
     @Override
@@ -104,7 +119,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
                 goPolicyActivity();
                 break;
             case R.id.img_accep_policy:
-                registerDOB();
+                registerDateOfBirth();
                 break;
             case R.id.layout_gender:
                 showDialogSelectGender();
@@ -125,14 +140,14 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         }
     }
 
-    private void registerDOB() {
+    private void registerDateOfBirth() {
         if (!isDataValid())
             return;
-        UserItem userItem = new UserItem();
-
+        if (userItem == null) {
+            userItem = new UserItem();
+            userItem.setGender((gender == 0) ? UserItem.MALE : UserItem.FEMALE);
+        }
         userItem.setDateOfBirth(dateSendToServer);
-        userItem.setGender((gender == 0) ? UserItem.MALE : UserItem.FEMALE);
-
         showLoading();
         registerPresenter.registerUser(userItem);
     }
@@ -289,5 +304,21 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     public void onRegisterFailure(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        removeUser();
+    }
+
+    @Override
+    protected void onImageBackPressed() {
+        super.onImageBackPressed();
+        removeUser();
+    }
+
+    private void removeUser(){
+        ConfigManager.getInstance().removeUser();
     }
 }

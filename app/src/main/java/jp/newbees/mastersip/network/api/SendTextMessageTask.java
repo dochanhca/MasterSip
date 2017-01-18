@@ -45,7 +45,7 @@ public class SendTextMessageTask extends BaseTask<BaseChatItem> {
             e.printStackTrace();
         }
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.K_TYPE, CHAT_TEXT);
+        jParams.put(Constant.JSON.TYPE, CHAT_TEXT);
         jParams.put(Constant.JSON.CONTENT, message);
         jParams.put(Constant.JSON.EXTENSION_SRC, this.textChatItem.getOwner().getSipItem().getExtension());
         jParams.put(Constant.JSON.EXTENSION_DEST, this.textChatItem.getSendee().getSipItem().getExtension());

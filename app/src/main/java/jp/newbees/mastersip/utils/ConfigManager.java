@@ -11,7 +11,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
-import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,6 +41,7 @@ final public class ConfigManager {
     private HashMap<String, UserItem> callees;
     private int currentCallType;
     private HashMap<String, String> waitingCallId;
+    private int imageDrawableCallerId = -1;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -57,7 +58,6 @@ final public class ConfigManager {
 
 
     private ConfigManager(Context context) {
-        FacebookSdk.sdkInitialize(context);
         Constant.API.initBaseURL();
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -169,6 +169,13 @@ final public class ConfigManager {
         editor.commit();
     }
 
+    public final void removeUser(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.USER_ITEM, null);
+        editor.commit();
+    }
+
+
     public int getImageCalleeDefault() {
         if (imageDrawableCalleeId == -1) {
 
@@ -192,9 +199,11 @@ final public class ConfigManager {
 
     public void resetSettings() {
         imageDrawableCalleeId = -1;
+        imageDrawableCallerId = -1;
         waitingCallId.clear();
         callees.clear();
         clearUser();
+        LoginManager.getInstance().logOut();
     }
 
     private void clearUser() {
@@ -239,5 +248,16 @@ final public class ConfigManager {
 
     public void setCurrentCallType(int callType) {
         this.currentCallType = callType;
+    }
+
+    public int getImageCallerDefault() {
+        if (imageDrawableCallerId == -1) {
+
+            imageDrawableCallerId = getCurrentUser().getGender()
+                    == UserItem.MALE
+                    ? R.drawable.ic_boy_default
+                    : R.drawable.ic_girl_default;
+        }
+        return imageDrawableCallerId;
     }
 }

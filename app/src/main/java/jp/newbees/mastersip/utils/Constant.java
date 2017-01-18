@@ -7,82 +7,84 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
-        public final static String DEVICE_ID = "device_id";
-        public final static String PASSWORD = "password";
-        public final static String EMAIL = "email";
-        public final static String CLIENT_AUTH_ID = "client_auth_id";
+        private JSON() {
+            //Prevent init constructor
+        }
 
-        public final static String REGIST_TOKEN = "regist_token";
-        public final static String K_BIRTHDAY = "birthday";
-        public final static String K_GENDER = "gen";
-        public final static String SOCIAL_ID = "social_id";
-        public final static String OS_VERSION = "os_version";
-        public final static String APP_VERSION = "app_version";
-        public final static String DEVICE_INFO = "device_info";
-        public final static String CODE = "code";
-        public final static String K_MESSAGE = "message";
-        public final static String DATA = "data";
-        public final static String USER_ID = "user_id";
-        public final static String K_UPLOAD_TYPE = "upload_for";
-        public final static String HANDLE_NAME = "handle_name";
-        public final static String K_PHONE_NUMBER = "phonenumber";
-        public final static String PROVINCE_ID = "province_id";
-        public final static String AVATAR_ID = "avatar_id";
-        public final static String JOB_ID = "job_id";
-        public final static String TYPE_ID = "type_id";
-        public final static String TYPE_BOY = "type_boy";
-        public final static String CHARM_POINT ="charm_point";
-        public final static String FREE_TIME = "free_time";
-        public final static String SLOGAN = "slogan";
-        public final static String K_EXTENSION = "extension";
-        public final static String ABOVE_AGE = "above_age";
-        public final static String BELOW_AGE = "below_age";
-        public final static String PROVINCES = "provinces";
-        public final static String ORDER_BY = "order_by";
-        public final static String K_LOGIN_24_HOUR_AGO = "limit_online_ago";
-        public final static String K_FILTER_TYPE = "type";
-        public final static String NEXT_PAGE = "next_page";
-        public final static String USERS = "users";
-        public final static String ID = "id";
-        public final static String AVATAR = "avatar";
-        public final static String RELATIONS = "relations";
-        public final static String FOLLOWED = "followed";
-        public final static String ONLINE_NOTIFICATION = "online_notification";
-        public final static String JOB_NAME = "job_name";
-        public final static String LAST_LOGIN = "last_login";
-        public final static String STATUS = "status";
-        public final static String K_USER_GENDER = "gender";
-        public final static String EXTEND_INFO = "extend_info";
-        public final static String FAVORITE_TYPE = "favorite_type";
-        public final static String PATH = "path";
-        public final static String K_DATE = "date";
+        public static final  String DEVICE_ID = "device_id";
+        public static final  String PASSWORD = "password";
+        public static final  String EMAIL = "email";
+        public static final  String CLIENT_AUTH_ID = "client_auth_id";
 
-        public final static String LAT = "lat";
-        public final static String LONG = "long";
+        public static final  String REGIST_TOKEN = "regist_token";
+        public static final String BIRTHDAY = "birthday";
+        public static final String GENDER = "gen";
+        public static final String SOCIAL_ID = "social_id";
+        public static final String OS_VERSION = "os_version";
+        public static final String APP_VERSION = "app_version";
+        public static final String DEVICE_INFO = "device_info";
+        public static final String CODE = "code";
+        public static final String MESSAGE = "message";
+        public static final String DATA = "data";
+        public static final String USER_ID = "user_id";
+        public static final String UPLOAD_TYPE = "upload_for";
+        public static final String HANDLE_NAME = "handle_name";
+        public static final String PHONE_NUMBER = "phonenumber";
+        public static final String PROVINCE_ID = "province_id";
+        public static final String AVATAR_ID = "avatar_id";
+        public static final String JOB_ID = "job_id";
+        public static final String TYPE_ID = "type_id";
+        public static final String TYPE_BOY = "type_boy";
+        public static final String CHARM_POINT ="charm_point";
+        public static final String FREE_TIME = "free_time";
+        public static final String SLOGAN = "slogan";
+        public static final String ABOVE_AGE = "above_age";
+        public static final String BELOW_AGE = "below_age";
+        public static final String PROVINCES = "provinces";
+        public static final String ORDER_BY = "order_by";
+        public static final String LOGIN_24_HOUR_AGO = "limit_online_ago";
+        public static final String FILTER_TYPE = "type";
+        public static final String NEXT_PAGE = "next_page";
+        public static final String USERS = "users";
+        public static final String ID = "id";
+        public static final String AVATAR = "avatar";
+        public static final String RELATIONS = "relations";
+        public static final String FOLLOWED = "followed";
+        public static final String ONLINE_NOTIFICATION = "online_notification";
+        public static final String JOB_NAME = "job_name";
+        public static final String LAST_LOGIN = "last_login";
+        public static final String STATUS = "status";
+        public static final String K_USER_GENDER = "gender";
+        public static final String EXTEND_INFO = "extend_info";
+        public static final String FAVORITE_TYPE = "favorite_type";
+        public static final String PATH = "path";
+        public static final String DATE = "date";
 
-        public final static String K_RECEIVE_PROVINCE_ID = "provinceId";
-        public final static String K_PROVINCE_NAME = "provinceName";
+        public static final String LAT = "lat";
+        public static final String LONG = "long";
 
-        public final static String IMAGE_ID = "image_id";
-        public final static String IMAGE_PATH_FULL = "image_path_full";
-        public final static String IMAGE_PATH_THUMB = "image_path_thumb";
-        public final static String PROVINCE = "province";
+        public static final String RECEIVE_PROVINCE_ID = "provinceId";
+        public static final String PROVINCE_NAME_V2 = "provinceName";
+
+        public static final String IMAGE_ID = "image_id";
+        public static final String IMAGE_PATH_FULL = "image_path_full";
+        public static final String IMAGE_PATH_THUMB = "image_path_thumb";
+        public static final String PROVINCE = "province";
 
         //TODO : Duplicate
-        public final static String USER_PROVINCE_ID = "province_id";
-        public final static String PROVINCE_NAME = "province_name";
-        public final static String NAME = "name";
-        public final static String K_TYPE = "type";
-        public final static String CONTENT = "content";
-        public final static String EXTENSION_SRC = "extension_src";
-        public final static String EXTENSION_DEST = "extension_dest";
-        public final static String ROOM_TYPE = "room_type";
-        public final static String RESPONSE = "response";
-        public final static String DELETED = "deleted";
-        public final static String SENDER = "sender";
-        public final static String TEXT = "text";
-        public final static String ROOM_ID = "room_id";
-        public final static String kFromExtension = "from_extension";
+        public static final String USER_PROVINCE_ID = "province_id";
+        public static final String PROVINCE_NAME = "province_name";
+        public static final String NAME = "name";
+        public static final String CONTENT = "content";
+        public static final String EXTENSION_SRC = "extension_src";
+        public static final String EXTENSION_DEST = "extension_dest";
+        public static final String ROOM_TYPE = "room_type";
+        public static final String RESPONSE = "response";
+        public static final String DELETED = "deleted";
+        public static final String SENDER = "sender";
+        public static final String TEXT = "text";
+        public static final String ROOM_ID = "room_id";
+        public static final String kFromExtension = "from_extension";
 
         public static final String CALLER = "caller";
         public static final String RECEIVER = "receiver";
@@ -100,9 +102,15 @@ public final class Constant {
 
         public static final String COINT = "coint";
         public static final String WAIT_CALL_ID = "wait_call_id";
+        public static final String SECRET_KEY = "secretKey";
     }
 
     public static final class API {
+
+        private API() {
+            //Prevent init constructor
+        }
+
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -135,6 +143,7 @@ public final class Constant {
         public static final String CHECK_TYPE_INCOMING_CALL = "calls/check-type-call";
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
+        public static final String LOGIN_FACEBOOK_URL = "loginfb";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -145,6 +154,10 @@ public final class Constant {
     }
 
     public final class Error {
+        private Error() {
+            //Prevent init constructor
+        }
+
         public static final int SERVER_BUSY = 100000;
         public static final int REQUEST_TIMEOUT = 100001;
         public static final int UNKNOWN_ERROR = 100003;
@@ -181,6 +194,10 @@ public final class Constant {
     }
 
     public final class Application {
+        private Application() {
+            //Prevent init object
+        }
+
         public static final boolean DEBUG = true;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
@@ -198,13 +215,13 @@ public final class Constant {
     }
 
     public class SOCKET {
+        private SOCKET() {
+            //Prevent init object
+        }
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
     }
 
-    public class EVENT {
-        public static final String ACTION_CHATTING = "ACTION_CHATTING";
-    }
 }

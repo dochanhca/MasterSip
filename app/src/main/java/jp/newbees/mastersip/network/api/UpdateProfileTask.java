@@ -30,11 +30,11 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
         JSONObject jParams = new JSONObject();
 
 //        jParams.put(Constant.JSON.REGIST_TOKEN, getRegisterToken());
-        jParams.put(Constant.JSON.K_BIRTHDAY, userItem.getDateOfBirth());
+        jParams.put(Constant.JSON.BIRTHDAY, userItem.getDateOfBirth());
         jParams.put(Constant.JSON.EMAIL, "");
         jParams.put(Constant.JSON.PASSWORD, userItem.getSipItem().getSecret());
         jParams.put(Constant.JSON.HANDLE_NAME, userItem.getUsername());
-        jParams.put(Constant.JSON.K_PHONE_NUMBER, "");
+        jParams.put(Constant.JSON.PHONE_NUMBER, "");
         jParams.put(Constant.JSON.PROVINCE_ID, userItem.getLocation().getId());
         jParams.put(Constant.JSON.AVATAR_ID, userItem.getAvatarItem().getImageId());
         jParams.put(Constant.JSON.JOB_ID, userItem.getJobItem().getId());

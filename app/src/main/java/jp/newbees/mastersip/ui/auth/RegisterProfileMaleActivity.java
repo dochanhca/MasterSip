@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.andexert.library.RippleView;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
@@ -88,6 +90,17 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
         showMessageDialog(getString(R.string.register_success), getString(R.string.mess_input_profile)
                 , "", false);
+
+        handleFacebookAvatar();
+    }
+
+    private void handleFacebookAvatar() {
+        if (userItem.getAvatarItem() != null && userItem.getFacebookId() != null) {
+            this.showAvatar();
+            int defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
+            Glide.with(this).load(userItem.getAvatarItem().getOriginUrl()).asBitmap()
+                    .error(defaultAvatar).placeholder(defaultAvatar).into(imgAvatar);
+        }
     }
 
     @OnClick({R.id.img_select_avatar, R.id.layout_area, R.id.layout_profession, R.id.layout_status,

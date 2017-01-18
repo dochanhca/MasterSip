@@ -16,8 +16,8 @@ public class UserItem implements Serializable, Parcelable {
     public static final int FEMALE = 0;
     public static final int MALE = 1;
 
-    public final static int ONLINE = 1;
-    public final static int OFFLINE = 0;
+    public static final int ONLINE = 1;
+    public static final int OFFLINE = 0;
 
     private String lastLogin;
 

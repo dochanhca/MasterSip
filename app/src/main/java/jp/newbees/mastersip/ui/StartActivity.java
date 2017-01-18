@@ -8,22 +8,29 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+
 import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
-import jp.newbees.mastersip.presenter.auth.StartPresenterBase;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.auth.StartPresenter;
 import jp.newbees.mastersip.ui.auth.LoginActivity;
 import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
+import jp.newbees.mastersip.ui.auth.RegisterProfileMaleActivity;
+import jp.newbees.mastersip.ui.auth.TipPageActivity;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenterBase.StartView {
+public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenter.StartView {
 
     public static final String IS_REGISTERED = "IS_REGISTERED";
+    private static final String TAG = "StartActivity";
 
     private Button btnRegister;
     private Button btnLogin;
@@ -31,7 +38,8 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     private ViewPager pagerTutorial;
     private TutorialPagerAdapter tutorialPagerAdapter;
-    private StartPresenterBase startPresenter;
+    private StartPresenter startPresenter;
+    private CallbackManager callbackManager;
 
     @Override
     protected int layoutId() {
@@ -40,7 +48,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        startPresenter = new StartPresenterBase(getApplicationContext(),this);
+        startPresenter = new StartPresenter(getApplicationContext(),this);
         btnRegister = (Button) findViewById(R.id.btn_register);
         btnLogin = (Button) findViewById(R.id.btn_login);
         imgFbLogin = (ImageView) findViewById(R.id.img_fb_login);
@@ -49,11 +57,13 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
         btnRegister.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         imgFbLogin.setOnClickListener(this);
+
+        callbackManager = CallbackManager.Factory.create();
+
     }
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-
         tutorialPagerAdapter = new TutorialPagerAdapter(getApplicationContext(), getDrawableIds());
         pagerTutorial.setAdapter(tutorialPagerAdapter);
     }
@@ -79,15 +89,15 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
                 goLoginActivity();
                 break;
             case R.id.img_fb_login:
-                implementFbLogin();
+                loginByFacebook();
                 break;
             default:
                 break;
         }
     }
 
-    private void implementFbLogin() {
-//        skip
+    private void loginByFacebook() {
+        startPresenter.loginFacebook(this, callbackManager);
     }
 
     private void goLoginActivity() {
@@ -96,7 +106,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     }
 
     private void goRegisterDOBActivity() {
-
         Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
         startActivity(intent);
     }
@@ -118,7 +127,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
         if (getUserItem() == null) {
             return;
         }
-
         Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
         intent.putExtra(IS_REGISTERED, true);
         startActivity(intent);
@@ -132,6 +140,45 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     @Override
     public void didErrorVoIP(String errorMessage) {
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void didLoadFacebookFailure(String errorMessage) {
+        Logger.e(TAG, errorMessage);
+    }
+
+    @Override
+    public void didLoginFacebookMissingBirthday(UserItem userItem) {
+        Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(RegisterDateOfBirthActivity.USER_ITEM, userItem);
+        bundle.putBoolean(IS_REGISTERED, false);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void didLoginFacebookButNotRegisterOnServer(UserItem userItem) {
+        if (userItem.getGender() == UserItem.FEMALE){
+            gotoTipScreen();
+        }else {
+            gotoMaleProfile();
+        }
+    }
+
+    private void gotoTipScreen(){
+        Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
+        startActivity(intent);
+    }
+
+    private void gotoMaleProfile() {
+        Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
+        startActivity(intent);
     }
 }

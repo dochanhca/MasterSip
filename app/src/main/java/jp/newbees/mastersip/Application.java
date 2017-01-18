@@ -1,5 +1,8 @@
 package jp.newbees.mastersip;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -10,6 +13,8 @@ public class Application extends android.app.Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         initConfigs();
     }
 

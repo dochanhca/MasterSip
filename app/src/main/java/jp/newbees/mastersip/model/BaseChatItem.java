@@ -18,15 +18,15 @@ public class BaseChatItem implements Parcelable, Serializable {
     }
 
     public static final class ChatType implements Parcelable{
-        public final static int CHAT_DELETED = 0;
-        public final static int CHAT_VOICE = 1; //!!!
-        public final static int CHAT_TEXT = 2;
-        public final static int CHAT_VIDEO = 3;
-        public final static int CHAT_IMAGE = 4;
-        public final static int CHAT_VOICE_CALL = 5;
-        public final static int CHAT_VIDEO_CALL = 6;
-        public final static int CHAT_VIDEO_CHAT_CALL = 7;
-        public final static int CHAT_GIFT = 9;
+        public static final int CHAT_DELETED = 0;
+        public static final int CHAT_VOICE = 1; //!!!
+        public static final int CHAT_TEXT = 2;
+        public static final int CHAT_VIDEO = 3;
+        public static final int CHAT_IMAGE = 4;
+        public static final int CHAT_VOICE_CALL = 5;
+        public static final int CHAT_VIDEO_CALL = 6;
+        public static final int CHAT_VIDEO_CHAT_CALL = 7;
+        public static final int CHAT_GIFT = 9;
 
         protected ChatType(Parcel in) {
         }
@@ -54,11 +54,11 @@ public class BaseChatItem implements Parcelable, Serializable {
     }
 
     public static final class CallType implements Parcelable{
-        public final static int MISS_CALL = 3;
-        public final static int CANCEL_CALL = 4;
-        public final static int BUSY_CALL = 5;
-        public final static int ANSWER_CALL = 6;
-        public final static int END_CALL = 7;
+        public static final int MISS_CALL = 3;
+        public static final int CANCEL_CALL = 4;
+        public static final int BUSY_CALL = 5;
+        public static final int ANSWER_CALL = 6;
+        public static final int END_CALL = 7;
 
         protected CallType(Parcel in) {
         }
@@ -86,8 +86,8 @@ public class BaseChatItem implements Parcelable, Serializable {
     }
 
     public static final class RoomType implements Parcelable{
-        public final static int ROOM_CHAT_CHAT = 1;
-        public final static int ROOM_VIDEO_CHAT = 2;
+        public static final int ROOM_CHAT_CHAT = 1;
+        public static final int ROOM_VIDEO_CHAT = 2;
 
         protected RoomType(Parcel in) {
         }
@@ -116,11 +116,11 @@ public class BaseChatItem implements Parcelable, Serializable {
 
 
     public static final class MessageState implements Parcelable{
-        public final static int STT_NONE = 0;
-        public final static int STT_SENT = 1;
-        public final static int STT_READ = 2;
-        public final static int STT_DELIVERY = 3;
-        public final static int STT_ERROR = 4;
+        public static final int STT_NONE = 0;
+        public static final int STT_SENT = 1;
+        public static final int STT_READ = 2;
+        public static final int STT_DELIVERY = 3;
+        public static final int STT_ERROR = 4;
 
         protected MessageState(Parcel in) {
         }

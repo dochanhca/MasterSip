@@ -18,6 +18,9 @@ public class DateTimeUtils {
     public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
             Locale.ENGLISH);
 
+    public static final SimpleDateFormat ENGLISH_FACEBOOK_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy",
+            Locale.ENGLISH);
+
     public static final SimpleDateFormat SERVER_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
             Locale.JAPANESE);
 
@@ -34,6 +37,11 @@ public class DateTimeUtils {
             diff--;
         }
         return diff;
+    }
+
+    public static final String convertDateToString(Date date,SimpleDateFormat format) {
+        String mData = format.format(date);
+        return mData;
     }
 
     public static Calendar getCalendar(Date date) {
@@ -55,5 +63,15 @@ public class DateTimeUtils {
     public static String getShortTime(String fullDate) {
         Date date = convertStringToDate(fullDate, SERVER_DATE_FORMAT);
         return SHORT_TIME_FORMAT.format(date);
+    }
+
+    public static int getCurrentAgeFromDoB(String dateOfBirth) {
+        Date dob = convertStringToDate(dateOfBirth, ENGLISH_FACEBOOK_DATE_FORMAT);
+        Calendar calendarDoB = getCalendar(dob);
+        Calendar calendarCurrent = Calendar.getInstance();
+        Date current = calendarCurrent.getTime();
+        calendarCurrent = getCalendar(current);
+        int age =  calendarCurrent.get(Calendar.YEAR) - calendarDoB.get(Calendar.YEAR);
+        return age;
     }
 }
