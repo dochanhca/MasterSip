@@ -109,6 +109,5 @@ public class ProfileDetailPresenter extends BasePresenter {
     }
 
     public interface ProfileDetailsView {
-
     }
 }

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/color_gray_bg">
 
-
-    <include layout="@layout/layout_action_bar" />
+    <include
+        android:id="@+id/layout_action_bar"
+        layout="@layout/layout_action_bar" />
 
     <LinearLayout
+        android:id="@+id/layout_actions"
+        android:layout_below="@+id/layout_action_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_search_height"
         android:orientation="horizontal">
@@ -76,4 +79,33 @@
         </RelativeLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_below="@+id/layout_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v4.view.ViewPager>
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/img_previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/margin_5"
+        android:src="@drawable/ic_previous"/>
+    <ImageView
+        android:id="@+id/img_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/margin_5"
+        android:src="@drawable/ic_next"/>
+</RelativeLayout>

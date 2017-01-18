@@ -21,11 +21,12 @@ public abstract class BaseFragment extends Fragment {
     protected View mRoot;
 
     protected TextView txtActionBarTitle;
-    private String TAG = getClass().getSimpleName();
+    protected String TAG;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
         Logger.e(TAG, "onCreate");
     }
 

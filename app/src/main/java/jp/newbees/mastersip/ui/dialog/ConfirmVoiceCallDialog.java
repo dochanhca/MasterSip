@@ -15,7 +15,7 @@ import jp.newbees.mastersip.R;
 public class ConfirmVoiceCallDialog extends BaseDialog implements View.OnClickListener {
 
     public interface OnDialogConfirmVoiceCallClick {
-        void onOkClick();
+        void onOkVoiceCallClick();
     }
 
     private OnDialogConfirmVoiceCallClick onDialogConfirmVoiceCallClick;
@@ -47,7 +47,7 @@ public class ConfirmVoiceCallDialog extends BaseDialog implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view == mButtonPositive) {
-            this.onDialogConfirmVoiceCallClick.onOkClick();
+            this.onDialogConfirmVoiceCallClick.onOkVoiceCallClick();
         }
         dismiss();
     }

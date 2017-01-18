@@ -319,17 +319,16 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private void showFilterFragment() {
         FilterFragment filterFragment = FilterFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, filterFragment,
                 FilterFragment.class.getName()).commit();
     }
 
-    private void showProfileDetailFragment(UserItem userItem) {
-        ProfileDetailFragment profileDetailFragment = ProfileDetailFragment.newInstance(userItem);
+    private void showProfileDetailFragment(int position) {
+        ProfileDetailFragment profileDetailFragment =
+                ProfileDetailFragment.newInstance(userItems, position);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, profileDetailFragment,
@@ -338,7 +337,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     public void onItemClick(UserItem userItem, int position) {
-        showProfileDetailFragment(userItem);
+        showProfileDetailFragment(position);
     }
 
     @Override

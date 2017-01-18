@@ -57,8 +57,8 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
         String url = genURL();
         url += genParamURL();
-        if(Constant.Application.DEBUG) {
-            Logger.e(TAG,url);
+        if (Constant.Application.DEBUG) {
+            Logger.e(TAG, url);
         }
         request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
             @Override
@@ -89,7 +89,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
                     jParams = new JSONObject();
                 }
                 if (Constant.Application.SHOW_DATA_REQUEST) {
-                    Logger.e(TAG,"Data request : "+ jParams.toString());
+                    Logger.e(TAG, "Data request : " + jParams.toString());
                 }
                 byte[] body = jParams.toString().getBytes();
                 return body;
@@ -160,14 +160,16 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         return urlBuilder.toString();
     }
 
-    private String genParamURL()  {
+    private String genParamURL() {
         StringBuilder urlBuilder = new StringBuilder();
         if (getMethod() == Request.Method.GET) {
             try {
                 JSONObject jParams = genParams();
-                for(Iterator<String> it = jParams.keys();it.hasNext();){
-                    String key = it.next();
-                    urlBuilder.append("&").append(key).append("=").append(jParams.get(key));
+                if (jParams != null) {
+                    for (Iterator<String> it = jParams.keys(); it.hasNext(); ) {
+                        String key = it.next();
+                        urlBuilder.append("&").append(key).append("=").append(jParams.get(key));
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -224,7 +226,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         }
     }
 
-    protected String getVersion(){
+    protected String getVersion() {
         return Constant.API.VERSION;
     }
 
@@ -253,6 +255,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     protected final String getDeviceId() {
         return ConfigManager.getInstance().getDeviceId();
     }
+
     public RESULT_DATA getDataResponse() {
         return dataResponse;
     }

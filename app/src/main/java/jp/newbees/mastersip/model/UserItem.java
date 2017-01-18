@@ -16,18 +16,11 @@ public class UserItem implements Serializable, Parcelable {
     public static final int FEMALE = 0;
     public static final int MALE = 1;
 
+    // status
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
 
     private String lastLogin;
-
-    public RelationshipItem getRelationshipItem() {
-        return relationshipItem;
-    }
-
-    public void setRelationshipItem(RelationshipItem relationshipItem) {
-        this.relationshipItem = relationshipItem;
-    }
 
     private RelationshipItem relationshipItem;
     @NonNull
@@ -39,14 +32,6 @@ public class UserItem implements Serializable, Parcelable {
     private SelectionItem availableTimeItem;
     private SelectionItem typeGirl;
     private String typeBoy;
-
-    public String getTypeBoy() {
-        return typeBoy;
-    }
-
-    public void setTypeBoy(String typeBoy) {
-        this.typeBoy = typeBoy;
-    }
 
     private String charmingPoint;
     private String memo;
@@ -60,12 +45,20 @@ public class UserItem implements Serializable, Parcelable {
     @Nullable
     private ImageItem avatarItem;
 
-//    @Nullable
-//    private String avatarUrl;
     @Nullable
     private String facebookId;
     @NonNull
     private SipItem sipItem;
+
+    private SettingItem settings;
+
+    public SettingItem getSettings() {
+        return settings;
+    }
+
+    public void setSettings(SettingItem settings) {
+        this.settings = settings;
+    }
 
     public String getUserId() {
         return userId;
@@ -85,6 +78,23 @@ public class UserItem implements Serializable, Parcelable {
         this.typeBoy = "";
         this.charmingPoint = "";
         this.avatarItem = new ImageItem();
+    }
+
+    public String getTypeBoy() {
+        return typeBoy;
+    }
+
+    public void setTypeBoy(String typeBoy) {
+        this.typeBoy = typeBoy;
+    }
+
+
+    public RelationshipItem getRelationshipItem() {
+        return relationshipItem;
+    }
+
+    public void setRelationshipItem(RelationshipItem relationshipItem) {
+        this.relationshipItem = relationshipItem;
     }
 
     @NonNull
@@ -187,15 +197,6 @@ public class UserItem implements Serializable, Parcelable {
         this.avatarItem = avatarItem;
     }
 
-//    @Nullable
-//    public String getAvatarUrl() {
-//        return avatarUrl;
-//    }
-//
-//    public void setAvatarUrl(@Nullable String avatarUrl) {
-//        this.avatarUrl = avatarUrl;
-//    }
-
     @Nullable
     public String getFacebookId() {
         return facebookId;
@@ -253,10 +254,10 @@ public class UserItem implements Serializable, Parcelable {
         dest.writeInt(this.status);
         dest.writeString(this.email);
         dest.writeParcelable(this.avatarItem, flags);
-//        dest.writeString(this.avatarUrl);
         dest.writeString(this.facebookId);
         dest.writeParcelable(this.sipItem, flags);
         dest.writeString(this.userId);
+        dest.writeParcelable(this.settings, flags);
     }
 
     protected UserItem(Parcel in) {
@@ -276,10 +277,10 @@ public class UserItem implements Serializable, Parcelable {
         this.status = in.readInt();
         this.email = in.readString();
         this.avatarItem = in.readParcelable(ImageItem.class.getClassLoader());
-//        this.avatarUrl = in.readString();
         this.facebookId = in.readString();
         this.sipItem = in.readParcelable(SipItem.class.getClassLoader());
         this.userId = in.readString();
+        this.settings = in.readParcelable(SettingItem.class.getClassLoader());
     }
 
     public static final Creator<UserItem> CREATOR = new Creator<UserItem>() {

@@ -37,7 +37,7 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
     private MaxAgeAdapter maxAgeAdapter;
 
     private int selectedMinAge, selectedMaxAge;
-    private int minAgePosition = -1, maxAgePosition = -1;
+    private int minAgePosition = 0, maxAgePosition = 0;
 
     public interface OnSelectAgeDialogClick {
 

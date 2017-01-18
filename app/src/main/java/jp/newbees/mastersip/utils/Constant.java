@@ -58,6 +58,7 @@ public final class Constant {
         public static final String EXTEND_INFO = "extend_info";
         public static final String FAVORITE_TYPE = "favorite_type";
         public static final String PATH = "path";
+        public static final String THUMB = "thumbnail";
         public static final String DATE = "date";
 
         public static final String LAT = "lat";
@@ -102,6 +103,12 @@ public final class Constant {
 
         public static final String COINT = "coint";
         public static final String WAIT_CALL_ID = "wait_call_id";
+        public static final String SETTING = "setting";
+        public static final String USER = "user";
+
+        public static final String VOICE_CALL = "voice_call";
+        public static final String VIDEO_CALL = "video_call";
+        public static final String CHAT = "chat";
         public static final String SECRET_KEY = "secretKey";
     }
 
@@ -125,6 +132,7 @@ public final class Constant {
         private static final String DEVELOPMENT_IP = "52.197.14.30";
 //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
+        public static final String GET_PROFILE = "profile";
 
         public static String BASE_URL;
         public static final String PROTOCOL = "http";

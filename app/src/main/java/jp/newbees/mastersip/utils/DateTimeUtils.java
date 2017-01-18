@@ -65,6 +65,19 @@ public class DateTimeUtils {
         return SHORT_TIME_FORMAT.format(date);
     }
 
+    public static int calculateAgeWithDOB(Date dob) {
+        Date to = Calendar.getInstance().getTime();
+        Calendar a = getCalendar(dob);
+        Calendar b = getCalendar(to);
+        int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
+        if (a.get(Calendar.MONTH) > b.get(Calendar.MONTH) ||
+                (a.get(Calendar.MONTH) == b.get(Calendar.MONTH)
+                        && a.get(Calendar.DAY_OF_MONTH) > b.get(Calendar.DAY_OF_MONTH))) {
+            diff--;
+        }
+        return diff;
+    }
+
     public static int getCurrentAgeFromDoB(String dateOfBirth) {
         Date dob = convertStringToDate(dateOfBirth, ENGLISH_FACEBOOK_DATE_FORMAT);
         Calendar calendarDoB = getCalendar(dob);

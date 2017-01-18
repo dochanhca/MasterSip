@@ -245,6 +245,7 @@
     <string name="txt_already_read">既読</string>
     <string name="pt">pt</string>
     <string name="search">検索</string>
+    <string name="year_old">歳</string>
     <!--FacebookSDK-->
     <string name="facebook_app_id">1786574714906949</string>
     <string name="send">送信</string>

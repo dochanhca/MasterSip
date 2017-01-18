@@ -8,8 +8,44 @@ import android.os.Parcelable;
  */
 
 public class RelationshipItem implements Parcelable {
+    // followed
+    public static final int FOLLOW = 1;
+    public static final int UN_FOLLOW = 0;
+
+    // online notification
+    public static final int REGISTER = 1;
+    public static final int UN_REGISTER = 0;
+
     private int isFollowed;
-    private boolean isNotification;
+    private int isNotification;
+
+    protected RelationshipItem(Parcel in) {
+        isFollowed = in.readInt();
+        isNotification = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(isFollowed);
+        dest.writeInt(isNotification);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RelationshipItem> CREATOR = new Creator<RelationshipItem>() {
+        @Override
+        public RelationshipItem createFromParcel(Parcel in) {
+            return new RelationshipItem(in);
+        }
+
+        @Override
+        public RelationshipItem[] newArray(int size) {
+            return new RelationshipItem[size];
+        }
+    };
 
     public int isFollowed() {
         return isFollowed;
@@ -19,42 +55,14 @@ public class RelationshipItem implements Parcelable {
         isFollowed = followed;
     }
 
-    public boolean isNotification() {
+    public int getIsNotification() {
         return isNotification;
     }
 
-    public void setNotification(boolean notification) {
-        isNotification = notification;
+    public void setIsNotification(int isNotification) {
+        this.isNotification = isNotification;
     }
 
     public RelationshipItem() {
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.isFollowed);
-        dest.writeByte(this.isNotification ? (byte) 1 : (byte) 0);
-    }
-
-    protected RelationshipItem(Parcel in) {
-        this.isFollowed = in.readInt();
-        this.isNotification = in.readByte() != 0;
-    }
-
-    public static final Creator<RelationshipItem> CREATOR = new Creator<RelationshipItem>() {
-        @Override
-        public RelationshipItem createFromParcel(Parcel source) {
-            return new RelationshipItem(source);
-        }
-
-        @Override
-        public RelationshipItem[] newArray(int size) {
-            return new RelationshipItem[size];
-        }
-    };
 }

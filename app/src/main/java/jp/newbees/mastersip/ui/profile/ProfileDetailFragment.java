@@ -1,19 +1,24 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.AdapterViewPagerProfileDetail;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.top.ChatActivity;
-
-import static jp.newbees.mastersip.utils.Constant.Application.USER_ITEM;
 
 /**
  * Created by ducpv on 1/5/17.
@@ -21,14 +26,46 @@ import static jp.newbees.mastersip.utils.Constant.Application.USER_ITEM;
 
 public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ProfileDetailPresenter.ProfileDetailsView {
 
+    @BindView(R.id.view_pager_profile)
+    ViewPager viewPagerProfile;
+    @BindView(R.id.img_previous)
+    ImageView imgPrevious;
+    @BindView(R.id.img_next)
+    ImageView imgNext;
+
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-    private static final String USER = "USER";
+    private static final String USER_ITEMS = "USER_ITEMS";
+    private static final String POSITION = "POSITION";
+
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
+    private List<UserItem> userItemList;
+    private AdapterViewPagerProfileDetail adapterViewPagerProfileDetail;
+    private int currentIndex;
 
-    public static ProfileDetailFragment newInstance(UserItem userItem) {
+    private ViewPager.OnPageChangeListener onPagerProfileChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            currentIndex = position;
+            updatePagerIndicator();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    public static ProfileDetailFragment newInstance(List<UserItem> userItems, int position) {
         Bundle args = new Bundle();
-        args.putParcelable(USER_ITEM, userItem);
+        args.putParcelableArrayList(ProfileDetailFragment.USER_ITEMS,
+                (ArrayList<? extends Parcelable>) userItems);
+        args.putInt(ProfileDetailFragment.POSITION, position);
+
         ProfileDetailFragment fragment = new ProfileDetailFragment();
         fragment.setArguments(args);
         return fragment;
@@ -41,13 +78,20 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
+        userItemList = getArguments().getParcelableArrayList(USER_ITEMS);
+        currentIndex = getArguments().getInt(POSITION);
+
+        userItem = userItemList.get(currentIndex);
+
         ButterKnife.bind(this, mRoot);
-        profileDetailPresenter = new ProfileDetailPresenter(getContext(),this);
-        userItem = getArguments().getParcelable(USER_ITEM);
+        profileDetailPresenter = new ProfileDetailPresenter(getContext(), this);
         setFragmentTitle(userItem.getUsername());
+
+        initViewPagerProfile();
     }
 
-    @OnClick({R.id.img_back, R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call})
+    @OnClick({R.id.img_back, R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,
+            R.id.img_previous, R.id.img_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_back:
@@ -62,13 +106,55 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
                 break;
             case R.id.layout_video_call:
                 break;
+            case R.id.img_previous:
+                onBackwardClick();
+                break;
+            case R.id.img_next:
+                onForwardClick();
+                break;
             default:
                 break;
         }
     }
 
     @Override
-    public void onOkClick() {
+    public void onOkVoiceCallClick() {
         profileDetailPresenter.checkVoiceCall(userItem);
     }
+
+    private void initViewPagerProfile() {
+        adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getFragmentManager(),
+                userItemList);
+        viewPagerProfile.setAdapter(adapterViewPagerProfileDetail);
+        viewPagerProfile.addOnPageChangeListener(onPagerProfileChangeListener);
+        viewPagerProfile.setCurrentItem(currentIndex);
+        updatePagerIndicator();
+    }
+
+    private void onForwardClick() {
+        if (currentIndex < userItemList.size() - 1) {
+            currentIndex++;
+            viewPagerProfile.setCurrentItem(currentIndex);
+        }
+    }
+
+    private void onBackwardClick() {
+        if (currentIndex >= 1) {
+            currentIndex--;
+            viewPagerProfile.setCurrentItem(currentIndex);
+        }
+    }
+
+    private void updatePagerIndicator() {
+        if (userItemList.size() <= 1) {
+            imgPrevious.setVisibility(View.INVISIBLE);
+            imgNext.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        imgNext.setVisibility(currentIndex == userItemList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+        imgPrevious.setVisibility(currentIndex == 0 ? View.INVISIBLE : View.VISIBLE);
+    }
 }
+
+
