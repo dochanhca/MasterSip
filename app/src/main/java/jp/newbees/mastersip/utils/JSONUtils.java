@@ -297,4 +297,53 @@ public class JSONUtils {
         baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
         return baseChatItem;
     }
+
+    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data) throws JSONException {
+        ArrayList<BaseChatItem> result = new ArrayList<>();
+        JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
+        int sectionFirstPosition = 0;
+        for (int i = 0; i < jListMessages.length(); i++) {
+            JSONObject jListMessage = jListMessages.getJSONObject(i);
+
+            result.add(getHeaderChatItem(jListMessage));
+
+            JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.K_MESSAGES);
+            for (int j = 0; j < jMessages.length(); j++) {
+                JSONObject jMessage = jListMessages.getJSONObject(j);
+                result.add(getBaseChatItemInHistory(jMessage,sectionFirstPosition));
+            }
+            sectionFirstPosition = result.size();
+        }
+        return result;
+    }
+
+    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition) throws JSONException {
+        BaseChatItem baseChatItem;
+        int type = jMessage.getInt(Constant.JSON.TYPE);
+        switch (type) {
+            case BaseChatItem.ChatType.CHAT_TEXT:
+                baseChatItem = new TextChatItem();
+                ((TextChatItem)baseChatItem).setMessage(jMessage.getJSONObject(Constant.JSON.TEXT).
+                        getString(Constant.JSON.CONTENT));
+                break;
+            default:
+                baseChatItem = new BaseChatItem();
+        }
+        baseChatItem.setFullDate(jMessage.getString(Constant.JSON.K_DATE));
+        baseChatItem.setShortDate(DateTimeUtils.getShortTime(baseChatItem.getFullDate()));
+        baseChatItem.setChatType(type);
+        baseChatItem.setMessageId(jMessage.getInt(Constant.JSON.MESSAGE_ID));
+        baseChatItem.setMessageState(jMessage.getInt(Constant.JSON.STATUS));
+        baseChatItem.setSectionFirstPosition(sectionFirstPosition);
+        return baseChatItem;
+    }
+
+    private static BaseChatItem getHeaderChatItem(JSONObject jListMessage) throws JSONException {
+        BaseChatItem header = new BaseChatItem();
+        header.setChatType(BaseChatItem.ChatType.HEADER);
+        header.setFullDate(jListMessage.getString(Constant.JSON.K_DATE));
+        return header;
+    }
+
+
 }

@@ -101,19 +101,6 @@ public class ChatActivity extends BaseActivity {
             }
         }
     };
-    private ChatPresenter.SendingReadMessageToServerListener mOnSendingReadMessageToServerListener = new ChatPresenter.SendingReadMessageToServerListener() {
-        @Override
-        public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
-            chatAdapter.updateSendeeLastMessageStateToRead();
-            presenter.sendingReadMessageUsingLinPhone(baseChatItem, userItem);
-        }
-
-        @Override
-        public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
-            Logger.e(TAG, errorCode + " : " + errorMessage);
-        }
-    };
-
 
     private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
         if (isCallActionHeaderInChatOpened) {
@@ -137,6 +124,27 @@ public class ChatActivity extends BaseActivity {
         @Override
         public void didChatError(int errorCode, String errorMessage) {
             donotHideSoftKeyboard = true;
+
+        }
+
+        @Override
+        public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
+            chatAdapter.updateSendeeLastMessageStateToRead();
+            presenter.sendingReadMessageUsingLinPhone(baseChatItem, userItem);
+        }
+
+        @Override
+        public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
+            Logger.e(TAG, errorCode + " : " + errorMessage);
+        }
+
+        @Override
+        public void didLoadChatHistory(ArrayList<BaseChatItem> chatItems) {
+            chatAdapter.clearAndAddNewData(chatItems);
+        }
+
+        @Override
+        public void didLoadChatHistoryError(int errorCode, String errorMessage) {
 
         }
     };
@@ -232,7 +240,7 @@ public class ChatActivity extends BaseActivity {
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener);
+        presenter = new ChatPresenter(this, mOnChatListener);
 
         userItem = getIntent().getParcelableExtra(USER);
 
@@ -246,6 +254,8 @@ public class ChatActivity extends BaseActivity {
         recyclerChat.setNestedScrollingEnabled(false);
         recyclerChat.setAdapter(chatAdapter);
         chatAdapter.notifyDataSetChanged();
+
+        presenter.loadChatHistory(userItem, 0);
 
         EventBus.getDefault().register(this);
     }

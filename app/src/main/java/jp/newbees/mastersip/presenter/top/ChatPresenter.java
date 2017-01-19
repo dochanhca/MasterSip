@@ -4,11 +4,14 @@ import android.content.Context;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
 import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.LoadChatHistoryTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -21,13 +24,10 @@ import jp.newbees.mastersip.utils.ConfigManager;
 public class ChatPresenter extends BasePresenter {
 
     private ChatPresenterListener chatPresenterListener;
-    private SendingReadMessageToServerListener sendingReadMessageToServerListener;
 
-    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener,
-                         SendingReadMessageToServerListener sendingReadMessageToServerListener) {
+    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener) {
         super(context);
         this.chatPresenterListener = chatPresenterListener;
-        this.sendingReadMessageToServerListener = sendingReadMessageToServerListener;
     }
 
     public interface ChatPresenterListener{
@@ -35,12 +35,13 @@ public class ChatPresenter extends BasePresenter {
 
         void didChatError(int errorCode, String errorMessage);
 
-    }
-
-    public interface SendingReadMessageToServerListener {
         void didSendingReadMessageToServer(BaseChatItem baseChatItem);
 
         void didSendingReadMessageToServerError(int errorCode, String errorMessage);
+
+        void didLoadChatHistory(ArrayList<BaseChatItem> chatItems);
+
+        void didLoadChatHistoryError(int errorCode, String errorMessage);
     }
 
     public final void sendText(String content,UserItem sendee){
@@ -60,6 +61,14 @@ public class ChatPresenter extends BasePresenter {
         EventBus.getDefault().post(new SendingReadMessageEvent(baseChatItem, currentUser, sender));
     }
 
+    public void loadChatHistory(UserItem friendUser,int lastMessageId) {
+        UserItem owner = ConfigManager.getInstance().getCurrentUser();
+        LoadChatHistoryTask loadChatHistoryTask = new LoadChatHistoryTask(context, owner.getUserId(),
+                friendUser.getUserId(), lastMessageId);
+        requestToServer(loadChatHistoryTask);
+    }
+
+
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof SendTextMessageTask) {
@@ -67,7 +76,10 @@ public class ChatPresenter extends BasePresenter {
             chatPresenterListener.didSendChatToServer(result);
         } else if (task instanceof UpdateStateMessageTask) {
             BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
-            sendingReadMessageToServerListener.didSendingReadMessageToServer(result);
+            chatPresenterListener.didSendingReadMessageToServer(result);
+        } else if (task instanceof LoadChatHistoryTask) {
+            ArrayList<BaseChatItem> result = ((LoadChatHistoryTask) task).getDataResponse();
+            chatPresenterListener.didLoadChatHistory(result);
         }
     }
 
@@ -76,7 +88,9 @@ public class ChatPresenter extends BasePresenter {
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
-            sendingReadMessageToServerListener.didSendingReadMessageToServerError(errorCode, errorMessage);
+            chatPresenterListener.didSendingReadMessageToServerError(errorCode, errorMessage);
+        } else if (task instanceof LoadChatHistoryTask) {
+            chatPresenterListener.didLoadChatHistoryError(errorCode, errorMessage);
         }
     }
 

@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tonicartos.superslim.GridSLM;
+import com.tonicartos.superslim.LinearSLM;
 
 import java.util.List;
 
@@ -36,20 +38,27 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
+        View view = null;
         boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
         if (isReplyMessage) {
             viewType -= OFFSET_RETURN_TYPE;
         }
 
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reply_chat_text_item, parent, false);
+                    view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
                     viewHolder = new ViewHolderTextMessageReply(view);
                 } else {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_chat_text_item, parent, false);
+                    view = layoutInflater.inflate(R.layout.my_chat_text_item, parent, false);
                     viewHolder = new ViewHolderTextMessage(view);
                 }
+                break;
+            case BaseChatItem.ChatType.HEADER:
+                view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
+                viewHolder = new ViewHolderHeader(view);
+            default:
                 break;
         }
 
@@ -59,12 +68,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BaseChatItem item = datas.get(position);
+        View itemView = holder.itemView;
 
         int viewType = holder.getItemViewType();
         boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
         if (isReplyMessage) {
             viewType -= OFFSET_RETURN_TYPE;
         }
+
+        final GridSLM.LayoutParams layoutParams = GridSLM.LayoutParams.from(itemView.getLayoutParams());
 
         switch (viewType) {
             case BaseChatItem.ChatType.CHAT_TEXT:
@@ -91,9 +103,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     View.VISIBLE : View.GONE);
                 }
                 break;
+            case BaseChatItem.ChatType.HEADER:
+                break;
             default:
+
                 break;
         }
+        layoutParams.setSlm(LinearSLM.ID);
+        layoutParams.setFirstPosition(item.getSectionFirstPosition());
+        itemView.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -134,6 +152,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             txtContent = (TextView) root.findViewById(R.id.txt_content);
             txtTime = (TextView) root.findViewById(R.id.txt_time);
             imgAvatar = (ImageView) root.findViewById(R.id.img_reply_avatar);
+        }
+    }
+
+    public static class ViewHolderHeader extends RecyclerView.ViewHolder {
+        private TextView txtContent;
+        public ViewHolderHeader(View root) {
+            super(root);
+            txtContent = (TextView) root.findViewById(R.id.txt_content);
         }
     }
 

@@ -110,6 +110,8 @@ public final class Constant {
         public static final String VIDEO_CALL = "video_call";
         public static final String CHAT = "chat";
         public static final String SECRET_KEY = "secretKey";
+        public static final String LIST_MESSAGES = "list_messages";
+        public static final String K_MESSAGES = "messages";
     }
 
     public static final class API {
@@ -152,6 +154,7 @@ public final class Constant {
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
         public static final String LOGIN_FACEBOOK_URL = "loginfb";
+        public static final String CHAT_HISTORY = "messages";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

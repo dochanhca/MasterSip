@@ -27,6 +27,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         public static final int CHAT_VIDEO_CALL = 6;
         public static final int CHAT_VIDEO_CHAT_CALL = 7;
         public static final int CHAT_GIFT = 9;
+        public final static int HEADER = 11;
 
         protected ChatType(Parcel in) {
         }
@@ -194,6 +195,18 @@ public class BaseChatItem implements Parcelable, Serializable {
     private String shortDate;
     private String shortTimeStamp;
 
+    /**
+     * use for recycle view with header sticky
+     */
+    private int sectionFirstPosition;
+
+    public int getSectionFirstPosition() {
+        return sectionFirstPosition;
+    }
+
+    public void setSectionFirstPosition(int sectionFirstPosition) {
+        this.sectionFirstPosition = sectionFirstPosition;
+    }
 
     public boolean isOwner() {
         return isOwner;
