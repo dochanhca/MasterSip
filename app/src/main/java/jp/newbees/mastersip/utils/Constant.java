@@ -118,11 +118,9 @@ public final class Constant {
     }
 
     public static final class API {
-
         private API() {
             //Prevent init constructor
         }
-
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -158,6 +156,8 @@ public final class Constant {
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
         public static final String LOGIN_FACEBOOK_URL = "loginfb";
         public static final String PHOTOS = "photos";
+        public static final String MY_PROFILE = "my/profile";
+        public static final String LOGOUT = "logout";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

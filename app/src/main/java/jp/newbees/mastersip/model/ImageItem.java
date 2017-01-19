@@ -10,6 +10,10 @@ import java.io.Serializable;
  */
 
 public class ImageItem implements Parcelable, Serializable {
+
+    public static final int IMAGE_PENDING  = 0;
+    public static final int IMAGE_APPROVED = 1;
+
     private int imageId;
     private String thumbUrl;
     private String originUrl;

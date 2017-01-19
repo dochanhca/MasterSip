@@ -30,5 +30,6 @@
     <color name="purple">#996ec5</color>
     <color name="blue">#5ea5d4</color>
     <color name="blue_dark">#388d92</color>
+    <color name="opacity_gray">#88dddddd</color>
 
 </resources>
