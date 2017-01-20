@@ -69,8 +69,4 @@ public class LoginFacebookTask extends BaseTask<UserItem> {
 
         return userItem;
     }
-
-    public final UserItem getUserItem() {
-        return userItem;
-    }
 }

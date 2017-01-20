@@ -47,7 +47,6 @@
         <item name="android:textSize">@dimen/text_size_15</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:gravity">right</item>
-
     </style>
 
     <style name="style_content_text_view_small_single_line" parent="style_content_text_view_small">
@@ -126,6 +125,18 @@
         <item name="android:textSize">@dimen/text_size_15</item>
     </style>
 
+    <style name="custom_radio_button">
+        <item name="android:minHeight">@dimen/header_search_height</item>
+        <item name="android:minWidth">@dimen/action_profile_detail_w</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:paddingLeft">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
+        <item name="android:paddingTop">@dimen/normal_margin</item>
+        <item name="android:paddingBottom">@dimen/normal_margin</item>
+        <item name="android:textSize">@dimen/text_size_12</item>
+    </style>
+
     <style name="origin_style_content_text_view">
         <item name="android:textSize">@dimen/text_size_17</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -169,5 +180,31 @@
     <style name="origin_style_content_text_view_tiny" parent="origin_style_content_text_view_small">
         <item name="android:textSize">@dimen/text_size_tiny</item>
 
+    </style>
+
+    <style name="style_profile_info_row">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">@dimen/profile_detail_row_h</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/margin_2</item>
+        <item name="android:paddingTop">@dimen/margin_2</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="style_title_text_view_profile" parent="style_title_text_view_small">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">0.8</item>
+    </style>
+
+    <style name="style_content_text_view_profile">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/text_size_15</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_marginRight">@dimen/common_margin</item>
+        <item name="android:paddingBottom">@dimen/margin_2</item>
+        <item name="android:gravity">left</item>
     </style>
 </resources>

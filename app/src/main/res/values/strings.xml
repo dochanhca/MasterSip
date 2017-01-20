@@ -249,4 +249,8 @@
     <!--FacebookSDK-->
     <string name="facebook_app_id">1786574714906949</string>
     <string name="send">送信</string>
+    <string name="send_a_give">ギフトを贈る</string>
+    <string name="online_notify">オンライン通知</string>
+    <string name="name">なまえ</string>
+    <string name="residence">住まい</string>
 </resources>

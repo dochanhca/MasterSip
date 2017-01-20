@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class ImageItem implements Parcelable, Serializable {
     private int imageId;
     private String thumbUrl;
+    private String originUrl;
 
     protected ImageItem(Parcel in) {
         imageId = in.readInt();
@@ -54,8 +55,6 @@ public class ImageItem implements Parcelable, Serializable {
     public void setOriginUrl(String originUrl) {
         this.originUrl = originUrl;
     }
-
-    private String originUrl;
 
     public ImageItem() {
         this.imageId = 0;

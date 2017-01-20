@@ -72,4 +72,9 @@
     <dimen name="margin_30">30dp</dimen>
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="size_100">100dp</dimen>
+    <dimen name="layout_user_image_h">90dp</dimen>
+    <dimen name="small_user_image_size">67dp</dimen>
+    <dimen name="layout_profile_action_detail_h">85dp</dimen>
+    <dimen name="action_profile_detail_w">110dp</dimen>
+    <dimen name="profile_detail_row_h">36dp</dimen>
 </resources>

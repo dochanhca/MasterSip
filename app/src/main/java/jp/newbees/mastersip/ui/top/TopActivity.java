@@ -37,7 +37,14 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
 
+    public boolean isShowNavigationBar;
+
     private NavigationLayoutGroup navigationLayoutGroup;
+
+    public boolean isShowNavigationBar() {
+        return isShowNavigationBar;
+    }
+
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
@@ -90,11 +97,13 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     }
 
     public void showNavigation() {
+        isShowNavigationBar = true;
         clearViewAnimation(navigationLayoutGroup,slide_up,View.VISIBLE);
         navigationLayoutGroup.startAnimation(slide_up);
     }
 
     public void hideNavigation() {
+        isShowNavigationBar = false;
         clearViewAnimation(navigationLayoutGroup,slide_down,View.GONE);
         navigationLayoutGroup.startAnimation(slide_down);
     }

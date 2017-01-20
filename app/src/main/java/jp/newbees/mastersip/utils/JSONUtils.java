@@ -11,6 +11,7 @@ import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.model.PhotoItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
@@ -296,5 +297,30 @@ public class JSONUtils {
         baseChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
         baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
         return baseChatItem;
+    }
+
+    public static PhotoItem parseListPhotos(JSONObject jData) throws JSONException {
+        PhotoItem photoItem = new PhotoItem();
+
+        if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
+            photoItem.setNextId(Integer.parseInt(jData.getString(Constant.JSON.NEXT_ID)));
+        }
+        photoItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
+
+        JSONArray jsonImages = jData.getJSONArray(Constant.JSON.LIST_IMAGE);
+        List<ImageItem> imageItems = new ArrayList<>();
+        for (int i = 0; i < jsonImages.length(); i++) {
+            JSONObject jImage = jsonImages.getJSONObject(i);
+            ImageItem imageItem = new ImageItem();
+            imageItem.setImageId(jImage.getInt(Constant.JSON.IMAGE_ID));
+            imageItem.setOriginUrl(jImage.getString(Constant.JSON.IMAGE_PATH));
+            imageItem.setThumbUrl(jImage.getString(Constant.JSON.IMAGE_PATH_THUMB));
+
+            imageItems.add(imageItem);
+        }
+
+        photoItem.setImageItems(imageItems);
+
+        return photoItem;
     }
 }

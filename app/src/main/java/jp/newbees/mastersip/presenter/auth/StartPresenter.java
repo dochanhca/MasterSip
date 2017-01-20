@@ -178,7 +178,7 @@ public class StartPresenter extends RegisterPresenterBase {
     }
 
     private void handleNotRegisterFacebook(LoginFacebookTask task){
-        UserItem userItem = task.getUserItem();
+        UserItem userItem = task.getDataResponse();
         if (userItem.getDateOfBirth() == null) {
             startView.didLoginFacebookMissingBirthday(userItem);
         } else if (userItem.getDateOfBirth() != null) {
