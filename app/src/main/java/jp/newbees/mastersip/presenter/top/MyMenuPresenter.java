@@ -104,6 +104,9 @@ public class MyMenuPresenter extends BasePresenter implements Response.Listener<
 
     @Override
     public void onResponse(ImageItem avatar) {
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setAvatarItem(avatar);
+        ConfigManager.getInstance().saveUser(userItem);
         menuView.didUploadAvatar(avatar);
     }
 
