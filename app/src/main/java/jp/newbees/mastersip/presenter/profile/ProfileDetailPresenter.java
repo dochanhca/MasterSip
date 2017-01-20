@@ -7,9 +7,11 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.HashMap;
 
 import jp.newbees.mastersip.event.call.CallEvent;
+import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
+import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -23,6 +25,7 @@ public class ProfileDetailPresenter extends BasePresenter {
 
     private final ProfileDetailsView view;
     private String callWaitId = null;
+    private String nextPage = "0";
 
     public ProfileDetailPresenter(Context context, ProfileDetailsView view) {
         super(context);
@@ -106,6 +109,13 @@ public class ProfileDetailPresenter extends BasePresenter {
         UserItem caller = getCurrentUserItem();
         CheckCallTask checkCallTask = new CheckCallTask(context, caller, callee, callType, Constant.API.CALL_FROM_OTHER);
         requestToServer(checkCallTask);
+    }
+
+    private void loadMoreUsers(int typeSearch, String nextPage) {
+        FilterItem filterItem = ConfigManager.getInstance().getFilterUser();
+        filterItem.setFilterType(typeSearch);
+        FilterUserTask filterUserTask = new FilterUserTask(context, filterItem, nextPage, getCurrentUserItem());
+        requestToServer(filterUserTask);
     }
 
     public interface ProfileDetailsView {

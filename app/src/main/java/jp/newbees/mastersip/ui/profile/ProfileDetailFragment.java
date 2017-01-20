@@ -25,6 +25,11 @@ import jp.newbees.mastersip.ui.top.ChatActivity;
  */
 
 public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ProfileDetailPresenter.ProfileDetailsView {
+    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
+    private static final String USER_ITEMS = "USER_ITEMS";
+    private static final String POSITION = "POSITION";
+    private static final String NEXT_PAGE = "NEXT_PAGE";
+    private static final String TYPE_SEARCH = "TYPE_SEARCH";
 
     @BindView(R.id.view_pager_profile)
     ViewPager viewPagerProfile;
@@ -33,13 +38,11 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     @BindView(R.id.img_next)
     ImageView imgNext;
 
-    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-    private static final String USER_ITEMS = "USER_ITEMS";
-    private static final String POSITION = "POSITION";
-
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private List<UserItem> userItemList;
+    private String nextPage;
+    private int typeSearch;
     private int currentIndex;
 
     private ViewPager.OnPageChangeListener onPagerProfileChangeListener = new ViewPager.OnPageChangeListener() {
@@ -61,11 +64,14 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
         }
     };
 
-    public static ProfileDetailFragment newInstance(List<UserItem> userItems, int position) {
+    public static ProfileDetailFragment newInstance(List<UserItem> userItems, int position,
+                                                    String nextPage, int currentTypeSearch) {
         Bundle args = new Bundle();
         args.putParcelableArrayList(ProfileDetailFragment.USER_ITEMS,
                 (ArrayList<? extends Parcelable>) userItems);
         args.putInt(ProfileDetailFragment.POSITION, position);
+        args.putString(ProfileDetailFragment.NEXT_PAGE, nextPage);
+        args.putInt(ProfileDetailFragment.TYPE_SEARCH, currentTypeSearch);
 
         ProfileDetailFragment fragment = new ProfileDetailFragment();
         fragment.setArguments(args);
@@ -81,6 +87,8 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     protected void init(View mRoot, Bundle savedInstanceState) {
         userItemList = getArguments().getParcelableArrayList(USER_ITEMS);
         currentIndex = getArguments().getInt(POSITION);
+        nextPage = getArguments().getString(NEXT_PAGE);
+        typeSearch = getArguments().getInt(TYPE_SEARCH);
 
         userItem = userItemList.get(currentIndex);
 
