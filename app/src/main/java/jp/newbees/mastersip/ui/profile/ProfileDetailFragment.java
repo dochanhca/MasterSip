@@ -40,23 +40,24 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private List<UserItem> userItemList;
-    private AdapterViewPagerProfileDetail adapterViewPagerProfileDetail;
     private int currentIndex;
 
     private ViewPager.OnPageChangeListener onPagerProfileChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            // unused
         }
 
         @Override
         public void onPageSelected(int position) {
             currentIndex = position;
             updatePagerIndicator();
+            setFragmentTitle(userItemList.get(position).getUsername());
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
-
+            // unused
         }
     };
 
@@ -105,6 +106,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
                         CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
                 break;
             case R.id.layout_video_call:
+                // Make a video call
                 break;
             case R.id.img_previous:
                 onBackwardClick();
@@ -123,7 +125,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     }
 
     private void initViewPagerProfile() {
-        adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getFragmentManager(),
+        AdapterViewPagerProfileDetail adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getFragmentManager(),
                 userItemList);
         viewPagerProfile.setAdapter(adapterViewPagerProfileDetail);
         viewPagerProfile.addOnPageChangeListener(onPagerProfileChangeListener);

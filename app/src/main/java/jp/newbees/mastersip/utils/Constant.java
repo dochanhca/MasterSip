@@ -7,6 +7,7 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
+
         private JSON() {
             //Prevent init constructor
         }
@@ -45,6 +46,7 @@ public final class Constant {
         public static final String LOGIN_24_HOUR_AGO = "limit_online_ago";
         public static final String FILTER_TYPE = "type";
         public static final String NEXT_PAGE = "next_page";
+        public static final String NEXT_ID = "next_id";
         public static final String USERS = "users";
         public static final String ID = "id";
         public static final String AVATAR = "avatar";
@@ -69,6 +71,7 @@ public final class Constant {
 
         public static final String IMAGE_ID = "image_id";
         public static final String IMAGE_PATH_FULL = "image_path_full";
+        public static final String IMAGE_PATH = "image_path";
         public static final String IMAGE_PATH_THUMB = "image_path_thumb";
         public static final String PROVINCE = "province";
 
@@ -110,6 +113,8 @@ public final class Constant {
         public static final String VIDEO_CALL = "video_call";
         public static final String CHAT = "chat";
         public static final String SECRET_KEY = "secretKey";
+        public static final String TOTAL_COUNT = "total_count";
+        public static final String LIST_IMAGE = "list_images";
     }
 
     public static final class API {
@@ -152,6 +157,7 @@ public final class Constant {
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
         public static final String LOGIN_FACEBOOK_URL = "loginfb";
+        public static final String PHOTOS = "photos";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

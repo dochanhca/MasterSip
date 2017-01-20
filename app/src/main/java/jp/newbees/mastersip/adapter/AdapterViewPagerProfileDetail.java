@@ -24,9 +24,7 @@ public class AdapterViewPagerProfileDetail extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        ProfileDetailItemFragment profileDetailItemFragment
-                = ProfileDetailItemFragment.newInstance(userItems.get(position));
-        return profileDetailItemFragment;
+        return ProfileDetailItemFragment.newInstance(userItems.get(position));
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -79,5 +80,9 @@ public abstract class BaseFragment extends Fragment {
     protected void setTransitionAnimation(FragmentTransaction transaction) {
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
+    }
+
+    protected boolean isNavigationBarShowing() {
+        return ((TopActivity) getActivity()).isShowNavigationBar();
     }
 }
