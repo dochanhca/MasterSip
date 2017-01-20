@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -77,6 +79,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtApproving;
 
     private MyMenuPresenter presenter;
+    private int defaultAvatar;
 
     @Override
     protected int layoutId() {
@@ -92,11 +95,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void initDefaultViews() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        int defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
+        defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
         this.txtActionBarTitle.setText(userItem.getUsername());
         this.imgAvatar.setImageResource(defaultAvatar);
-        this.txtPoint.setText("" + userItem.getCoin());
-        int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.INVISIBLE;
+        this.txtPoint.setText(""+userItem.getCoin());
+        int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE;
         this.btnBuyPoint.setVisibility(isShowButtonBuyPoint);
     }
 
@@ -123,18 +126,34 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_upload_photo:
                 break;
             case R.id.btn_logout:
-                presenter.requestLogout();
+                this.handleLogout();
                 break;
             case R.id.btn_backup_email:
                 break;
         }
     }
 
+    private void handleLogout() {
+        showLoading();
+        presenter.requestLogout();
+    }
+
     @Override
     public void didLogout() {
+        disMissLoading();
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
         startActivity(intent);
         getActivity().finish();
     }
 
+    @Override
+    public void didLoadMyProfile(UserItem userItem) {
+        this.txtPoint.setText(""+userItem.getCoin());
+        if (userItem.getAvatarItem()!=null){
+            Glide.with(this).load(userItem.getAvatarItem().getThumbUrl())
+                    .error(defaultAvatar)
+                    .placeholder(defaultAvatar)
+                    .into(imgAvatar);
+        }
+    }
 }

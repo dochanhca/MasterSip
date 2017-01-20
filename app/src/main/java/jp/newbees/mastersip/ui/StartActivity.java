@@ -153,6 +153,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     public void didLoadFacebookFailure(String errorMessage) {
+        disMissLoading();
         Logger.e(TAG, errorMessage);
     }
 

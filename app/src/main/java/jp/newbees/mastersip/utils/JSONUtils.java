@@ -323,4 +323,31 @@ public class JSONUtils {
 
         return photoItem;
     }
+
+    public static UserItem parseMyMenuItem(JSONObject jData) throws JSONException {
+        JSONObject jMyInfo = jData.getJSONObject(Constant.JSON.MY_INFO);
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
+        if (!jMyInfo.isNull(Constant.JSON.AVATAR)) {
+            JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
+            ImageItem imageItem = JSONUtils.parseImageItem(jAvatar);
+            userItem.setAvatarItem(imageItem);
+        } else {
+            userItem.setAvatarItem(null);
+        }
+        return userItem;
+    }
+
+    public static ImageItem parseImageItem(JSONObject jAvatar) throws JSONException {
+        ImageItem imageItem = new ImageItem();
+        int imageId = jAvatar.getInt(Constant.JSON.ID);
+        String originPath = jAvatar.getString(Constant.JSON.PATH);
+        String thumbnail = jAvatar.getString(Constant.JSON.THUMBNAIL);
+        int imageStatus = jAvatar.getInt(Constant.JSON.STATUS);
+        imageItem.setImageId(imageId);
+        imageItem.setOriginUrl(originPath);
+        imageItem.setImageStatus(imageStatus);
+        imageItem.setThumbUrl(thumbnail);
+        return imageItem;
+    }
 }

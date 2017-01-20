@@ -67,6 +67,7 @@ public class StartPresenter extends RegisterPresenterBase {
 
                     @Override
                     public void onError(FacebookException exception) {
+                        startView.didLoadFacebookFailure(exception.toString());
                         Logger.e(TAG, "Login FB error " + exception.getLocalizedMessage());
                     }
                 });

@@ -28,6 +28,10 @@ public class MyMenuPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof LogoutTask){
             menuView.didLogout();
+        }else if(task instanceof MyProfileTask) {
+            UserItem userItem = ((MyProfileTask) task).getDataResponse();
+            ConfigManager.getInstance().saveUser(userItem);
+            menuView.didLoadMyProfile(userItem);
         }
     }
 
@@ -43,12 +47,18 @@ public class MyMenuPresenter extends BasePresenter {
         requestToServer(myProfileTask);
     }
 
+    /**
+     * Do not change this order to logout
+     * 1. Stop Linphone Core
+     * 2. Request Logout
+     * 3. Remove all cached
+     */
     public void requestLogout() {
         stopLinphoneService();
-        ConfigManager.getInstance().resetSettings();
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         LogoutTask logoutTask = new LogoutTask(getContext(),userItem);
         requestToServer(logoutTask);
+        ConfigManager.getInstance().resetSettings();
     }
 
     private void stopLinphoneService() {
@@ -58,5 +68,7 @@ public class MyMenuPresenter extends BasePresenter {
 
     public interface MyMenuView {
         void didLogout();
+
+        void didLoadMyProfile(UserItem userItem);
     }
 }

@@ -7,10 +7,13 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
-
         private JSON() {
             //Prevent init constructor
         }
+
+        public static final String POINT = "point";
+        public static final String MY_INFO = "my_info";
+        public static final String THUMBNAIL = "thumbnail";
 
         public static final  String DEVICE_ID = "device_id";
         public static final  String PASSWORD = "password";

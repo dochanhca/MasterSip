@@ -53,8 +53,10 @@
                     android:id="@+id/img_avatar"
                     android:layout_width="81dp"
                     android:layout_height="81dp"
+                    android:minHeight="81dp"
+                    android:minWidth="81dp"
+                    android:layout_marginBottom="@dimen/_10dp"
                     android:layout_alignTop="@+id/group_point"
-                    android:layout_alignBottom="@+id/group_point"
                     android:layout_marginLeft="@dimen/_15dp"
                     />
 
@@ -97,6 +99,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/_10dp"
                         android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_10dp"
                         android:gravity="center_vertical">
 
                         <ImageView
@@ -128,13 +131,13 @@
 
                     <jp.newbees.mastersip.customviews.HiraginoButton
                         android:id="@+id/btn_buy_point"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="34dp"
                         android:layout_below="@id/parent_point"
                         android:layout_marginBottom="@dimen/_10dp"
                         android:layout_marginLeft="@dimen/_15dp"
                         android:layout_marginRight="@dimen/_15dp"
-                        android:layout_marginTop="@dimen/_10dp"
                         android:background="@drawable/bg_blue_button"
                         android:gravity="center"
                         android:paddingLeft="@dimen/_10dp"

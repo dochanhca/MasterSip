@@ -9,14 +9,15 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.model.MyMenuItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 
 /**
  * Created by vietbq on 1/19/17.
 */
 
-public class MyProfileTask extends BaseTask<MyMenuItem> {
+public class MyProfileTask extends BaseTask<UserItem> {
     public MyProfileTask(Context context) {
         super(context);
     }
@@ -39,8 +40,9 @@ public class MyProfileTask extends BaseTask<MyMenuItem> {
     }
 
     @Override
-    protected MyMenuItem didResponse(JSONObject data) throws JSONException {
-        MyMenuItem myMenuItem = new MyMenuItem();
-        return myMenuItem;
+    protected UserItem didResponse(JSONObject data) throws JSONException {
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
+        UserItem userItem = JSONUtils.parseMyMenuItem(jData);
+        return userItem;
     }
 }
