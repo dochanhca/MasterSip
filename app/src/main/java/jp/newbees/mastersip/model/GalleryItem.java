@@ -9,29 +9,34 @@ import java.util.List;
  * Created by ducpv on 1/19/17.
  */
 
-public class PhotoItem implements Parcelable {
+public class GalleryItem implements Parcelable {
 
     private int nextId;
     private int totalImage;
     private List<ImageItem> imageItems;
 
-    public PhotoItem() {
+    public GalleryItem() {
+        this.nextId = 0;
     }
 
-    protected PhotoItem(Parcel in) {
+    public GalleryItem(int nextId) {
+        this.nextId = nextId;
+    }
+
+    public GalleryItem(Parcel in) {
         nextId = in.readInt();
         imageItems = in.createTypedArrayList(ImageItem.CREATOR);
     }
 
-    public static final Creator<PhotoItem> CREATOR = new Creator<PhotoItem>() {
+    public static final Creator<GalleryItem> CREATOR = new Creator<GalleryItem>() {
         @Override
-        public PhotoItem createFromParcel(Parcel in) {
-            return new PhotoItem(in);
+        public GalleryItem createFromParcel(Parcel in) {
+            return new GalleryItem(in);
         }
 
         @Override
-        public PhotoItem[] newArray(int size) {
-            return new PhotoItem[size];
+        public GalleryItem[] newArray(int size) {
+            return new GalleryItem[size];
         }
     };
 

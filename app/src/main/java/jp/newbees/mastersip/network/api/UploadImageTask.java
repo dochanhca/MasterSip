@@ -45,12 +45,11 @@ public class UploadImageTask extends BaseUploadTask<ImageItem> {
     @Override
     protected ImageItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-
         ImageItem imageItem = new ImageItem();
         imageItem.setImageId(jData.getInt(Constant.JSON.IMAGE_ID));
         imageItem.setOriginUrl(jData.getString(Constant.JSON.IMAGE_PATH_FULL));
         imageItem.setThumbUrl(jData.getString(Constant.JSON.IMAGE_PATH_THUMB));
-
+        imageItem.setImageStatus(jData.getInt(Constant.JSON.IMAGE_STATUS));
         return imageItem;
     }
 

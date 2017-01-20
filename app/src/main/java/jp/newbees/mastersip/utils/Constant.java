@@ -10,7 +10,9 @@ public final class Constant {
         private JSON() {
             //Prevent init constructor
         }
-
+        public static final String PAGINATE = "paginate";
+        public static final String IMAGE_STATUS = "image_status";
+        public static final String PAGE = "page";
         public static final String POINT = "point";
         public static final String MY_INFO = "my_info";
         public static final String THUMBNAIL = "thumbnail";
@@ -161,6 +163,7 @@ public final class Constant {
         public static final String PHOTOS = "photos";
         public static final String MY_PROFILE = "my/profile";
         public static final String LOGOUT = "logout";
+        public static final String LIST_MY_PHOTOS = "my/photos";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

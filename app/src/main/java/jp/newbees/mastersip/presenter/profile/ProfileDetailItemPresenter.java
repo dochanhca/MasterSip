@@ -2,7 +2,7 @@ package jp.newbees.mastersip.presenter.profile;
 
 import android.content.Context;
 
-import jp.newbees.mastersip.model.PhotoItem;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
@@ -24,9 +24,9 @@ public class ProfileDetailItemPresenter extends BasePresenter {
 
         void didGetProfileDetailError(String errorMessage, int errorCode);
 
-        void didGetListPhotos(PhotoItem photoItem);
+        void didGetListPhotos(GalleryItem galleryItem);
 
-        void didLoadMoreListPhotos(PhotoItem photoItem);
+        void didLoadMoreListPhotos(GalleryItem galleryItem);
 
         void didGetListPhotosError(String errorMessage, int errorCode);
     }
@@ -42,11 +42,11 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             UserItem userItem = (UserItem) task.getDataResponse();
             view.didGetProfileDetail(userItem);
         } else if (task instanceof GetListUserPhotos) {
-            PhotoItem photoItem = (PhotoItem) task.getDataResponse();
+            GalleryItem galleryItem = (GalleryItem) task.getDataResponse();
             if (isLoadMore) {
-                view.didLoadMoreListPhotos(photoItem);
+                view.didLoadMoreListPhotos(galleryItem);
             } else {
-                view.didGetListPhotos(photoItem);
+                view.didGetListPhotos(galleryItem);
             }
         }
     }
