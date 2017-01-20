@@ -253,4 +253,7 @@
     <string name="online_notify">オンライン通知</string>
     <string name="name">なまえ</string>
     <string name="residence">住まい</string>
+    <string name="logout">ログアウト</string>
+    <string name="email_backup">メールアドレス設定</string>
+    <string name="approving">審査中</string>
 </resources>

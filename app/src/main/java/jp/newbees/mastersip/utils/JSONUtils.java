@@ -11,7 +11,7 @@ import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
-import jp.newbees.mastersip.model.PhotoItem;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
@@ -299,13 +299,13 @@ public class JSONUtils {
         return baseChatItem;
     }
 
-    public static PhotoItem parseListPhotos(JSONObject jData) throws JSONException {
-        PhotoItem photoItem = new PhotoItem();
+    public static GalleryItem parseListPhotos(JSONObject jData) throws JSONException {
+        GalleryItem galleryItem = new GalleryItem();
 
         if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
-            photoItem.setNextId(Integer.parseInt(jData.getString(Constant.JSON.NEXT_ID)));
+            galleryItem.setNextId(Integer.parseInt(jData.getString(Constant.JSON.NEXT_ID)));
         }
-        photoItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
+        galleryItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
 
         JSONArray jsonImages = jData.getJSONArray(Constant.JSON.LIST_IMAGE);
         List<ImageItem> imageItems = new ArrayList<>();
@@ -319,8 +319,40 @@ public class JSONUtils {
             imageItems.add(imageItem);
         }
 
-        photoItem.setImageItems(imageItems);
+        galleryItem.setImageItems(imageItems);
 
-        return photoItem;
+        return galleryItem;
+    }
+
+    public static UserItem parseMyMenuItem(JSONObject jData) throws JSONException {
+        JSONObject jMyInfo = jData.getJSONObject(Constant.JSON.MY_INFO);
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
+        userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
+        if (jMyInfo.has(Constant.JSON.AVATAR)) {
+            JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
+            if (jAvatar.length() > 0) {
+                ImageItem imageItem = JSONUtils.parseImageItem(jAvatar);
+                userItem.setAvatarItem(imageItem);
+            }else {
+                userItem.setAvatarItem(null);
+            }
+        } else {
+            userItem.setAvatarItem(null);
+        }
+        return userItem;
+    }
+
+    public static ImageItem parseImageItem(JSONObject jAvatar) throws JSONException {
+        ImageItem imageItem = new ImageItem();
+        int imageId = jAvatar.getInt(Constant.JSON.ID);
+        String originPath = jAvatar.getString(Constant.JSON.PATH);
+        String thumbnail = jAvatar.getString(Constant.JSON.THUMBNAIL);
+        int imageStatus = jAvatar.getInt(Constant.JSON.STATUS);
+        imageItem.setImageId(imageId);
+        imageItem.setOriginUrl(originPath);
+        imageItem.setImageStatus(imageStatus);
+        imageItem.setThumbUrl(thumbnail);
+        return imageItem;
     }
 }

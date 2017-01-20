@@ -7,10 +7,15 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
-
         private JSON() {
             //Prevent init constructor
         }
+        public static final String PAGINATE = "paginate";
+        public static final String IMAGE_STATUS = "image_status";
+        public static final String PAGE = "page";
+        public static final String POINT = "point";
+        public static final String MY_INFO = "my_info";
+        public static final String THUMBNAIL = "thumbnail";
 
         public static final  String DEVICE_ID = "device_id";
         public static final  String PASSWORD = "password";
@@ -118,11 +123,9 @@ public final class Constant {
     }
 
     public static final class API {
-
         private API() {
             //Prevent init constructor
         }
-
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -158,6 +161,9 @@ public final class Constant {
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
         public static final String LOGIN_FACEBOOK_URL = "loginfb";
         public static final String PHOTOS = "photos";
+        public static final String MY_PROFILE = "my/profile";
+        public static final String LOGOUT = "logout";
+        public static final String LIST_MY_PHOTOS = "my/photos";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

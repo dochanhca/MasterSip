@@ -29,7 +29,7 @@ import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.PhotoItem;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
@@ -114,7 +114,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     private ProfileDetailItemPresenter profileDetailItemPresenter;
     private UserItem userItem;
     private List<ImageItem> imageItems;
-    private PhotoItem photoItem;
+    private GalleryItem galleryItem;
 
     private RecyclerView.LayoutManager mLayoutManager;
     private UserPhotoAdapter userPhotoAdapter;
@@ -204,16 +204,16 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     }
 
     @Override
-    public void didGetListPhotos(PhotoItem photoItem) {
-        this.photoItem = photoItem;
+    public void didGetListPhotos(GalleryItem galleryItem) {
+        this.galleryItem = galleryItem;
         imageItems.clear();
-        imageItems.addAll(photoItem.getImageItems());
+        imageItems.addAll(galleryItem.getImageItems());
         userPhotoAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void didLoadMoreListPhotos(PhotoItem photoItem) {
+    public void didLoadMoreListPhotos(GalleryItem galleryItem) {
 
     }
 

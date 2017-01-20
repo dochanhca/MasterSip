@@ -23,12 +23,12 @@ import jp.newbees.mastersip.model.UserItem;
 public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.ViewHolder> {
 
     private int gender;
-    private List<ImageItem> datas;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private List<ImageItem> photos;
 
-    public UserPhotoAdapter(Context context, List<ImageItem> datas, int gender) {
-        this.datas = datas;
+    public UserPhotoAdapter(Context context, List<ImageItem> photos, int gender) {
+        this.photos = photos;
         this.context = context;
         this.gender = gender;
     }
@@ -51,15 +51,20 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageItem item = datas.get(position);
+        ImageItem item = photos.get(position);
 
         loadUserProfileImage(item, holder);
     }
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return photos.size();
     }
+
+    public void setPhotos(List<ImageItem> photos) {
+        this.photos = photos;
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
