@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.top;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,6 +39,7 @@ import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 import static android.app.Activity.RESULT_OK;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -108,6 +108,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private int defaultAvatar;
     private UserPhotoAdapter userPhotoAdapter;
     private Uri pickedImage;
+    private boolean requestingSelectPhoto;
+    private boolean uploadingAvatar;
 
 
     @Override
@@ -137,9 +139,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        presenter.requestMyMenuInfo();
+    public void onStart() {
+        super.onStart();
+        if (!requestingSelectPhoto) {
+            presenter.requestMyMenuInfo();
+//            testProgressWheel();
+        }
     }
 
     public static Fragment newInstance() {
@@ -174,7 +179,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void handleUploadImage() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        if (!userItem.hasAvatar()) {
+        if (!userItem.hasAvatar() && !uploadingAvatar) {
             SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_AVATAR, getFragmentManager(), false);
         }
     }
@@ -206,7 +211,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didUploadAvatar(ImageItem avatar) {
-        this.groupUploadAvatar.setVisibility(View.INVISIBLE);
+        uploadingAvatar = false;
+        groupUploadAvatar.setVisibility(View.GONE);
         imgMaskApproving.setVisibility(View.VISIBLE);
         txtApproving.setVisibility(View.VISIBLE);
         btnChangeAvatar.setVisibility(View.INVISIBLE);
@@ -214,21 +220,45 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void onUploadProgressChanged(float percent) {
+        Logger.e(TAG,"Percent uploading .." + percent);
         this.prwUploadAvatar.setProgress(percent);
+    }
+
+    @Override
+    public void didUploadAvatarFailure(String errorMessage) {
+        uploadingAvatar = false;
+        Toast.makeText(getContext(),errorMessage,Toast.LENGTH_SHORT).show();
+        groupUploadAvatar.setVisibility(View.GONE);
+        imgMaskApproving.setVisibility(View.INVISIBLE);
+        txtApproving.setVisibility(View.INVISIBLE);
+        btnChangeAvatar.setVisibility(View.VISIBLE);
+        imgAvatar.setImageResource(defaultAvatar);
+    }
+
+    @Override
+    public void onStartUploadAvatarBitmap(Bitmap bitmap) {
+        this.uploadingAvatar = true;
+        this.imgAvatar.setImageBitmap(bitmap);
+        this.btnChangeAvatar.setVisibility(View.GONE);
+        this.groupUploadAvatar.setVisibility(View.VISIBLE);
     }
 
     private void updateAvatarView(ImageItem avatarItem) {
         if (avatarItem != null) {
-            Glide.with(this).load(avatarItem.getThumbUrl())
-                    .error(defaultAvatar)
-                    .placeholder(defaultAvatar)
-                    .into(imgAvatar);
             int visibility = avatarItem.getImageStatus() == ImageItem.IMAGE_APPROVED ? View.INVISIBLE : View.VISIBLE;
             int visibilityCamera = avatarItem.getImageStatus() == ImageItem.IMAGE_PENDING ? View.INVISIBLE : View.VISIBLE;
             imgMaskApproving.setVisibility(visibility);
             txtApproving.setVisibility(visibility);
             btnChangeAvatar.setVisibility(visibilityCamera);
+            groupUploadAvatar.setVisibility(View.GONE);
+            Glide.with(imgAvatar.getContext())
+                    .load(avatarItem.getThumbUrl())
+                    .placeholder(defaultAvatar)
+                    .fitCenter().dontAnimate()
+                    .dontTransform()
+                    .into(imgAvatar);
         } else {
+            groupUploadAvatar.setVisibility(View.GONE);
             imgMaskApproving.setVisibility(View.INVISIBLE);
             txtApproving.setVisibility(View.INVISIBLE);
             btnChangeAvatar.setVisibility(View.VISIBLE);
@@ -247,6 +277,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
+    public void onStartSelectAvatar() {
+        requestingSelectPhoto = true;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
@@ -262,6 +297,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 }
                 break;
             case SelectAvatarDialog.CROP_IMAGE:
+                requestingSelectPhoto = false;
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
                 }
@@ -281,11 +317,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(
-                result, 0, result.length);
-        this.imgAvatar.setImageBitmap(bitmap);
-        this.groupUploadAvatar.setVisibility(View.VISIBLE);
-        this.presenter.uploadAvatar(bitmap);
+        presenter.uploadAvatar(result);
     }
 
     private void handleImageFromGallery() {
@@ -304,5 +336,4 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
         startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
     }
-
 }

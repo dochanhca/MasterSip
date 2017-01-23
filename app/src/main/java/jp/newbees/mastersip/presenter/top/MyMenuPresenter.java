@@ -3,10 +3,10 @@ package jp.newbees.mastersip.presenter.top;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
 
 import com.android.volley.Response;
-
-import java.io.InputStream;
 
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.GalleryItem;
@@ -17,23 +17,24 @@ import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.LogoutTask;
 import jp.newbees.mastersip.network.api.MyPhotosTask;
 import jp.newbees.mastersip.network.api.MyProfileTask;
-import jp.newbees.mastersip.network.api.UploadImageTask;
+import jp.newbees.mastersip.network.api.UploadImageWithProcessTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.ImageUtils;
-import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.FileUtils;
 
 /**
  * Created by vietbq on 1/19/17.
  */
 
-public class MyMenuPresenter extends BasePresenter implements Response.Listener<ImageItem>,BaseUploadTask.ErrorListener {
+public class MyMenuPresenter extends BasePresenter  {
 
     private final MyMenuView menuView;
+    private Handler handler;
 
     public MyMenuPresenter(Context context, MyMenuView menuView) {
         super(context);
         this.menuView = menuView;
+        this.handler = new Handler();
     }
 
     @Override
@@ -95,24 +96,64 @@ public class MyMenuPresenter extends BasePresenter implements Response.Listener<
         getContext().stopService(intent);
     }
 
-    public void uploadAvatar(Bitmap bmAvatar) {
+    public void uploadAvatar(final String filePath) {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        InputStream inputStream = ImageUtils.convertToInputStream(bmAvatar);
-        UploadImageTask uploadImageTask = new UploadImageTask(getContext(),userItem.getUserId(),UploadImageTask.UPLOAD_FOR_AVATAR,inputStream);
-        uploadImageTask.request(this, this);
+        UploadImageWithProcessTask uploadImageWithProcessTask = new UploadImageWithProcessTask(getContext(),
+                userItem.getUserId(),
+                UploadImageWithProcessTask.UPLOAD_FOR_AVATAR,
+                filePath);
+        uploadImageWithProcessTask.request(new Response.Listener<ImageItem>() {
+            @Override
+            public void onResponse(ImageItem response) {
+                FileUtils.deleteFilePath(filePath);
+                handleDidUploadAvatar(response);
+            }
+        }, new BaseUploadTask.ErrorListener() {
+            @Override
+            public void onErrorListener(int errorCode, String errorMessage) {
+                menuView.didUploadAvatarFailure(errorMessage);
+            }
+        }, new Response.ProgressListener() {
+            @Override
+            public void onProgress(long transferredBytes, long totalSize) {
+                handleUpdateProgressUploadAvatar(transferredBytes, totalSize);
+            }
+        });
     }
 
-    @Override
-    public void onResponse(ImageItem avatar) {
+    private void handleUpdateProgressUploadAvatar(final long transferredBytes,final long totalSize) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                float percent = (transferredBytes*100) / totalSize;
+                menuView.onUploadProgressChanged(percent);
+            }
+        });
+    }
+
+    private void handleDidUploadAvatar(ImageItem avatar) {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         userItem.setAvatarItem(avatar);
         ConfigManager.getInstance().saveUser(userItem);
         menuView.didUploadAvatar(avatar);
     }
 
-    @Override
-    public void onErrorListener(int errorCode, String errorMessage) {
-        Logger.e(TAG,errorMessage);
+    public void uploadAvatar(final byte[] result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Bitmap bitmap = BitmapFactory.decodeByteArray(
+                        result, 0, result.length);
+                final String filePath = FileUtils.saveBitmapToFile(bitmap);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        menuView.onStartUploadAvatarBitmap(bitmap);
+                        uploadAvatar(filePath);
+                    }
+                });
+            }
+        }).start();
     }
 
     public interface MyMenuView {
@@ -125,5 +166,9 @@ public class MyMenuPresenter extends BasePresenter implements Response.Listener<
         void didUploadAvatar(ImageItem avatar);
 
         void onUploadProgressChanged(float percent);
+
+        void didUploadAvatarFailure(String errorMessage);
+
+        void onStartUploadAvatarBitmap(Bitmap bitmap);
     }
 }

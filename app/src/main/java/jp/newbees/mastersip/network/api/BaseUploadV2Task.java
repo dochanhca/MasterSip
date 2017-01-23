@@ -1,9 +1,5 @@
 package jp.newbees.mastersip.network.api;
 
-/**
- * Created by vietbq on 12/14/16.
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -11,38 +7,29 @@ import android.support.annotation.Nullable;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
-import com.android.volley.toolbox.Volley;
+import com.android.volley.request.MultiPartRequest;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
- * Created by thanglh on 13/11/2014.
+ * Created by vietbq on 1/23/17.
  */
-public abstract class BaseUploadTask<T extends Object> {
+
+public abstract class BaseUploadV2Task<T extends Object>  {
     private static final int NETWORK_TIME_OUT = 30000;
-    private Request<T> mRequest;
+    private MultiPartRequest<T> mRequest;
     private Context mContext;
     private RequestQueue mRequestQueue;
     private SharedPreferences sharedPreferences;
@@ -51,33 +38,30 @@ public abstract class BaseUploadTask<T extends Object> {
     private final String authorization;
     private final String registerToken;
 
-    private MultipartEntityBuilder mEntityBuilder;
-    private int REQUEST_OK = 0;
+    private static final int REQUEST_OK = 0;
 
-    protected static String TAG;
+    protected static String Tag;
 
-    protected BaseUploadTask(Context context) {
+    protected BaseUploadV2Task(Context context) {
         this.mContext = context;
         sharedPreferences = mContext.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
         registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
-        TAG = getClass().getName();
+        Tag = getClass().getName();
     }
 
-    public final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
+    /**
+     * @param listener
+     * @param errorListener
+     * @param progressListener
+     */
+    public final void request(final Response.Listener<T> listener, final BaseUploadTask.ErrorListener errorListener, Response.ProgressListener progressListener) {
         String url = genURL();
+        Logger.e(Tag, "URL request : " + url);
 
-        Logger.e(TAG, "URL request : " + url);
-
-        buildMultipartEntity();
-
-        mRequest = new Request<T>(getMethod(), url, new Response.ErrorListener() {
+        mRequest = new MultiPartRequest<T>(getMethod(), url,listener, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                /**
-                 * if volleyError is a instance of VolleyErrorHelper ->error from sever
-                 * else create new VolleyErrorHelper to handle error from Volley
-                 */
                 SipError sipError;
                 if (volleyError instanceof SipError) {
                     sipError = (SipError) volleyError;
@@ -87,31 +71,6 @@ public abstract class BaseUploadTask<T extends Object> {
                 errorListener.onErrorListener(sipError.getErrorCode(), sipError.getErrorMessage());
             }
         }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "multipart/form-data");
-                return headers;
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                HttpEntity httpEntity = mEntityBuilder.build();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                try {
-                    httpEntity.writeTo(bos);
-                    Logger.e("REQUEST --> ", "json = " + getBodyContentType());
-                } catch (IOException e) {
-                    Logger.e("REQUEST --> upload multi part", "IOException writing to ByteArrayOutputStream");
-                }
-                return bos.toByteArray();
-            }
-
-            @Override
-            public String getBodyContentType() {
-                String contentTypeHeader = mEntityBuilder.build().getContentType().getValue();
-                return contentTypeHeader;
-            }
 
             @Override
             protected Response<T> parseNetworkResponse(NetworkResponse response) {
@@ -135,12 +94,18 @@ public abstract class BaseUploadTask<T extends Object> {
 
             @Override
             protected void deliverResponse(T data) {
-                BaseUploadTask.this.dataResponse = data;
+                BaseUploadV2Task.this.dataResponse = data;
                 listener.onResponse(data);
             }
         };
-        mRequestQueue = Volley.newRequestQueue(mContext);
+
+        mRequestQueue = ConfigManager.getInstance().getRequestQueue();
         mRequest.setRetryPolicy(new DefaultRetryPolicy(NETWORK_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequest.addFile("file", getFilePath());
+        buildMultipartEntity();
+        if (progressListener != null) {
+            mRequest.setOnProgressListener(progressListener);
+        }
         mRequestQueue.add(mRequest);
     }
 
@@ -157,17 +122,13 @@ public abstract class BaseUploadTask<T extends Object> {
     }
 
     private void buildMultipartEntity() {
-        mEntityBuilder = MultipartEntityBuilder.create();
-        mEntityBuilder.addBinaryBody(getNameEntity(), getInputStream(), ContentType.create("image/jpeg"), getFileName());
-        mEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        mEntityBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
         Map<String, Object> params = genBodyParam();
         if (null != params) {
             Set<String> keySet = params.keySet();
             for (Iterator<String> key = keySet.iterator(); key.hasNext(); ) {
                 String name = key.next();
                 String value = String.valueOf(params.get(name));
-                mEntityBuilder.addTextBody(name, value);
+                mRequest.addStringParam(name, value);
             }
         }
     }
@@ -195,17 +156,11 @@ public abstract class BaseUploadTask<T extends Object> {
         return Constant.API.VERSION;
     }
 
-    protected abstract String getNameEntity();
-
     protected abstract T didResponse(JSONObject data) throws JSONException;
 
     public abstract String getUrl();
 
     public abstract int getMethod();
-
-    protected abstract InputStream getInputStream();
-
-    protected abstract String getFileName();
 
     @Nullable
     protected abstract Map<String, Object> genBodyParam();
@@ -214,7 +169,6 @@ public abstract class BaseUploadTask<T extends Object> {
         return dataResponse;
     }
 
-    public interface ErrorListener {
-        public void onErrorListener(int errorCode, String errorMessage);
-    }
+    public abstract String getFilePath();
+
 }
