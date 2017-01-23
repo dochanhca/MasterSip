@@ -5,7 +5,6 @@ import android.content.Context;
 import java.io.InputStream;
 
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.UploadImageTask;
 import jp.newbees.mastersip.presenter.BaseUploadPresenter;
