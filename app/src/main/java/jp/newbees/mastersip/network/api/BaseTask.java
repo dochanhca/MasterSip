@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,40 +27,36 @@ import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
-
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public abstract class BaseTask<RESULT_DATA extends Object> {
+public abstract class BaseTask<T extends Object> {
 
     private static final int NETWORK_TIME_OUT = 30000;
     private static final int REQUEST_OK = 0;
     protected static String TAG;
-    private static Context context;
-    private Request<RESULT_DATA> request;
+    private Request<T> request;
     //    private RequestQueue requestQueue;
     private SharedPreferences sharedPreferences;
     private final String authorization;
     private final String registerToken;
-    private RESULT_DATA dataResponse;
+    private T dataResponse;
 
     public BaseTask(Context context) {
-        this.context = context;
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
-
         authorization = ConfigManager.getInstance().getAuthId();
         registerToken = ConfigManager.getInstance().getRegisterToken();
         TAG = getClass().getName();
     }
 
-    final void request(final Response.Listener<RESULT_DATA> listener, final ErrorListener errorListener) {
+    final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
         String url = genURL();
         url += genParamURL();
         if (Constant.Application.DEBUG) {
             Logger.e(TAG, url);
         }
-        request = new Request<RESULT_DATA>(getMethod(), url, new Response.ErrorListener() {
+        request = new Request<T>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 SipError sipError;
@@ -109,9 +105,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             }
 
             @Override
-            protected Response<RESULT_DATA> parseNetworkResponse(NetworkResponse response) {
+            protected Response<T> parseNetworkResponse(NetworkResponse response) {
                 String data = new String(response.data);
-                RESULT_DATA result = null;
+                T result = null;
                 SipError sipError;
                 try {
                     sipError = validData(data);
@@ -130,7 +126,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
             }
 
             @Override
-            protected void deliverResponse(RESULT_DATA response) {
+            protected void deliverResponse(T response) {
                 BaseTask.this.dataResponse = response;
                 listener.onResponse(response);
             }
@@ -193,28 +189,26 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
     private void getCommonParams(JSONObject jParams) throws JSONException {
         Gson gson = new Gson();
         String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
-        String registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
         UserItem userItem;
         if (jUser != null) {
             Type type = new TypeToken<UserItem>() {
             }.getType();
             userItem = gson.fromJson(jUser, type);
             jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
-            jParams.put(Constant.JSON.REGIST_TOKEN, registerToken);
+            jParams.put(Constant.JSON.REGIST_TOKEN, this.registerToken);
         }
     }
 
     private void addCommonHeaders(HashMap<String, String> jParams) {
         Gson gson = new Gson();
         String jUser = sharedPreferences.getString(Constant.Application.USER_ITEM, null);
-        String registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
         UserItem userItem;
         if (jUser != null) {
             Type type = new TypeToken<UserItem>() {
             }.getType();
             userItem = gson.fromJson(jUser, type);
             jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
-            jParams.put(Constant.JSON.REGIST_TOKEN, registerToken);
+            jParams.put(Constant.JSON.REGIST_TOKEN, this.registerToken);
         }
     }
 
@@ -245,7 +239,7 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
      * @return Object that needs return to caller
      * @throws JSONException
      */
-    protected abstract RESULT_DATA didResponse(JSONObject data) throws JSONException;
+    protected abstract T didResponse(JSONObject data) throws JSONException;
 
     /**
      * This method support for get Device Id
@@ -256,10 +250,9 @@ public abstract class BaseTask<RESULT_DATA extends Object> {
         return ConfigManager.getInstance().getDeviceId();
     }
 
-    public RESULT_DATA getDataResponse() {
+    public T getDataResponse() {
         return dataResponse;
     }
-
 
     public interface ErrorListener {
         void onError(int errorCode, String errorMessage);

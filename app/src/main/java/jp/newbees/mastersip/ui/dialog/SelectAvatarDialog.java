@@ -49,6 +49,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
     public interface OnSelectAvatarDiaLogClick {
          void onDeleteImageClick();
+        void onStartSelectAvatar();
     }
 
     private OnSelectAvatarDiaLogClick onSelectAvatarDiaLogClick;
@@ -96,8 +97,10 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view == layoutTakeAPicture) {
+            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkCameraPermission();
         } else if (view == layoutSelectPicture) {
+            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkStoragePermission();
         } else if (view == layoutDeletePicture) {
             this.onSelectAvatarDiaLogClick.onDeleteImageClick();
@@ -236,6 +239,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     }
 
     private void openGallery() {
+
         if (showFromActivity) {
             openGalleryFromActivity();
         }else {

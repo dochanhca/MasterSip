@@ -181,6 +181,11 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     }
 
     @Override
+    public void onStartSelectAvatar() {
+
+    }
+
+    @Override
     public void onItemSelected(int position) {
         jobItem = maleJobItems.get(position);
         txtProfession.setText(jobItem.getTitle());
