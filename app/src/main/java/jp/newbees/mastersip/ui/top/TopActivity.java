@@ -22,6 +22,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
+    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 205;
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 206;
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;

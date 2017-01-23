@@ -119,6 +119,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         setFragmentTitle(getString(R.string.filter_by_name));
+        restoreNavigationBarState();
         userItems = new ArrayList<>();
         filterUserPresenter = new FilterByNamePresenter(getActivity().getApplicationContext(), this);
 
@@ -160,6 +161,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
                 break;
             case R.id.img_back:
                 hideSoftwareKeyboard();
+                restoreNavigationBarState();
                 getFragmentManager().popBackStack();
                 break;
             default:

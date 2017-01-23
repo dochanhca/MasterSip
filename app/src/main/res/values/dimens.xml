@@ -77,6 +77,7 @@
     <dimen name="layout_profile_action_detail_h">85dp</dimen>
     <dimen name="action_profile_detail_w">110dp</dimen>
     <dimen name="profile_detail_row_h">36dp</dimen>
+    <dimen name="layout_select_image_h">80dp</dimen>
     <dimen name="_5dp">5dp</dimen>
     <dimen name="_10dp">10dp</dimen>
     <dimen name="_14sp">14sp</dimen>

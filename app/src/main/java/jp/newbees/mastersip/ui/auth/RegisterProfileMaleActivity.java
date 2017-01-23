@@ -37,6 +37,7 @@ import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -206,6 +207,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     @Override
     public void onUploadImageFailure(int errorCode, String errorMessage) {
+        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
         doRegister();
     }
 

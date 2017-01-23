@@ -8,18 +8,18 @@ import android.widget.RelativeLayout;
  * Created by thangit14 on 1/11/17.
  */
 
-public class SoftKeyboardLsnedRelaytiveLayout extends RelativeLayout {
+public class SoftKeyboardLsnedRelativeLayout extends RelativeLayout {
     private SoftKeyboardLsner listener;
 
-    public SoftKeyboardLsnedRelaytiveLayout(Context context) {
+    public SoftKeyboardLsnedRelativeLayout(Context context) {
         super(context);
     }
 
-    public SoftKeyboardLsnedRelaytiveLayout(Context context, AttributeSet attrs) {
+    public SoftKeyboardLsnedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SoftKeyboardLsnedRelaytiveLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SoftKeyboardLsnedRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

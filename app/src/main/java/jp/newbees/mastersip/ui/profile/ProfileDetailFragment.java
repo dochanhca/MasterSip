@@ -96,6 +96,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_back:
+                restoreNavigationBarState();
                 getFragmentManager().popBackStack();
                 break;
             case R.id.layout_chat:

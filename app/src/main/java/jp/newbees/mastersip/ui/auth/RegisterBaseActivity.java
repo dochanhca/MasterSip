@@ -12,8 +12,6 @@ import jp.newbees.mastersip.ui.top.TopActivity;
 
 public abstract class RegisterBaseActivity extends BaseActivity {
 
-    private final String TAG = getClass().getSimpleName();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -24,7 +24,7 @@ public class TopPresenter extends BasePresenter {
     }
 
     public void didGrantedCameraPermission() {
-        requestMicrophonePermission();
+        requestReadExternalStoragePermission();
     }
 
     public interface TopView {
@@ -37,28 +37,53 @@ public class TopPresenter extends BasePresenter {
 
     private final void requestCameraPermission() {
         int camera = context.getPackageManager().checkPermission(Manifest.permission.CAMERA, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Camera permission is " + (camera == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
+        Logger.e("TopPresenter", "[Permission] Camera permission is "
+                +(camera == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
 
         if (camera != PackageManager.PERMISSION_GRANTED) {
             requestPermission(Manifest.permission.CAMERA, TopActivity.PERMISSIONS_REQUEST_CAMERA);
         } else {
-            requestMicrophonePermission();
+            requestReadExternalStoragePermission();
         }
     }
 
     private final void requestMicrophonePermission() {
         int recordAudio = context.getPackageManager().checkPermission(Manifest.permission.RECORD_AUDIO, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Record audio permission is " + (recordAudio == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
+        Logger.e("TopPresenter", "[Permission] Record audio permission is "
+                +(recordAudio == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
         if (recordAudio != PackageManager.PERMISSION_GRANTED) {
             requestPermission(Manifest.permission.RECORD_AUDIO, TopActivity.PERMISSIONS_ENABLED_MIC);
         }
     }
 
+    private final void requestWriteExternalStoragePermission() {
+        int writeExternalStorage = context.getPackageManager().checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, context.getPackageName());
+        Logger.e("TopPresenter", "[Permission] Write external storage permission is "
+                +(writeExternalStorage == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
+
+        if (writeExternalStorage != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, TopActivity.PERMISSIONS_REQUEST_CAMERA);
+        } else {
+            requestMicrophonePermission();
+        }
+
+    }
+
+    private final void requestReadExternalStoragePermission() {
+        int readExternalStorage = context.getPackageManager().checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, context.getPackageName());
+        Logger.e("TopPresenter", "[Permission] Read external storage permission is "
+                +(readExternalStorage == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
+
+        if (readExternalStorage != PackageManager.PERMISSION_GRANTED) {
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, TopActivity.PERMISSIONS_REQUEST_CAMERA);
+        } else {
+            requestWriteExternalStoragePermission();
+        }
+    }
+
     private void requestPermission(String permission, int result) {
-//        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) view, permission)) {
             Logger.e("TopPresenter", "[Permission] Asking for " + permission);
             ActivityCompat.requestPermissions((Activity) view, new String[]{permission}, result);
-//        }
     }
 
     @Override

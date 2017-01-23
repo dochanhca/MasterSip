@@ -85,4 +85,13 @@ public abstract class BaseFragment extends Fragment {
     protected boolean isNavigationBarShowing() {
         return ((TopActivity) getActivity()).isShowNavigationBar();
     }
+
+    /**
+     * Show navigation bar if state == INVISIBLE
+     */
+    protected void restoreNavigationBarState() {
+        if (!isNavigationBarShowing()) {
+            ((TopActivity) getActivity()).showNavigation();
+        }
+    }
 }

@@ -11,6 +11,21 @@ import java.io.Serializable;
 
 public class BaseChatItem implements Parcelable, Serializable {
 
+    private boolean isOwner;
+    private int roomId;
+    private int messageId;
+    private String fullDate;
+    private int chatType;
+    private int cellIndex;
+    private String cellIdentifier; //For cell;
+    private int messageState;
+    private int roomType;
+    private String shortDate;
+    private String shortTimeStamp;
+
+    private UserItem sender;
+    private UserItem sendee;
+
     public BaseChatItem(int roomType, UserItem sender, UserItem sendee) {
         this.roomType = roomType;
         this.sender = sender;
@@ -167,10 +182,6 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.sender = owner;
     }
 
-    //    @property (nonatomic) NSString *imageNameDefault;
-    private UserItem sender;
-    private UserItem sendee;
-
     public UserItem getSendee() {
         return sendee;
     }
@@ -179,27 +190,11 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.sendee = sendee;
     }
 
-    private boolean isOwner; //isHost
-    private int roomId;
-    private int messageId;
-    private String fullDate;
-
-    private int chatType;
-
-    private int cellIndex;
-    private String cellIdentifier; //For cell;
-//    @property (nonatomic) BOOL isSendFalse;
-    private int messageState;
-    private int roomType;
-    private String shortDate;
-    private String shortTimeStamp;
-
-
     public boolean isOwner() {
         return isOwner;
     }
 
-    public void setSender(boolean sender) {
+    public void setOwner(boolean sender) {
         isOwner = sender;
     }
 

@@ -37,6 +37,7 @@ import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 12/13/16.
@@ -191,8 +192,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     @Override
     public void onUploadImageFailure(int errorCode, String errorMessage) {
-
-        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
         doRegister();
     }
 
