@@ -107,20 +107,20 @@ public abstract class BaseTask<T extends Object> {
             @Override
             protected Response<T> parseNetworkResponse(NetworkResponse response) {
                 String data = new String(response.data);
+                Logger.e("API",data);
                 T result = null;
                 SipError sipError;
                 try {
                     sipError = validData(data);
                     if (null == sipError) {
                         JSONObject jsonObject = new JSONObject(data);
-//                        JSONObject jData = jsonObject.getJSONObject(Constant.JSON.DATA);
                         result = didResponse(jsonObject);
                         return Response.success(result, getCacheEntry());
                     } else {
                         return Response.error(sipError);
                     }
                 } catch (JSONException e) {
-                    sipError = new SipError(Constant.Error.PARSE_ERROR, "parse json error");
+                    sipError = new SipError(Constant.Error.PARSE_ERROR, "Parse json error");
                     return Response.error(sipError);
                 }
             }
@@ -132,7 +132,6 @@ public abstract class BaseTask<T extends Object> {
             }
         };
 
-//      HttpsTrustManager.allowAllSSL();
         request.setRetryPolicy(new DefaultRetryPolicy(NETWORK_TIME_OUT, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         ConfigManager.getInstance().getRequestQueue().add(request);
     }

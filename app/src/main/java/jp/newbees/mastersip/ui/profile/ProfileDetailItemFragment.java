@@ -205,7 +205,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     public void didGetListPhotos(GalleryItem galleryItem) {
         this.galleryItem = galleryItem;
         imageItems.clear();
-        imageItems.addAll(galleryItem.getImageItems());
+        imageItems.addAll(galleryItem.getPhotos());
         userPhotoAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }

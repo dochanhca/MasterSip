@@ -91,4 +91,5 @@
     <dimen name="_5sp">5sp</dimen>
     <dimen name="_8sp">8sp</dimen>
     <dimen name="_9sp">9sp</dimen>
+    <dimen name="size_thumb_photo_gallery">60dp</dimen>
 </resources>

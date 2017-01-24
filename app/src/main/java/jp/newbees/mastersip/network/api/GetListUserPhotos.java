@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 
@@ -16,7 +17,7 @@ import jp.newbees.mastersip.utils.JSONUtils;
  * Created by ducpv on 1/19/17.
  */
 
-public class GetListUserPhotos extends BaseTask {
+public class GetListUserPhotos extends BaseTask<GalleryItem> {
 
     private int imageId;
     private String userId;
@@ -51,8 +52,8 @@ public class GetListUserPhotos extends BaseTask {
     }
 
     @Override
-    protected Object didResponse(JSONObject data) throws JSONException {
+    protected GalleryItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        return JSONUtils.parseListPhotos(jData);
+        return JSONUtils.parseGallery(jData);
     }
 }
