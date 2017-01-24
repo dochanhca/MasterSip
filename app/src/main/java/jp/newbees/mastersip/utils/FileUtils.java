@@ -32,6 +32,7 @@ public class FileUtils {
                 if (out != null) {
                     out.close();
                 }
+                bitmap.recycle();
             } catch (IOException e) {
                 e.printStackTrace();
             }

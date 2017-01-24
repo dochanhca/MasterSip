@@ -14,6 +14,7 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
+import jp.newbees.mastersip.network.api.DeleteImageTask;
 import jp.newbees.mastersip.network.api.LogoutTask;
 import jp.newbees.mastersip.network.api.MyPhotosTask;
 import jp.newbees.mastersip.network.api.MyProfileTask;
@@ -21,6 +22,7 @@ import jp.newbees.mastersip.network.api.UploadImageWithProcessTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.FileUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/19/17.
@@ -45,7 +47,16 @@ public class MyMenuPresenter extends BasePresenter  {
             this.handleMyInfo((MyProfileTask) task);
         }else if(task instanceof MyPhotosTask) {
             this.handleMyPhotos((MyPhotosTask) task);
+        }else if(task instanceof DeleteImageTask) {
+            this.handleDeleteAvatar();
         }
+    }
+
+    private void handleDeleteAvatar() {
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setAvatarItem(null);
+        ConfigManager.getInstance().saveUser(userItem);
+        menuView.didDeleteAvatar();
     }
 
     private void handleMyPhotos(MyPhotosTask task) {
@@ -64,6 +75,8 @@ public class MyMenuPresenter extends BasePresenter  {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof LogoutTask) {
             menuView.didLogout();
+        }else if(task instanceof DeleteImageTask) {
+            menuView.didDeleteAvatarFailure();
         }
     }
 
@@ -73,7 +86,7 @@ public class MyMenuPresenter extends BasePresenter  {
     }
 
     private void requestGetGallery() {
-        MyPhotosTask myPhotosTask = new MyPhotosTask(context, new GalleryItem(0));
+        MyPhotosTask myPhotosTask = new MyPhotosTask(context, new GalleryItem());
         requestToServer(myPhotosTask);
     }
 
@@ -105,7 +118,7 @@ public class MyMenuPresenter extends BasePresenter  {
         uploadImageWithProcessTask.request(new Response.Listener<ImageItem>() {
             @Override
             public void onResponse(ImageItem response) {
-                FileUtils.deleteFilePath(filePath);
+//                FileUtils.deleteFilePath(filePath);
                 handleDidUploadAvatar(response);
             }
         }, new BaseUploadTask.ErrorListener() {
@@ -142,18 +155,27 @@ public class MyMenuPresenter extends BasePresenter  {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                long start = System.currentTimeMillis();
                 final Bitmap bitmap = BitmapFactory.decodeByteArray(
                         result, 0, result.length);
                 final String filePath = FileUtils.saveBitmapToFile(bitmap);
+                long end = System.currentTimeMillis() - start;
+                Logger.e("Upload Avatar", "time : " + end);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        menuView.onStartUploadAvatarBitmap(bitmap);
+                        menuView.onStartUploadAvatarBitmap(filePath);
                         uploadAvatar(filePath);
                     }
                 });
             }
         }).start();
+    }
+
+    public void deleteAvatar() {
+        UserItem userItem = getCurrentUserItem();
+        DeleteImageTask deleteImageTask = new DeleteImageTask(getContext(),userItem, userItem.getAvatarItem());
+        requestToServer(deleteImageTask);
     }
 
     public interface MyMenuView {
@@ -169,6 +191,10 @@ public class MyMenuPresenter extends BasePresenter  {
 
         void didUploadAvatarFailure(String errorMessage);
 
-        void onStartUploadAvatarBitmap(Bitmap bitmap);
+        void onStartUploadAvatarBitmap(String filePath);
+
+        void didDeleteAvatar();
+
+        void didDeleteAvatarFailure();
     }
 }

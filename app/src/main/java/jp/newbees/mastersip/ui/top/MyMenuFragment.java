@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.File;
@@ -37,9 +37,9 @@ import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
-import jp.newbees.mastersip.utils.Logger;
 
 import static android.app.Activity.RESULT_OK;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -51,6 +51,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, UserPhotoAdapter.OnItemClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick {
     private static final int REQUEST_SELECT_AVATAR = 8888;
+    private static final int REQUEST_SELECT_PHOTO = 8989;
     @BindView(R.id.switch_mode_in_header)
     ImageView switchModeInHeader;
     @BindView(R.id.txt_action_bar_title)
@@ -143,7 +144,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         super.onStart();
         if (!requestingSelectPhoto) {
             presenter.requestMyMenuInfo();
-//            testProgressWheel();
         }
     }
 
@@ -159,27 +159,38 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             R.id.btn_upload_photo,
             R.id.btn_logout,
             R.id.btn_backup_email,
+            R.id.btn_change_avatar,
             R.id.group_avatar})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_buy_point:
-                break;
-            case R.id.btn_upload_photo:
                 break;
             case R.id.btn_logout:
                 this.handleLogout();
                 break;
             case R.id.btn_backup_email:
                 break;
+            case R.id.btn_upload_photo:
+                handleUploadPhoto();
+                break;
+            case R.id.btn_change_avatar:
             case R.id.group_avatar:
-                handleUploadImage();
+                handleUploadAvatar();
                 break;
         }
     }
 
-    private void handleUploadImage() {
+    private void handleUploadPhoto() {
+        SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_PHOTO, getFragmentManager(), false);
+    }
+
+    private void handleUploadAvatar() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        if (!userItem.hasAvatar() && !uploadingAvatar) {
+        if (userItem.hasAvatar() && !uploadingAvatar){
+              if (userItem.getAvatarItem().isApproved()){
+                  SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_AVATAR, getFragmentManager(), true);
+              }
+        } else if (!userItem.hasAvatar() && !uploadingAvatar) {
             SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_AVATAR, getFragmentManager(), false);
         }
     }
@@ -205,8 +216,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadGallery(GalleryItem galleryItem) {
-        this.userPhotoAdapter.setPhotos(galleryItem.getImageItems());
-        this.userPhotoAdapter.notifyDataSetChanged();
+//        this.userPhotoAdapter.setPhotos(galleryItem.getImageItems());
+//        this.userPhotoAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -220,7 +231,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void onUploadProgressChanged(float percent) {
-        Logger.e(TAG,"Percent uploading .." + percent);
         this.prwUploadAvatar.setProgress(percent);
     }
 
@@ -236,11 +246,36 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void onStartUploadAvatarBitmap(Bitmap bitmap) {
+    public void onStartUploadAvatarBitmap(final String filePath) {
         this.uploadingAvatar = true;
-        this.imgAvatar.setImageBitmap(bitmap);
+        this.prwUploadAvatar.resetCount();
+        Glide.with(getContext())
+                .load(new File(filePath))
+                .fitCenter()
+                .dontAnimate()
+                .dontTransform()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(this.imgAvatar);
         this.btnChangeAvatar.setVisibility(View.GONE);
         this.groupUploadAvatar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void didDeleteAvatar() {
+        disMissLoading();
+        String notifyDeleteAvatar  = getString(R.string.delete_avatar_notify);
+        Toast.makeText(getContext(),notifyDeleteAvatar, Toast.LENGTH_SHORT).show();
+        groupUploadAvatar.setVisibility(View.GONE);
+        imgMaskApproving.setVisibility(View.INVISIBLE);
+        txtApproving.setVisibility(View.INVISIBLE);
+        btnChangeAvatar.setVisibility(View.VISIBLE);
+        imgAvatar.setImageResource(defaultAvatar);
+    }
+
+    @Override
+    public void didDeleteAvatarFailure() {
+        disMissLoading();
     }
 
     private void updateAvatarView(ImageItem avatarItem) {
@@ -254,8 +289,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             Glide.with(imgAvatar.getContext())
                     .load(avatarItem.getThumbUrl())
                     .placeholder(defaultAvatar)
-                    .fitCenter().dontAnimate()
+                    .fitCenter()
+                    .dontAnimate()
                     .dontTransform()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(imgAvatar);
         } else {
             groupUploadAvatar.setVisibility(View.GONE);
@@ -273,7 +311,16 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void onDeleteImageClick() {
-
+        String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
+        TextDialog textDialog = TextDialog.getInstance(confirmDeleteAvatar);
+        textDialog.setOnPositiveListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLoading();
+                presenter.deleteAvatar();
+            }
+        });
+        textDialog.show(getFragmentManager(), "DeleteAvatarDialog");
     }
 
     @Override

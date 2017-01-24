@@ -11,20 +11,20 @@ import java.util.List;
 
 public class GalleryItem implements Parcelable {
 
-    private int nextId;
+    private String nextId;
     private int totalImage;
     private List<ImageItem> imageItems;
 
     public GalleryItem() {
-        this.nextId = 0;
+        this.nextId = "";
     }
 
-    public GalleryItem(int nextId) {
+    public GalleryItem(String nextId) {
         this.nextId = nextId;
     }
 
     public GalleryItem(Parcel in) {
-        nextId = in.readInt();
+        nextId = in.readString();
         imageItems = in.createTypedArrayList(ImageItem.CREATOR);
     }
 
@@ -48,11 +48,11 @@ public class GalleryItem implements Parcelable {
         this.totalImage = totalImage;
     }
 
-    public int getNextId() {
+    public String getNextId() {
         return nextId;
     }
 
-    public void setNextId(int nextId) {
+    public void setNextId(String nextId) {
         this.nextId = nextId;
     }
 
@@ -71,7 +71,7 @@ public class GalleryItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(nextId);
+        parcel.writeString(nextId);
         parcel.writeTypedList(imageItems);
         parcel.writeInt(totalImage);
     }

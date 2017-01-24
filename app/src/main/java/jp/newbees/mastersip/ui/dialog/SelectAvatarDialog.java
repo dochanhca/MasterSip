@@ -38,6 +38,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     private static final int GALLERY_PERMISSION = 11;
     public static final String AVATAR_NAME = "/avatar.jpg";
     private static final String CALL_FROM_ACTIVITY = "CALL_FROM_ACTIVITY";
+    private static final String REQUEST_CODE = "REQUEST_CODE";
 
     private RelativeLayout layoutTakeAPicture;
     private RelativeLayout layoutSelectPicture;
@@ -208,6 +209,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
         bundle.putBoolean(CALL_FROM_ACTIVITY, false);
+        bundle.putInt(REQUEST_CODE, requestCode);
         selectionDialog.setArguments(bundle);
         selectionDialog.setTargetFragment(fragment, requestCode);
         selectionDialog.show(fragmentManager, "SelectAvatarDialog");
