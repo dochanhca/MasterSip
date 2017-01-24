@@ -103,7 +103,7 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
                 ChatActivity.start(getContext(), userItem);
                 break;
             case R.id.layout_voice_call:
-                ConfirmVoiceCallDialog.openConfirmVoiceCallDialogFromFragment(this,
+                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
                         CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
                 break;
             case R.id.layout_video_call:

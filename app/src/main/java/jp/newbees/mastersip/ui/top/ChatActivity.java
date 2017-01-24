@@ -44,7 +44,8 @@ import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
@@ -60,7 +61,7 @@ import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick {
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
 
@@ -338,6 +339,7 @@ public class ChatActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_phone:
+                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(getSupportFragmentManager());
                 break;
             case R.id.action_video:
                 break;
@@ -378,6 +380,11 @@ public class ChatActivity extends BaseActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onOkVoiceCallClick() {
+        presenter.checkVoiceCall(userItem);
     }
 
     private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
@@ -504,7 +511,6 @@ public class ChatActivity extends BaseActivity {
             showSoftKeyboard();
             uiMode = UIMode.INPUT_TEXT_MODE;
         }
-
     }
 
     private void hideSoftKeyboard() {
