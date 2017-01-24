@@ -257,4 +257,6 @@
     <string name="logout">ログアウト</string>
     <string name="email_backup">メールアドレス設定</string>
     <string name="approving">審査中</string>
+    <string name="confirm_delete_avatar">現在登録されている写真を削除しても\nよろしいでしょうか？</string>
+    <string name="delete_avatar_notify">写真を削除しました。</string>
 </resources>

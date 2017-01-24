@@ -7,6 +7,8 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
+        public static final String IMG_ID = "img_id";
+
         private JSON() {
             //Prevent init constructor
         }
@@ -124,6 +126,8 @@ public final class Constant {
     }
 
     public static final class API {
+
+
         private API() {
             //Prevent init constructor
         }
@@ -171,6 +175,7 @@ public final class Constant {
         public static final String LOGOUT = "logout";
         public static final String LIST_MY_PHOTOS = "my/photos";
         public static final String SAVE_FILE_CHAT = "save_file_chat";
+        public static final String DELETE_IMAGE = "image/delete";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

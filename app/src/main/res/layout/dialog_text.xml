@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/bg_text_dialog"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/_10dp"
+    android:layout_marginRight="@dimen/_10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_dialog_header"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_action_bar"
+        android:background="@drawable/bg_header_dialog"
+        android:text="asasdasdasdasdas"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_h" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_content"
+        android:gravity="center"
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/margin_25"
+        android:layout_marginBottom="@dimen/margin_25"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/layout_actions"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_dialog_simple"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10">
+
+        <ImageView
+            android:id="@+id/img_positive"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_20"
+            android:layout_marginRight="@dimen/margin_5"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/btn_ok_small"/>
+
+        <ImageView
+            android:layout_marginLeft="@dimen/margin_5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/img_negative"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="@dimen/margin_20"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:src="@drawable/btn_cancel_small"/>
+    </LinearLayout>
+</LinearLayout>

@@ -89,4 +89,8 @@ public class ImageItem implements Parcelable, Serializable {
             return new ImageItem[size];
         }
     };
+
+    public boolean isApproved() {
+        return this.imageStatus == ImageItem.IMAGE_APPROVED ? true : false;
+    }
 }

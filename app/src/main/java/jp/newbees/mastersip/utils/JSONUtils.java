@@ -346,7 +346,7 @@ public class JSONUtils {
         GalleryItem galleryItem = new GalleryItem();
 
         if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
-            galleryItem.setNextId(Integer.parseInt(jData.getString(Constant.JSON.NEXT_ID)));
+            galleryItem.setNextId(jData.getString(Constant.JSON.NEXT_ID));
         }
         galleryItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
 
