@@ -10,14 +10,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tonicartos.superslim.GridSLM;
+import com.tonicartos.superslim.LayoutManager;
 import com.tonicartos.superslim.LinearSLM;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 
 /**
  * Created by thangit14 on 1/9/17.
@@ -25,12 +31,14 @@ import jp.newbees.mastersip.utils.ConfigManager;
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int OFFSET_RETURN_TYPE = 100;
+    private Date initDay;
 
     private List<BaseChatItem> datas;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
     public ChatAdapter(Context context, List<BaseChatItem> datas) {
+        this.initDay = DateTimeUtils.getDateWithoutTime(Calendar.getInstance().getTime());
         this.datas = datas;
         this.context = context;
     }
@@ -104,6 +112,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 break;
             case BaseChatItem.ChatType.HEADER:
+                layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
+                layoutParams.headerEndMarginIsAuto = true;
+                layoutParams.headerStartMarginIsAuto = true;
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                ViewHolderHeader viewHolderHeader = (ViewHolderHeader) holder;
+                viewHolderHeader.txtContent.setText(item.getDisplayDate());
                 break;
             default:
 
@@ -127,6 +141,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             type += OFFSET_RETURN_TYPE;
         }
         return type;
+    }
+
+    public int getLastMessageID() {
+        for (int i = 0; i < datas.size(); i++) {
+            if (datas.get(i).getChatType() != BaseChatItem.ChatType.HEADER) {
+                return datas.get(i).getMessageId();
+            }
+        }
+        return 0;
     }
 
     public static class ViewHolderTextMessage extends RecyclerView.ViewHolder {
@@ -157,6 +180,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class ViewHolderHeader extends RecyclerView.ViewHolder {
         private TextView txtContent;
+
         public ViewHolderHeader(View root) {
             super(root);
             txtContent = (TextView) root.findViewById(R.id.txt_content);
@@ -168,14 +192,99 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void add(BaseChatItem item) {
+    private void add(BaseChatItem item) {
         datas.add(item);
+    }
+
+    public void addItemAndHeaderIfNeed(BaseChatItem item) {
+        int sectionFirstPosition = 0;
+        if (hasNewDay(item)) {
+            updateAllHeaderItem(false);
+        }
+
+        if (needToAddHeader(item)) {
+            addHeaderItem(item);
+        } else {
+            sectionFirstPosition = getLastHeader();
+        }
+        item.setSectionFirstPosition(sectionFirstPosition);
+        add(item);
         notifyDataSetChanged();
+    }
+
+    private void updateAllHeaderItem(boolean needNotify) {
+        for (int i = 0; i < datas.size(); i++) {
+            BaseChatItem item = datas.get(i);
+            Date date = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
+            if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
+                item.setFullDate(DateTimeUtils.getHeaderDateInChatHistory(date, context));
+                if (needNotify) notifyItemChanged(i);
+            }
+        }
+    }
+
+    private void addHeaderItem(BaseChatItem item) {
+        BaseChatItem header = getHeaderChatItem(
+                DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT),
+                getItemCount());
+        add(header);
+    }
+
+    private boolean hasNewDay(BaseChatItem item) {
+        try {
+            Date date = DateTimeUtils.ENGLISH_DATE_FORMAT.parse(item.getFullDate());
+            if (initDay.before(date)) {
+                this.initDay = date;
+                return true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private int getLastHeader() {
+        for (int i = datas.size() - 1; i >= 0; i--) {
+            if (datas.get(i).getChatType() == BaseChatItem.ChatType.HEADER) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private boolean needToAddHeader(BaseChatItem item) {
+        if (getItemCount() == 0) {
+            return true;
+        } else {
+            Date newDate = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
+            Date lastDate = DateTimeUtils.convertStringToDate(datas.get(getItemCount() - 1).getFullDate(),
+                    DateTimeUtils.ENGLISH_DATE_FORMAT);
+
+            if (newDate.after(lastDate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private BaseChatItem getHeaderChatItem(Date date, int sectionFirstPosition) {
+        BaseChatItem header = new BaseChatItem();
+        header.setChatType(BaseChatItem.ChatType.HEADER);
+        header.setFullDate(DateTimeUtils.getHeaderDateInChatHistory(date, context));
+        header.setSectionFirstPosition(sectionFirstPosition);
+        return header;
     }
 
     public void clearAndAddNewData(List<BaseChatItem> datas) {
         this.datas = datas;
         notifyDataSetChanged();
+    }
+
+    public void addDataFromBeginning(List<BaseChatItem> datas) {
+        ArrayList<BaseChatItem> newData = new ArrayList<>();
+        newData.addAll(datas);
+        newData.addAll(this.datas);
+        clearAndAddNewData(newData);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -211,19 +320,32 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         boolean hasReadChatItem = false;
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = datas.get(i);
-            if (baseChatItem.getMessageId() == readChatItem.getMessageId()) {
+            if (hasReadChatItem) {
+                if (baseChatItem.isOwner()) {
+                    if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
+                        notifyDataSetChanged();
+                        return;
+                    } else {
+                        baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
+                    }
+                }
+            } else if (baseChatItem.getMessageId() == readChatItem.getMessageId()) {
                 hasReadChatItem = true;
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
             }
-            if (hasReadChatItem && baseChatItem.isOwner()) {
-                if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
-                    notifyDataSetChanged();
-                    return;
-                } else {
-                    baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
-                }
-            }
+
         }
         notifyDataSetChanged();
     }
+
+
+    private void notifyHeaderChanges() {
+        for (int i = 0; i < datas.size(); i++) {
+            BaseChatItem item = datas.get(i);
+            if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
+                notifyItemChanged(i);
+            }
+        }
+    }
+
 }

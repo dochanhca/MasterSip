@@ -1,10 +1,13 @@
 package jp.newbees.mastersip.utils;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -298,27 +301,53 @@ public class JSONUtils {
         return baseChatItem;
     }
 
-    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data) throws JSONException {
+    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, Context context) throws JSONException {
         ArrayList<BaseChatItem> result = new ArrayList<>();
+
+        HashMap<String,UserItem> members = getMembers(data.getJSONArray(Constant.JSON.MEMBERS));
+
         JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
         int sectionFirstPosition = 0;
         for (int i = 0; i < jListMessages.length(); i++) {
             JSONObject jListMessage = jListMessages.getJSONObject(i);
 
-            result.add(getHeaderChatItem(jListMessage));
+            result.add(getHeaderChatItem(jListMessage,sectionFirstPosition, context));
 
-            JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.K_MESSAGES);
+            JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.MESSAGES);
             for (int j = 0; j < jMessages.length(); j++) {
-                JSONObject jMessage = jListMessages.getJSONObject(j);
-                result.add(getBaseChatItemInHistory(jMessage,sectionFirstPosition));
+                JSONObject jMessage = jMessages.getJSONObject(j);
+                result.add(getBaseChatItemInHistory(jMessage,sectionFirstPosition, members));
             }
             sectionFirstPosition = result.size();
         }
         return result;
     }
 
-    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition) throws JSONException {
+    private static HashMap<String,UserItem> getMembers(JSONArray jsonArray) throws JSONException {
+        HashMap<String, UserItem> members = new HashMap<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jMember = jsonArray.getJSONObject(i);
+            UserItem userItem = new UserItem();
+            userItem.setUserId(jMember.getString(Constant.JSON.ID));
+            userItem.setUsername(jMember.getString(Constant.JSON.HANDLE_NAME));
+
+            SipItem sipItem = new SipItem();
+            sipItem.setExtension(jMember.getString(Constant.JSON.EXTENSION));
+            userItem.setSipItem(sipItem);
+
+            ImageItem imageItem = new ImageItem();
+            imageItem.setOriginUrl(jMember.getString(Constant.JSON.AVATAR));
+            imageItem.setThumbUrl(imageItem.getOriginUrl());
+            userItem.setAvatarItem(imageItem);
+
+            members.put(userItem.getUserId(), userItem);
+        }
+        return members;
+    }
+
+    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition, HashMap<String, UserItem> members) throws JSONException {
         BaseChatItem baseChatItem;
+        UserItem owner = ConfigManager.getInstance().getCurrentUser();
         int type = jMessage.getInt(Constant.JSON.TYPE);
         switch (type) {
             case BaseChatItem.ChatType.CHAT_TEXT:
@@ -329,21 +358,32 @@ public class JSONUtils {
             default:
                 baseChatItem = new BaseChatItem();
         }
-        baseChatItem.setFullDate(jMessage.getString(Constant.JSON.K_DATE));
+        baseChatItem.setFullDate(jMessage.getString(Constant.JSON.DATE));
         baseChatItem.setShortDate(DateTimeUtils.getShortTime(baseChatItem.getFullDate()));
         baseChatItem.setChatType(type);
         baseChatItem.setMessageId(jMessage.getInt(Constant.JSON.MESSAGE_ID));
         baseChatItem.setMessageState(jMessage.getInt(Constant.JSON.STATUS));
         baseChatItem.setSectionFirstPosition(sectionFirstPosition);
+
+        String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
+        baseChatItem.setOwner(members.get(sendId));
+        if (baseChatItem.getOwner().getUserId().equalsIgnoreCase(owner.getUserId())) {
+            baseChatItem.setSender(true);
+        }
         return baseChatItem;
     }
 
-    private static BaseChatItem getHeaderChatItem(JSONObject jListMessage) throws JSONException {
+    private static BaseChatItem getHeaderChatItem(JSONObject jListMessage, int sectionFirstPosition, Context context) throws JSONException {
         BaseChatItem header = new BaseChatItem();
         header.setChatType(BaseChatItem.ChatType.HEADER);
-        header.setFullDate(jListMessage.getString(Constant.JSON.K_DATE));
+        String strDate = jListMessage.getString(Constant.JSON.DATE);
+        header.setFullDate(strDate);
+
+        String displayDate = DateTimeUtils.getHeaderDateInChatHistory(
+                DateTimeUtils.convertStringToDate(strDate, DateTimeUtils.ENGLISH_DATE_FORMAT),context);
+        header.setDisplayDate(displayDate);
+
+        header.setSectionFirstPosition(sectionFirstPosition);
         return header;
     }
-
-
 }

@@ -20,12 +20,14 @@ import jp.newbees.mastersip.utils.JSONUtils;
  * Created by thangit14 on 1/17/17.
  */
 public class LoadChatHistoryTask extends BaseTask<ArrayList<BaseChatItem>>{
+    private Context context;
     private String userID;
     private String friendUserId;
     private int lastMessageId;
 
     public LoadChatHistoryTask(Context context, String userID, String friendUserId, int lastMessageId) {
         super(context);
+        this.context = context;
         this.userID = userID;
         this.friendUserId = friendUserId;
         this.lastMessageId = lastMessageId;
@@ -50,6 +52,6 @@ public class LoadChatHistoryTask extends BaseTask<ArrayList<BaseChatItem>>{
 
     @Override
     protected ArrayList<BaseChatItem> didResponse(JSONObject data) throws JSONException {
-        return JSONUtils.parseChatHistory(data);
+        return JSONUtils.parseChatHistory(data.getJSONObject(Constant.JSON.DATA), context);
     }
 }

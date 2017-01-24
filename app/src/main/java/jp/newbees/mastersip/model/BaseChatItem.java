@@ -184,6 +184,7 @@ public class BaseChatItem implements Parcelable, Serializable {
     private int roomId;
     private int messageId;
     private String fullDate;
+    private String displayDate;
 
     private int chatType;
 
@@ -199,6 +200,15 @@ public class BaseChatItem implements Parcelable, Serializable {
      * use for recycle view with header sticky
      */
     private int sectionFirstPosition;
+    private int sectionManager;
+
+    public int getSectionManager() {
+        return sectionManager;
+    }
+
+    public void setSectionManager(int sectionManager) {
+        this.sectionManager = sectionManager;
+    }
 
     public int getSectionFirstPosition() {
         return sectionFirstPosition;
@@ -238,6 +248,14 @@ public class BaseChatItem implements Parcelable, Serializable {
 
     public void setFullDate(String fullDate) {
         this.fullDate = fullDate;
+    }
+
+    public String getDisplayDate() {
+        return displayDate;
+    }
+
+    public void setDisplayDate(String displayDate) {
+        this.displayDate = displayDate;
     }
 
     public int getChatType() {

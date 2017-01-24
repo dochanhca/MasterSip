@@ -68,7 +68,6 @@ public class ChatPresenter extends BasePresenter {
         requestToServer(loadChatHistoryTask);
     }
 
-
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof SendTextMessageTask) {
@@ -78,8 +77,8 @@ public class ChatPresenter extends BasePresenter {
             BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
             chatPresenterListener.didSendingReadMessageToServer(result);
         } else if (task instanceof LoadChatHistoryTask) {
-            ArrayList<BaseChatItem> result = ((LoadChatHistoryTask) task).getDataResponse();
-            chatPresenterListener.didLoadChatHistory(result);
+            ArrayList<BaseChatItem> items = ((LoadChatHistoryTask) task).getDataResponse();
+            chatPresenterListener.didLoadChatHistory(items);
         }
     }
 

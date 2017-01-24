@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,7 +14,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.tonicartos.superslim.LayoutManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,6 +64,8 @@ public class ChatActivity extends BaseActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.container)
     SoftKeyboardLsnedRelaytiveLayout container;
+    @BindView(R.id.swap_layout)
+    LinearLayout swapRecycleChatLayout;
 
     private ChatAdapter chatAdapter;
 
@@ -74,7 +75,7 @@ public class ChatActivity extends BaseActivity {
     private Animation slideDown;
     private Animation slideUp;
 
-    private boolean donotHideSoftKeyboard = false;
+    private volatile boolean donotHideSoftKeyboard = false;
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
@@ -93,7 +94,7 @@ public class ChatActivity extends BaseActivity {
                 isCustomActionHeaderInChatOpened = false;
                 isCallActionHeaderInChatOpened = true;
             }
-            updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+            updateTopPaddingRecycle();
             callActionHeaderInChat.setVisibility(second);
             customActionHeaderInChat.setVisibility(first);
             if (isSoftKeyboardOpened) {
@@ -102,20 +103,23 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
-    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
-        if (isCallActionHeaderInChatOpened) {
-            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+    private void updateTopPaddingRecycle() {
+        if (isCallActionHeaderInChatOpened || isCustomActionHeaderInChatOpened) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) recyclerChat.getLayoutParams();
+            layoutParams.topMargin = (int) getResources().getDimension(R.dimen.header_search_height);
+            recyclerChat.setLayoutParams(layoutParams);
         } else {
-            recyclerChat.setPadding(0, 0,
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) recyclerChat.getLayoutParams();
+            layoutParams.topMargin = 0;
+            recyclerChat.setLayoutParams(layoutParams);
         }
     }
 
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
         @Override
         public void didSendChatToServer(BaseChatItem baseChatItem) {
-            chatAdapter.add(baseChatItem);
+            Logger.e(TAG, "sending message to server success");
+            chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
             edtChat.setEnabled(true);
             txtSend.setEnabled(true);
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
@@ -136,11 +140,22 @@ public class ChatActivity extends BaseActivity {
         @Override
         public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
             Logger.e(TAG, errorCode + " : " + errorMessage);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
         public void didLoadChatHistory(ArrayList<BaseChatItem> chatItems) {
-            chatAdapter.clearAndAddNewData(chatItems);
+            boolean needScroolToTheEnd = false;
+            if (chatAdapter.getItemCount() == 0) {
+                needScroolToTheEnd = true;
+            }
+            chatAdapter.addDataFromBeginning(chatItems);
+
+            if (needScroolToTheEnd) {
+                recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            }
+            updateStateLastMessage();
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -159,27 +174,28 @@ public class ChatActivity extends BaseActivity {
     };
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        public int dy;
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-            if (!donotHideSoftKeyboard && dy != 0) {
-                hideFilterAndNavigationBar();
-                if (scrollDown(dy)) {
-                    slideDownCustomActionheaderInChat();
-                } else {
-                    slideUpCustomActionheaderInChat();
-                }
-            }
+            this.dy = dy;
         }
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!donotHideSoftKeyboard && dy != 0) {
+                    if (scrollDown(dy)) {
+                        slideDownCustomActionheaderInChat();
+                    } else {
+                        slideUpCustomActionheaderInChat();
+                    }
+                }
                 if (donotHideSoftKeyboard) {
                     donotHideSoftKeyboard = false;
                 } else {
-                    hideFilterAndNavigationBar();
+                    hideSoftInputKeyboard();
                 }
             }
         }
@@ -188,7 +204,7 @@ public class ChatActivity extends BaseActivity {
             return dy < 0;
         }
 
-        private void hideFilterAndNavigationBar() {
+        private void hideSoftInputKeyboard() {
             View view = ChatActivity.this.getCurrentFocus();
             if (view != null) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -214,7 +230,7 @@ public class ChatActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(ChatActivity.this, "load more  chat history", Toast.LENGTH_SHORT).show();
+                presenter.loadChatHistory(userItem, getLastMessageId());
             }
         });
         recyclerChat.addOnScrollListener(onScrollListener);
@@ -232,7 +248,10 @@ public class ChatActivity extends BaseActivity {
                 slideDownCustomActionheaderInChat();
             }
         });
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+    }
+
+    private int getLastMessageId() {
+        return chatAdapter.getLastMessageID();
     }
 
     @Override
@@ -241,25 +260,21 @@ public class ChatActivity extends BaseActivity {
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
         presenter = new ChatPresenter(this, mOnChatListener);
-
         userItem = getIntent().getParcelableExtra(USER);
 
         initHeader(userItem.getUsername());
+        EventBus.getDefault().register(this);
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
+        LayoutManager layoutManager = new LayoutManager(ChatActivity.this);
+
         recyclerChat.setLayoutManager(layoutManager);
-        recyclerChat.setItemAnimator(new DefaultItemAnimator());
-        recyclerChat.setNestedScrollingEnabled(false);
         recyclerChat.setAdapter(chatAdapter);
-        chatAdapter.notifyDataSetChanged();
+
+        updateTopPaddingRecycle();
 
         presenter.loadChatHistory(userItem, 0);
-
-        EventBus.getDefault().register(this);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -282,25 +297,27 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void slideDownCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
         if (!isCustomActionHeaderInChatOpened) {
             customActionHeaderInChat.startAnimation(slideDown);
         }
         isCustomActionHeaderInChatOpened = true;
+        updateTopPaddingRecycle();
     }
 
     private void slideUpCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
         if (isCustomActionHeaderInChatOpened) {
             customActionHeaderInChat.startAnimation(slideUp);
         }
         isCustomActionHeaderInChatOpened = false;
+        updateTopPaddingRecycle();
     }
 
     private void updateStateLastMessage() {
-        BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
-        if (lastSenderMessage != null) {
-            presenter.sendingReadMessageToServer(lastSenderMessage);
+        if (chatAdapter != null) {
+            BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
+            if (lastSenderMessage != null) {
+                presenter.sendingReadMessageToServer(lastSenderMessage);
+            }
         }
     }
 
@@ -315,7 +332,7 @@ public class ChatActivity extends BaseActivity {
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)) {
             donotHideSoftKeyboard = true;
-            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
+            chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             if (isResume) {
                 presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());

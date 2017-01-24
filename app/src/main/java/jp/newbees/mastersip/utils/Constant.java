@@ -111,7 +111,8 @@ public final class Constant {
         public static final String CHAT = "chat";
         public static final String SECRET_KEY = "secretKey";
         public static final String LIST_MESSAGES = "list_messages";
-        public static final String K_MESSAGES = "messages";
+        public static final String MESSAGES = "messages";
+        public static final String MEMBERS = "members";
     }
 
     public static final class API {
