@@ -181,9 +181,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
 
         progressWheel.spin();
         progressWheel.setVisibility(View.VISIBLE);
-        if (!isNavigationBarShowing()) {
-            ((TopActivity) getActivity()).showNavigation();
-        }
+        restoreNavigationBarState();
 
         initRecyclerUserImage();
         initVariables();

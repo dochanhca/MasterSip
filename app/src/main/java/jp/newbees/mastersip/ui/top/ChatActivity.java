@@ -2,8 +2,12 @@ package jp.newbees.mastersip.ui.top;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,13 +18,17 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -29,15 +37,24 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelaytiveLayout;
+import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
+import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.ImageFilePath;
+import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Utils;
 
+import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.AVATAR_NAME;
+import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.PICK_AVATAR_CAMERA;
+import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.PICK_AVATAR_GALLERY;
 import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 
 /**
@@ -64,7 +81,21 @@ public class ChatActivity extends BaseActivity {
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.container)
-    SoftKeyboardLsnedRelaytiveLayout container;
+    SoftKeyboardLsnedRelativeLayout container;
+    @BindView(R.id.layout_select_image)
+    LinearLayout layoutSelectImage;
+    @BindView(R.id.rl_open_camera)
+    RelativeLayout rlOpenCamera;
+    @BindView(R.id.rl_open_gallery)
+    RelativeLayout rlOpenGallery;
+    @BindView(R.id.img_left_bottom_action)
+    ImageView imgLeftBottomAction;
+
+    private enum UIMode {
+        INPUT_TEXT_MODE, SELECT_IMAGE_MODE;
+    }
+
+    private UIMode uiMode = UIMode.INPUT_TEXT_MODE;
 
     private ChatAdapter chatAdapter;
 
@@ -80,6 +111,10 @@ public class ChatActivity extends BaseActivity {
     private boolean isSoftKeyboardOpened = false;
 
     private boolean isResume = false;
+    private boolean isShowDialogForHandleImage = false;
+
+    private Bitmap bitmap;
+    private int maxImageSize = Constant.Application.MAX_IMAGE_SIZE;
 
     private View.OnClickListener mOnSwitchModeClickListener = new View.OnClickListener() {
         @Override
@@ -114,16 +149,21 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
+    private ChatPresenter.UploadImageToServerListener mOnUploadImageListener = new ChatPresenter.UploadImageToServerListener() {
+        @Override
+        public void didUploadImageToServer(ImageChatItem imageChatItem) {
+            disMissLoading();
+            isShowDialogForHandleImage = false;
 
-    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
-        if (isCallActionHeaderInChatOpened) {
-            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
-        } else {
-            recyclerChat.setPadding(0, 0,
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
         }
-    }
+
+        @Override
+        public void didUploadImageToServerError(int errorCode, String errorMessage) {
+            disMissLoading();
+            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+            isShowDialogForHandleImage = false;
+        }
+    };
 
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
         @Override
@@ -191,7 +231,7 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected int layoutId() {
-        return R.layout.chat_activity;
+        return R.layout.activity_chat;
     }
 
     @Override
@@ -210,7 +250,7 @@ public class ChatActivity extends BaseActivity {
             }
         });
         recyclerChat.addOnScrollListener(onScrollListener);
-        container.setListener(new SoftKeyboardLsnedRelaytiveLayout.SoftKeyboardLsner() {
+        container.setListener(new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
             @Override
             public void onSoftKeyboardShow() {
                 isSoftKeyboardOpened = true;
@@ -232,7 +272,8 @@ public class ChatActivity extends BaseActivity {
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener);
+        presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener,
+                mOnUploadImageListener);
 
         userItem = getIntent().getParcelableExtra(USER);
 
@@ -268,8 +309,87 @@ public class ChatActivity extends BaseActivity {
         super.onResume();
         isResume = true;
         updateStateLastMessage();
+        if (isShowDialogForHandleImage) {
+            showLoading();
+        }
 
     }
+
+    @Subscribe()
+    public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
+        BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
+        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)) {
+            donotHideSoftKeyboard = true;
+            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            if (isResume) {
+                presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
+            }
+        }
+    }
+
+    @Subscribe()
+    public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
+        chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
+    }
+
+    @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send, R.id.img_left_bottom_action,
+            R.id.rl_open_gallery, R.id.rl_open_camera})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.action_phone:
+                break;
+            case R.id.action_video:
+                break;
+            case R.id.txt_send:
+                doSendMessage();
+                break;
+            case R.id.img_left_bottom_action:
+                switchUIMode();
+                break;
+            case R.id.rl_open_gallery:
+                openGallery();
+                break;
+            case R.id.rl_open_camera:
+                openCamera();
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    isShowDialogForHandleImage = true;
+                    handleImageFromCamera();
+                }
+                break;
+            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    handleImageFromGallery(data.getData());
+                    isShowDialogForHandleImage = true;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
+        if (isCallActionHeaderInChatOpened) {
+            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
+                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+        } else {
+            recyclerChat.setPadding(0, 0,
+                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+        }
+    }
+
 
     private void slideDownCustomActionheaderInChat() {
         updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
@@ -300,39 +420,6 @@ public class ChatActivity extends BaseActivity {
         context.startActivity(starter);
     }
 
-    @Subscribe()
-    public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
-        BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
-        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)) {
-            donotHideSoftKeyboard = true;
-            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-            if (isResume) {
-                presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
-            }
-        }
-    }
-
-    @Subscribe()
-    public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
-        chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
-    }
-
-    @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.action_phone:
-                break;
-            case R.id.action_video:
-                break;
-            case R.id.txt_send:
-                doSendMessage();
-                break;
-            default:
-                break;
-        }
-    }
-
     private void doSendMessage() {
         String newMessage = edtChat.getText().toString();
         if (!"".equalsIgnoreCase(newMessage)) {
@@ -340,5 +427,91 @@ public class ChatActivity extends BaseActivity {
             edtChat.setText("");
             presenter.sendText(newMessage, userItem);
         }
+    }
+
+    private void openCamera() {
+        String path = Environment.getExternalStorageDirectory() + AVATAR_NAME;
+        File file = new File(path);
+        Uri outputFileUri = Uri.fromFile(file);
+
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+        startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_AVATAR_GALLERY);
+        }
+    }
+
+    private void handleImageFromCamera() {
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectAvatarDialog.AVATAR_NAME);
+        if (!outFile.exists()) {
+            Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
+        } else {
+            bitmap = ImageUtils.decodeBitmapFromFile(outFile.getPath(),
+                    maxImageSize, maxImageSize);
+            uploadImageToServer();
+        }
+    }
+
+    private void uploadImageToServer() {
+        if (null == bitmap) {
+            return;
+        }
+        InputStream file = ImageUtils.convertToInputStream(bitmap);
+
+        showLoading();
+        presenter.sendFile(userItem.getSipItem().getExtension(), Constant.API.TYPE_UPLOAD_IMAGE,
+                file);
+    }
+
+    private void handleImageFromGallery(Uri pickedImage) {
+        getImageFilePath(pickedImage);
+    }
+
+    private void getImageFilePath(Uri pickedImage) {
+        String imagePath;
+        // Get Image path from Google photo
+        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
+            imagePath = ImageFilePath.getPath(this,
+                    ImageUtils.getImageUrlWithAuthority(this, pickedImage));
+
+            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
+            bitmap = ImageUtils.rotateBitmap(bitmap, imagePath);
+        } else {
+            imagePath = ImageFilePath.getPath(this, pickedImage);
+            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
+        }
+        uploadImageToServer();
+    }
+
+    private void switchUIMode() {
+        if (uiMode == UIMode.INPUT_TEXT_MODE) {
+            imgLeftBottomAction.setImageResource(R.drawable.ic_keyboard_green);
+            layoutSelectImage.setVisibility(View.VISIBLE);
+            hideSoftKeyboard();
+            uiMode = UIMode.SELECT_IMAGE_MODE;
+        } else if (uiMode == UIMode.SELECT_IMAGE_MODE) {
+            imgLeftBottomAction.setImageResource(R.drawable.img_capture);
+            edtChat.requestFocus();
+            layoutSelectImage.setVisibility(View.GONE);
+            showSoftKeyboard();
+            uiMode = UIMode.INPUT_TEXT_MODE;
+        }
+
+    }
+
+    private void hideSoftKeyboard() {
+        Utils.closeKeyboard(this, edtChat.getWindowToken());
+    }
+
+    private void showSoftKeyboard() {
+        Utils.showKeyboard(this, edtChat);
     }
 }
