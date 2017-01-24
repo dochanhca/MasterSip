@@ -34,6 +34,7 @@ public class MyMenuPresenter extends BasePresenter  {
     private Handler handler;
     private GalleryItem lastGalleryItem;
     private boolean isLoadMorePhotoInGallery;
+    private boolean isRequestingMyInfo;
 
     public MyMenuPresenter(Context context, MyMenuView menuView) {
         super(context);
@@ -75,7 +76,9 @@ public class MyMenuPresenter extends BasePresenter  {
         UserItem userItem =  task.getDataResponse();
         ConfigManager.getInstance().saveUser(userItem);
         menuView.didLoadMyProfile(userItem);
+        isRequestingMyInfo = false;
         isLoadMorePhotoInGallery = false;
+        lastGalleryItem = null;
         requestGetGallery(new GalleryItem());
     }
 
@@ -89,8 +92,11 @@ public class MyMenuPresenter extends BasePresenter  {
     }
 
     public final void requestMyMenuInfo(){
-        MyProfileTask myProfileTask = new MyProfileTask(context);
-        requestToServer(myProfileTask);
+        if (!isRequestingMyInfo) {
+            isRequestingMyInfo = true;
+            MyProfileTask myProfileTask = new MyProfileTask(context);
+            requestToServer(myProfileTask);
+        }
     }
 
     private void requestGetGallery(GalleryItem galleryItem) {

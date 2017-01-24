@@ -19,7 +19,7 @@ import jp.newbees.mastersip.utils.JSONUtils;
 
 public class MyPhotosTask extends BaseTask<GalleryItem> {
 
-    private static final int NUMBER_OF_PHOTO = 8;
+    private static final int NUMBER_OF_PHOTO = 40;
     private final GalleryItem galleryItem;
 
     public MyPhotosTask(Context context, GalleryItem galleryItem) {

@@ -121,6 +121,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private boolean needRefreshData;
     private boolean isLoadingMorePhoto;
     private int visibleThreshold = 5;
+    private boolean isFragmentRunning = false;
 
     public static Fragment newInstance() {
         Fragment fragment = new MyMenuFragment();
@@ -128,6 +129,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         bundle.putBoolean(REFRESH_DATA, true);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public final void onTabSelected() {
+        if (isFragmentRunning) {
+            presenter.requestMyMenuInfo();
+        }
     }
 
     @Override
@@ -188,6 +195,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onResume() {
         super.onResume();
+        isFragmentRunning = true;
         if (needRefreshData) {
             needRefreshData = false;
             presenter.requestMyMenuInfo();

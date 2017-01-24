@@ -55,6 +55,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 .error(drawableId).placeholder(drawableId)
                 .skipMemoryCache(true)
                 .centerCrop()
+                .dontAnimate()
+                .dontTransform()
                 .into(holder.imgPhoto);
 
         if (item.getImageStatus() == ImageItem.IMAGE_APPROVED){
