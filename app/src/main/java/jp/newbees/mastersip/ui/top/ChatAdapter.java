@@ -24,6 +24,7 @@ import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 1/9/17.
@@ -46,7 +47,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
-        View view = null;
+        View view;
         boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
         if (isReplyMessage) {
             viewType -= OFFSET_RETURN_TYPE;
@@ -66,6 +67,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.HEADER:
                 view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
                 viewHolder = new ViewHolderHeader(view);
+                break;
             default:
                 break;
         }
@@ -88,44 +90,51 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         switch (viewType) {
             case BaseChatItem.ChatType.CHAT_TEXT:
-                TextChatItem textChatItem = (TextChatItem) item;
-                if (isReplyMessage) {
-                    ViewHolderTextMessageReply viewHolderTextMessageReply = (ViewHolderTextMessageReply) holder;
-                    viewHolderTextMessageReply.txtTime.setText(textChatItem.getShortDate());
-                    viewHolderTextMessageReply.txtContent.setText(textChatItem.getMessage());
-
-                    int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-                    if (item.getOwner().getAvatarItem() != null) {
-                        Glide.with(context).load(item.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
-                                error(defaultImageId).into(viewHolderTextMessageReply.imgAvatar);
-                    } else {
-                        viewHolderTextMessageReply.imgAvatar.setImageResource(defaultImageId);
-                    }
-
-                } else {
-                    ViewHolderTextMessage viewHolderTextMessage = (ViewHolderTextMessage) holder;
-                    viewHolderTextMessage.txtTime.setText(textChatItem.getShortDate());
-                    viewHolderTextMessage.txtContent.setText(textChatItem.getMessage());
-                    viewHolderTextMessage.txtState.setVisibility(
-                            textChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
-                                    View.VISIBLE : View.GONE);
-                }
+                bindChatTextItem(item, holder, isReplyMessage);
                 break;
             case BaseChatItem.ChatType.HEADER:
-                layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
-                layoutParams.headerEndMarginIsAuto = true;
-                layoutParams.headerStartMarginIsAuto = true;
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                ViewHolderHeader viewHolderHeader = (ViewHolderHeader) holder;
-                viewHolderHeader.txtContent.setText(item.getDisplayDate());
+                bindHeader(item, holder, layoutParams);
                 break;
             default:
-
                 break;
         }
         layoutParams.setSlm(LinearSLM.ID);
         layoutParams.setFirstPosition(item.getSectionFirstPosition());
         itemView.setLayoutParams(layoutParams);
+    }
+
+    private void bindHeader(BaseChatItem item, RecyclerView.ViewHolder holder, GridSLM.LayoutParams layoutParams) {
+        layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
+        layoutParams.headerEndMarginIsAuto = true;
+        layoutParams.headerStartMarginIsAuto = true;
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        ViewHolderHeader viewHolderHeader = (ViewHolderHeader) holder;
+        viewHolderHeader.txtContent.setText(item.getDisplayDate());
+    }
+
+    private void bindChatTextItem(BaseChatItem item, RecyclerView.ViewHolder holder, boolean isReplyMessage) {
+        TextChatItem textChatItem = (TextChatItem) item;
+        if (isReplyMessage) {
+            ViewHolderTextMessageReply viewHolderTextMessageReply = (ViewHolderTextMessageReply) holder;
+            viewHolderTextMessageReply.txtTime.setText(textChatItem.getShortDate());
+            viewHolderTextMessageReply.txtContent.setText(textChatItem.getMessage());
+
+            int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+            if (item.getOwner().getAvatarItem() != null) {
+                Glide.with(context).load(item.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
+                        error(defaultImageId).into(viewHolderTextMessageReply.imgAvatar);
+            } else {
+                viewHolderTextMessageReply.imgAvatar.setImageResource(defaultImageId);
+            }
+
+        } else {
+            ViewHolderTextMessage viewHolderTextMessage = (ViewHolderTextMessage) holder;
+            viewHolderTextMessage.txtTime.setText(textChatItem.getShortDate());
+            viewHolderTextMessage.txtContent.setText(textChatItem.getMessage());
+            viewHolderTextMessage.txtState.setVisibility(
+                    textChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
+                            View.VISIBLE : View.GONE);
+        }
     }
 
     @Override
@@ -238,7 +247,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return true;
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            Logger.e("ChatAdapter", e.getMessage());
         }
         return false;
     }
