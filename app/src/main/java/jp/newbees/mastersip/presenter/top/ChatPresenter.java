@@ -15,17 +15,19 @@ import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
+import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
-import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 1/11/17.
  */
 
-public class ChatPresenter extends BasePresenter implements BaseUploadTask.ErrorListener, Response.Listener<BaseChatItem> {
+public class ChatPresenter extends BaseActionCallPresenter implements BaseUploadTask.ErrorListener, Response.Listener<BaseChatItem> {
 
     private ChatPresenterListener chatPresenterListener;
     private SendingReadMessageToServerListener sendingReadMessageToServerListener;
@@ -91,6 +93,8 @@ public class ChatPresenter extends BasePresenter implements BaseUploadTask.Error
         } else if (task instanceof UpdateStateMessageTask) {
             BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
             sendingReadMessageToServerListener.didSendingReadMessageToServer(result);
+        } else if (task instanceof CheckCallTask) {
+            handleResponseCheckCall(task);
         }
     }
 
@@ -100,6 +104,8 @@ public class ChatPresenter extends BasePresenter implements BaseUploadTask.Error
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
             sendingReadMessageToServerListener.didSendingReadMessageToServerError(errorCode, errorMessage);
+        } else if (task instanceof CheckCallTask) {
+            Logger.e(TAG, errorMessage);
         }
     }
 

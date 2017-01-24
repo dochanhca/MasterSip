@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.dialog;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,18 @@ public class ConfirmVoiceCallDialog extends BaseDialog implements View.OnClickLi
     }
 
     private OnDialogConfirmVoiceCallClick onDialogConfirmVoiceCallClick;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getTargetFragment() == null) {
+            try {
+                this.onDialogConfirmVoiceCallClick = (OnDialogConfirmVoiceCallClick) context;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling activity must implement DialogClickListener interface");
+            }
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,14 +65,33 @@ public class ConfirmVoiceCallDialog extends BaseDialog implements View.OnClickLi
         dismiss();
     }
 
-    public static void openConfirmVoiceCallDialogFromFragment(Fragment fragment, int requestCode,
-                                                       FragmentManager fragmentManager) {
+    /**
+     * Call from fragment
+     * @param fragment
+     * @param requestCode
+     * @param fragmentManager
+     */
+    public static void openConfirmVoiceCallDialog(Fragment fragment, int requestCode,
+                                                  FragmentManager fragmentManager) {
         ConfirmVoiceCallDialog confirmVoiceCallDialog = new ConfirmVoiceCallDialog();
 
         Bundle bundle = new Bundle();
 
         confirmVoiceCallDialog.setArguments(bundle);
         confirmVoiceCallDialog.setTargetFragment(fragment, requestCode);
+        confirmVoiceCallDialog.show(fragmentManager, "ConfirmVoiceCallDialog");
+    }
+
+    /**
+     * Call from activity
+     * @param fragmentManager
+     */
+    public static void openConfirmVoiceCallDialog(FragmentManager fragmentManager) {
+        ConfirmVoiceCallDialog confirmVoiceCallDialog = new ConfirmVoiceCallDialog();
+
+        Bundle bundle = new Bundle();
+
+        confirmVoiceCallDialog.setArguments(bundle);
         confirmVoiceCallDialog.show(fragmentManager, "ConfirmVoiceCallDialog");
     }
 }
