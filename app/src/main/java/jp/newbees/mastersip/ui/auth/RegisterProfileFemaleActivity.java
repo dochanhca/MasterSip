@@ -68,11 +68,11 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
     private UploadImagePresenter uploadImagePresenter;
 
     enum InputDataType {
-        TYPE_OF_MEN, CHARM_POINT, STATUS;
+        TYPE_OF_MEN, CHARM_POINT, STATUS
     }
 
     enum SelectDataType {
-        JOB, TYPE, AVAILABLE_TIME;
+        JOB, TYPE, AVAILABLE_TIME
     }
 
     @Override

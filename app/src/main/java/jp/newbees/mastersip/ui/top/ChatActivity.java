@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Utils;
 
 import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.AVATAR_NAME;
 import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.PICK_AVATAR_CAMERA;
@@ -86,6 +88,14 @@ public class ChatActivity extends BaseActivity {
     RelativeLayout rlOpenCamera;
     @BindView(R.id.rl_open_gallery)
     RelativeLayout rlOpenGallery;
+    @BindView(R.id.img_left_bottom_action)
+    ImageView imgLeftBottomAction;
+
+    private enum UIMode {
+        INPUT_TEXT_MODE, SELECT_IMAGE_MODE;
+    }
+
+    private UIMode uiMode = UIMode.INPUT_TEXT_MODE;
 
     private ChatAdapter chatAdapter;
 
@@ -138,6 +148,7 @@ public class ChatActivity extends BaseActivity {
             Logger.e(TAG, errorCode + " : " + errorMessage);
         }
     };
+
     private ChatPresenter.UploadImageToServerListener mOnUploadImageListener = new ChatPresenter.UploadImageToServerListener() {
         @Override
         public void didUploadImageToServer(ImageChatItem imageChatItem) {
@@ -153,16 +164,6 @@ public class ChatActivity extends BaseActivity {
             isShowDialogForHandleImage = false;
         }
     };
-
-    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
-        if (isCallActionHeaderInChatOpened) {
-            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
-        } else {
-            recyclerChat.setPadding(0, 0,
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
-        }
-    }
 
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
         @Override
@@ -230,7 +231,7 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected int layoutId() {
-        return R.layout.chat_activity;
+        return R.layout.activity_chat;
     }
 
     @Override
@@ -344,10 +345,10 @@ public class ChatActivity extends BaseActivity {
                 doSendMessage();
                 break;
             case R.id.img_left_bottom_action:
-                layoutSelectImage.setVisibility(View.VISIBLE);
+                switchUIMode();
                 break;
             case R.id.rl_open_gallery:
-                openGalleryFromActivity();
+                openGallery();
                 break;
             case R.id.rl_open_camera:
                 openCamera();
@@ -356,6 +357,7 @@ public class ChatActivity extends BaseActivity {
                 break;
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -377,6 +379,17 @@ public class ChatActivity extends BaseActivity {
                 break;
         }
     }
+
+    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
+        if (isCallActionHeaderInChatOpened) {
+            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
+                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+        } else {
+            recyclerChat.setPadding(0, 0,
+                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
+        }
+    }
+
 
     private void slideDownCustomActionheaderInChat() {
         updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
@@ -427,7 +440,7 @@ public class ChatActivity extends BaseActivity {
         startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
     }
 
-    private void openGalleryFromActivity() {
+    private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -466,8 +479,8 @@ public class ChatActivity extends BaseActivity {
         String imagePath;
         // Get Image path from Google photo
         if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
-            pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
-            imagePath = ImageFilePath.getPath(this, pickedImage);
+            imagePath = ImageFilePath.getPath(this,
+                    ImageUtils.getImageUrlWithAuthority(this, pickedImage));
 
             bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
             bitmap = ImageUtils.rotateBitmap(bitmap, imagePath);
@@ -476,5 +489,29 @@ public class ChatActivity extends BaseActivity {
             bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
         }
         uploadImageToServer();
+    }
+
+    private void switchUIMode() {
+        if (uiMode == UIMode.INPUT_TEXT_MODE) {
+            imgLeftBottomAction.setImageResource(R.drawable.ic_keyboard_green);
+            layoutSelectImage.setVisibility(View.VISIBLE);
+            hideSoftKeyboard();
+            uiMode = UIMode.SELECT_IMAGE_MODE;
+        } else if (uiMode == UIMode.SELECT_IMAGE_MODE) {
+            imgLeftBottomAction.setImageResource(R.drawable.img_capture);
+            edtChat.requestFocus();
+            layoutSelectImage.setVisibility(View.GONE);
+            showSoftKeyboard();
+            uiMode = UIMode.INPUT_TEXT_MODE;
+        }
+
+    }
+
+    private void hideSoftKeyboard() {
+        Utils.closeKeyboard(this, edtChat.getWindowToken());
+    }
+
+    private void showSoftKeyboard() {
+        Utils.showKeyboard(this, edtChat);
     }
 }
