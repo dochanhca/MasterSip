@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    private String TAG = getClass().getSimpleName();
+    public String TAG;
     private MessageDialog messageDialog;
 
     protected ImageView imgBack;
@@ -54,6 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();
         setContentView(layoutId());

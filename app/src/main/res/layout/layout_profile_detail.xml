@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <!--Name-->
+    <LinearLayout style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/name" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_name_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Age-->
+    <LinearLayout style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/age" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_age_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Area-->
+    <LinearLayout style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/residence" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_area_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Job-->
+    <LinearLayout style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/profession" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_profession_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Type-->
+    <LinearLayout
+        android:id="@+id/layout_type"
+        android:visibility="gone"
+        style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/type" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_type_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_type"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Type of men-->
+    <LinearLayout
+        android:id="@+id/layout_type_of_men"
+        android:visibility="gone"
+        style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/type_of_men" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_type_of_men_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_type_of_men"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Charm point-->
+    <LinearLayout
+        android:id="@+id/layout_charm_point"
+        android:visibility="gone"
+        style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/charm_point" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_charm_point_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divier_charm_point"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--available time-->
+    <LinearLayout
+        android:id="@+id/layout_available_time"
+        android:visibility="gone"
+        style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/available_time" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_available_time_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider_available_time"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
+        android:layout_height="1dp"
+        android:background="@color/color_gray_bg" />
+
+    <!--Status-->
+    <LinearLayout style="@style/style_profile_info_row">
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            style="@style/style_title_text_view_profile"
+            android:text="@string/status" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_status_content"
+            style="@style/style_content_text_view_profile"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

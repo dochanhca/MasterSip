@@ -1,11 +1,12 @@
 package jp.newbees.mastersip.network.api;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
+
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.NetworkError;
+import com.android.volley.error.NoConnectionError;
+import com.android.volley.error.ServerError;
+import com.android.volley.error.TimeoutError;
+import com.android.volley.error.VolleyError;
 
 import jp.newbees.mastersip.utils.Constant;
 

@@ -249,5 +249,15 @@
     <!--FacebookSDK-->
     <string name="facebook_app_id">1786574714906949</string>
     <string name="send">送信</string>
+    <string name="send_a_give">ギフトを贈る</string>
+    <string name="online_notify">オンライン通知</string>
+    <string name="name">なまえ</string>
+    <string name="residence">住まい</string>
+    <string name="select_photo">写真を選択</string>
+    <string name="logout">ログアウト</string>
+    <string name="email_backup">メールアドレス設定</string>
+    <string name="approving">審査中</string>
+    <string name="confirm_delete_avatar">現在登録されている写真を削除しても\nよろしいでしょうか？</string>
+    <string name="delete_avatar_notify">写真を削除しました。</string>
     <string name="today">今日</string>
 </resources>

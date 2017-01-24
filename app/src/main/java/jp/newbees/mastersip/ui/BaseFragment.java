@@ -11,6 +11,8 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.ui.dialog.MessageDialog;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -22,6 +24,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected TextView txtActionBarTitle;
     protected String TAG;
+    private MessageDialog messageDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public abstract class BaseFragment extends Fragment {
         txtActionBarTitle.setText(title);
     }
 
+
     protected void showLoading() {
         ((BaseActivity) getActivity()).showLoading();
     }
@@ -64,6 +68,32 @@ public abstract class BaseFragment extends Fragment {
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {
         ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
                 errorCode, errorMessage);
+    }
+
+    protected void showMessageDialog(String title, String content, String note,
+                                     boolean isHideActionButton) {
+        if (null == messageDialog) {
+            messageDialog = new MessageDialog();
+        }
+
+        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_TITLE, title);
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_CONTENT, content);
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_NOTE, note);
+        bundle.putBoolean(MessageDialog.IS_HIDE_ACTION_BUTTON, isHideActionButton);
+
+        messageDialog.setArguments(bundle);
+        messageDialog.show(getActivity().getFragmentManager(), "MessageDialog");
+    }
+
+    protected void disMissMessageDialog() {
+        if (null != messageDialog) {
+            messageDialog.dismiss();
+        }
     }
 
     /**
@@ -79,5 +109,18 @@ public abstract class BaseFragment extends Fragment {
     protected void setTransitionAnimation(FragmentTransaction transaction) {
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
+    }
+
+    protected boolean isNavigationBarShowing() {
+        return ((TopActivity) getActivity()).isShowNavigationBar();
+    }
+
+    /**
+     * Show navigation bar if state == INVISIBLE
+     */
+    protected void restoreNavigationBarState() {
+        if (!isNavigationBarShowing()) {
+            ((TopActivity) getActivity()).showNavigation();
+        }
     }
 }

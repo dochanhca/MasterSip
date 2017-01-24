@@ -22,6 +22,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
+    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 205;
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 206;
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
@@ -37,7 +39,14 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
 
+    public boolean isShowNavigationBar;
+
     private NavigationLayoutGroup navigationLayoutGroup;
+
+    public boolean isShowNavigationBar() {
+        return isShowNavigationBar;
+    }
+
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
@@ -90,11 +99,13 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     }
 
     public void showNavigation() {
+        isShowNavigationBar = true;
         clearViewAnimation(navigationLayoutGroup,slide_up,View.VISIBLE);
         navigationLayoutGroup.startAnimation(slide_up);
     }
 
     public void hideNavigation() {
+        isShowNavigationBar = false;
         clearViewAnimation(navigationLayoutGroup,slide_down,View.GONE);
         navigationLayoutGroup.startAnimation(slide_down);
     }
@@ -119,7 +130,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                 case FOOT_PRINT_FRAGMENT:
                     return FootPrintFragment.newInstance();
                 case FLOW_FRAGMENT:
-//                    return FlowFragment.newInstance();
+                    return FollowFragment.newInstance();
                 case PROFILE_FRAGMENT:
                     return MyMenuFragment.newInstance();
                 default:

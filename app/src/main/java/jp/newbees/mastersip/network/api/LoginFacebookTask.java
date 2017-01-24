@@ -39,6 +39,10 @@ public class LoginFacebookTask extends BaseTask<UserItem> {
         return jParams;
     }
 
+    public UserItem getUserItem() {
+        return userItem;
+    }
+
     @NonNull
     @Override
     protected String getUrl() {
@@ -67,10 +71,6 @@ public class LoginFacebookTask extends BaseTask<UserItem> {
         ConfigManager.getInstance().saveAuthId(userId);
         ConfigManager.getInstance().saveUser(userItem);
 
-        return userItem;
-    }
-
-    public final UserItem getUserItem() {
         return userItem;
     }
 }

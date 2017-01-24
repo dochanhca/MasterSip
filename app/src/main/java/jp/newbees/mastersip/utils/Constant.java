@@ -7,9 +7,17 @@ package jp.newbees.mastersip.utils;
 public final class Constant {
 
     public static final class JSON {
+        public static final String IMG_ID = "img_id";
+
         private JSON() {
             //Prevent init constructor
         }
+        public static final String PAGINATE = "paginate";
+        public static final String IMAGE_STATUS = "image_status";
+        public static final String PAGE = "page";
+        public static final String POINT = "point";
+        public static final String MY_INFO = "my_info";
+        public static final String THUMBNAIL = "thumbnail";
 
         public static final  String DEVICE_ID = "device_id";
         public static final  String PASSWORD = "password";
@@ -45,6 +53,7 @@ public final class Constant {
         public static final String LOGIN_24_HOUR_AGO = "limit_online_ago";
         public static final String FILTER_TYPE = "type";
         public static final String NEXT_PAGE = "next_page";
+        public static final String NEXT_ID = "next_id";
         public static final String USERS = "users";
         public static final String ID = "id";
         public static final String AVATAR = "avatar";
@@ -69,6 +78,7 @@ public final class Constant {
 
         public static final String IMAGE_ID = "image_id";
         public static final String IMAGE_PATH_FULL = "image_path_full";
+        public static final String IMAGE_PATH = "image_path";
         public static final String IMAGE_PATH_THUMB = "image_path_thumb";
         public static final String PROVINCE = "province";
 
@@ -113,14 +123,17 @@ public final class Constant {
         public static final String LIST_MESSAGES = "list_messages";
         public static final String MESSAGES = "messages";
         public static final String MEMBERS = "members";
+        public static final String TOTAL_COUNT = "total_count";
+        public static final String LIST_IMAGE = "list_images";
+        public static final String IMAGE = "image";
     }
 
     public static final class API {
 
+
         private API() {
             //Prevent init constructor
         }
-
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -131,6 +144,11 @@ public final class Constant {
 
         public static final int CALL_FROM_CHAT_ROOM = 1;
         public static final int CALL_FROM_OTHER = 2;
+
+        public static final int TYPE_UPLOAD_VOICE = 1;
+        public static final int TYPE_UPLOAD_VIDEO = 3;
+        public static final int TYPE_UPLOAD_IMAGE = 4;
+
 
         private static final String DEVELOPMENT_IP = "52.197.14.30";
 //        private static final String DEVELOPMENT_IP = "52.197.138.1";
@@ -155,6 +173,12 @@ public final class Constant {
         public static final String UPDATE_STATE_MESSAGE_URL = "message/status/update";
         public static final String CANCEL_CALL_URL = "calls/cancel-call";
         public static final String LOGIN_FACEBOOK_URL = "loginfb";
+        public static final String PHOTOS = "photos";
+        public static final String MY_PROFILE = "my/profile";
+        public static final String LOGOUT = "logout";
+        public static final String LIST_MY_PHOTOS = "my/photos";
+        public static final String SAVE_FILE_CHAT = "save_file_chat";
+        public static final String DELETE_IMAGE = "image/delete";
         public static final String CHAT_HISTORY = "messages";
 
         public static void initBaseURL() {
@@ -206,6 +230,7 @@ public final class Constant {
     }
 
     public final class Application {
+
         private Application() {
             //Prevent init object
         }
@@ -224,6 +249,8 @@ public final class Constant {
         public static final String SETTING_FILTER = "SETTING_FILTER";
         public static final int LAST_LOGIN = 1;
         public static final int LAST_REGISTER = 2;
+
+        public static final int MAX_IMAGE_SIZE = 1024;
     }
 
     public class SOCKET {

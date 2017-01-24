@@ -12,8 +12,10 @@ import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
+import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
@@ -203,7 +205,7 @@ public class JSONUtils {
                 chatItem = parseTextChatItem(jData, sender);
                 break;
             case CHAT_IMAGE:
-//                chatItem = [self getImgeItem:dictChatItem ofExtension:extension];
+                chatItem = parseImageChatItem(jData, sender);
                 break;
             case CHAT_GIFT:
 //                chatItem = [self getGifiItem:dictChatItem ofExtension:extension];
@@ -219,15 +221,57 @@ public class JSONUtils {
         return chatItem;
     }
 
+    private static BaseChatItem parseImageChatItem(JSONObject jData, UserItem me) throws JSONException {
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
+        String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
+
+        ImageChatItem imageChatItem = new ImageChatItem();
+
+        if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
+            imageChatItem.setOwner(true);
+        } else {
+            imageChatItem.setOwner(false);
+        }
+
+        int roomType = jData.getInt(Constant.JSON.ROOM_TYPE);
+        imageChatItem.setRoomType(roomType);
+        imageChatItem.setChatType(CHAT_IMAGE);
+        imageChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
+        imageChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extensionSender);
+        userItem.setSipItem(sipItem);
+
+        if (jSender.optBoolean(Constant.JSON.AVATAR)) {
+            ImageItem myAvatar = new ImageItem();
+            myAvatar.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
+            myAvatar.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(myAvatar);
+        }
+
+        imageChatItem.setOwner(userItem);
+        imageChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
+        imageChatItem.setShortDate(DateTimeUtils.getShortTime(imageChatItem.getFullDate()));
+
+        JSONObject jImage = jData.getJSONObject(Constant.JSON.IMAGE);
+        ImageItem imageItem = new ImageItem();
+        imageItem.setOriginUrl(jImage.getString(Constant.JSON.PATH));
+        imageItem.setThumbUrl(jImage.getString(Constant.JSON.THUMB));
+
+        imageChatItem.setImageItem(imageItem);
+
+        return imageChatItem;
+    }
+
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
         JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.DELETED);
         String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.EXTENSION);
         String content = jDeletedItem.getString(Constant.JSON.CONTENT);
         if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
-            deletedChatItem.setSender(true);
+            deletedChatItem.setOwner(true);
         } else {
-            deletedChatItem.setSender(false);
+            deletedChatItem.setOwner(false);
         }
         deletedChatItem.setMessage(content);
         deletedChatItem.setRoomType(ROOM_CHAT_CHAT);
@@ -244,9 +288,9 @@ public class JSONUtils {
         TextChatItem textChatItem = new TextChatItem(content);
 
         if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
-            textChatItem.setSender(true);
+            textChatItem.setOwner(true);
         } else {
-            textChatItem.setSender(false);
+            textChatItem.setOwner(false);
         }
 
         int roomType = jText.getInt(Constant.JSON.ROOM_TYPE);
@@ -299,6 +343,63 @@ public class JSONUtils {
         baseChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
         baseChatItem.setRoomType(jData.getInt(Constant.JSON.ROOM_TYPE));
         return baseChatItem;
+    }
+
+    public static GalleryItem parseListPhotos(JSONObject jData) throws JSONException {
+        GalleryItem galleryItem = new GalleryItem();
+
+        if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
+            galleryItem.setNextId(jData.getString(Constant.JSON.NEXT_ID));
+        }
+        galleryItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
+
+        JSONArray jsonImages = jData.getJSONArray(Constant.JSON.LIST_IMAGE);
+        List<ImageItem> imageItems = new ArrayList<>();
+        for (int i = 0; i < jsonImages.length(); i++) {
+            JSONObject jImage = jsonImages.getJSONObject(i);
+            ImageItem imageItem = new ImageItem();
+            imageItem.setImageId(jImage.getInt(Constant.JSON.IMAGE_ID));
+            imageItem.setOriginUrl(jImage.getString(Constant.JSON.IMAGE_PATH));
+            imageItem.setThumbUrl(jImage.getString(Constant.JSON.IMAGE_PATH_THUMB));
+
+            imageItems.add(imageItem);
+        }
+
+        galleryItem.setImageItems(imageItems);
+
+        return galleryItem;
+    }
+
+    public static UserItem parseMyMenuItem(JSONObject jData) throws JSONException {
+        JSONObject jMyInfo = jData.getJSONObject(Constant.JSON.MY_INFO);
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
+        userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
+        if (jMyInfo.has(Constant.JSON.AVATAR)) {
+            JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
+            if (jAvatar.length() > 0) {
+                ImageItem imageItem = JSONUtils.parseImageItem(jAvatar);
+                userItem.setAvatarItem(imageItem);
+            }else {
+                userItem.setAvatarItem(null);
+            }
+        } else {
+            userItem.setAvatarItem(null);
+        }
+        return userItem;
+    }
+
+    public static ImageItem parseImageItem(JSONObject jAvatar) throws JSONException {
+        ImageItem imageItem = new ImageItem();
+        int imageId = jAvatar.getInt(Constant.JSON.ID);
+        String originPath = jAvatar.getString(Constant.JSON.PATH);
+        String thumbnail = jAvatar.getString(Constant.JSON.THUMBNAIL);
+        int imageStatus = jAvatar.getInt(Constant.JSON.STATUS);
+        imageItem.setImageId(imageId);
+        imageItem.setOriginUrl(originPath);
+        imageItem.setImageStatus(imageStatus);
+        imageItem.setThumbUrl(thumbnail);
+        return imageItem;
     }
 
     public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, Context context) throws JSONException {
@@ -368,7 +469,7 @@ public class JSONUtils {
         String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
         baseChatItem.setOwner(members.get(sendId));
         if (baseChatItem.getOwner().getUserId().equalsIgnoreCase(owner.getUserId())) {
-            baseChatItem.setSender(true);
+            baseChatItem.setOwner(true);
         }
         return baseChatItem;
     }

@@ -294,4 +294,12 @@ public class UserItem implements Serializable, Parcelable {
             return new UserItem[size];
         }
     };
+
+    public boolean hasAvatar() {
+        if (this.avatarItem!=null && !avatarItem.getOriginUrl().equalsIgnoreCase("")){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

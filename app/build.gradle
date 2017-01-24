@@ -69,7 +69,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-places:10.0.1'
     compile 'joda-time:joda-time:2.3'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.android.volley:volley:1.0.0'
+//    compile 'com.android.volley:volley:1.0.0'
+    compile 'dev.dworks.libs:volleyplus:+'
     compile 'com.romandanylyk:pageindicatorview:0.0.7'
     compile project(':slideDateTimePicker')
     compile 'com.google.code.gson:gson:2.6.2'
@@ -87,6 +88,13 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
     compile 'com.tonicartos:superslim:0.4.+'
 }
 
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}

@@ -72,4 +72,23 @@
     <dimen name="margin_30">30dp</dimen>
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="size_100">100dp</dimen>
+    <dimen name="layout_user_image_h">90dp</dimen>
+    <dimen name="small_user_image_size">67dp</dimen>
+    <dimen name="layout_profile_action_detail_h">85dp</dimen>
+    <dimen name="action_profile_detail_w">110dp</dimen>
+    <dimen name="profile_detail_row_h">36dp</dimen>
+    <dimen name="layout_select_image_h">80dp</dimen>
+    <dimen name="_5dp">5dp</dimen>
+    <dimen name="_10dp">10dp</dimen>
+    <dimen name="_14sp">14sp</dimen>
+    <dimen name="_15sp">15sp</dimen>
+    <dimen name="_10sp">10sp</dimen>
+    <dimen name="_11sp">11sp</dimen>
+    <dimen name="_1dp">1dp</dimen>
+    <dimen name="_3dp">3dp</dimen>
+    <dimen name="_2dp">2dp</dimen>
+    <dimen name="_12dp">12dp</dimen>
+    <dimen name="_5sp">5sp</dimen>
+    <dimen name="_8sp">8sp</dimen>
+    <dimen name="_9sp">9sp</dimen>
 </resources>

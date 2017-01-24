@@ -39,7 +39,7 @@ public class StartPresenter extends RegisterPresenterBase {
     public interface StartView {
         void didLoginVoIP();
         void didErrorVoIP(String errorMessage);
-        void didLoadFacebookFailure(String errorMessageBelow18Age);
+        void didLoadFacebookFailure(String errorMessage);
         void didLoginFacebookMissingBirthday(UserItem userItem);
         void didLoginFacebookButNotRegisterOnServer(UserItem userItem);
     }
@@ -63,10 +63,12 @@ public class StartPresenter extends RegisterPresenterBase {
                     @Override
                     public void onCancel() {
                         Logger.e(TAG, "Login FB cancel");
+                        startView.didLoadFacebookFailure("User cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
+                        startView.didLoadFacebookFailure(exception.toString());
                         Logger.e(TAG, "Login FB error " + exception.getLocalizedMessage());
                     }
                 });

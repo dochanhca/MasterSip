@@ -1,18 +1,350 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_content_search"
+    android:baselineAligned="false"
+    android:orientation="vertical">
 
-    <TextView
-        android:text="My menu Fragment"
-        android:textSize="30sp"
+    <RelativeLayout
+        android:id="@+id/ll_action_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/header_search_height"
+        android:background="@color/colorPrimary">
 
-    <jp.newbees.mastersip.customviews.HiraginoButton
-        android:id="@+id/btn_fake_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="LOG OUT"/>
+        <ImageView
+            android:id="@+id/switch_mode_in_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:src="@drawable/ic_edit_profile_info" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_action_bar_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:paddingLeft="@dimen/small_margin"
+            android:paddingRight="@dimen/small_margin"
+            android:text="Title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_action_bar" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/group_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_green_normal">
+
+                <RelativeLayout
+                    android:id="@+id/group_avatar"
+                    android:layout_alignTop="@+id/group_point"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:minHeight="80dp"
+                        android:minWidth="80dp" />
+
+                    <ImageView
+                        android:visibility="invisible"
+                        android:id="@+id/img_mask_approving"
+                        android:background="@drawable/bg_mask_approving"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:visibility="invisible"
+                        android:id="@+id/txt_approving"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignBottom="@id/img_avatar"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:text="@string/approving"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sp" />
+
+                    <RelativeLayout
+                        android:visibility="gone"
+                        android:id="@+id/group_upload_avatar"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/bg_mask_uploading"
+                        android:layout_height="match_parent">
+
+                        <com.pnikosis.materialishprogress.ProgressWheel
+                            android:id="@+id/prw_upload_avatar"
+                            app:matProg_rimColor="@color/white"
+                            app:matProg_rimWidth="3dp"
+                            android:visibility="visible"
+                            app:matProg_barColor="@color/blue_dark"
+                            android:layout_centerInParent="true"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp" />
+                    </RelativeLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_change_avatar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/img_avatar"
+                        android:layout_alignRight="@id/img_avatar"
+                        android:background="@color/transparent"
+                        android:src="@drawable/ic_camera_edit_picture_profile" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/group_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/_15dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_toRightOf="@id/group_avatar"
+                    android:background="@drawable/bg_white">
+
+                    <LinearLayout
+                        android:id="@+id/parent_point"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/img_point"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15dp"
+                            android:src="@drawable/ic_point" />
+
+                        <TextView
+                            android:id="@+id/txt_point"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/img_point"
+                            android:background="@color/transparent"
+                            android:lines="1"
+                            android:text="99999999"
+                            android:textColor="@color/blue_dark"
+                            android:textSize="@dimen/_14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/txt_point"
+                            android:text="@string/pt"
+                            android:textColor="@color/blue_dark" />
+                    </LinearLayout>
+
+                    <jp.newbees.mastersip.customviews.HiraginoButton
+                        android:id="@+id/btn_buy_point"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:layout_below="@id/parent_point"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:layout_marginRight="@dimen/_15dp"
+                        android:background="@drawable/bg_blue_button"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:text="ポイント購入"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_11sp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/group_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_0"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/group_1"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginBottom="@dimen/_12dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginTop="@dimen/_12dp">
+
+                    <ImageButton
+                        android:id="@+id/btn_upload_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_common_button" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="17dp"
+                        android:layout_marginTop="12dp"
+                        android:src="@drawable/ic_camera_plus" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:paddingTop="40dp"
+                        android:text="写真を追加"
+                        android:textColor="@color/white"
+                        android:textSize="9sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/group_upload_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/img_mask"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_mask">
+
+                        </ImageView>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcv_list_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/_12dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_12dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_2"
+                android:layout_marginTop="@dimen/_15dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btn_logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_white_button"
+                        android:src="@color/transparent" />
+
+                    <ImageView
+                        android:id="@+id/img_logout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:src="@drawable/ic_log_out" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_toRightOf="@id/img_logout"
+                        android:text="@string/logout"
+                        android:textColor="@color/blue_dark"
+                        android:textSize="@dimen/_11sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:src="@drawable/ic_right_arrow" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_white_button">
+
+                    <ImageButton
+                        android:id="@+id/btn_backup_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_white_button"
+                        android:src="@color/transparent" />
+
+                    <ImageView
+                        android:id="@+id/img_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:src="@drawable/ic_mail" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:id="@+id/txt_back_up_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="@dimen/_15dp"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:layout_toRightOf="@id/img_email"
+                        android:text="@string/email_backup"
+                        android:textColor="@color/blue_dark"
+                        android:textSize="@dimen/_11sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:src="@drawable/ic_right_arrow" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

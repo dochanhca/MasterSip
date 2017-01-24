@@ -219,6 +219,7 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
                 if (likelyPlaces.getCount() > 0) {
                     getProvincePresenter.getProvince(likelyPlaces.get(0).getPlace().getLatLng());
                 } else {
+                    disMissLoading();
                     Toast.makeText(getApplicationContext(), getString(R.string.err_cant_get_location)
                             , Toast.LENGTH_SHORT).show();
                 }

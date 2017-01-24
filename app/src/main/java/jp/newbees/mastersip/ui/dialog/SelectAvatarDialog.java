@@ -9,7 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,6 +37,8 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     private static final int CAMERA_PERMISSION = 10;
     private static final int GALLERY_PERMISSION = 11;
     public static final String AVATAR_NAME = "/avatar.jpg";
+    private static final String CALL_FROM_ACTIVITY = "CALL_FROM_ACTIVITY";
+    private static final String REQUEST_CODE = "REQUEST_CODE";
 
     private RelativeLayout layoutTakeAPicture;
     private RelativeLayout layoutSelectPicture;
@@ -41,9 +46,11 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     private RelativeLayout layoutCancel;
 
     private boolean isShowButtonDeleteImage;
+    private boolean showFromActivity;
 
     public interface OnSelectAvatarDiaLogClick {
-        abstract void onDeleteImageClick();
+         void onDeleteImageClick();
+        void onStartSelectAvatar();
     }
 
     private OnSelectAvatarDiaLogClick onSelectAvatarDiaLogClick;
@@ -61,6 +68,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         layoutDeletePicture.setOnClickListener(this);
 
         isShowButtonDeleteImage = getArguments().getBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, false);
+        showFromActivity = getArguments().getBoolean(CALL_FROM_ACTIVITY, true);
 
         if (isShowButtonDeleteImage) {
             layoutDeletePicture.setVisibility(View.VISIBLE);
@@ -90,8 +98,10 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view == layoutTakeAPicture) {
+            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkCameraPermission();
         } else if (view == layoutSelectPicture) {
+            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkStoragePermission();
         } else if (view == layoutDeletePicture) {
             this.onSelectAvatarDiaLogClick.onDeleteImageClick();
@@ -114,20 +124,36 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         } else if (requestCode == GALLERY_PERMISSION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Now user should be able to use gallery
                 this.dismissAllowingStateLoss();
                 openGallery();
             }
         }
     }
 
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getTargetFragment() != null) {
+            try {
+                this.onSelectAvatarDiaLogClick = (SelectAvatarDialog.OnSelectAvatarDiaLogClick) getTargetFragment();
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+            }
+        }
+
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            this.onSelectAvatarDiaLogClick = (OnSelectAvatarDiaLogClick) context;
-        } catch (ClassCastException e) {
-            //
+        if (getTargetFragment() == null) {
+            try {
+                this.onSelectAvatarDiaLogClick = (OnSelectAvatarDiaLogClick) context;
+            } catch (ClassCastException e) {
+                //
+            }
         }
     }
 
@@ -150,6 +176,8 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         }
     }
 
+
+
     /**
      * check use read external storage permission real time
      */
@@ -168,12 +196,32 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
     public static void showDialogSelectAvatar(FragmentActivity context, boolean isShowButtonDeleteImage) {
         SelectAvatarDialog selectAvatarDialog = new SelectAvatarDialog();
-
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
-
+        bundle.putBoolean(CALL_FROM_ACTIVITY, true);
         selectAvatarDialog.setArguments(bundle);
         selectAvatarDialog.show(context.getSupportFragmentManager(), "SelectAvatarDialog");
+    }
+
+    public static void showDialogSelectAvatar(Fragment fragment, int requestCode,
+                                                       FragmentManager fragmentManager, boolean isShowButtonDeleteImage) {
+        SelectAvatarDialog selectionDialog = new SelectAvatarDialog();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
+        bundle.putBoolean(CALL_FROM_ACTIVITY, false);
+        bundle.putInt(REQUEST_CODE, requestCode);
+        selectionDialog.setArguments(bundle);
+        selectionDialog.setTargetFragment(fragment, requestCode);
+        selectionDialog.show(fragmentManager, "SelectAvatarDialog");
+    }
+
+
+    private void openCameraFromActivity(Intent takePicture) {
+        getActivity().startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
+    }
+
+    private void openCameraFromFragment(Intent takePicture) {
+        getTargetFragment().startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
     }
 
 
@@ -184,18 +232,38 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        getActivity().startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
+
+        if (showFromActivity) {
+            openCameraFromActivity(takePicture);
+        }else {
+            openCameraFromFragment(takePicture);
+        }
     }
 
     private void openGallery() {
+
+        if (showFromActivity) {
+            openGalleryFromActivity();
+        }else {
+            openGalleryFromFragment();
+        }
+    }
+
+    private void openGalleryFromActivity() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        // If you call startActivity() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Bring up gallery to select a photo
             getActivity().startActivityForResult(intent, PICK_AVATAR_GALLERY);
+        }
+    }
+
+    private void openGalleryFromFragment() {
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            getTargetFragment().startActivityForResult(intent, PICK_AVATAR_GALLERY);
         }
     }
 }
