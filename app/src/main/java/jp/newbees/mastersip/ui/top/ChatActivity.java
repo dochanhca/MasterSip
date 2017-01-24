@@ -9,8 +9,6 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tonicartos.superslim.LayoutManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -81,6 +81,8 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     TextView txtSend;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.swap_layout)
+    LinearLayout swapRecycleChatLayout;
     @BindView(R.id.container)
     SoftKeyboardLsnedRelativeLayout container;
     @BindView(R.id.layout_select_image)
@@ -106,7 +108,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     private Animation slideDown;
     private Animation slideUp;
 
-    private boolean donotHideSoftKeyboard = false;
+    private volatile boolean donotHideSoftKeyboard = false;
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
@@ -129,7 +131,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
                 isCustomActionHeaderInChatOpened = false;
                 isCallActionHeaderInChatOpened = true;
             }
-            updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+            updateTopPaddingRecycle();
             callActionHeaderInChat.setVisibility(second);
             customActionHeaderInChat.setVisibility(first);
             if (isSoftKeyboardOpened) {
@@ -137,7 +139,39 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             }
         }
     };
-    private ChatPresenter.SendingReadMessageToServerListener mOnSendingReadMessageToServerListener = new ChatPresenter.SendingReadMessageToServerListener() {
+
+    private SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner softKeboardListener = new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
+        @Override
+        public void onSoftKeyboardShow() {
+            isSoftKeyboardOpened = true;
+            slideUpCustomActionheaderInChat();
+
+        }
+
+        @Override
+        public void onSoftKeyboardHide() {
+            isSoftKeyboardOpened = false;
+            slideDownCustomActionheaderInChat();
+        }
+    };
+
+
+    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
+        @Override
+        public void didSendChatToServer(BaseChatItem baseChatItem) {
+            Logger.e(TAG, "sending message to server success");
+            chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
+            edtChat.setEnabled(true);
+            txtSend.setEnabled(true);
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
+
+        @Override
+        public void didChatError(int errorCode, String errorMessage) {
+            donotHideSoftKeyboard = true;
+
+        }
+
         @Override
         public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
             chatAdapter.updateSendeeLastMessageStateToRead();
@@ -147,10 +181,29 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         @Override
         public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
             Logger.e(TAG, errorCode + " : " + errorMessage);
+            swipeRefreshLayout.setRefreshing(false);
         }
-    };
 
-    private ChatPresenter.UploadImageToServerListener mOnUploadImageListener = new ChatPresenter.UploadImageToServerListener() {
+        @Override
+        public void didLoadChatHistory(ArrayList<BaseChatItem> chatItems) {
+            boolean needScroolToTheEnd = false;
+            if (chatAdapter.getItemCount() == 0) {
+                needScroolToTheEnd = true;
+            }
+            chatAdapter.addDataFromBeginning(chatItems);
+
+            if (needScroolToTheEnd) {
+                recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            }
+            updateStateLastMessage();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void didLoadChatHistoryError(int errorCode, String errorMessage) {
+
+        }
+
         @Override
         public void didUploadImageToServer(ImageChatItem imageChatItem) {
             disMissLoading();
@@ -165,22 +218,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             isShowDialogForHandleImage = false;
         }
     };
-
-    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
-        @Override
-        public void didSendChatToServer(BaseChatItem baseChatItem) {
-            chatAdapter.add(baseChatItem);
-            edtChat.setEnabled(true);
-            txtSend.setEnabled(true);
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        }
-
-        @Override
-        public void didChatError(int errorCode, String errorMessage) {
-            donotHideSoftKeyboard = true;
-
-        }
-    };
     private TextView.OnEditorActionListener mOnChatEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -192,27 +229,28 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     };
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        public int dy;
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-            if (!donotHideSoftKeyboard && dy != 0) {
-                hideFilterAndNavigationBar();
-                if (scrollDown(dy)) {
-                    slideDownCustomActionheaderInChat();
-                } else {
-                    slideUpCustomActionheaderInChat();
-                }
-            }
+            this.dy = dy;
         }
 
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!donotHideSoftKeyboard && dy != 0) {
+                    if (scrollDown(dy)) {
+                        slideDownCustomActionheaderInChat();
+                    } else {
+                        slideUpCustomActionheaderInChat();
+                    }
+                }
                 if (donotHideSoftKeyboard) {
                     donotHideSoftKeyboard = false;
                 } else {
-                    hideFilterAndNavigationBar();
+                    hideSoftInputKeyboard();
                 }
             }
         }
@@ -221,7 +259,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             return dy < 0;
         }
 
-        private void hideFilterAndNavigationBar() {
+        private void hideSoftInputKeyboard() {
             View view = ChatActivity.this.getCurrentFocus();
             if (view != null) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -247,25 +285,15 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(ChatActivity.this, "load more  chat history", Toast.LENGTH_SHORT).show();
+                presenter.loadChatHistory(userItem, getLastMessageId());
             }
         });
         recyclerChat.addOnScrollListener(onScrollListener);
-        container.setListener(new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
-            @Override
-            public void onSoftKeyboardShow() {
-                isSoftKeyboardOpened = true;
-                slideUpCustomActionheaderInChat();
+        container.setListener(softKeboardListener);
+    }
 
-            }
-
-            @Override
-            public void onSoftKeyboardHide() {
-                isSoftKeyboardOpened = false;
-                slideDownCustomActionheaderInChat();
-            }
-        });
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
+    private int getLastMessageId() {
+        return chatAdapter.getLastMessageID();
     }
 
     @Override
@@ -273,25 +301,22 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener, mOnSendingReadMessageToServerListener,
-                mOnUploadImageListener);
-
+        presenter = new ChatPresenter(this, mOnChatListener);
         userItem = getIntent().getParcelableExtra(USER);
 
         initHeader(userItem.getUsername());
+        EventBus.getDefault().register(this);
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
+        LayoutManager layoutManager = new LayoutManager(ChatActivity.this);
+
         recyclerChat.setLayoutManager(layoutManager);
-        recyclerChat.setItemAnimator(new DefaultItemAnimator());
-        recyclerChat.setNestedScrollingEnabled(false);
         recyclerChat.setAdapter(chatAdapter);
-        chatAdapter.notifyDataSetChanged();
 
-        EventBus.getDefault().register(this);
+        updateTopPaddingRecycle();
+
+        presenter.loadChatHistory(userItem, 0);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -313,7 +338,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         if (isShowDialogForHandleImage) {
             showLoading();
         }
-
     }
 
     @Subscribe()
@@ -321,7 +345,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)) {
             donotHideSoftKeyboard = true;
-            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
+            chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             if (isResume) {
                 presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
@@ -387,6 +411,49 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         presenter.checkVoiceCall(userItem);
     }
 
+    private void updateTopPaddingRecycle() {
+        if (isCallActionHeaderInChatOpened || isCustomActionHeaderInChatOpened) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) recyclerChat.getLayoutParams();
+            layoutParams.topMargin = (int) getResources().getDimension(R.dimen.header_search_height);
+            recyclerChat.setLayoutParams(layoutParams);
+        } else {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) recyclerChat.getLayoutParams();
+            layoutParams.topMargin = 0;
+            recyclerChat.setLayoutParams(layoutParams);
+        }
+    }
+
+    private void slideDownCustomActionheaderInChat() {
+        if (!isCustomActionHeaderInChatOpened) {
+            customActionHeaderInChat.startAnimation(slideDown);
+        }
+        isCustomActionHeaderInChatOpened = true;
+        updateTopPaddingRecycle();
+    }
+
+    private void slideUpCustomActionheaderInChat() {
+        if (isCustomActionHeaderInChatOpened) {
+            customActionHeaderInChat.startAnimation(slideUp);
+        }
+        isCustomActionHeaderInChatOpened = false;
+        updateTopPaddingRecycle();
+    }
+
+    private void updateStateLastMessage() {
+        if (chatAdapter != null) {
+            BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
+            if (lastSenderMessage != null) {
+                presenter.sendingReadMessageToServer(lastSenderMessage);
+            }
+        }
+    }
+
+    public static void start(Context context, UserItem userItem) {
+        Intent starter = new Intent(context, ChatActivity.class);
+        starter.putExtra(USER, (Parcelable) userItem);
+        context.startActivity(starter);
+    }
+
     private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
         if (isCallActionHeaderInChatOpened) {
             recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
@@ -397,35 +464,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
     }
 
-
-    private void slideDownCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
-        if (!isCustomActionHeaderInChatOpened) {
-            customActionHeaderInChat.startAnimation(slideDown);
-        }
-        isCustomActionHeaderInChatOpened = true;
-    }
-
-    private void slideUpCustomActionheaderInChat() {
-        updateRecycleChatPaddingTop(isCallActionHeaderInChatOpened);
-        if (isCustomActionHeaderInChatOpened) {
-            customActionHeaderInChat.startAnimation(slideUp);
-        }
-        isCustomActionHeaderInChatOpened = false;
-    }
-
-    private void updateStateLastMessage() {
-        BaseChatItem lastSenderMessage = chatAdapter.getLastSendeeUnreadMessage();
-        if (lastSenderMessage != null) {
-            presenter.sendingReadMessageToServer(lastSenderMessage);
-        }
-    }
-
-    public static void start(Context context, UserItem userItem) {
-        Intent starter = new Intent(context, ChatActivity.class);
-        starter.putExtra(USER, (Parcelable) userItem);
-        context.startActivity(starter);
-    }
 
     private void doSendMessage() {
         String newMessage = edtChat.getText().toString();

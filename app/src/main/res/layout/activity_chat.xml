@@ -132,15 +132,23 @@
             android:layout_above="@id/layout_actions"
             android:layout_below="@id/action_bar01">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_chat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
+            <LinearLayout
+                android:id="@+id/swap_layout"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/xnormal_margin">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/xnormal_margin">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <FrameLayout

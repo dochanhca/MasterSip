@@ -43,6 +43,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ImageView imgBack;
     protected TextView txtActionBarTitle;
 
+    private boolean isLoading = false;
+    private boolean firstTimeLoadData = true;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(MyContextWrapper.wrap(newBase, Constant.Application.DEFAULT_LANGUAGE));

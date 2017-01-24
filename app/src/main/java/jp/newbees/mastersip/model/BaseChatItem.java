@@ -15,6 +15,7 @@ public class BaseChatItem implements Parcelable, Serializable {
     private int roomId;
     private int messageId;
     private String fullDate;
+    private String displayDate;
     private int chatType;
     private int cellIndex;
     private String cellIdentifier; //For cell;
@@ -22,9 +23,17 @@ public class BaseChatItem implements Parcelable, Serializable {
     private int roomType;
     private String shortDate;
     private String shortTimeStamp;
+    /**
+     * use for recycle view with header sticky
+     */
+    private int sectionFirstPosition;
+    private int sectionManager;
 
     private UserItem sender;
     private UserItem sendee;
+
+    public BaseChatItem() {
+    }
 
     public BaseChatItem(int roomType, UserItem sender, UserItem sendee) {
         this.roomType = roomType;
@@ -42,6 +51,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         public static final int CHAT_VIDEO_CALL = 6;
         public static final int CHAT_VIDEO_CHAT_CALL = 7;
         public static final int CHAT_GIFT = 9;
+        public final static int HEADER = 11;
 
         protected ChatType(Parcel in) {
         }
@@ -222,6 +232,14 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.fullDate = fullDate;
     }
 
+    public String getDisplayDate() {
+        return displayDate;
+    }
+
+    public void setDisplayDate(String displayDate) {
+        this.displayDate = displayDate;
+    }
+
     public int getChatType() {
         return chatType;
     }
@@ -278,7 +296,21 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.shortTimeStamp = shortTimeStamp;
     }
 
-    public BaseChatItem() {
+
+    public int getSectionManager() {
+        return sectionManager;
+    }
+
+    public void setSectionManager(int sectionManager) {
+        this.sectionManager = sectionManager;
+    }
+
+    public int getSectionFirstPosition() {
+        return sectionFirstPosition;
+    }
+
+    public void setSectionFirstPosition(int sectionFirstPosition) {
+        this.sectionFirstPosition = sectionFirstPosition;
     }
 
     @Override

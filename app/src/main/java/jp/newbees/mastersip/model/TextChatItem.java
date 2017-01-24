@@ -20,6 +20,9 @@ public class TextChatItem extends BaseChatItem implements Parcelable{
         this.message = message;
     }
 
+    public TextChatItem() {
+    }
+
 //    public TextChatItem(String message, String extensionSender) {
 //        this(message);
 //        this.setOwner(genUserItemFromExtension(extensionSender));

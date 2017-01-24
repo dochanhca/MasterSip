@@ -7,6 +7,7 @@ import com.android.volley.Response;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -16,6 +17,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
+import jp.newbees.mastersip.network.api.LoadChatHistoryTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
@@ -30,16 +32,10 @@ import jp.newbees.mastersip.utils.Logger;
 public class ChatPresenter extends BaseActionCallPresenter implements BaseUploadTask.ErrorListener, Response.Listener<BaseChatItem> {
 
     private ChatPresenterListener chatPresenterListener;
-    private SendingReadMessageToServerListener sendingReadMessageToServerListener;
-    private UploadImageToServerListener uploadImageToServerListener;
 
-    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener,
-                         SendingReadMessageToServerListener sendingReadMessageToServerListener,
-                         UploadImageToServerListener uploadImageToServerListener) {
+    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener) {
         super(context);
         this.chatPresenterListener = chatPresenterListener;
-        this.sendingReadMessageToServerListener = sendingReadMessageToServerListener;
-        this.uploadImageToServerListener = uploadImageToServerListener;
     }
 
     public interface ChatPresenterListener {
@@ -47,21 +43,20 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
         void didChatError(int errorCode, String errorMessage);
 
-    }
-
-    public interface SendingReadMessageToServerListener {
         void didSendingReadMessageToServer(BaseChatItem baseChatItem);
 
         void didSendingReadMessageToServerError(int errorCode, String errorMessage);
-    }
 
-    public interface UploadImageToServerListener {
+        void didLoadChatHistory(ArrayList<BaseChatItem> chatItems);
+
+        void didLoadChatHistoryError(int errorCode, String errorMessage);
+
         void didUploadImageToServer(ImageChatItem imageChatItem);
 
         void didUploadImageToServerError(int errorCode, String errorMessage);
     }
 
-    public final void sendText(String content, UserItem sendee) {
+    public final void sendText(String content,UserItem sendee){
         UserItem sender = ConfigManager.getInstance().getCurrentUser();
         TextChatItem textChatItem = new TextChatItem(content, BaseChatItem.RoomType.ROOM_CHAT_CHAT, sender, sendee);
         SendTextMessageTask messageTask = new SendTextMessageTask(context, textChatItem);
@@ -78,6 +73,13 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         EventBus.getDefault().post(new SendingReadMessageEvent(baseChatItem, currentUser, sender));
     }
 
+    public void loadChatHistory(UserItem friendUser,int lastMessageId) {
+        UserItem owner = ConfigManager.getInstance().getCurrentUser();
+        LoadChatHistoryTask loadChatHistoryTask = new LoadChatHistoryTask(context, owner.getUserId(),
+                friendUser.getUserId(), lastMessageId);
+        requestToServer(loadChatHistoryTask);
+    }
+
     public final void sendFile(String receiverExtension, int typeUpload, InputStream file) {
         UserItem sender = getCurrentUserItem();
         UploadFileForChatTask uploadFileForChatTask = new UploadFileForChatTask(context, receiverExtension,
@@ -92,7 +94,10 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
             chatPresenterListener.didSendChatToServer(result);
         } else if (task instanceof UpdateStateMessageTask) {
             BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
-            sendingReadMessageToServerListener.didSendingReadMessageToServer(result);
+            chatPresenterListener.didSendingReadMessageToServer(result);
+        } else if (task instanceof LoadChatHistoryTask) {
+            ArrayList<BaseChatItem> items = ((LoadChatHistoryTask) task).getDataResponse();
+            chatPresenterListener.didLoadChatHistory(items);
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
         }
@@ -103,10 +108,16 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
-            sendingReadMessageToServerListener.didSendingReadMessageToServerError(errorCode, errorMessage);
+            chatPresenterListener.didSendingReadMessageToServerError(errorCode, errorMessage);
+        } else if (task instanceof LoadChatHistoryTask) {
+            chatPresenterListener.didLoadChatHistoryError(errorCode, errorMessage);
         } else if (task instanceof CheckCallTask) {
             Logger.e(TAG, errorMessage);
         }
+    }
+
+    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
+        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
     }
 
     /**
@@ -117,7 +128,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
      */
     @Override
     public void onErrorListener(int errorCode, String errorMessage) {
-        uploadImageToServerListener.didUploadImageToServerError(errorCode, errorMessage);
+        chatPresenterListener.didUploadImageToServerError(errorCode, errorMessage);
     }
 
     /**
@@ -127,10 +138,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
      */
     @Override
     public void onResponse(BaseChatItem response) {
-        uploadImageToServerListener.didUploadImageToServer((ImageChatItem) response);
-    }
-
-    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
-        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
+        chatPresenterListener.didUploadImageToServer((ImageChatItem) response);
     }
 }

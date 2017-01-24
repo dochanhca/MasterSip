@@ -89,6 +89,7 @@ dependencies {
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
+    compile 'com.tonicartos:superslim:0.4.+'
 }
 
 

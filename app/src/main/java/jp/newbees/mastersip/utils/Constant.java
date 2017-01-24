@@ -120,6 +120,9 @@ public final class Constant {
         public static final String VIDEO_CALL = "video_call";
         public static final String CHAT = "chat";
         public static final String SECRET_KEY = "secretKey";
+        public static final String LIST_MESSAGES = "list_messages";
+        public static final String MESSAGES = "messages";
+        public static final String MEMBERS = "members";
         public static final String TOTAL_COUNT = "total_count";
         public static final String LIST_IMAGE = "list_images";
         public static final String IMAGE = "image";
@@ -176,6 +179,7 @@ public final class Constant {
         public static final String LIST_MY_PHOTOS = "my/photos";
         public static final String SAVE_FILE_CHAT = "save_file_chat";
         public static final String DELETE_IMAGE = "image/delete";
+        public static final String CHAT_HISTORY = "messages";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
