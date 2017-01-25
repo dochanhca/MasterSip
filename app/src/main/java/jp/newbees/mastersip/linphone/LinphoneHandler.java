@@ -47,6 +47,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private LinphoneNotifier notifier;
     private LinphoneCore linphoneCore;
 
+    /**
+     *
+     * @param notifier
+     * @param context
+     */
     public LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
         this.context = context;
@@ -149,13 +154,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void copyAssetsFromPackage(String basePath) throws IOException {
-        LinphonUtils.copyIfNotExist(context, R.raw.oldphone_mono, basePath + "/oldphone_mono.wav");
-        LinphonUtils.copyIfNotExist(context, R.raw.ringback, basePath + "/ringback.wav");
-        LinphonUtils.copyIfNotExist(context, R.raw.toy_mono, basePath + "/toy_mono.wav");
-        LinphonUtils.copyIfNotExist(context, R.raw.linphonerc_default, basePath + "/.linphonerc");
-        LinphonUtils.copyFromPackage(context, R.raw.linphonerc_factory, new File(basePath + "/linphonerc").getName());
-        LinphonUtils.copyIfNotExist(context, R.raw.lpconfig, basePath + "/lpconfig.xsd");
-        LinphonUtils.copyIfNotExist(context, R.raw.rootca, basePath + "/rootca.pem");
+        LinphoneUtils.copyIfNotExist(context, R.raw.oldphone_mono, basePath + "/oldphone_mono.wav");
+        LinphoneUtils.copyIfNotExist(context, R.raw.ringback, basePath + "/ringback.wav");
+        LinphoneUtils.copyIfNotExist(context, R.raw.toy_mono, basePath + "/toy_mono.wav");
+        LinphoneUtils.copyIfNotExist(context, R.raw.linphonerc_default, basePath + "/.linphonerc");
+        LinphoneUtils.copyFromPackage(context, R.raw.linphonerc_factory, new File(basePath + "/linphonerc").getName());
+        LinphoneUtils.copyIfNotExist(context, R.raw.lpconfig, basePath + "/lpconfig.xsd");
+        LinphoneUtils.copyIfNotExist(context, R.raw.rootca, basePath + "/rootca.pem");
     }
 
     private void initLinphoneCoreValues(String basePath) {

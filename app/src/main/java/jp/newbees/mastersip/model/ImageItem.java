@@ -49,6 +49,9 @@ public class ImageItem implements Parcelable, Serializable {
         this.originUrl = originUrl;
     }
 
+    /**
+     * Default constructor
+     */
     public ImageItem() {
         this.imageId = 0;
         this.thumbUrl = "";

@@ -13,6 +13,11 @@ public class SelectLocationEvent {
     private List<LocationItem> locationItems;
     private boolean isFromFilterLocationFragment = false;
 
+    /**
+     *
+     * @param locationItems
+     * @param isFromFilterLocationFragment
+     */
     public SelectLocationEvent(List<LocationItem> locationItems, boolean isFromFilterLocationFragment) {
         this.locationItems = locationItems;
         this.isFromFilterLocationFragment = isFromFilterLocationFragment;

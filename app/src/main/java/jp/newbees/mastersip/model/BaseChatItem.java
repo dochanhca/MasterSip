@@ -32,9 +32,18 @@ public class BaseChatItem implements Parcelable, Serializable {
     private UserItem sender;
     private UserItem sendee;
 
+    /**
+     * Default constructor
+     */
     public BaseChatItem() {
     }
 
+    /**
+     *
+     * @param roomType
+     * @param sender
+     * @param sendee
+     */
     public BaseChatItem(int roomType, UserItem sender, UserItem sendee) {
         this.roomType = roomType;
         this.sender = sender;

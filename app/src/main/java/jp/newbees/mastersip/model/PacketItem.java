@@ -12,9 +12,17 @@ public class PacketItem implements Parcelable {
     private String message;
     private String response;
 
+    /**
+     * Default constructor
+     */
     public PacketItem() {
     }
 
+    /**
+     * @param action
+     * @param message
+     * @param response
+     */
     public PacketItem(String action, String message, String response) {
         this.action = action;
         this.message = message;
