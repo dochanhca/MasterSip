@@ -13,7 +13,6 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -77,9 +76,7 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
     }
 
     private void loadUserProfileImage(ImageItem item, ViewHolder holder) {
-        int gender = ConfigManager.getInstance().getImageCalleeDefault();
-        int drawableId = gender == UserItem.MALE ? R.drawable.ic_boy_default :
-                R.drawable.ic_girl_default;
+        int drawableId = ConfigManager.getInstance().getImageCalleeDefault();
 
         Glide.with(context).load(item.getOriginUrl())
                 .error(drawableId).placeholder(drawableId)

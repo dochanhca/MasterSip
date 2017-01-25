@@ -14,7 +14,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/24/17.
@@ -25,13 +25,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private static final int FIRST_POSITION = 0;
     private List<ImageItem> photos;
     private final Context context;
-    private final int gender;
     private UserPhotoAdapter.OnItemClickListener onItemClickListener;
 
-    public GalleryAdapter(Context context, List<ImageItem> photos, int gender) {
+    public GalleryAdapter(Context context, List<ImageItem> photos) {
         this.photos = photos;
         this.context = context;
-        this.gender = gender;
     }
 
     @Override
@@ -48,8 +46,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     private void updatePhotoView(ImageItem item,GalleryAdapter.ViewHolder holder,final int position) {
-        int drawableId = gender == UserItem.MALE ? R.drawable.ic_boy_default :
-                R.drawable.ic_girl_default;
+        int drawableId = ConfigManager.getInstance().getImageCallerDefault();
 
         Glide.with(context).load(item.getOriginUrl())
                 .error(drawableId).placeholder(drawableId)

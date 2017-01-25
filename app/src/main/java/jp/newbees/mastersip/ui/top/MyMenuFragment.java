@@ -160,8 +160,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         this.txtPoint.setText("" + userItem.getCoin());
         int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE;
         this.btnBuyPoint.setVisibility(isShowButtonBuyPoint);
-        this.galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>(), userItem.getGender());
-        this.galleryAdapter.setOnItemClickListener(this);
+        this.galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
         this.rcvListPhoto.setAdapter(galleryAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rcvListPhoto.getContext(),
                 DividerItemDecoration.HORIZONTAL);
