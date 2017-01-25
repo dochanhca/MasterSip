@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_20"
+        android:layout_marginBottom="@dimen/margin_20"
         android:textSize="@dimen/text_size_15"
         android:textColor="@color/text_color_gray"
         android:text="@string/are_you_sure_make_a_voice_call"/>

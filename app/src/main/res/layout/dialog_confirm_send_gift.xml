@@ -9,10 +9,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_25"
+        android:layout_marginBottom="@dimen/margin_20"
         android:layout_marginLeft="@dimen/margin_15"
         android:layout_marginRight="@dimen/margin_15"
         android:orientation="vertical">
+
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_dialog_title"
             android:layout_width="wrap_content"
@@ -21,8 +22,8 @@
             android:layout_marginTop="@dimen/margin_20"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_18"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:text="@string/mess_followed"
+            android:textStyle="bold" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_dialog_content"
@@ -30,9 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
+            android:layout_marginTop="@dimen/margin_20"
+            android:paddingBottom="@dimen/margin_2"
             android:lineSpacingMultiplier="1.5"
-            android:layout_marginTop="@dimen/margin_15"
-            android:text="asdasdasdasdasdasdasdasdasdasdasdasdasd"
+            android:text="@string/notify_follow_user_success"
             android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_15"
             android:visibility="visible" />

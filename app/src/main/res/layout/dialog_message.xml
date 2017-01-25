@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_15"
+            android:paddingBottom="@dimen/margin_2"
             android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_15"
             android:visibility="gone" />

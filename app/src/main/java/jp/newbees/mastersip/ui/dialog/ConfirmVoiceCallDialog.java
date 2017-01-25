@@ -43,7 +43,6 @@ public class ConfirmVoiceCallDialog extends BaseDialog implements View.OnClickLi
                 throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
             }
         }
-
     }
 
     @Override

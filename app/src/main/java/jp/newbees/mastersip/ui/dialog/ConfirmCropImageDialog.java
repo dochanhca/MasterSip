@@ -45,7 +45,7 @@ public class ConfirmCropImageDialog extends BaseDialog implements View.OnClickLi
         try {
             this.onDialogConfirmCropImageClick = (OnDialogConfirmCropImageClick) context;
         } catch (ClassCastException e ) {
-
+            throw new ClassCastException("Calling activity must implement DialogClickListener interface");
         }
     }
 }

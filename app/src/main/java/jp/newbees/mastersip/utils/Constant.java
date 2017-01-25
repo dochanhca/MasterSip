@@ -128,6 +128,8 @@ public final class Constant {
         public static final String TOTAL_COUNT = "total_count";
         public static final String LIST_IMAGE = "list_images";
         public static final String IMAGE = "image";
+
+        public static final String DEST_USER_ID = "dest_user_id";
     }
 
     public static final class API {
@@ -181,6 +183,9 @@ public final class Constant {
         public static final String DELETE_IMAGE = "image/delete";
         public static final String CHAT_HISTORY = "messages";
         public static final String SETTING_CALL = "setting_call";
+        public static final String FOLLOW = "follow";
+        public static final String UN_FOLLOW = "unfollow";
+
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

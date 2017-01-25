@@ -15,16 +15,13 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.AdapterViewPagerProfileDetail;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.top.ChatActivity;
 
 /**
  * Created by ducpv on 1/5/17.
  */
 
-public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ProfileDetailPresenter.ProfileDetailsView {
+public class ProfileDetailFragment extends BaseFragment {
 
     @BindView(R.id.view_pager_profile)
     ViewPager viewPagerProfile;
@@ -33,11 +30,9 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
     @BindView(R.id.img_next)
     ImageView imgNext;
 
-    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
     private static final String USER_ITEMS = "USER_ITEMS";
     private static final String POSITION = "POSITION";
 
-    private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private List<UserItem> userItemList;
     private int currentIndex;
@@ -85,29 +80,16 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
         userItem = userItemList.get(currentIndex);
 
         ButterKnife.bind(this, mRoot);
-        profileDetailPresenter = new ProfileDetailPresenter(getContext(), this);
         setFragmentTitle(userItem.getUsername());
 
         initViewPagerProfile();
     }
 
-    @OnClick({R.id.img_back, R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,
-            R.id.img_previous, R.id.img_next})
+    @OnClick({R.id.img_back, R.id.img_previous, R.id.img_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_back:
-                restoreNavigationBarState();
                 getFragmentManager().popBackStack();
-                break;
-            case R.id.layout_chat:
-                ChatActivity.start(getContext(), userItem);
-                break;
-            case R.id.layout_voice_call:
-                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
-                        CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
-                break;
-            case R.id.layout_video_call:
-                // Make a video call
                 break;
             case R.id.img_previous:
                 onBackwardClick();
@@ -120,13 +102,8 @@ public class ProfileDetailFragment extends BaseFragment implements ConfirmVoiceC
         }
     }
 
-    @Override
-    public void onOkVoiceCallClick() {
-        profileDetailPresenter.checkVoiceCall(userItem);
-    }
-
     private void initViewPagerProfile() {
-        AdapterViewPagerProfileDetail adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getFragmentManager(),
+        AdapterViewPagerProfileDetail adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getChildFragmentManager(),
                 userItemList);
         viewPagerProfile.setAdapter(adapterViewPagerProfileDetail);
         viewPagerProfile.addOnPageChangeListener(onPagerProfileChangeListener);

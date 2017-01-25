@@ -14,6 +14,7 @@ import java.util.List;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 1/19/17.
@@ -22,15 +23,13 @@ import jp.newbees.mastersip.model.UserItem;
 
 public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.ViewHolder> {
 
-    private int gender;
     private Context context;
     private OnItemClickListener onItemClickListener;
     private List<ImageItem> photos;
 
-    public UserPhotoAdapter(Context context, List<ImageItem> photos, int gender) {
+    public UserPhotoAdapter(Context context, List<ImageItem> photos) {
         this.photos = photos;
         this.context = context;
-        this.gender = gender;
     }
 
     @Override
@@ -78,6 +77,7 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
     }
 
     private void loadUserProfileImage(ImageItem item, ViewHolder holder) {
+        int gender = ConfigManager.getInstance().getImageCalleeDefault();
         int drawableId = gender == UserItem.MALE ? R.drawable.ic_boy_default :
                 R.drawable.ic_girl_default;
 
