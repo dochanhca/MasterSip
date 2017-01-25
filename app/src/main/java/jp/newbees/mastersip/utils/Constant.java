@@ -8,6 +8,8 @@ public final class Constant {
 
     public static final class JSON {
         public static final String IMG_ID = "img_id";
+        public static final String VIDEO_CALL_SET = "video_call_set";
+        public static final String VOICE_CALL_SET = "voice_call_set";
 
         private JSON() {
             //Prevent init constructor
@@ -129,8 +131,6 @@ public final class Constant {
     }
 
     public static final class API {
-
-
         private API() {
             //Prevent init constructor
         }
@@ -180,6 +180,7 @@ public final class Constant {
         public static final String SAVE_FILE_CHAT = "save_file_chat";
         public static final String DELETE_IMAGE = "image/delete";
         public static final String CHAT_HISTORY = "messages";
+        public static final String SETTING_CALL = "setting_call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

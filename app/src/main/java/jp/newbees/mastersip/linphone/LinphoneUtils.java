@@ -11,7 +11,13 @@ import java.io.InputStream;
  * Created by vietbq on 1/10/17.
  */
 
-public class LinphonUtils {
+public class LinphoneUtils {
+
+
+    private LinphoneUtils(){
+        //Prevent init object
+    }
+
     public static void copyIfNotExist(Context context, int ressourceId, String target) throws IOException {
         File lFileToCopy = new File(target);
         if (!lFileToCopy.exists()) {

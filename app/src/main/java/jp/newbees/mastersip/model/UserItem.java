@@ -78,6 +78,7 @@ public class UserItem implements Serializable, Parcelable {
         this.typeBoy = "";
         this.charmingPoint = "";
         this.avatarItem = new ImageItem();
+        this.settings = new SettingItem();
     }
 
     public String getTypeBoy() {

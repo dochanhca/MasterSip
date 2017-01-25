@@ -260,4 +260,10 @@
     <string name="confirm_delete_avatar">現在登録されている写真を削除しても\nよろしいでしょうか？</string>
     <string name="delete_avatar_notify">写真を削除しました。</string>
     <string name="today">今日</string>
+    <string name="description_call_setting">以下項目でチェックした通話形式のみ\n「着信」が受け取れるようになります。\n\n チェックを外した通話形式は「着信拒否」の扱い となります。</string>
+    <string name="setting_voice_call">音声通話での着信許可</string>
+    <string name="setting_video_call">ビデオ通話での着信許可</string>
+    <string name="confirm_setting_call">設定を保存する</string>
+    <string name="title_setting_call">通話設定</string>
+    <string name="mess_call_setting_changed">通話設定が保存されました。</string>
 </resources>

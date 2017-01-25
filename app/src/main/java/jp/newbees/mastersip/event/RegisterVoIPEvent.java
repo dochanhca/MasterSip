@@ -10,6 +10,10 @@ public class RegisterVoIPEvent {
 
     private int responseCode;
 
+    /**
+     *
+     * @param responseCode
+     */
     public RegisterVoIPEvent(int responseCode) {
         this.responseCode = responseCode;
     }

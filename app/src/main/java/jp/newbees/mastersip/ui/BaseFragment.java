@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
@@ -25,6 +26,7 @@ public abstract class BaseFragment extends Fragment {
     protected TextView txtActionBarTitle;
     protected String TAG;
     private MessageDialog messageDialog;
+    private ImageView imgBackButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,13 @@ public abstract class BaseFragment extends Fragment {
 
     protected void setFragmentTitle(String title) {
         txtActionBarTitle = (TextView) mRoot.findViewById(R.id.txt_action_bar_title);
-
+        imgBackButton = (ImageView) mRoot.findViewById(R.id.img_back);
+        if(null!=imgBackButton) imgBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
         txtActionBarTitle.setText(title);
     }
 

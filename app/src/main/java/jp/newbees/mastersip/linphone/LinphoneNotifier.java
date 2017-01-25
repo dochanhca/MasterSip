@@ -17,6 +17,10 @@ public class LinphoneNotifier extends TutorialNotifier {
     private Handler mHandler;
     private final String TAG = "LinphoneNotifier";
 
+    /**
+     *
+     * @param mHandler
+     */
     public LinphoneNotifier(Handler mHandler) {
         this.mHandler = mHandler;
     }

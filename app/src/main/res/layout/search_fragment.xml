@@ -117,7 +117,7 @@
             android:text="@string/search_condition" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:id="@+id/txt_phone"
+            android:id="@+id/btn_setting_call"
             style="@style/style_content_text_view_tiny"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

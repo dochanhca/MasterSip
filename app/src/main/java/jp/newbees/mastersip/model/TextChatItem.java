@@ -11,15 +11,27 @@ public class TextChatItem extends BaseChatItem implements Parcelable{
 
     private String message;
 
+    /**
+     * @param message
+     * @param roomType
+     * @param sender
+     * @param sendee
+     */
     public TextChatItem (String message, int roomType, UserItem sender, UserItem sendee) {
         super(roomType,sender,sendee);
         this.message = message;
     }
 
+    /**
+     * @param message
+     */
     public TextChatItem(String message) {
         this.message = message;
     }
 
+    /**
+     * Default constructor
+     */
     public TextChatItem() {
     }
 
