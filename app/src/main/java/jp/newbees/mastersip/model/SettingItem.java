@@ -3,11 +3,13 @@ package jp.newbees.mastersip.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by ducpv on 1/18/17.
  */
 
-public class SettingItem implements Parcelable {
+public class SettingItem implements Parcelable, Serializable {
 
     public static final int ON = 1;
     public static final int OFF = 0;
@@ -17,6 +19,8 @@ public class SettingItem implements Parcelable {
     private int chat;
 
     public SettingItem() {
+        this.voiceCall = OFF;
+        this.videoCall = OFF;
     }
 
     protected SettingItem(Parcel in) {

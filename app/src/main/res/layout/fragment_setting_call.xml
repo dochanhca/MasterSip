@@ -64,7 +64,7 @@
                         android:text="@string/setting_voice_call"
                         />
 
-                    <CheckBox
+                    <android.support.v7.widget.AppCompatCheckBox
                         android:id="@+id/chk_voice_setting"
                         android:layout_alignParentRight="true"
                         android:button="@null"
@@ -116,7 +116,7 @@
                         android:text="@string/setting_video_call"
                         />
 
-                    <CheckBox
+                    <android.support.v7.widget.AppCompatCheckBox
                         android:id="@+id/chk_video_setting"
                         android:layout_alignParentRight="true"
                         android:button="@null"
