@@ -51,8 +51,8 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     RecyclerView recyclerUser;
     @BindView(R.id.txt_search)
     HiraginoTextView txtSearch;
-    @BindView(R.id.txt_phone)
-    HiraginoTextView txtPhone;
+    @BindView(R.id.btn_setting_call)
+    HiraginoTextView btnSettingCall;
     @BindView(R.id.header_search)
     RelativeLayout headerSearch;
     @BindView(R.id.btn_filter_call_waiting)
@@ -193,18 +193,30 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         return fragment;
     }
 
-    @OnClick({R.id.img_filter, R.id.header_search})
+    @OnClick({R.id.img_filter, R.id.header_search, R.id.btn_setting_call})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_filter:
                 changeMode();
                 break;
-            case R.id.header_search:
+            case R.id.txt_search:
                 showFilterFragment();
+                break;
+            case R.id.btn_setting_call:
+                showSettingCallFragment();
                 break;
             default:
                 break;
         }
+    }
+
+    private void showSettingCallFragment() {
+        SettingCallFragment settingFragment = SettingCallFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        setTransitionAnimation(transaction);
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_search_container, settingFragment,
+                SettingCallFragment.class.getName()).commit();
     }
 
     @Override

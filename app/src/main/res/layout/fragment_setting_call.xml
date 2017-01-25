@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_content_search"
+    >
+    <include
+        layout="@layout/layout_action_bar"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/action_bar_h"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:textColor="@color/text_color_gray"
+                android:layout_marginTop="@dimen/_15dp"
+                android:layout_marginLeft="@dimen/_15dp"
+                android:layout_marginRight="@dimen/_15dp"
+                android:text="@string/description_call_setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_20"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_15dp"
+                android:layout_marginRight="@dimen/_15dp"
+                android:background="@drawable/bg_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:layout_marginRight="@dimen/_15dp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/bg_voice_call_setting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:layout_marginBottom="@dimen/_15dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/img_voice_call"
+                        android:src="@drawable/ic_setting_voice_call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_toRightOf="@id/img_voice_call"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_voice_call"
+                        />
+
+                    <CheckBox
+                        android:id="@+id/chk_voice_setting"
+                        android:layout_alignParentRight="true"
+                        android:button="@null"
+                        android:checked="true"
+                        android:layout_marginRight="@dimen/_15dp"
+                        android:background="@drawable/cb_blue_selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_20"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_15dp"
+                android:layout_marginRight="@dimen/_15dp"
+                android:background="@drawable/bg_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginRight="@dimen/_15dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/bg_video_call_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <RelativeLayout
+                    android:layout_marginBottom="@dimen/_15dp"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginTop="@dimen/_15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_centerVertical="true"
+                        android:id="@+id/img_video_call"
+                        android:src="@drawable/ic_setting_video_call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:layout_width="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_toRightOf="@id/img_video_call"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_video_call"
+                        />
+
+                    <CheckBox
+                        android:id="@+id/chk_video_setting"
+                        android:layout_alignParentRight="true"
+                        android:button="@null"
+                        android:checked="true"
+                        android:layout_marginRight="@dimen/_15dp"
+                        android:background="@drawable/cb_blue_selector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </LinearLayout>
+            <jp.newbees.mastersip.customviews.HiraginoButton
+                android:id="@+id/btn_confirm_setting_call"
+                android:text="@string/confirm_setting_call"
+                android:textSize="@dimen/_15sp"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/_15dp"
+                android:layout_marginLeft="@dimen/_15dp"
+                android:layout_marginRight="@dimen/_15dp"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/_15sp"
+                android:background="@drawable/bg_button_primary_big"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
