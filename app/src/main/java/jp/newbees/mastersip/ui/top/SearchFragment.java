@@ -163,6 +163,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         presenter = new FilterUserPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
+        restoreNavigationBarState();
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();

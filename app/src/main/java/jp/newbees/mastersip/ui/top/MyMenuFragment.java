@@ -53,10 +53,13 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, UserPhotoAdapter.OnItemClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick {
+        SelectAvatarDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogClick {
+
     private static final int REQUEST_SELECT_PHOTO_FOR_AVATAR = 8888;
     private static final int REQUEST_SELECT_PHOTO_FOR_GALLERY = 8989;
     private static final String REFRESH_DATA = "REFRESH_DATA";
+    private static final int CONFIRM_DELETE_AVATAR = 11;
+
     @BindView(R.id.switch_mode_in_header)
     ImageView switchModeInHeader;
     @BindView(R.id.txt_action_bar_title)
@@ -399,15 +402,17 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onDeleteImageClick() {
         String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
-        TextDialog textDialog = TextDialog.getInstance(confirmDeleteAvatar);
-        textDialog.setOnPositiveListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLoading();
-                presenter.deleteAvatar();
-            }
-        });
-        textDialog.show(getFragmentManager(), "DeleteAvatarDialog");
+        TextDialog.openTextDialog(this, CONFIRM_DELETE_AVATAR, getFragmentManager(),
+                confirmDeleteAvatar, "");
+    }
+
+    /**
+     * On Confirm Delete Image Click Ok listener
+     */
+    @Override
+    public void onTextDialogOkClick() {
+        showLoading();
+        presenter.deleteAvatar();
     }
 
     @Override

@@ -34,6 +34,7 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/normal_margin"
                 android:paddingRight="@dimen/normal_margin"
+                android:paddingBottom="@dimen/margin_2"
                 android:text="Pol, adelphis!"
                 android:textColor="@color/white" />
         </LinearLayout>

@@ -1,12 +1,10 @@
 package jp.newbees.mastersip.ui.dialog;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
@@ -15,86 +13,76 @@ import jp.newbees.mastersip.R;
  * Created by vietbq on 1/23/17.
  */
 
-public class TextDialog extends DialogFragment {
+public class TextDialog extends BaseDialog implements View.OnClickListener {
 
-    private static final String DIALOG_CONTENT = "DialogContent";
-    protected View mRoot;
-    protected ImageView mButtonPositive;
-    protected ImageView mButtonNegative;
-    protected ViewGroup mLayoutActions;
-    protected TextView txtDialogHeader;
+    private static final String DIALOG_CONTENT = "DIALOG_CONTENT";
+    private static final String DIALOG_TITLE = "DIALOG_TITLE";
+
+    private TextView txtDialogTitle;
     private TextView txtContent;
-    private View.OnClickListener onNegativeListener;
-    private View.OnClickListener onPositiveListener;
+
+    public interface OnTextDialogClick {
+        void onTextDialogOkClick();
+    }
+
+    private OnTextDialogClick onTextDialogClick;
 
     public TextDialog() {
 
     }
 
-    public static final TextDialog getInstance(String content) {
-        TextDialog textDialog = new TextDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString(DIALOG_CONTENT, content);
-        textDialog.setArguments(bundle);
-        return textDialog;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getTargetFragment() != null) {
+            try {
+                this.onTextDialogClick = (OnTextDialogClick) getTargetFragment();
+            } catch (ClassCastException e ) {
+                throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+            }
+        }
     }
 
     @Override
-    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        getDialog().requestWindowFeature(STYLE_NO_TITLE);
-        getDialog().setCanceledOnTouchOutside(false);
+    protected void initViews(View rootView, Bundle savedInstanceState) {
+        txtDialogTitle = (TextView) rootView.findViewById(R.id.txt_dialog_title);
+        txtContent = (TextView) rootView.findViewById(R.id.txt_dialog_content);
 
-        mRoot = inflater.inflate(R.layout.dialog_text, null);
-
-        mLayoutActions = (ViewGroup) mRoot.findViewById(R.id.layout_actions);
-        txtDialogHeader = (TextView) mRoot.findViewById(R.id.txt_dialog_header);
-        txtContent = (TextView) mRoot.findViewById(R.id.txt_content);
-
-        initActions();
-        initViews();
-        return mRoot;
-    }
-
-    private void initViews() {
         String content = getArguments().getString(DIALOG_CONTENT);
+        String title = getArguments().getString(DIALOG_TITLE);
         txtContent.setText(content);
+        if (title.length() > 0) {
+            txtDialogTitle.setVisibility(View.VISIBLE);
+            txtDialogTitle.setText(title);
+        }
+        setCancelable(false);
+        setOnPositiveListener(this);
+        setOnNegativeListener(this);
     }
 
-    private void initActions() {
-        mButtonPositive = (ImageView) mRoot.findViewById(R.id.img_positive);
-        mButtonNegative = (ImageView) mRoot.findViewById(R.id.img_negative);
-        mButtonPositive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(null!=onPositiveListener){
-                    onPositiveListener.onClick(view);
-                }
-                dismiss();
-            }
-        });
-        mButtonNegative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(null!=onNegativeListener){
-                    onNegativeListener.onClick(view);
-                }
-                dismiss();
-            }
-        });
+    @Override
+    protected int getLayoutDialog() {
+        return R.layout.dialog_text;
     }
 
-    public void setOnNegativeListener(View.OnClickListener onNegativeListener) {
-        this.onNegativeListener = onNegativeListener;
+    @Override
+    public void onClick(View view) {
+        if (view == mButtonPositive) {
+            this.onTextDialogClick.onTextDialogOkClick();
+        }
+        dismiss();
     }
 
-    public void setOnPositiveListener(View.OnClickListener onPositiveListener) {
-        this.onPositiveListener = onPositiveListener;
-    }
-
-
-    protected void setDialogHeader(String title) {
-        txtDialogHeader.setVisibility(View.VISIBLE);
-        txtDialogHeader.setText(title);
+    public static final TextDialog openTextDialog(Fragment fragment, int requestCode,
+                                                  FragmentManager fragmentManager,
+                                                  String content, String title) {
+        TextDialog textDialog = new TextDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(DIALOG_CONTENT, content);
+        bundle.putString(DIALOG_TITLE, title);
+        textDialog.setArguments(bundle);
+        textDialog.setTargetFragment(fragment, requestCode);
+        textDialog.show(fragmentManager, "TextDialog");
+        return textDialog;
     }
 }

@@ -266,4 +266,10 @@
     <string name="confirm_setting_call">設定を保存する</string>
     <string name="title_setting_call">通話設定</string>
     <string name="mess_call_setting_changed">通話設定が保存されました。</string>
+    <string name="notify_follow_user_success">さんをフォローしました。 ギフトを贈ってアプローチしますか？</string>
+    <string name="mess_followed">フォローしました</string>
+    <string name="notify_un_follow_user_success">さんへのフォローを解除しました。</string>
+    <string name="mess_un_followed">フォローを解除しました</string>
+    <string name="un_follow">フォロー解除</string>
+    <string name="OK">OK</string>
 </resources>

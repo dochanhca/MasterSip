@@ -30,29 +30,34 @@
         android:layout_width="match_parent"
         android:background="@drawable/bg_dialog_simple"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_10">
+        android:layout_marginTop="@dimen/margin_5">
 
-        <ImageView
-            android:id="@+id/img_positive"
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_positive"
+            style="@style/style_button_small"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_20"
             android:layout_marginLeft="@dimen/margin_20"
             android:layout_marginRight="@dimen/margin_5"
-            android:layout_marginBottom="@dimen/margin_10"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/btn_ok_small"/>
-
-        <ImageView
-            android:layout_marginLeft="@dimen/margin_5"
-            android:layout_width="0dp"
             android:layout_weight="1"
-            android:id="@+id/img_negative"
+            android:background="@drawable/bg_btn_dialog_positive_selector"
+            android:text="@string/OK"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold"
+            android:textColor="@color/text_color_gray" />
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_negative"
+            style="@style/style_button_small"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/margin_20"
+            android:layout_marginLeft="@dimen/margin_5"
             android:layout_marginRight="@dimen/margin_20"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/margin_10"
-            android:src="@drawable/btn_cancel_small"/>
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_dialog_negative_selector"
+            android:text="@string/cancel"
+            android:textSize="@dimen/text_size_15"/>
     </LinearLayout>
 </LinearLayout>

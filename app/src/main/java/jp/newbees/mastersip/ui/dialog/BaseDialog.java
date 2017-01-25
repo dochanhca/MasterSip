@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
@@ -20,8 +20,8 @@ public abstract class BaseDialog extends DialogFragment {
 
     protected View mRoot;
     private ViewStub mViewStub;
-    protected ImageView mButtonPositive;
-    protected ImageView mButtonNegative;
+    protected Button mButtonPositive;
+    protected Button mButtonNegative;
     protected ViewGroup mLayoutActions;
     protected TextView txtDialogHeader;
 
@@ -50,8 +50,8 @@ public abstract class BaseDialog extends DialogFragment {
     }
 
     private void initActions() {
-        mButtonPositive = (ImageView) mRoot.findViewById(R.id.img_positive);
-        mButtonNegative = (ImageView) mRoot.findViewById(R.id.img_negative);
+        mButtonPositive = (Button) mRoot.findViewById(R.id.btn_positive);
+        mButtonNegative = (Button) mRoot.findViewById(R.id.btn_negative);
         mButtonPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +86,14 @@ public abstract class BaseDialog extends DialogFragment {
     protected void setDialogHeader(String title) {
         txtDialogHeader.setVisibility(View.VISIBLE);
         txtDialogHeader.setText(title);
+    }
+
+    protected void setPositiveButtonContent(String text) {
+        mButtonPositive.setText(text);
+    }
+
+    protected void setNegativeButtonContent(String text) {
+        mButtonNegative.setText(text);
     }
 
 }
