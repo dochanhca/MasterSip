@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.top;
+package jp.newbees.mastersip.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

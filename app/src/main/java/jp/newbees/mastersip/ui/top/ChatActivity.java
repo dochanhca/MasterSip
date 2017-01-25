@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
@@ -140,12 +141,14 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
     };
 
-    private SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner softKeboardListener = new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
+    private SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner softKeyboardListener = new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
         @Override
         public void onSoftKeyboardShow() {
             isSoftKeyboardOpened = true;
             slideUpCustomActionheaderInChat();
-
+            if (uiMode == UIMode.SELECT_IMAGE_MODE) {
+                switchUIMode();
+            }
         }
 
         @Override
@@ -201,7 +204,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
         @Override
         public void didLoadChatHistoryError(int errorCode, String errorMessage) {
-
+            Logger.e(TAG, errorCode + " : " + errorMessage);
         }
 
         @Override
@@ -209,6 +212,8 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             disMissLoading();
             isShowDialogForHandleImage = false;
 
+            chatAdapter.addItemAndHeaderIfNeed(imageChatItem);
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
 
         @Override
@@ -289,7 +294,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             }
         });
         recyclerChat.addOnScrollListener(onScrollListener);
-        container.setListener(softKeboardListener);
+        container.setListener(softKeyboardListener);
     }
 
     private int getLastMessageId() {
@@ -453,17 +458,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         starter.putExtra(USER, (Parcelable) userItem);
         context.startActivity(starter);
     }
-
-    private void updateRecycleChatPaddingTop(boolean isCallActionHeaderInChatOpened) {
-        if (isCallActionHeaderInChatOpened) {
-            recyclerChat.setPadding(0, (int) getResources().getDimension(R.dimen.header_search_height),
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
-        } else {
-            recyclerChat.setPadding(0, 0,
-                    0, (int) getResources().getDimension(R.dimen.xnormal_margin));
-        }
-    }
-
 
     private void doSendMessage() {
         String newMessage = edtChat.getText().toString();

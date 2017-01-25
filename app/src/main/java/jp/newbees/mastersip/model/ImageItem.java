@@ -58,6 +58,11 @@ public class ImageItem implements Parcelable, Serializable {
         this.originUrl = "";
     }
 
+    public ImageItem(String thumbUrl, String originUrl) {
+        this.thumbUrl = thumbUrl;
+        this.originUrl = originUrl;
+    }
+
     public void setImageStatus(int imageStatus) {
         this.imageStatus = imageStatus;
     }

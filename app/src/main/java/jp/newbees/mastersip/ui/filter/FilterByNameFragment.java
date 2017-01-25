@@ -21,7 +21,7 @@ import jp.newbees.mastersip.presenter.top.FilterByNamePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
-import jp.newbees.mastersip.ui.top.AdapterSearchUserModeList;
+import jp.newbees.mastersip.adapter.AdapterSearchUserModeList;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Utils;
 

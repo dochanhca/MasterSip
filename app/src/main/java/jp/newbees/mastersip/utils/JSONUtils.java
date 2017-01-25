@@ -441,7 +441,9 @@ public class JSONUtils {
         return members;
     }
 
-    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition, HashMap<String, UserItem> members) throws JSONException {
+    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition,
+                                                         HashMap<String, UserItem> members) throws JSONException {
+
         BaseChatItem baseChatItem;
         UserItem owner = ConfigManager.getInstance().getCurrentUser();
         int type = jMessage.getInt(Constant.JSON.TYPE);
@@ -450,6 +452,13 @@ public class JSONUtils {
                 baseChatItem = new TextChatItem();
                 ((TextChatItem)baseChatItem).setMessage(jMessage.getJSONObject(Constant.JSON.TEXT).
                         getString(Constant.JSON.CONTENT));
+                break;
+            case BaseChatItem.ChatType.CHAT_IMAGE:
+                baseChatItem = new ImageChatItem();
+                JSONObject jImage = jMessage.getJSONObject(Constant.JSON.IMAGE);
+                ImageItem imageItem = new ImageItem(jImage.getString(Constant.JSON.PATH),
+                        jImage.getString(Constant.JSON.THUMBNAIL));
+                ((ImageChatItem) baseChatItem).setImageItem(imageItem);
                 break;
             default:
                 baseChatItem = new BaseChatItem();

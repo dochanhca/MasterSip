@@ -1,14 +1,11 @@
-package jp.newbees.mastersip.ui.top;
+package jp.newbees.mastersip.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tonicartos.superslim.GridSLM;
 import com.tonicartos.superslim.LayoutManager;
 import com.tonicartos.superslim.LinearSLM;
@@ -20,9 +17,13 @@ import java.util.Date;
 import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.chatholder.BaseChatViewHolder;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderHeader;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessageReply;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageReply;
 import jp.newbees.mastersip.model.BaseChatItem;
-import jp.newbees.mastersip.model.TextChatItem;
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -58,15 +59,24 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
-                    viewHolder = new ViewHolderTextMessageReply(view);
+                    viewHolder = new ViewHolderTextMessageReply(view, context);
                 } else {
                     view = layoutInflater.inflate(R.layout.my_chat_text_item, parent, false);
-                    viewHolder = new ViewHolderTextMessage(view);
+                    viewHolder = new ViewHolderTextMessage(view, context);
+                }
+                break;
+            case BaseChatItem.ChatType.CHAT_IMAGE:
+                if (isReplyMessage) {
+                    view = layoutInflater.inflate(R.layout.reply_chat_image_item, parent, false);
+                    viewHolder = new ViewHolderImageMessageReply(view, context);
+                } else {
+                    view = layoutInflater.inflate(R.layout.my_chat_image_item, parent, false);
+                    viewHolder = new ViewHolderImageMessage(view, context);
                 }
                 break;
             case BaseChatItem.ChatType.HEADER:
                 view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
-                viewHolder = new ViewHolderHeader(view);
+                viewHolder = new ViewHolderHeader(view, context);
                 break;
             default:
                 break;
@@ -78,63 +88,42 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BaseChatItem item = datas.get(position);
-        View itemView = holder.itemView;
+        ((BaseChatViewHolder) holder).bindView(item);
 
+
+        setLayoutParam(holder, item);
+    }
+
+    private void setLayoutParam(RecyclerView.ViewHolder holder, BaseChatItem item) {
         int viewType = holder.getItemViewType();
         boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
         if (isReplyMessage) {
             viewType -= OFFSET_RETURN_TYPE;
         }
 
-        final GridSLM.LayoutParams layoutParams = GridSLM.LayoutParams.from(itemView.getLayoutParams());
+        View itemView = holder.itemView;
 
-        switch (viewType) {
-            case BaseChatItem.ChatType.CHAT_TEXT:
-                bindChatTextItem(item, holder, isReplyMessage);
-                break;
-            case BaseChatItem.ChatType.HEADER:
-                bindHeader(item, holder, layoutParams);
-                break;
-            default:
-                break;
+        final GridSLM.LayoutParams layoutParams = GridSLM.LayoutParams.from(itemView.getLayoutParams());
+//        switch (viewType) {
+//            case BaseChatItem.ChatType.CHAT_TEXT:
+//                bindChatTextItem(item, holder, isReplyMessage);
+//                break;
+//            case BaseChatItem.ChatType.HEADER:
+//                fixLayoutParams(item, holder, layoutParams);
+//                break;
+//            default:
+//                break;
+//        }
+        if (viewType == BaseChatItem.ChatType.HEADER) {
+            layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
+            layoutParams.headerEndMarginIsAuto = true;
+            layoutParams.headerStartMarginIsAuto = true;
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
+
         layoutParams.setSlm(LinearSLM.ID);
         layoutParams.setFirstPosition(item.getSectionFirstPosition());
         itemView.setLayoutParams(layoutParams);
-    }
-
-    private void bindHeader(BaseChatItem item, RecyclerView.ViewHolder holder, GridSLM.LayoutParams layoutParams) {
-        layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
-        layoutParams.headerEndMarginIsAuto = true;
-        layoutParams.headerStartMarginIsAuto = true;
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        ViewHolderHeader viewHolderHeader = (ViewHolderHeader) holder;
-        viewHolderHeader.txtContent.setText(item.getDisplayDate());
-    }
-
-    private void bindChatTextItem(BaseChatItem item, RecyclerView.ViewHolder holder, boolean isReplyMessage) {
-        TextChatItem textChatItem = (TextChatItem) item;
-        if (isReplyMessage) {
-            ViewHolderTextMessageReply viewHolderTextMessageReply = (ViewHolderTextMessageReply) holder;
-            viewHolderTextMessageReply.txtTime.setText(textChatItem.getShortDate());
-            viewHolderTextMessageReply.txtContent.setText(textChatItem.getMessage());
-
-            int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-            if (item.getOwner().getAvatarItem() != null) {
-                Glide.with(context).load(item.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
-                        error(defaultImageId).into(viewHolderTextMessageReply.imgAvatar);
-            } else {
-                viewHolderTextMessageReply.imgAvatar.setImageResource(defaultImageId);
-            }
-
-        } else {
-            ViewHolderTextMessage viewHolderTextMessage = (ViewHolderTextMessage) holder;
-            viewHolderTextMessage.txtTime.setText(textChatItem.getShortDate());
-            viewHolderTextMessage.txtContent.setText(textChatItem.getMessage());
-            viewHolderTextMessage.txtState.setVisibility(
-                    textChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
-                            View.VISIBLE : View.GONE);
-        }
     }
 
     @Override
@@ -159,41 +148,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         return 0;
-    }
-
-    public static class ViewHolderTextMessage extends RecyclerView.ViewHolder {
-        private TextView txtContent;
-        private TextView txtTime;
-        private TextView txtState;
-
-        public ViewHolderTextMessage(View root) {
-            super(root);
-            txtContent = (TextView) root.findViewById(R.id.txt_content);
-            txtTime = (TextView) root.findViewById(R.id.txt_time);
-            txtState = (TextView) root.findViewById(R.id.txt_state);
-        }
-    }
-
-    public static class ViewHolderTextMessageReply extends RecyclerView.ViewHolder {
-        private TextView txtContent;
-        private TextView txtTime;
-        private ImageView imgAvatar;
-
-        public ViewHolderTextMessageReply(View root) {
-            super(root);
-            txtContent = (TextView) root.findViewById(R.id.txt_content);
-            txtTime = (TextView) root.findViewById(R.id.txt_time);
-            imgAvatar = (ImageView) root.findViewById(R.id.img_reply_avatar);
-        }
-    }
-
-    public static class ViewHolderHeader extends RecyclerView.ViewHolder {
-        private TextView txtContent;
-
-        public ViewHolderHeader(View root) {
-            super(root);
-            txtContent = (TextView) root.findViewById(R.id.txt_content);
-        }
     }
 
     public void clearData() {
