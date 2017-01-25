@@ -188,8 +188,8 @@
 
                 <RelativeLayout
                     android:id="@+id/group_1"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/size_thumb_photo_gallery"
+                    android:layout_height="@dimen/size_thumb_photo_gallery"
                     android:layout_marginBottom="@dimen/_12dp"
                     android:layout_marginLeft="@dimen/_15dp"
                     android:layout_marginTop="@dimen/_12dp">
@@ -217,23 +217,21 @@
                         android:textSize="9sp" />
 
                     <RelativeLayout
-                        android:id="@+id/group_upload_photo"
+                        android:visibility="gone"
+                        android:id="@+id/group_upload_photo_gallery"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone">
+                        android:background="@drawable/bg_mask_upload_photo_gallery"
+                        android:layout_height="match_parent">
 
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-
-                        <ImageView
-                            android:id="@+id/img_mask"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg_mask">
-
-                        </ImageView>
-
+                        <com.pnikosis.materialishprogress.ProgressWheel
+                            android:id="@+id/prw_upload_photo_gallery"
+                            app:matProg_rimColor="@color/white"
+                            app:matProg_rimWidth="3dp"
+                            android:visibility="visible"
+                            app:matProg_barColor="@color/blue_dark"
+                            android:layout_centerInParent="true"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp" />
                     </RelativeLayout>
 
                 </RelativeLayout>

@@ -1,10 +1,13 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -26,6 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.GalleryAdapter;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
@@ -50,8 +54,9 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, UserPhotoAdapter.OnItemClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick {
-    private static final int REQUEST_SELECT_AVATAR = 8888;
-    private static final int REQUEST_SELECT_PHOTO = 8989;
+    private static final int REQUEST_SELECT_PHOTO_FOR_AVATAR = 8888;
+    private static final int REQUEST_SELECT_PHOTO_FOR_GALLERY = 8989;
+    private static final String REFRESH_DATA = "REFRESH_DATA";
     @BindView(R.id.switch_mode_in_header)
     ImageView switchModeInHeader;
     @BindView(R.id.txt_action_bar_title)
@@ -76,10 +81,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     RelativeLayout group0;
     @BindView(R.id.btn_upload_photo)
     ImageButton btnUploadPhoto;
-    @BindView(R.id.img_mask)
-    ImageView imgMask;
-    @BindView(R.id.group_upload_photo)
-    RelativeLayout groupUploadPhoto;
     @BindView(R.id.group_1)
     RelativeLayout group1;
     @BindView(R.id.rcv_list_photo)
@@ -104,14 +105,37 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     ProgressWheel prwUploadAvatar;
     @BindView(R.id.group_upload_avatar)
     RelativeLayout groupUploadAvatar;
+    @BindView(R.id.prw_upload_photo_gallery)
+    ProgressWheel prwUploadPhotoGallery;
+    @BindView(R.id.group_upload_photo_gallery)
+    RelativeLayout groupUploadPhotoGallery;
+
 
     private MyMenuPresenter presenter;
     private int defaultAvatar;
-    private UserPhotoAdapter userPhotoAdapter;
+    private GalleryAdapter galleryAdapter;
     private Uri pickedImage;
-    private boolean requestingSelectPhoto;
     private boolean uploadingAvatar;
+    private int currentRequestPhoto;
+    private boolean uploadingPhoto;
+    private boolean needRefreshData;
+    private boolean isLoadingMorePhoto;
+    private int visibleThreshold = 5;
+    private boolean isFragmentRunning = false;
 
+    public static Fragment newInstance() {
+        Fragment fragment = new MyMenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(REFRESH_DATA, true);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public final void onTabSelected() {
+        if (isFragmentRunning) {
+            presenter.requestMyMenuInfo();
+        }
+    }
 
     @Override
     protected int layoutId() {
@@ -121,9 +145,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-        initDefaultViews();
         presenter = new MyMenuPresenter(getContext(), this);
-
+        initDefaultViews();
     }
 
     private void initDefaultViews() {
@@ -134,24 +157,49 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         this.txtPoint.setText("" + userItem.getCoin());
         int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE;
         this.btnBuyPoint.setVisibility(isShowButtonBuyPoint);
-        this.userPhotoAdapter = new UserPhotoAdapter(getContext(), new ArrayList<ImageItem>(), userItem.getGender());
-        this.userPhotoAdapter.setOnItemClickListener(this);
-        this.rcvListPhoto.setAdapter(userPhotoAdapter);
+        this.galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>(), userItem.getGender());
+        this.galleryAdapter.setOnItemClickListener(this);
+        this.rcvListPhoto.setAdapter(galleryAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rcvListPhoto.getContext(),
+                DividerItemDecoration.HORIZONTAL);
+        dividerItemDecoration.setDrawable(getDivider());
+        rcvListPhoto.addItemDecoration(dividerItemDecoration);
+        this.needRefreshData = getArguments().getBoolean(REFRESH_DATA);
+        this.initLoadMorePhotoInGallery();
+    }
+
+    private void initLoadMorePhotoInGallery() {
+        rcvListPhoto.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                if (!isLoadingMorePhoto && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    isLoadingMorePhoto = true;
+                    onLoadMorePhotoInGallery();
+                }
+            }
+        });
+    }
+
+    private void onLoadMorePhotoInGallery() {
+        presenter.loadMorePhotoInGallery();
+    }
+
+    private Drawable getDivider(){
+        Drawable divider = getResources().getDrawable(R.drawable.divider_photo);
+        return divider;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (!requestingSelectPhoto) {
+    public void onResume() {
+        super.onResume();
+        isFragmentRunning = true;
+        if (needRefreshData) {
+            needRefreshData = false;
             presenter.requestMyMenuInfo();
         }
-    }
-
-    public static Fragment newInstance() {
-        Fragment fragment = new MyMenuFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @OnClick({
@@ -171,7 +219,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_backup_email:
                 break;
             case R.id.btn_upload_photo:
-                handleUploadPhoto();
+                handleUploadPhotoForGallery();
                 break;
             case R.id.btn_change_avatar:
             case R.id.group_avatar:
@@ -180,18 +228,23 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         }
     }
 
-    private void handleUploadPhoto() {
-        SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_PHOTO, getFragmentManager(), false);
+    private void handleUploadPhotoForGallery() {
+        if (!uploadingPhoto) {
+            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_GALLERY;
+            SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
+        }
     }
 
     private void handleUploadAvatar() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        if (userItem.hasAvatar() && !uploadingAvatar){
-              if (userItem.getAvatarItem().isApproved()){
-                  SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_AVATAR, getFragmentManager(), true);
-              }
+        if (userItem.hasAvatar() && !uploadingAvatar) {
+            if (userItem.getAvatarItem().isApproved()) {
+                currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
+                SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), true);
+            }
         } else if (!userItem.hasAvatar() && !uploadingAvatar) {
-            SelectAvatarDialog.showDialogSelectAvatar(this, REQUEST_SELECT_AVATAR, getFragmentManager(), false);
+            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
+            SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
         }
     }
 
@@ -216,8 +269,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadGallery(GalleryItem galleryItem) {
-//        this.userPhotoAdapter.setPhotos(galleryItem.getImageItems());
-//        this.userPhotoAdapter.notifyDataSetChanged();
+        this.galleryAdapter.setPhotos(galleryItem.getPhotos());
+        this.galleryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -230,19 +283,43 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void onUploadProgressChanged(float percent) {
+    public void onUploadAvatarProgressChanged(float percent) {
         this.prwUploadAvatar.setProgress(percent);
     }
 
     @Override
     public void didUploadAvatarFailure(String errorMessage) {
         uploadingAvatar = false;
-        Toast.makeText(getContext(),errorMessage,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         groupUploadAvatar.setVisibility(View.GONE);
         imgMaskApproving.setVisibility(View.INVISIBLE);
         txtApproving.setVisibility(View.INVISIBLE);
         btnChangeAvatar.setVisibility(View.VISIBLE);
         imgAvatar.setImageResource(defaultAvatar);
+    }
+
+    @Override
+    public void onStartUploadPhotoGallery(String filePath) {
+        this.uploadingPhoto = true;
+        this.prwUploadPhotoGallery.resetCount();
+        this.groupUploadPhotoGallery.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onUploadGalleryProgressChanged(float percent) {
+        this.prwUploadPhotoGallery.setProgress(percent);
+    }
+
+    @Override
+    public void photoNoMoreInGallery() {
+        isLoadingMorePhoto = false;
+    }
+
+    @Override
+    public void didLoadMorePhotosInGallery(GalleryItem gallery) {
+        isLoadingMorePhoto = false;
+        galleryAdapter.setMorePhotos(gallery.getPhotos());
+        galleryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -264,8 +341,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void didDeleteAvatar() {
         disMissLoading();
-        String notifyDeleteAvatar  = getString(R.string.delete_avatar_notify);
-        Toast.makeText(getContext(),notifyDeleteAvatar, Toast.LENGTH_SHORT).show();
+        String notifyDeleteAvatar = getString(R.string.delete_avatar_notify);
+        Toast.makeText(getContext(), notifyDeleteAvatar, Toast.LENGTH_SHORT).show();
         groupUploadAvatar.setVisibility(View.GONE);
         imgMaskApproving.setVisibility(View.INVISIBLE);
         txtApproving.setVisibility(View.INVISIBLE);
@@ -277,6 +354,16 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void didDeleteAvatarFailure() {
         disMissLoading();
     }
+
+    @Override
+    public void didUploadPhotoGallery(ImageItem photo) {
+        this.uploadingPhoto = false;
+        this.groupUploadPhotoGallery.setVisibility(View.GONE);
+        galleryAdapter.addPhoto(photo);
+        galleryAdapter.notifyDataSetChanged();
+    }
+
+
 
     private void updateAvatarView(ImageItem avatarItem) {
         if (avatarItem != null) {
@@ -325,7 +412,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void onStartSelectAvatar() {
-        requestingSelectPhoto = true;
     }
 
     @Override
@@ -344,7 +430,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 }
                 break;
             case SelectAvatarDialog.CROP_IMAGE:
-                requestingSelectPhoto = false;
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
                 }
@@ -364,7 +449,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
-        presenter.uploadAvatar(result);
+        switch (currentRequestPhoto) {
+            case REQUEST_SELECT_PHOTO_FOR_AVATAR:
+                presenter.uploadAvatar(result);
+                break;
+            case REQUEST_SELECT_PHOTO_FOR_GALLERY:
+                presenter.uploadPhotoForGallery(result);
+                break;
+        }
     }
 
     private void handleImageFromGallery() {
@@ -383,4 +475,5 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
         startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
     }
+
 }

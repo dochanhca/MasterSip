@@ -17,12 +17,13 @@ public class ImageItem implements Parcelable, Serializable {
     private int imageId;
     private String thumbUrl;
     private String originUrl;
+    private int imageType;
+    private int imageStatus;
+
 
     public int getImageStatus() {
         return imageStatus;
     }
-
-    private int imageStatus;
 
     public int getImageId() {
         return imageId;
@@ -58,6 +59,18 @@ public class ImageItem implements Parcelable, Serializable {
         this.imageStatus = imageStatus;
     }
 
+    public boolean isApproved() {
+        return this.imageStatus == ImageItem.IMAGE_APPROVED ? true : false;
+    }
+
+    public void setImageType(int imageType) {
+        this.imageType = imageType;
+    }
+
+    public int getImageType() {
+        return imageType;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,15 +80,17 @@ public class ImageItem implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.imageId);
         dest.writeString(this.thumbUrl);
-        dest.writeInt(this.imageStatus);
         dest.writeString(this.originUrl);
+        dest.writeInt(this.imageType);
+        dest.writeInt(this.imageStatus);
     }
 
     protected ImageItem(Parcel in) {
         this.imageId = in.readInt();
         this.thumbUrl = in.readString();
-        this.imageStatus = in.readInt();
         this.originUrl = in.readString();
+        this.imageType = in.readInt();
+        this.imageStatus = in.readInt();
     }
 
     public static final Creator<ImageItem> CREATOR = new Creator<ImageItem>() {
@@ -89,8 +104,4 @@ public class ImageItem implements Parcelable, Serializable {
             return new ImageItem[size];
         }
     };
-
-    public boolean isApproved() {
-        return this.imageStatus == ImageItem.IMAGE_APPROVED ? true : false;
-    }
 }

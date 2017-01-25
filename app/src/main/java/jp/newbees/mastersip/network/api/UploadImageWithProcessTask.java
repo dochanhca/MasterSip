@@ -45,6 +45,7 @@ public class UploadImageWithProcessTask extends BaseUploadV2Task<ImageItem> {
         imageItem.setOriginUrl(jData.getString(Constant.JSON.IMAGE_PATH_FULL));
         imageItem.setThumbUrl(jData.getString(Constant.JSON.IMAGE_PATH_THUMB));
         imageItem.setImageStatus(jData.getInt(Constant.JSON.IMAGE_STATUS));
+        imageItem.setImageType(this.typeUpload);
         return imageItem;
     }
 

@@ -221,7 +221,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     /**
      * on filter user event
-     * @param event
+     * @param event Filter's settings changed
      */
     @Subscribe(sticky = true)
     public void onFilterUserEvent(FilterUserEvent event) {

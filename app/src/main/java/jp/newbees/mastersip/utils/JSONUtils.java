@@ -345,12 +345,9 @@ public class JSONUtils {
         return baseChatItem;
     }
 
-    public static GalleryItem parseListPhotos(JSONObject jData) throws JSONException {
+    public static GalleryItem parseGallery(JSONObject jData) throws JSONException {
         GalleryItem galleryItem = new GalleryItem();
-
-        if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
-            galleryItem.setNextId(jData.getString(Constant.JSON.NEXT_ID));
-        }
+        galleryItem.setNextId(jData.getString(Constant.JSON.NEXT_ID));
         galleryItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
 
         JSONArray jsonImages = jData.getJSONArray(Constant.JSON.LIST_IMAGE);
@@ -361,12 +358,10 @@ public class JSONUtils {
             imageItem.setImageId(jImage.getInt(Constant.JSON.IMAGE_ID));
             imageItem.setOriginUrl(jImage.getString(Constant.JSON.IMAGE_PATH));
             imageItem.setThumbUrl(jImage.getString(Constant.JSON.IMAGE_PATH_THUMB));
-
+            imageItem.setImageStatus(jImage.getInt(Constant.JSON.IMAGE_STATUS));
             imageItems.add(imageItem);
         }
-
         galleryItem.setImageItems(imageItems);
-
         return galleryItem;
     }
 
@@ -487,4 +482,5 @@ public class JSONUtils {
         header.setSectionFirstPosition(sectionFirstPosition);
         return header;
     }
+
 }

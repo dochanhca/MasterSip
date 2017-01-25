@@ -32,11 +32,15 @@ public class MyMenuPresenter extends BasePresenter  {
 
     private final MyMenuView menuView;
     private Handler handler;
+    private GalleryItem lastGalleryItem;
+    private boolean isLoadMorePhotoInGallery;
+    private boolean isRequestingMyInfo;
 
     public MyMenuPresenter(Context context, MyMenuView menuView) {
         super(context);
         this.menuView = menuView;
         this.handler = new Handler();
+        this.isLoadMorePhotoInGallery = false;
     }
 
     @Override
@@ -60,15 +64,22 @@ public class MyMenuPresenter extends BasePresenter  {
     }
 
     private void handleMyPhotos(MyPhotosTask task) {
-        GalleryItem galleryItem = task.getDataResponse();
-        menuView.didLoadGallery(galleryItem);
+        this.lastGalleryItem = task.getDataResponse();
+        if (isLoadMorePhotoInGallery){
+            menuView.didLoadMorePhotosInGallery(lastGalleryItem);
+        }else {
+            menuView.didLoadGallery(lastGalleryItem);
+        }
     }
 
     private void handleMyInfo(MyProfileTask task) {
         UserItem userItem =  task.getDataResponse();
         ConfigManager.getInstance().saveUser(userItem);
         menuView.didLoadMyProfile(userItem);
-        requestGetGallery();
+        isRequestingMyInfo = false;
+        isLoadMorePhotoInGallery = false;
+        lastGalleryItem = null;
+        requestGetGallery(new GalleryItem());
     }
 
     @Override
@@ -81,12 +92,15 @@ public class MyMenuPresenter extends BasePresenter  {
     }
 
     public final void requestMyMenuInfo(){
-        MyProfileTask myProfileTask = new MyProfileTask(context);
-        requestToServer(myProfileTask);
+        if (!isRequestingMyInfo) {
+            isRequestingMyInfo = true;
+            MyProfileTask myProfileTask = new MyProfileTask(context);
+            requestToServer(myProfileTask);
+        }
     }
 
-    private void requestGetGallery() {
-        MyPhotosTask myPhotosTask = new MyPhotosTask(context, new GalleryItem());
+    private void requestGetGallery(GalleryItem galleryItem) {
+        MyPhotosTask myPhotosTask = new MyPhotosTask(context, galleryItem);
         requestToServer(myPhotosTask);
     }
 
@@ -109,17 +123,20 @@ public class MyMenuPresenter extends BasePresenter  {
         getContext().stopService(intent);
     }
 
-    public void uploadAvatar(final String filePath) {
+    public void uploadPhoto(final String filePath,final int uploadType) {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         UploadImageWithProcessTask uploadImageWithProcessTask = new UploadImageWithProcessTask(getContext(),
                 userItem.getUserId(),
-                UploadImageWithProcessTask.UPLOAD_FOR_AVATAR,
+                uploadType,
                 filePath);
         uploadImageWithProcessTask.request(new Response.Listener<ImageItem>() {
             @Override
             public void onResponse(ImageItem response) {
-//                FileUtils.deleteFilePath(filePath);
-                handleDidUploadAvatar(response);
+                if (response.getImageType() == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR) {
+                    handleDidUploadAvatar(response);
+                }else if(response.getImageType() == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
+                    handleDidUploadPhotoForGallery(response);
+                }
             }
         }, new BaseUploadTask.ErrorListener() {
             @Override
@@ -129,17 +146,25 @@ public class MyMenuPresenter extends BasePresenter  {
         }, new Response.ProgressListener() {
             @Override
             public void onProgress(long transferredBytes, long totalSize) {
-                handleUpdateProgressUploadAvatar(transferredBytes, totalSize);
+                handleUpdateProgressUploadImage(transferredBytes, totalSize,uploadType);
             }
         });
     }
 
-    private void handleUpdateProgressUploadAvatar(final long transferredBytes,final long totalSize) {
+    private void handleDidUploadPhotoForGallery(ImageItem photo) {
+        menuView.didUploadPhotoGallery(photo);
+    }
+
+    private void handleUpdateProgressUploadImage(final long transferredBytes,final long totalSize,final int uploadType) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 float percent = (transferredBytes*100) / totalSize;
-                menuView.onUploadProgressChanged(percent);
+                if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR) {
+                    menuView.onUploadAvatarProgressChanged(percent);
+                }else if(uploadType == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
+                    menuView.onUploadGalleryProgressChanged(percent);
+                }
             }
         });
     }
@@ -165,7 +190,7 @@ public class MyMenuPresenter extends BasePresenter  {
                     @Override
                     public void run() {
                         menuView.onStartUploadAvatarBitmap(filePath);
-                        uploadAvatar(filePath);
+                        uploadPhoto(filePath, UploadImageWithProcessTask.UPLOAD_FOR_AVATAR);
                     }
                 });
             }
@@ -178,6 +203,35 @@ public class MyMenuPresenter extends BasePresenter  {
         requestToServer(deleteImageTask);
     }
 
+    public void uploadPhotoForGallery(final byte[] result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                String fileName = "android_" + System.currentTimeMillis() + ".png";
+                final String filePath = FileUtils.saveImageBytesToFile(result,fileName);
+                long end = System.currentTimeMillis() - start;
+                Logger.e("Upload photo", "time : " + end);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        menuView.onStartUploadPhotoGallery(filePath);
+                        uploadPhoto(filePath, UploadImageWithProcessTask.UPLOAD_FOR_GALLERY);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void loadMorePhotoInGallery() {
+        if (null!=lastGalleryItem && lastGalleryItem.hasMorePhotos()) {
+            isLoadMorePhotoInGallery = true;
+            requestGetGallery(lastGalleryItem);
+        }else {
+            menuView.photoNoMoreInGallery();
+        }
+    }
+
     public interface MyMenuView {
         void didLogout();
 
@@ -187,7 +241,7 @@ public class MyMenuPresenter extends BasePresenter  {
 
         void didUploadAvatar(ImageItem avatar);
 
-        void onUploadProgressChanged(float percent);
+        void onUploadAvatarProgressChanged(float percent);
 
         void didUploadAvatarFailure(String errorMessage);
 
@@ -196,5 +250,15 @@ public class MyMenuPresenter extends BasePresenter  {
         void didDeleteAvatar();
 
         void didDeleteAvatarFailure();
+
+        void didUploadPhotoGallery(ImageItem photo);
+
+        void onStartUploadPhotoGallery(String filePath);
+
+        void onUploadGalleryProgressChanged(float percent);
+
+        void photoNoMoreInGallery();
+
+        void didLoadMorePhotosInGallery(GalleryItem gallery);
     }
 }

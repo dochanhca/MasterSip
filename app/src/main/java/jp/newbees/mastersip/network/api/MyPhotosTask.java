@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 
 /**
  * Created by vietbq on 1/20/17.
@@ -18,6 +19,7 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class MyPhotosTask extends BaseTask<GalleryItem> {
 
+    private static final int NUMBER_OF_PHOTO = 40;
     private final GalleryItem galleryItem;
 
     public MyPhotosTask(Context context, GalleryItem galleryItem) {
@@ -29,8 +31,10 @@ public class MyPhotosTask extends BaseTask<GalleryItem> {
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.PAGINATE, 40);
-        jParams.put(Constant.JSON.IMAGE_ID, galleryItem.getNextId());
+        jParams.put(Constant.JSON.PAGINATE, NUMBER_OF_PHOTO);
+        if (null!=galleryItem.getNextId()) {
+            jParams.put(Constant.JSON.IMAGE_ID, galleryItem.getNextId());
+        }
         return jParams;
     }
 
@@ -47,6 +51,8 @@ public class MyPhotosTask extends BaseTask<GalleryItem> {
 
     @Override
     protected GalleryItem didResponse(JSONObject data) throws JSONException {
-        return new GalleryItem();
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
+        GalleryItem galleryItem = JSONUtils.parseGallery(jData);
+        return galleryItem;
     }
 }

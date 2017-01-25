@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -31,7 +32,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private static final int CHAT_GROUP_FRAGMENT = 1;
     private static final int FOOT_PRINT_FRAGMENT = 2;
     private static final int FLOW_FRAGMENT = 3;
-    private static final int PROFILE_FRAGMENT = 4;
+    private static final int MY_MENU_FRAGMENT = 4;
 
     private Animation slide_down;
     private Animation slide_up;
@@ -61,6 +62,10 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
         @Override
         public void onPageSelected(int position) {
+            if (position == MY_MENU_FRAGMENT) {
+                MyMenuFragment fragment = (MyMenuFragment) getFragmentForPosition(position);
+                if (null != fragment) fragment.onTabSelected();
+            }
             navigationLayoutGroup.setSelectedItem(position);
         }
 
@@ -131,7 +136,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                     return FootPrintFragment.newInstance();
                 case FLOW_FRAGMENT:
                     return FollowFragment.newInstance();
-                case PROFILE_FRAGMENT:
+                case MY_MENU_FRAGMENT:
                     return MyMenuFragment.newInstance();
                 default:
                     return null;
@@ -158,5 +163,26 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
             case PERMISSIONS_ENABLED_MIC:
                 break;
         }
+    }
+
+    /**
+     * @param containerViewId the ViewPager this adapter is being supplied to
+     * @param id pass in getItemId(position) as this is whats used internally in this class
+     * @return the tag used for this pages fragment
+     */
+    public static String makeFragmentName(int containerViewId, long id) {
+        return "android:switcher:" + containerViewId + ":" + id;
+    }
+
+    /**
+     * @return may return null if the fragment has not been instantiated yet for that position - this depends on if the fragment has been viewed
+     * yet OR is a sibling covered by {@link android.support.v4.view.ViewPager#setOffscreenPageLimit(int)}. Can use this to call methods on
+     * the current positions fragment.
+     */
+    public @Nullable
+    Fragment getFragmentForPosition(int position) {
+        String tag = makeFragmentName(viewPager.getId(), position);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        return fragment;
     }
 }
