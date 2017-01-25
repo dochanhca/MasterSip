@@ -480,7 +480,7 @@ public class JSONUtils {
         String strDate = jListMessage.getString(Constant.JSON.DATE);
         header.setFullDate(strDate);
 
-        String displayDate = DateTimeUtils.getHeaderDateInChatHistory(
+        String displayDate = DateTimeUtils.getHeaderDisplayDateInChatHistory(
                 DateTimeUtils.convertStringToDate(strDate, DateTimeUtils.ENGLISH_DATE_FORMAT),context);
         header.setDisplayDate(displayDate);
 

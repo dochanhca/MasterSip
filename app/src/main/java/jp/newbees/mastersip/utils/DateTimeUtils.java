@@ -95,7 +95,7 @@ public class DateTimeUtils {
         return age;
     }
 
-    public static String getHeaderDateInChatHistory(Date headerDate, Context context) {
+    public static String getHeaderDisplayDateInChatHistory(Date headerDate, Context context) {
         String strHeader = ENGLISH_DATE_FORMAT.format(headerDate);
         Calendar calendar = Calendar.getInstance();
         String today = ENGLISH_DATE_FORMAT.format(calendar.getTime());

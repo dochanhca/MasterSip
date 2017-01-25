@@ -226,7 +226,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             BaseChatItem item = datas.get(i);
             Date date = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
             if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
-                item.setFullDate(DateTimeUtils.getHeaderDateInChatHistory(date, context));
+                item.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
                 if (needNotify) notifyItemChanged(i);
             }
         }
@@ -279,7 +279,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private BaseChatItem getHeaderChatItem(Date date, int sectionFirstPosition) {
         BaseChatItem header = new BaseChatItem();
         header.setChatType(BaseChatItem.ChatType.HEADER);
-        header.setFullDate(DateTimeUtils.getHeaderDateInChatHistory(date, context));
+        header.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
         header.setSectionFirstPosition(sectionFirstPosition);
         return header;
     }
