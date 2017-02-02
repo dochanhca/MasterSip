@@ -272,4 +272,7 @@
     <string name="mess_un_followed">フォローを解除しました</string>
     <string name="un_follow">フォロー解除</string>
     <string name="OK">OK</string>
+    <string name="gifts_description_male">気になる女の子にプレゼントをあげて、\n 今すぐアタックをかけてみよう!!</string>
+    <string name="gifts_description_female">気になる男性にプレゼントをあげて、\n 今すぐアピールしてみよう!!</string>
+    <string name="gifts_list">ギフトを贈る</string>
 </resources>

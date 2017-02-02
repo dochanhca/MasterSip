@@ -10,6 +10,9 @@ public final class Constant {
         public static final String IMG_ID = "img_id";
         public static final String VIDEO_CALL_SET = "video_call_set";
         public static final String VOICE_CALL_SET = "voice_call_set";
+        public static final String GIFTS = "gifts";
+        public static final String PRICE = "price";
+        public static final String NEXT = "next";
 
         private JSON() {
             //Prevent init constructor
@@ -133,6 +136,8 @@ public final class Constant {
     }
 
     public static final class API {
+        public static final String GIFTS_LIST = "gifts";
+
         private API() {
             //Prevent init constructor
         }
