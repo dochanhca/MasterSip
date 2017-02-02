@@ -13,6 +13,12 @@ public final class Constant {
         public static final String GIFTS = "gifts";
         public static final String PRICE = "price";
         public static final String NEXT = "next";
+        public static final String COUNT_ROOM_UNREAD = "count_room_unread";
+        public static final String LIST_CHAT_ROOMS = "list_chatrooms";
+        public static final String INTERACTION_USER = "interaction_user";
+        public static final String LAST_MSG_DESCRIPTION = "last_msg_description";
+        public static final String LAST_MSG_TIMESTAMP = "last_msg_timestamp";
+        public static final String UNREAD_NUMBER = "unread_total";
 
         private JSON() {
             //Prevent init constructor
@@ -136,8 +142,6 @@ public final class Constant {
     }
 
     public static final class API {
-        public static final String GIFTS_LIST = "gifts";
-
         private API() {
             //Prevent init constructor
         }
@@ -190,7 +194,8 @@ public final class Constant {
         public static final String SETTING_CALL = "setting_call";
         public static final String FOLLOW = "follow";
         public static final String UN_FOLLOW = "unfollow";
-
+        public static final String LIST_ROOM = "chatrooms";
+        public static final String GIFTS_LIST = "gifts";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

@@ -12,10 +12,8 @@ import jp.newbees.mastersip.R;
  */
 public class LoadingDialog extends BaseDialog {
 
-    public static final java.lang.String TITLE_DIALOG = "TITLE DIALOG";
     public static final String CONTENT_DIALOG = "CONTENT DIALOG";
     private TextView mTextContent;
-    private String contentDialog;
 
     @Override
     protected void initViews(View rootView, Bundle savedInstanceState) {

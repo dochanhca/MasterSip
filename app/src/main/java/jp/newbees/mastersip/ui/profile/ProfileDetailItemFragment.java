@@ -206,7 +206,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case R.id.btn_on_off_notify:
                 break;
             case R.id.layout_chat:
-                ChatActivity.start(getContext(), userItem);
+                ChatActivity.startChatAcitivity(getContext(), userItem);
                 break;
             case R.id.layout_voice_call:
                 ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,

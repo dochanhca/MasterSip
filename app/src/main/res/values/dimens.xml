@@ -95,5 +95,6 @@
     <dimen name="chat_image_side">200dp</dimen>
     <dimen name="chat_image_radius">20dp</dimen>
     <dimen name="size_thumb_photo_gallery">60dp</dimen>
+    <dimen name="_25dp">25dp</dimen>
     <dimen name="_7dp">7dp</dimen>
 </resources>
