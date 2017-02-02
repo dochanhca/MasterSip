@@ -275,4 +275,5 @@
     <string name="gifts_description_male">気になる女の子にプレゼントをあげて、\n 今すぐアタックをかけてみよう!!</string>
     <string name="gifts_description_female">気になる男性にプレゼントをあげて、\n 今すぐアピールしてみよう!!</string>
     <string name="gifts_list">ギフトを贈る</string>
+    <string name="chat_list">チャットリスト</string>
 </resources>

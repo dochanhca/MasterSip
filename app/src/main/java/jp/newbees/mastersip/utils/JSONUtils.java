@@ -18,6 +18,7 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
+import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
@@ -507,5 +508,30 @@ public class JSONUtils {
             giftItems.add(giftItem);
         }
         return giftItems;
+    }
+    public static List<RoomChatItem> parseListRoomChat(JSONArray jsonArray) throws JSONException {
+        ArrayList<RoomChatItem> result = new ArrayList<>();
+        for (int index=0, n = jsonArray.length(); index<n ;index++) {
+            JSONObject jRoomChat = jsonArray.getJSONObject(index);
+            JSONObject jInteractionUser = jRoomChat.getJSONObject(Constant.JSON.INTERACTION_USER);
+            RoomChatItem roomChatItem = new RoomChatItem();
+            String roomId = jRoomChat.getString(Constant.JSON.ROOM_ID);
+            roomChatItem.setRoomId(roomId);
+            UserItem userItem = new UserItem();
+            userItem.setUserId(jInteractionUser.getString(Constant.JSON.ID));
+            userItem.setUsername(jInteractionUser.getString(Constant.JSON.HANDLE_NAME));
+            SipItem sipItem = new SipItem();
+            sipItem.setExtension(jInteractionUser.getString(Constant.JSON.EXTENSION));
+            ImageItem avatar = new ImageItem();
+            avatar.setOriginUrl(jInteractionUser.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(avatar);
+            userItem.setSipItem(sipItem);
+            roomChatItem.setUserChat(userItem);
+            roomChatItem.setLastMessage(jRoomChat.getString(Constant.JSON.LAST_MSG_DESCRIPTION));
+            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.LAST_MSG_TIMESTAMP));
+            roomChatItem.setNumberMessageUnRead(jRoomChat.getInt(Constant.JSON.UNREAD_NUMBER));
+            result.add(roomChatItem);
+        }
+        return result;
     }
 }

@@ -22,15 +22,12 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     private TextView txtDialogTitle;
     private TextView txtContent;
 
+    @FunctionalInterface
     public interface OnTextDialogClick {
         void onTextDialogOkClick();
     }
 
     private OnTextDialogClick onTextDialogClick;
-
-    public TextDialog() {
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -39,7 +36,7 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
             try {
                 this.onTextDialogClick = (OnTextDialogClick) context;
             } catch (ClassCastException e) {
-                throw new ClassCastException("Calling Activity must implement from DialogClickListener interface");
+                throw new ClassCastException(e.getMessage());
             }
         }
     }
@@ -51,7 +48,7 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
             try {
                 this.onTextDialogClick = (OnTextDialogClick) getTargetFragment();
             } catch (ClassCastException e) {
-                throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+                throw new ClassCastException(e.getMessage());
             }
         }
     }

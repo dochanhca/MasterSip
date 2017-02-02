@@ -163,12 +163,14 @@ public class NavigationLayoutChild extends LinearLayout {
      */
     public void setBoxValue(int boxValue) {
         this.boxValue = boxValue;
+        txtBoxValue.setText(String.valueOf(boxValue));
     }
 
     public void showBoxValue(int boxValue) {
         showBoxValue = true;
         setShowBoxValue(true);
         this.boxValue = boxValue;
+        txtBoxValue.setText(String.valueOf(boxValue));
     }
 
     public boolean isShowBoxValue() {

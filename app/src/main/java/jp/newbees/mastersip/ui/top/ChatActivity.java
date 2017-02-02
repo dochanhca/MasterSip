@@ -453,7 +453,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
     }
 
-    public static void start(Context context, UserItem userItem) {
+    public static void startChatAcitivity(Context context, UserItem userItem) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(USER, (Parcelable) userItem);
         context.startActivity(starter);
