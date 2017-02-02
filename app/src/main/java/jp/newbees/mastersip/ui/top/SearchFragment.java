@@ -197,7 +197,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         return fragment;
     }
 
-    @OnClick({R.id.img_filter, R.id.header_search, R.id.btn_setting_call})
+    @OnClick({R.id.img_filter, R.id.header_search, R.id.btn_setting_call, R.id.txt_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_filter:
