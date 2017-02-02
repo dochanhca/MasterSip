@@ -16,6 +16,7 @@
     <dimen name="text_size_13">13sp</dimen>
     <!--Note dialog text size-->
     <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_11">11sp</dimen>
     <dimen name="margin_15">15dp</dimen>
     <dimen name="corner_2">2dp</dimen>
     <dimen name="margin_25">25dp</dimen>
