@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.dialog;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,12 +33,24 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getTargetFragment() == null) {
+            try {
+                this.onTextDialogClick = (OnTextDialogClick) context;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling Activity must implement from DialogClickListener interface");
+            }
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getTargetFragment() != null) {
             try {
                 this.onTextDialogClick = (OnTextDialogClick) getTargetFragment();
-            } catch (ClassCastException e ) {
+            } catch (ClassCastException e) {
                 throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
             }
         }
@@ -73,9 +86,19 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
         dismiss();
     }
 
-    public static final TextDialog openTextDialog(Fragment fragment, int requestCode,
-                                                  FragmentManager fragmentManager,
-                                                  String content, String title) {
+    /**
+     * Open Dialog from fragment
+     *
+     * @param fragment
+     * @param requestCode
+     * @param fragmentManager
+     * @param content
+     * @param title
+     * @return
+     */
+    public static final void openTextDialog(Fragment fragment, int requestCode,
+                                            FragmentManager fragmentManager,
+                                            String content, String title) {
         TextDialog textDialog = new TextDialog();
         Bundle bundle = new Bundle();
         bundle.putString(DIALOG_CONTENT, content);
@@ -83,6 +106,22 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
         textDialog.setArguments(bundle);
         textDialog.setTargetFragment(fragment, requestCode);
         textDialog.show(fragmentManager, "TextDialog");
-        return textDialog;
+    }
+
+    /**
+     * Open Dialog from Activity
+     *
+     * @param fragmentManager
+     * @param content
+     * @param title
+     */
+    public static final void openTextDialog(FragmentManager fragmentManager,
+                                            String content, String title) {
+        TextDialog textDialog = new TextDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(DIALOG_CONTENT, content);
+        bundle.putString(DIALOG_TITLE, title);
+        textDialog.setArguments(bundle);
+        textDialog.show(fragmentManager, "TextDialog");
     }
 }
