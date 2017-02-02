@@ -35,6 +35,7 @@ import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -45,7 +46,7 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class RegisterProfileFemaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
-        UpdateRegisterProfilePresenter.View, UploadImagePresenter.View {
+        UpdateRegisterProfilePresenter.View, UploadImagePresenter.View, TextDialog.OnTextDialogClick {
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
@@ -231,17 +232,12 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         }
     }
 
+    /**
+     * Select delete avatar option
+     */
     @Override
     public void onDeleteImageClick() {
-        showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
-        hideAvatar();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                disMissMessageDialog();
-            }
-        }, TIME_DELAY);
+        confirmDeleteAvatar();
     }
 
     @Override
@@ -265,6 +261,22 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
                 txtAvaiableTime.setText(availableTimeItem.getTitle());
                 break;
         }
+    }
+
+    /**
+     * On Confirm Delete Image Click Ok listener
+     */
+    @Override
+    public void onTextDialogOkClick() {
+        showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
+        hideAvatar();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                disMissMessageDialog();
+            }
+        }, TIME_DELAY);
     }
 
     private void uploadAvatarToServerIfExist() {

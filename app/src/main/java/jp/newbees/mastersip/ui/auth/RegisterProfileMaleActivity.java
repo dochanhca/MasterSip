@@ -35,6 +35,7 @@ import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -45,7 +46,7 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class RegisterProfileMaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
-        UploadImagePresenter.View, UpdateRegisterProfilePresenter.View {
+        UploadImagePresenter.View, UpdateRegisterProfilePresenter.View, TextDialog.OnTextDialogClick {
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
@@ -167,9 +168,24 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         }
     }
 
+    /**
+     * Select delete avatar option
+     */
     @Override
     public void onDeleteImageClick() {
-        //
+        confirmDeleteAvatar();
+    }
+
+    @Override
+    public void onStartSelectAvatar() {
+
+    }
+
+    /**
+     * On Confirm Delete Image Click Ok listener
+     */
+    @Override
+    public void onTextDialogOkClick() {
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
 
@@ -179,11 +195,6 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
                 disMissMessageDialog();
             }
         }, TIME_DELAY);
-    }
-
-    @Override
-    public void onStartSelectAvatar() {
-
     }
 
     @Override
