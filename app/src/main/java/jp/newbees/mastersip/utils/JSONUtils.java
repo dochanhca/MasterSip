@@ -12,6 +12,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
+import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
@@ -492,4 +493,19 @@ public class JSONUtils {
         return header;
     }
 
+    public static List<GiftItem> parseGiftsList(JSONArray jGifts) throws JSONException {
+        ArrayList<GiftItem>  giftItems = new ArrayList<>();
+        for(int index = 0, n=jGifts.length(); index < n; index ++) {
+            JSONObject jGift = jGifts.getJSONObject(index);
+            GiftItem giftItem = new GiftItem();
+            giftItem.setGiftId(jGift.getInt(Constant.JSON.ID));
+            giftItem.setName(jGift.getString(Constant.JSON.NAME));
+            ImageItem imageItem = new ImageItem();
+            imageItem.setOriginUrl(jGift.getString(Constant.JSON.IMAGE));
+            giftItem.setGiftImage(imageItem);
+            giftItem.setPrice(jGift.getInt(Constant.JSON.PRICE));
+            giftItems.add(giftItem);
+        }
+        return giftItems;
+    }
 }

@@ -40,6 +40,7 @@ import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.top.ChatActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -423,11 +424,11 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     private void showGiftFragment() {
-        Fragment giftFragment = GiftFragment.newInstance(userItem);
+        Fragment giftFragment = ListGiftFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_search_container, giftFragment,
-                GiftFragment.class.getName()).commit();
+                ListGiftFragment.class.getName()).commit();
     }
 }
