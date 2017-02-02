@@ -66,7 +66,8 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
                 placeholder(defaultImageId).
                 error(defaultImageId).into(holder.imgAvatar);
 
-        holder.txtTitle.setText(item.getUsername() + " " + Utils.getAge(item.getDateOfBirth()));
+        holder.txtTitle.setText(item.getUsername() + " " + Utils.getAge(item.getDateOfBirth())
+                + context.getString(R.string.year_old));
         holder.txtValue.setText(item.getMemo());
         holder.txtTime.setText(lastLogin);
         holder.txtLocation.setText(item.getLocation().getTitle());
