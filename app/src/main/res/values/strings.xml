@@ -276,4 +276,13 @@
     <string name="gifts_description_female">気になる男性にプレゼントをあげて、\n 今すぐアピールしてみよう!!</string>
     <string name="gifts_list">ギフトを贈る</string>
     <string name="chat_list">チャットリスト</string>
+    <string name="confirm_send_gift">%1$sさんに「%2$s」ギフトを贈りますか？</string>
+    <string name="title_send_gift">ギフトの確認</string>
+    <string name="notify_not_enough_point_female">ポイントが不足しています</string>
+    <string name="content_not_enough_point_female">このギフトを贈るには%1$s必要です。\n通話やチャットをして今すぐ稼ごう！\n(現在ポイント：%2$s)</string>
+    <string name="notify_not_enough_point_male">ポイントが不足しています</string>
+    <string name="content_not_enough_point_male">このギフトを贈るには%1$s必要です。 \n今すぐポイントを追加して \nお相手にアプローチしましょう！ \n(現在ポイント：%2$s)</string>
+    <string name="buy_point">ポイント購入</string>
+    <string name="title_send_gift_success">送信完了</string>
+    <string name="content_send_gift_success">%1$sさんに「%2$s」ギフトを \n贈りました！</string>
 </resources>

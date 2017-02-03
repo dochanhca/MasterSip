@@ -408,9 +408,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     /**
      * On Confirm Delete Image Click Ok listener
+     * @param requestCode
      */
     @Override
-    public void onTextDialogOkClick() {
+    public void onTextDialogOkClick(int requestCode) {
         showLoading();
         presenter.deleteAvatar();
     }

@@ -21,6 +21,7 @@ public class MessageDialog extends DialogFragment {
     public static final String MESSAGE_DIALOG_CONTENT = "MESSAGE_DIALOG_CONTENT";
     public static final String MESSAGE_DIALOG_NOTE = "MESSAGE_DIALOG_NOTE";
     public static final String IS_HIDE_ACTION_BUTTON = "IS_HIDE_ACTION_BUTTON";
+    public static final String MESSAGE_BUTTON_TITLE = "MESSAGE_BUTTON_TITLE";
 
     private View mRoot;
     private TextView txtTitle;

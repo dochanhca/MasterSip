@@ -10,7 +10,7 @@ import jp.newbees.mastersip.model.BaseChatItem;
  * Created by thangit14 on 1/25/17.
  */
 
-public abstract class BaseChatViewHolder extends RecyclerView.ViewHolder {
+public abstract class BaseChatViewHolder<T extends BaseChatItem>  extends RecyclerView.ViewHolder{
     private Context context;
 
     public BaseChatViewHolder(View root, Context context) {
@@ -21,7 +21,7 @@ public abstract class BaseChatViewHolder extends RecyclerView.ViewHolder {
 
     protected abstract void initView(View root);
 
-    public abstract void bindView(BaseChatItem baseChatItem);
+    public abstract void bindView(T baseChatItem);
 
     public Context getContext() {
         return context;

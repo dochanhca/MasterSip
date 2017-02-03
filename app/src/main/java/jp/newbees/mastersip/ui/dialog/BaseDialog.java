@@ -92,6 +92,10 @@ public abstract class BaseDialog extends DialogFragment {
         mButtonPositive.setText(text);
     }
 
+    protected void setNegativeButtonInvisible(boolean negativeButtonInvisible) {
+        mButtonNegative.setVisibility(negativeButtonInvisible ? View.GONE : View.VISIBLE);
+    }
+
     protected void setNegativeButtonContent(String text) {
         mButtonNegative.setText(text);
     }

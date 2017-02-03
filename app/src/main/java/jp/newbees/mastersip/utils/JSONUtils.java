@@ -12,11 +12,12 @@ import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
+import jp.newbees.mastersip.model.GalleryItem;
+import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
-import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
@@ -462,6 +463,9 @@ public class JSONUtils {
                         jImage.getString(Constant.JSON.THUMBNAIL));
                 ((ImageChatItem) baseChatItem).setImageItem(imageItem);
                 break;
+            case BaseChatItem.ChatType.CHAT_GIFT:
+                baseChatItem = parseGiftChatItem(jMessage);
+                break;
             default:
                 baseChatItem = new BaseChatItem();
         }
@@ -478,6 +482,28 @@ public class JSONUtils {
             baseChatItem.setOwner(true);
         }
         return baseChatItem;
+    }
+
+    private static BaseChatItem parseGiftChatItem(JSONObject jMessage) throws JSONException {
+        GiftChatItem giftChatItem = new GiftChatItem();
+        JSONObject jGift = jMessage.getJSONObject(Constant.JSON.GIFT);
+        String context = jGift.getString(Constant.JSON.CONTEXT);
+
+        GiftItem giftItem = new GiftItem();
+        int giftId = jGift.getInt(Constant.JSON.ID);
+        String giftName = jGift.getString(Constant.JSON.NAME);
+        int point = jGift.getInt(Constant.JSON.POINT);
+        ImageItem imageItem = new ImageItem();
+        imageItem.setOriginUrl(jGift.getString(Constant.JSON.IMAGE));
+
+        giftItem.setGiftId(giftId);
+        giftItem.setName(giftName);
+        giftItem.setPrice(point);
+        giftItem.setGiftImage(imageItem);
+
+        giftChatItem.setContent(context);
+        giftChatItem.setGiftItem(giftItem);
+        return giftChatItem;
     }
 
     private static BaseChatItem getHeaderChatItem(JSONObject jListMessage, int sectionFirstPosition, Context context) throws JSONException {

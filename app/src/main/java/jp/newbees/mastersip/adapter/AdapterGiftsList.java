@@ -24,6 +24,8 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
     private final Context context;
     private List<GiftItem> giftItems;
 
+    private OnGiftItemSelectListener giftItemSelectListener;
+
     public AdapterGiftsList(Context context, List<GiftItem> giftItems) {
         this.giftItems = giftItems;
         this.context = context;
@@ -44,6 +46,20 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         holder.txtGiftName.setText(giftItem.getName());
         holder.txtGiftPrice.setText(price);
         Glide.with(context).load(giftUrl).into(holder.imgGiftImage);
+        bindSelectGiftAction(holder, giftItem);
+    }
+
+    private void bindSelectGiftAction(GiftViewHolder holder, GiftItem giftItem) {
+        holder.llGift.setTag(giftItem);
+        holder.llGift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != giftItemSelectListener){
+                    GiftItem giftItem = (GiftItem) view.getTag();
+                    giftItemSelectListener.onGiftItemSelect(giftItem);
+                }
+            }
+        });
     }
 
     @Override
@@ -59,12 +75,14 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         private TextView txtGiftName;
         private CircleImageView imgGiftImage;
         private TextView txtGiftPrice;
+        private LinearLayout llGift;
 
         public GiftViewHolder(View itemView, Context context) {
             super(itemView);
             txtGiftName = (TextView) itemView.findViewById(R.id.txt_gift_name);
             imgGiftImage = (CircleImageView) itemView.findViewById(R.id.img_gift);
             txtGiftPrice = (TextView) itemView.findViewById(R.id.txt_gift_price);
+            llGift = (LinearLayout) itemView.findViewById(R.id.ll_gift);
             setImageHeight(context);
         }
 
@@ -80,5 +98,13 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
             return (c.getResources().getDisplayMetrics().widthPixels
                     - c.getResources().getDimensionPixelOffset(R.dimen._10dp) * 9) / 3;
         }
+    }
+
+    public void setGiftItemSelectListener(OnGiftItemSelectListener giftItemSelectListener) {
+        this.giftItemSelectListener = giftItemSelectListener;
+    }
+
+    public interface OnGiftItemSelectListener {
+        void onGiftItemSelect(GiftItem giftItem);
     }
 }

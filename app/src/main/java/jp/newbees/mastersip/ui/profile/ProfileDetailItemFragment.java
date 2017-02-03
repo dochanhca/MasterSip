@@ -451,7 +451,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     private void showGiftFragment() {
-        Fragment giftFragment = ListGiftFragment.newInstance();
+        Fragment giftFragment = ListGiftFragment.newInstance(userItem,ListGiftFragment.OPEN_FROM_PROFILE_DETAILS);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);

@@ -18,6 +18,8 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.chatholder.BaseChatViewHolder;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderGiftMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderGiftMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderHeader;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessageReply;
@@ -35,13 +37,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int OFFSET_RETURN_TYPE = 100;
     private Date initDay;
 
-    private List<BaseChatItem> datas;
+    private List<BaseChatItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public ChatAdapter(Context context, List<BaseChatItem> datas) {
+    public ChatAdapter(Context context, List<BaseChatItem> data) {
         this.initDay = DateTimeUtils.getDateWithoutTime(Calendar.getInstance().getTime());
-        this.datas = datas;
+        this.data = data;
         this.context = context;
     }
 
@@ -78,6 +80,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
                 viewHolder = new ViewHolderHeader(view, context);
                 break;
+            case BaseChatItem.ChatType.CHAT_GIFT:
+                if (isReplyMessage) {
+                    view = layoutInflater.inflate(R.layout.reply_chat_gift_item, parent, false);
+                    viewHolder = new ViewHolderGiftMessageReply(view, context);
+                }else {
+                    view = layoutInflater.inflate(R.layout.my_chat_gift_item, parent, false);
+                    viewHolder = new ViewHolderGiftMessage(view, context);
+                }
+                break;
             default:
                 break;
         }
@@ -87,10 +98,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        BaseChatItem item = datas.get(position);
+        BaseChatItem item = data.get(position);
         ((BaseChatViewHolder) holder).bindView(item);
-
-
         setLayoutParam(holder, item);
     }
 
@@ -128,12 +137,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return data.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        BaseChatItem baseChatItem = datas.get(position);
+        BaseChatItem baseChatItem = data.get(position);
         int type = baseChatItem.getChatType();
         if (!baseChatItem.isOwner()) {
             type += OFFSET_RETURN_TYPE;
@@ -142,21 +151,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public int getLastMessageID() {
-        for (int i = 0; i < datas.size(); i++) {
-            if (datas.get(i).getChatType() != BaseChatItem.ChatType.HEADER) {
-                return datas.get(i).getMessageId();
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getChatType() != BaseChatItem.ChatType.HEADER) {
+                return data.get(i).getMessageId();
             }
         }
         return 0;
     }
 
     public void clearData() {
-        datas.clear();
+        data.clear();
         notifyDataSetChanged();
     }
 
     private void add(BaseChatItem item) {
-        datas.add(item);
+        data.add(item);
     }
 
     public void addItemAndHeaderIfNeed(BaseChatItem item) {
@@ -176,8 +185,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void updateAllHeaderItem(boolean needNotify) {
-        for (int i = 0; i < datas.size(); i++) {
-            BaseChatItem item = datas.get(i);
+        for (int i = 0; i < data.size(); i++) {
+            BaseChatItem item = data.get(i);
             Date date = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
             if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
                 item.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
@@ -207,8 +216,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private int getLastHeader() {
-        for (int i = datas.size() - 1; i >= 0; i--) {
-            if (datas.get(i).getChatType() == BaseChatItem.ChatType.HEADER) {
+        for (int i = data.size() - 1; i >= 0; i--) {
+            if (data.get(i).getChatType() == BaseChatItem.ChatType.HEADER) {
                 return i;
             }
         }
@@ -220,7 +229,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return true;
         } else {
             Date newDate = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
-            Date lastDate = DateTimeUtils.convertStringToDate(datas.get(getItemCount() - 1).getFullDate(),
+            Date lastDate = DateTimeUtils.convertStringToDate(data.get(getItemCount() - 1).getFullDate(),
                     DateTimeUtils.ENGLISH_DATE_FORMAT);
 
             if (newDate.after(lastDate)) {
@@ -238,15 +247,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return header;
     }
 
-    public void clearAndAddNewData(List<BaseChatItem> datas) {
-        this.datas = datas;
+    public void clearAndAddNewData(List<BaseChatItem> data) {
+        this.data = data;
         notifyDataSetChanged();
     }
 
-    public void addDataFromBeginning(List<BaseChatItem> datas) {
+    public void addDataFromBeginning(List<BaseChatItem> data) {
         ArrayList<BaseChatItem> newData = new ArrayList<>();
-        newData.addAll(datas);
-        newData.addAll(this.datas);
+        newData.addAll(data);
+        newData.addAll(this.data);
         clearAndAddNewData(newData);
     }
 
@@ -261,7 +270,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public BaseChatItem getLastSendeeUnreadMessage() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
-            BaseChatItem baseChatItem = datas.get(i);
+            BaseChatItem baseChatItem = data.get(i);
             if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 return baseChatItem;
             }
@@ -271,7 +280,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void updateSendeeLastMessageStateToRead() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
-            BaseChatItem baseChatItem = datas.get(i);
+            BaseChatItem baseChatItem = data.get(i);
             if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
                 return;
@@ -282,7 +291,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateOwnerStateMessageToRead(BaseChatItem readChatItem) {
         boolean hasReadChatItem = false;
         for (int i = getItemCount() - 1; i >= 0; i--) {
-            BaseChatItem baseChatItem = datas.get(i);
+            BaseChatItem baseChatItem = data.get(i);
             if (hasReadChatItem) {
                 if (baseChatItem.isOwner()) {
                     if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
@@ -303,8 +312,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     private void notifyHeaderChanges() {
-        for (int i = 0; i < datas.size(); i++) {
-            BaseChatItem item = datas.get(i);
+        for (int i = 0; i < data.size(); i++) {
+            BaseChatItem item = data.get(i);
             if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
                 notifyItemChanged(i);
             }

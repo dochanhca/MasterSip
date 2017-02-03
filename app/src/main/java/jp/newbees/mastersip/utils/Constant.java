@@ -19,6 +19,9 @@ public final class Constant {
         public static final String LAST_MSG_DESCRIPTION = "last_msg_description";
         public static final String LAST_MSG_TIMESTAMP = "last_msg_timestamp";
         public static final String UNREAD_NUMBER = "unread_total";
+        public static final String GIFT_ID = "gift_id";
+        public static final String GIFT = "gift";
+        public static final String CONTEXT = "context";
 
         private JSON() {
             //Prevent init constructor
@@ -142,6 +145,8 @@ public final class Constant {
     }
 
     public static final class API {
+
+
         private API() {
             //Prevent init constructor
         }
@@ -196,6 +201,7 @@ public final class Constant {
         public static final String UN_FOLLOW = "unfollow";
         public static final String LIST_ROOM = "chatrooms";
         public static final String GIFTS_LIST = "gifts";
+        public static final String SEND_GIFT = "gift/send";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -206,6 +212,8 @@ public final class Constant {
     }
 
     public final class Error {
+        public static final int NOT_ENOUGH_POINT = 1204;
+
         private Error() {
             //Prevent init constructor
         }
