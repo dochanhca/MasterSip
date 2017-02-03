@@ -55,6 +55,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didGetProfileDetail(userItem);
         } else if (task instanceof GetListUserPhotos) {
             GalleryItem galleryItem = (GalleryItem) task.getDataResponse();
+            getNextIdForLoadMore(galleryItem);
             if (isLoadMore) {
                 view.didLoadMoreListPhotos(galleryItem);
             } else {
@@ -67,6 +68,14 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didUnFollowUser();
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
+        }
+    }
+
+    private void getNextIdForLoadMore(GalleryItem galleryItem) {
+        if (!"".equals(galleryItem.getNextId())) {
+            nextId = Integer.parseInt(galleryItem.getNextId());
+        } else {
+            nextId = -1;
         }
     }
 

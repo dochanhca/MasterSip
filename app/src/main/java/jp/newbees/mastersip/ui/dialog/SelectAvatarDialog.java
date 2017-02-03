@@ -49,8 +49,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     private boolean showFromActivity;
 
     public interface OnSelectAvatarDiaLogClick {
-         void onDeleteImageClick();
-        void onStartSelectAvatar();
+        void onDeleteImageClick();
     }
 
     private OnSelectAvatarDiaLogClick onSelectAvatarDiaLogClick;
@@ -98,10 +97,8 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view == layoutTakeAPicture) {
-            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkCameraPermission();
         } else if (view == layoutSelectPicture) {
-            this.onSelectAvatarDiaLogClick.onStartSelectAvatar();
             checkStoragePermission();
         } else if (view == layoutDeletePicture) {
             this.onSelectAvatarDiaLogClick.onDeleteImageClick();
@@ -129,7 +126,6 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
             }
         }
     }
-
 
 
     @Override
@@ -177,7 +173,6 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     }
 
 
-
     /**
      * check use read external storage permission real time
      */
@@ -204,7 +199,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     }
 
     public static void showDialogSelectAvatar(Fragment fragment, int requestCode,
-                                                       FragmentManager fragmentManager, boolean isShowButtonDeleteImage) {
+                                              FragmentManager fragmentManager, boolean isShowButtonDeleteImage) {
         SelectAvatarDialog selectionDialog = new SelectAvatarDialog();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
@@ -235,7 +230,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
         if (showFromActivity) {
             openCameraFromActivity(takePicture);
-        }else {
+        } else {
             openCameraFromFragment(takePicture);
         }
     }
@@ -244,7 +239,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
 
         if (showFromActivity) {
             openGalleryFromActivity();
-        }else {
+        } else {
             openGalleryFromFragment();
         }
     }

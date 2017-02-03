@@ -44,6 +44,13 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Logger.e(TAG, "onPause");
+        restoreNavigationBarState();
+    }
+
+    @Override
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
     }
@@ -70,7 +77,11 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void disMissLoading() {
-        ((BaseActivity) getActivity()).disMissLoading();
+        try {
+            ((BaseActivity) getActivity()).disMissLoading();
+        } catch (NullPointerException e) {
+            //Do nothing
+        }
     }
 
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {

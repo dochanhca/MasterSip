@@ -50,7 +50,6 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
-    private Bitmap bitmapAvatar;
 
     private ArrayList<SelectionItem> maleJobItems;
 
@@ -174,11 +173,6 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     @Override
     public void onDeleteImageClick() {
         confirmDeleteAvatar();
-    }
-
-    @Override
-    public void onStartSelectAvatar() {
-
     }
 
     /**

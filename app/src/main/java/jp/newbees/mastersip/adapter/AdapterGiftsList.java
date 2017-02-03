@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -23,9 +22,9 @@ import jp.newbees.mastersip.model.GiftItem;
 
 public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.GiftViewHolder> {
     private final Context context;
-    private ArrayList<GiftItem> giftItems;
+    private List<GiftItem> giftItems;
 
-    public AdapterGiftsList(Context context, ArrayList<GiftItem> giftItems) {
+    public AdapterGiftsList(Context context, List<GiftItem> giftItems) {
         this.giftItems = giftItems;
         this.context = context;
     }
@@ -33,14 +32,14 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
     @Override
     public GiftViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_gift, parent, false);
-        final AdapterGiftsList.GiftViewHolder viewHolder = new AdapterGiftsList.GiftViewHolder(view, context);
+        final GiftViewHolder viewHolder = new GiftViewHolder(view, context);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(GiftViewHolder holder, int position) {
         GiftItem giftItem = this.giftItems.get(position);
-        String price = String.valueOf(giftItem.getPrice())+"pt";
+        String price = String.valueOf(giftItem.getPrice()) + context.getString(R.string.pt);
         String giftUrl = giftItem.getGiftImage().getOriginUrl();
         holder.txtGiftName.setText(giftItem.getName());
         holder.txtGiftPrice.setText(price);
@@ -56,7 +55,7 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         this.giftItems.addAll(giftItems);
     }
 
-    public class GiftViewHolder extends RecyclerView.ViewHolder{
+    static class GiftViewHolder extends RecyclerView.ViewHolder {
         private TextView txtGiftName;
         private CircleImageView imgGiftImage;
         private TextView txtGiftPrice;
@@ -78,9 +77,8 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         }
 
         private float getGiftSize(Context c) {
-            float size = ((c.getResources().getDisplayMetrics().widthPixels
-                    - c.getResources().getDimensionPixelOffset(R.dimen._10dp) * 9) )/3;
-            return size;
+            return (c.getResources().getDisplayMetrics().widthPixels
+                    - c.getResources().getDimensionPixelOffset(R.dimen._10dp) * 9) / 3;
         }
     }
 }

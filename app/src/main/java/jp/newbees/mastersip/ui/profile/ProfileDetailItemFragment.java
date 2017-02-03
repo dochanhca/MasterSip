@@ -128,9 +128,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private List<ImageItem> imageItems;
-    private GalleryItem galleryItem;
+    private boolean isLoading;
 
-    private RecyclerView.LayoutManager mLayoutManager;
     private UserPhotoAdapter userPhotoAdapter;
 
     private NestedScrollView.OnScrollChangeListener onViewScrollListener = new NestedScrollView.OnScrollChangeListener() {
@@ -236,7 +235,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     public void didGetListPhotos(GalleryItem galleryItem) {
-        this.galleryItem = galleryItem;
         imageItems.clear();
         imageItems.addAll(galleryItem.getPhotos());
         userPhotoAdapter.notifyDataSetChanged();
@@ -245,13 +243,16 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     public void didLoadMoreListPhotos(GalleryItem galleryItem) {
-
+        isLoading = false;
+        imageItems.addAll(galleryItem.getPhotos());
+        userPhotoAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void didGetListPhotosError(String errorMessage, int errorCode) {
         showToastExceptionVolleyError(errorCode, errorMessage);
         swipeRefreshLayout.setRefreshing(false);
+        isLoading = false;
     }
 
     @Override
@@ -328,19 +329,45 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(), imageItems);
         userPhotoAdapter.setOnItemClickListener(this);
 
-        mLayoutManager = new LinearLayoutManager(
+        RecyclerView.LayoutManager mLayoutManager; mLayoutManager = new LinearLayoutManager(
                 getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerUserImage.setLayoutManager(mLayoutManager);
         recyclerUserImage.setAdapter(userPhotoAdapter);
+        addScrollToLoadMoreRecyclerView();
+    }
+
+    private void addScrollToLoadMoreRecyclerView() {
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerUserImage.getLayoutManager();
+        recyclerUserImage.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int visibleItemCount;
+            int totalItemCount;
+            int firstVisibleItem;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
+                    if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0
+                            && !isLoading && profileDetailPresenter.canLoadMoreUser()) {
+                        isLoading = true;
+                        profileDetailPresenter.loadMoreListPhotos(userItem.getUserId());
+                    }
+                }
+            }
+        });
     }
 
     private void fillDataToView() {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            layoutVideoCall.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            layoutVideoCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
         }
 
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            layoutVoiceCall.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            layoutVoiceCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
         }
 
         progressWheel.spin();
@@ -428,7 +455,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_search_container, giftFragment,
+        transaction.add(R.id.fragment_search_container, giftFragment,
                 ListGiftFragment.class.getName()).commit();
     }
 }

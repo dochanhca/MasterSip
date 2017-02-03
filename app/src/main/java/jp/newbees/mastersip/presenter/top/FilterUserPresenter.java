@@ -2,12 +2,9 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import jp.newbees.mastersip.model.FilterItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -24,11 +21,11 @@ public class FilterUserPresenter extends BasePresenter {
     private SearchView view;
 
     public interface SearchView {
-        void didFilterUser(List<UserItem> userItems);
+        void didFilterUser(HashMap<String, Object> data);
 
         void didFilterUserError(int errorCode, String errorMessage);
 
-        void didLoadMoreUser(List<UserItem> users);
+        void didLoadMoreUser(HashMap<String, Object> data);
     }
 
     public FilterUserPresenter(Context context, SearchView searchView) {
@@ -62,12 +59,11 @@ public class FilterUserPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof FilterUserTask) {
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
-            ArrayList<UserItem> users = (ArrayList<UserItem>) data.get(FilterUserTask.LIST_USER);
             nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
             if (isLoadMore) {
-                view.didLoadMoreUser(users);
+                view.didLoadMoreUser(data);
             } else {
-                view.didFilterUser(users);
+                view.didFilterUser(data);
             }
         }
     }

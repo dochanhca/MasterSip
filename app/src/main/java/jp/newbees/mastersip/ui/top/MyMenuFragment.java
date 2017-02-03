@@ -172,7 +172,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void initLoadMorePhotoInGallery() {
         rcvListPhoto.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int totalItemCount = layoutManager.getItemCount();
@@ -189,9 +190,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         presenter.loadMorePhotoInGallery();
     }
 
-    private Drawable getDivider(){
-        Drawable divider = getResources().getDrawable(R.drawable.divider_photo);
-        return divider;
+    private Drawable getDivider() {
+        return getResources().getDrawable(R.drawable.divider_photo);
     }
 
     @Override
@@ -219,11 +219,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 this.handleLogout();
                 break;
             case R.id.btn_backup_email:
+                // implement back up email
                 break;
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
             case R.id.btn_change_avatar:
+                // change avatar
             case R.id.group_avatar:
                 handleUploadAvatar();
                 break;
@@ -366,7 +368,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
 
-
     private void updateAvatarView(ImageItem avatarItem) {
         if (avatarItem != null) {
             int visibility = avatarItem.getImageStatus() == ImageItem.IMAGE_APPROVED ? View.INVISIBLE : View.VISIBLE;
@@ -395,7 +396,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void onUserImageClick(int position) {
-
+        // Show full Image
     }
 
     @Override
@@ -412,10 +413,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onTextDialogOkClick() {
         showLoading();
         presenter.deleteAvatar();
-    }
-
-    @Override
-    public void onStartSelectAvatar() {
     }
 
     @Override
@@ -453,13 +450,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     private void handleImageCropped(Intent data) {
         byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
-        switch (currentRequestPhoto) {
-            case REQUEST_SELECT_PHOTO_FOR_AVATAR:
-                presenter.uploadAvatar(result);
-                break;
-            case REQUEST_SELECT_PHOTO_FOR_GALLERY:
-                presenter.uploadPhotoForGallery(result);
-                break;
+        if (currentRequestPhoto == REQUEST_SELECT_PHOTO_FOR_AVATAR) {
+            presenter.uploadAvatar(result);
+        } else {
+            presenter.uploadPhotoForGallery(result);
         }
     }
 

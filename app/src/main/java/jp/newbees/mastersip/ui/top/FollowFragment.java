@@ -27,6 +27,6 @@ public class FollowFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-
+        //TODO
     }
 }

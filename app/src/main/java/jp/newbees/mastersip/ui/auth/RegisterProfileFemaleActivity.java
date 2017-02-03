@@ -241,11 +241,6 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
     }
 
     @Override
-    public void onStartSelectAvatar() {
-
-    }
-
-    @Override
     public void onItemSelected(int position) {
         switch (selectDataType) {
             case TYPE:

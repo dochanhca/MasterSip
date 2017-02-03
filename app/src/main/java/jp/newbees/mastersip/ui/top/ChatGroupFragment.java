@@ -127,10 +127,10 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         chatGroupAdapter.setOnItemClickListener(this);
         recyclerChatGroup.setAdapter(chatGroupAdapter);
 
-        addScrollToLoadMoreRecylerView();
+        addScrollToLoadMoreRecyclerView();
     }
 
-    private void addScrollToLoadMoreRecylerView() {
+    private void addScrollToLoadMoreRecyclerView() {
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerChatGroup.getLayoutManager();
         recyclerChatGroup.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

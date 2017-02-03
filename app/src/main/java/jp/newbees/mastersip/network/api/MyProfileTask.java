@@ -42,7 +42,6 @@ public class MyProfileTask extends BaseTask<UserItem> {
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        UserItem userItem = JSONUtils.parseMyMenuItem(jData);
-        return userItem;
+        return JSONUtils.parseMyMenuItem(jData);
     }
 }

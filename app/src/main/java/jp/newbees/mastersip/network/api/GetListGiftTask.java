@@ -50,7 +50,6 @@ public class GetListGiftTask extends BaseTask<List<GiftItem>> {
     protected List<GiftItem> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         JSONArray jGifts = jData.getJSONArray(Constant.JSON.GIFTS);
-        List<GiftItem> giftItems = JSONUtils.parseGiftsList(jGifts);
-        return giftItems;
+        return JSONUtils.parseGiftsList(jGifts);
     }
 }

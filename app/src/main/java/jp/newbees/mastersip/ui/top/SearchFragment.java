@@ -32,8 +32,8 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.customviews.SegmentedGroup;
 import jp.newbees.mastersip.event.FilterUserEvent;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.presenter.top.FilterUserPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.filter.FilterFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
@@ -90,6 +90,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private GridLayoutManager layoutManager;
 
     private ArrayList<UserItem> userItems = Mockup.getUserItems();
+    private String nextPage;
 
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
     private RecyclerView.ItemDecoration mItemDecoration;
@@ -114,10 +115,10 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
             if (firstVisibleItem + visibleItemCount >= totalItemCount && !firstTimeLoadData
                     && totalItemCount != 0 && !isLoading && presenter.canLoadMoreUser()) {
-                    isLoading = true;
+                isLoading = true;
 
-                    showLoading();
-                    presenter.loadMoreUser(currentTypeSearch);
+                showLoading();
+                presenter.loadMoreUser(currentTypeSearch);
             }
 
             if (!firstTimeLoadData) {
@@ -144,13 +145,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         private void hideFilterAndNavigationBar() {
             clearViewAnimation(filter, slideUp, View.GONE);
             filter.startAnimation(slideUp);
-            ((TopActivity)getActivity()).hideNavigation();
-        }
-
-        private void showFilterAndNavigationBar() {
-            clearViewAnimation(filter, slideUp, View.VISIBLE);
-            filter.startAnimation(slideDown);
-            ((TopActivity)getActivity()).showNavigation();
+            ((TopActivity) getActivity()).hideNavigation();
         }
     };
 
@@ -166,7 +161,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         presenter = new FilterUserPresenter(getContext(), this);
         ButterKnife.bind(this, mRoot);
-        restoreNavigationBarState();
         btnFilterCallWaiting.setChecked(true);
 
         initFilterMode();
@@ -188,6 +182,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     /**
      * create newInstance of Fragment
+     *
      * @return
      */
     public static SearchFragment newInstance() {
@@ -214,15 +209,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         }
     }
 
-    private void showSettingCallFragment() {
-        SettingCallFragment settingFragment = SettingCallFragment.newInstance();
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        setTransitionAnimation(transaction);
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_search_container, settingFragment,
-                SettingCallFragment.class.getName()).commit();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -237,6 +223,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     /**
      * on filter user event
+     *
      * @param event Filter's settings changed
      */
     @Subscribe(sticky = true)
@@ -245,6 +232,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         showLoading();
         presenter.filterUser(currentTypeSearch);
+        EventBus.getDefault().cancelEventDelivery(event);
     }
 
     private void changeMode() {
@@ -332,23 +320,44 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         FILTER_MODE_INDEXS.put(MODE_LIST, MODE_FOUR_COLUMN);
     }
 
+    /**
+     * Add filter fragment to stack instead of replace
+     */
     private void showFilterFragment() {
+        showNavigationAndActionBar();
         FilterFragment filterFragment = FilterFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_search_container, filterFragment,
+        transaction.add(R.id.fragment_search_container, filterFragment,
                 FilterFragment.class.getName()).commit();
     }
 
+    /**
+     * Add ProfileDetail Fragment to stack instead of replace
+     */
     private void showProfileDetailFragment(int position) {
+        showNavigationAndActionBar();
         ProfileDetailFragment profileDetailFragment =
-                ProfileDetailFragment.newInstance(userItems, position);
+                ProfileDetailFragment.newInstance(userItems, position, nextPage, currentTypeSearch);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_search_container, profileDetailFragment,
+        transaction.add(R.id.fragment_search_container, profileDetailFragment,
                 ProfileDetailFragment.class.getName()).commit();
+    }
+
+    /**
+     * Add SettingCall Fragment to stack instead of replace
+     */
+    private void showSettingCallFragment() {
+        showNavigationAndActionBar();
+        SettingCallFragment settingFragment = SettingCallFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        setTransitionAnimation(transaction);
+        transaction.addToBackStack(null);
+        transaction.add(R.id.fragment_search_container, settingFragment,
+                SettingCallFragment.class.getName()).commit();
     }
 
     @Override
@@ -357,10 +366,13 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didFilterUser(List<UserItem> userItems) {
-        Logger.e("SearchFragment", "userItems " + userItems.size());
+    public void didFilterUser(HashMap<String, Object> data) {
+        List<UserItem> users = (ArrayList<UserItem>) data.get(FilterUserTask.LIST_USER);
+        nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
+
+        Logger.e("SearchFragment", "userItems " + users.size());
         this.userItems.clear();
-        this.userItems.addAll(userItems);
+        this.userItems.addAll(users);
         changeUIContent(currentFilterMode);
         swipeRefreshLayout.setRefreshing(false);
         disMissLoading();
@@ -375,11 +387,14 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didLoadMoreUser(List<UserItem> users) {
+    public void didLoadMoreUser(HashMap<String, Object> data) {
+        List<UserItem> users = (ArrayList<UserItem>) data.get(FilterUserTask.LIST_USER);
         userItems.addAll(users);
+        nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
+
         notifyListUserChanged();
         isLoading = false;
-        ((BaseActivity) getActivity()).disMissLoading();
+        disMissLoading();
     }
 
     private void notifyListUserChanged() {
@@ -417,4 +432,17 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             presenter.filterUser(currentTypeSearch);
         }
     };
+
+    private void showFilterAndNavigationBar() {
+        clearViewAnimation(filter, slideUp, View.VISIBLE);
+        filter.startAnimation(slideDown);
+        ((TopActivity) getActivity()).showNavigation();
+    }
+
+    private void showNavigationAndActionBar() {
+        if (!isShowFilterAndNavigationBar) {
+            isShowFilterAndNavigationBar = true;
+            showFilterAndNavigationBar();
+        }
+    }
 }
