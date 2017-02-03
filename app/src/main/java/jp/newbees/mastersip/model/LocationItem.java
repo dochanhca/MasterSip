@@ -54,10 +54,19 @@ public class LocationItem implements Parcelable, Cloneable {
     private int parentId;
     private int type;
 
+    /**
+     * Default constructor
+     */
     public LocationItem() {
         this.isChecked = false;
     }
 
+    /**
+     * @param selectionItem
+     * @param isChecked
+     * @param parentId
+     * @param type
+     */
     public LocationItem(SelectionItem selectionItem, boolean isChecked, int parentId, int type) {
         this.selectionItem = selectionItem;
         this.isChecked = isChecked;

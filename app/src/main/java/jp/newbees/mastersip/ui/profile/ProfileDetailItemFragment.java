@@ -1,15 +1,17 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -24,16 +26,22 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
+import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.customviews.SegmentedGroup;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.PhotoItem;
 import jp.newbees.mastersip.model.RelationshipItem;
+import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
+import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
+import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.top.ChatActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
@@ -42,7 +50,9 @@ import jp.newbees.mastersip.utils.Utils;
  * Created by ducpv on 1/18/17.
  */
 
-public class ProfileDetailItemFragment extends BaseFragment implements ProfileDetailItemPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener {
+public class ProfileDetailItemFragment extends BaseFragment implements
+        ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
+        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick {
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
     @BindView(R.id.txt_name)
@@ -63,14 +73,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_user_image)
     RecyclerView recyclerUserImage;
-    @BindView(R.id.segmented_interaction)
-    SegmentedGroup segmentedInteraction;
     @BindView(R.id.btn_follow)
-    RadioButton btnFollow;
+    CheckBox btnFollow;
     @BindView(R.id.btn_send_gift)
-    RadioButton btnSendGift;
+    HiraginoButton btnSendGift;
     @BindView(R.id.btn_on_off_notify)
-    RadioButton btnOnOffNotify;
+    HiraginoButton btnOnOffNotify;
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
     @BindView(R.id.txt_name_content)
@@ -107,25 +115,22 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     View divierCharmPoint;
     @BindView(R.id.divider_available_time)
     View dividerAvailableTime;
+    @BindView(R.id.layout_voice_call)
+    ViewGroup layoutVoiceCall;
+    @BindView(R.id.layout_video_call)
+    ViewGroup layoutVideoCall;
 
     private static final String USER_ITEM = "USER_ITEM";
+    private static final int CONFRIM_SEND_GIFT_DIALOG = 11;
+    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
 
 
-    private ProfileDetailItemPresenter profileDetailItemPresenter;
+    private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private List<ImageItem> imageItems;
-    private PhotoItem photoItem;
+    private boolean isLoading;
 
-    private RecyclerView.LayoutManager mLayoutManager;
     private UserPhotoAdapter userPhotoAdapter;
-
-
-    private RadioGroup.OnCheckedChangeListener onSegmendtedInteractionListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-            // listen checked button event
-        }
-    };
 
     private NestedScrollView.OnScrollChangeListener onViewScrollListener = new NestedScrollView.OnScrollChangeListener() {
 
@@ -173,7 +178,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        profileDetailItemPresenter = new ProfileDetailItemPresenter(getActivity().getApplicationContext(),
+        profileDetailPresenter = new ProfileDetailPresenter(getActivity().getApplicationContext(),
                 this);
         ButterKnife.bind(this, mRoot);
 
@@ -181,12 +186,37 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
 
         progressWheel.spin();
         progressWheel.setVisibility(View.VISIBLE);
-        if (!isNavigationBarShowing()) {
-            ((TopActivity) getActivity()).showNavigation();
-        }
+        restoreNavigationBarState();
 
         initRecyclerUserImage();
         initVariables();
+    }
+
+    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
+            R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_follow:
+                doFollowUser();
+                break;
+            case R.id.btn_send_gift:
+                showGiftFragment();
+                break;
+            case R.id.btn_on_off_notify:
+                break;
+            case R.id.layout_chat:
+                ChatActivity.startChatAcitivity(getContext(), userItem);
+                break;
+            case R.id.layout_voice_call:
+                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
+                        CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
+                break;
+            case R.id.layout_video_call:
+                // Make a video call
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -204,23 +234,54 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     }
 
     @Override
-    public void didGetListPhotos(PhotoItem photoItem) {
-        this.photoItem = photoItem;
+    public void didGetListPhotos(GalleryItem galleryItem) {
         imageItems.clear();
-        imageItems.addAll(photoItem.getImageItems());
+        imageItems.addAll(galleryItem.getPhotos());
         userPhotoAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void didLoadMoreListPhotos(PhotoItem photoItem) {
-
+    public void didLoadMoreListPhotos(GalleryItem galleryItem) {
+        isLoading = false;
+        imageItems.addAll(galleryItem.getPhotos());
+        userPhotoAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void didGetListPhotosError(String errorMessage, int errorCode) {
         showToastExceptionVolleyError(errorCode, errorMessage);
         swipeRefreshLayout.setRefreshing(false);
+        isLoading = false;
+    }
+
+    @Override
+    public void didFollowUser() {
+        disMissLoading();
+        ConfirmSendGiftDialog.openConfirmSendGiftDialog(this, CONFRIM_SEND_GIFT_DIALOG,
+                getFragmentManager(), userItem.getUsername());
+    }
+
+    @Override
+    public void didFollowUserError(String errorMessage, int errorCode) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
+    public void didUnFollowUser() {
+        disMissLoading();
+        StringBuilder content = new StringBuilder();
+        content.append(userItem.getUsername()).append(getString(R.string.notify_un_follow_user_success));
+
+        showMessageDialog(getString(R.string.mess_un_followed), content.toString(), "", false);
+        btnFollow.setText(getString(R.string.follow));
+    }
+
+    @Override
+    public void didUnFollowUserError(String errorMessage, int errorCode) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
 
@@ -229,44 +290,86 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
         //do something
     }
 
+    @Override
+    public void onOkConfirmSendGiftClick() {
+        showGiftFragment();
+    }
+
+    private void doFollowUser() {
+        showLoading();
+        if (btnFollow.isChecked()) {
+            profileDetailPresenter.followUser(userItem.getUserId());
+        } else {
+            profileDetailPresenter.unFollowUser(userItem.getUserId());
+        }
+    }
+
+    @Override
+    public void onOkVoiceCallClick() {
+        profileDetailPresenter.checkVoiceCall(userItem);
+    }
+
     private void initVariables() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
-                profileDetailItemPresenter.getListPhotos(userItem.getUserId());
+                profileDetailPresenter.getProfileDetail(userItem.getUserId());
+                profileDetailPresenter.getListPhotos(userItem.getUserId());
             }
         });
 
         scrollView.setOnScrollChangeListener(onViewScrollListener);
 
-        profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
-        profileDetailItemPresenter.getListPhotos(userItem.getUserId());
-
-        segmentedInteraction.setOnCheckedChangeListener(onSegmendtedInteractionListener);
-
-        boolean isFollowed = false;
-
-        if (userItem.getRelationshipItem() != null) {
-            isFollowed = userItem.getRelationshipItem().isFollowed() == RelationshipItem.FOLLOW
-                    ? true : false;
-        }
-        btnFollow.setChecked(isFollowed);
+        profileDetailPresenter.getProfileDetail(userItem.getUserId());
+        profileDetailPresenter.getListPhotos(userItem.getUserId());
     }
 
     private void initRecyclerUserImage() {
         imageItems = new ArrayList<>();
-        userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(), imageItems,
-                userItem.getGender());
+        userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(), imageItems);
         userPhotoAdapter.setOnItemClickListener(this);
 
-        mLayoutManager = new LinearLayoutManager(
+        RecyclerView.LayoutManager mLayoutManager; mLayoutManager = new LinearLayoutManager(
                 getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerUserImage.setLayoutManager(mLayoutManager);
         recyclerUserImage.setAdapter(userPhotoAdapter);
+        addScrollToLoadMoreRecyclerView();
+    }
+
+    private void addScrollToLoadMoreRecyclerView() {
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerUserImage.getLayoutManager();
+        recyclerUserImage.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int visibleItemCount;
+            int totalItemCount;
+            int firstVisibleItem;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dx > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
+                    if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0
+                            && !isLoading && profileDetailPresenter.canLoadMoreUser()) {
+                        isLoading = true;
+                        profileDetailPresenter.loadMoreListPhotos(userItem.getUserId());
+                    }
+                }
+            }
+        });
     }
 
     private void fillDataToView() {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            layoutVideoCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+        }
+
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            layoutVoiceCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+        }
+
         progressWheel.spin();
         progressWheel.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
@@ -278,6 +381,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
     }
 
     private void fillDetailProfile(Date age) {
+        if (userItem.getRelationshipItem() != null) {
+            boolean isFollowed = userItem.getRelationshipItem().isFollowed() == RelationshipItem.FOLLOW
+                    ? true : false;
+            btnFollow.setChecked(isFollowed);
+        }
+
         txtNameContent.setText(userItem.getUsername());
         txtAgeContent.setText(String.valueOf(DateTimeUtils.calculateAgeWithDOB(age)));
         txtAreaContent.setText(userItem.getLocation().getTitle());
@@ -339,5 +448,14 @@ public class ProfileDetailItemFragment extends BaseFragment implements ProfileDe
 
         return prettyTime.format(DateTimeUtils.convertStringToDate(lastLogin,
                 DateTimeUtils.SERVER_DATE_FORMAT));
+    }
+
+    private void showGiftFragment() {
+        Fragment giftFragment = ListGiftFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        setTransitionAnimation(transaction);
+        transaction.addToBackStack(null);
+        transaction.add(R.id.fragment_search_container, giftFragment,
+                ListGiftFragment.class.getName()).commit();
     }
 }

@@ -35,8 +35,10 @@ import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -44,11 +46,10 @@ import jp.newbees.mastersip.utils.ImageUtils;
 
 public class RegisterProfileMaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
-        UploadImagePresenter.View, UpdateRegisterProfilePresenter.View {
+        UploadImagePresenter.View, UpdateRegisterProfilePresenter.View, TextDialog.OnTextDialogClick {
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
-    private Bitmap bitmapAvatar;
 
     private ArrayList<SelectionItem> maleJobItems;
 
@@ -166,9 +167,19 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         }
     }
 
+    /**
+     * Select delete avatar option
+     */
     @Override
     public void onDeleteImageClick() {
-        //
+        confirmDeleteAvatar();
+    }
+
+    /**
+     * On Confirm Delete Image Click Ok listener
+     */
+    @Override
+    public void onTextDialogOkClick() {
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
 
@@ -206,6 +217,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     @Override
     public void onUploadImageFailure(int errorCode, String errorMessage) {
+        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
         doRegister();
     }
 

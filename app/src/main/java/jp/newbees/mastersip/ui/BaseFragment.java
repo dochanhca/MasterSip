@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -23,6 +25,8 @@ public abstract class BaseFragment extends Fragment {
 
     protected TextView txtActionBarTitle;
     protected String TAG;
+    private MessageDialog messageDialog;
+    private ImageView imgBackButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,13 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Logger.e(TAG, "onPause");
+        restoreNavigationBarState();
+    }
+
+    @Override
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
     }
@@ -50,21 +61,58 @@ public abstract class BaseFragment extends Fragment {
 
     protected void setFragmentTitle(String title) {
         txtActionBarTitle = (TextView) mRoot.findViewById(R.id.txt_action_bar_title);
-
+        imgBackButton = (ImageView) mRoot.findViewById(R.id.img_back);
+        if(null!=imgBackButton) imgBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
         txtActionBarTitle.setText(title);
     }
+
 
     protected void showLoading() {
         ((BaseActivity) getActivity()).showLoading();
     }
 
     protected void disMissLoading() {
-        ((BaseActivity) getActivity()).disMissLoading();
+        try {
+            ((BaseActivity) getActivity()).disMissLoading();
+        } catch (NullPointerException e) {
+            //Do nothing
+        }
     }
 
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {
         ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
                 errorCode, errorMessage);
+    }
+
+    protected void showMessageDialog(String title, String content, String note,
+                                     boolean isHideActionButton) {
+        if (null == messageDialog) {
+            messageDialog = new MessageDialog();
+        }
+
+        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
+            return;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_TITLE, title);
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_CONTENT, content);
+        bundle.putString(MessageDialog.MESSAGE_DIALOG_NOTE, note);
+        bundle.putBoolean(MessageDialog.IS_HIDE_ACTION_BUTTON, isHideActionButton);
+
+        messageDialog.setArguments(bundle);
+        messageDialog.show(getActivity().getFragmentManager(), "MessageDialog");
+    }
+
+    protected void disMissMessageDialog() {
+        if (null != messageDialog) {
+            messageDialog.dismiss();
+        }
     }
 
     /**
@@ -84,5 +132,14 @@ public abstract class BaseFragment extends Fragment {
 
     protected boolean isNavigationBarShowing() {
         return ((TopActivity) getActivity()).isShowNavigationBar();
+    }
+
+    /**
+     * Show navigation bar if state == INVISIBLE
+     */
+    protected void restoreNavigationBarState() {
+        if (!isNavigationBarShowing()) {
+            ((TopActivity) getActivity()).showNavigation();
+        }
     }
 }

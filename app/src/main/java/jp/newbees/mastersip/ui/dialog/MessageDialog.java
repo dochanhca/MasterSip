@@ -28,15 +28,10 @@ public class MessageDialog extends DialogFragment {
     private TextView txtNote;
     private ImageView imgOKButton;
 
-    private String title, content, note;
+    private String title;
+    private String content;
+    private String note;
     private boolean isHideActionButton;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Nullable
     @Override
@@ -101,8 +96,8 @@ public class MessageDialog extends DialogFragment {
         txtNote.setText(note);
     }
 
-    public void setOnPositiveListener(View.OnClickListener onPositiveListener) {
-        imgOKButton.setOnClickListener(onPositiveListener);
+    public void setOnPositiveClickListener(View.OnClickListener onPositiveClickListener) {
+        imgOKButton.setOnClickListener(onPositiveClickListener);
     }
 
 }

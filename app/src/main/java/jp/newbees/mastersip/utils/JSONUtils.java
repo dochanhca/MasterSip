@@ -1,18 +1,24 @@
 package jp.newbees.mastersip.utils;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
+import jp.newbees.mastersip.model.GiftItem;
+import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
-import jp.newbees.mastersip.model.PhotoItem;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.RelationshipItem;
+import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
@@ -201,7 +207,7 @@ public class JSONUtils {
                 chatItem = parseTextChatItem(jData, sender);
                 break;
             case CHAT_IMAGE:
-//                chatItem = [self getImgeItem:dictChatItem ofExtension:extension];
+                chatItem = parseImageChatItem(jData, sender);
                 break;
             case CHAT_GIFT:
 //                chatItem = [self getGifiItem:dictChatItem ofExtension:extension];
@@ -217,15 +223,57 @@ public class JSONUtils {
         return chatItem;
     }
 
+    private static BaseChatItem parseImageChatItem(JSONObject jData, UserItem me) throws JSONException {
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
+        String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
+
+        ImageChatItem imageChatItem = new ImageChatItem();
+
+        if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
+            imageChatItem.setOwner(true);
+        } else {
+            imageChatItem.setOwner(false);
+        }
+
+        int roomType = jData.getInt(Constant.JSON.ROOM_TYPE);
+        imageChatItem.setRoomType(roomType);
+        imageChatItem.setChatType(CHAT_IMAGE);
+        imageChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
+        imageChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extensionSender);
+        userItem.setSipItem(sipItem);
+
+        if (jSender.optBoolean(Constant.JSON.AVATAR)) {
+            ImageItem myAvatar = new ImageItem();
+            myAvatar.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
+            myAvatar.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(myAvatar);
+        }
+
+        imageChatItem.setOwner(userItem);
+        imageChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
+        imageChatItem.setShortDate(DateTimeUtils.getShortTime(imageChatItem.getFullDate()));
+
+        JSONObject jImage = jData.getJSONObject(Constant.JSON.IMAGE);
+        ImageItem imageItem = new ImageItem();
+        imageItem.setOriginUrl(jImage.getString(Constant.JSON.PATH));
+        imageItem.setThumbUrl(jImage.getString(Constant.JSON.THUMB));
+
+        imageChatItem.setImageItem(imageItem);
+
+        return imageChatItem;
+    }
+
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
         JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.DELETED);
         String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.EXTENSION);
         String content = jDeletedItem.getString(Constant.JSON.CONTENT);
         if (sender.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
-            deletedChatItem.setSender(true);
+            deletedChatItem.setOwner(true);
         } else {
-            deletedChatItem.setSender(false);
+            deletedChatItem.setOwner(false);
         }
         deletedChatItem.setMessage(content);
         deletedChatItem.setRoomType(ROOM_CHAT_CHAT);
@@ -242,9 +290,9 @@ public class JSONUtils {
         TextChatItem textChatItem = new TextChatItem(content);
 
         if (me.getSipItem().getExtension().equalsIgnoreCase(extensionSender)) {
-            textChatItem.setSender(true);
+            textChatItem.setOwner(true);
         } else {
-            textChatItem.setSender(false);
+            textChatItem.setOwner(false);
         }
 
         int roomType = jText.getInt(Constant.JSON.ROOM_TYPE);
@@ -299,13 +347,10 @@ public class JSONUtils {
         return baseChatItem;
     }
 
-    public static PhotoItem parseListPhotos(JSONObject jData) throws JSONException {
-        PhotoItem photoItem = new PhotoItem();
-
-        if (!jData.getString(Constant.JSON.NEXT_ID).equals("")) {
-            photoItem.setNextId(Integer.parseInt(jData.getString(Constant.JSON.NEXT_ID)));
-        }
-        photoItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
+    public static GalleryItem parseGallery(JSONObject jData) throws JSONException {
+        GalleryItem galleryItem = new GalleryItem();
+        galleryItem.setNextId(jData.getString(Constant.JSON.NEXT_ID));
+        galleryItem.setTotalImage(jData.getInt(Constant.JSON.TOTAL_COUNT));
 
         JSONArray jsonImages = jData.getJSONArray(Constant.JSON.LIST_IMAGE);
         List<ImageItem> imageItems = new ArrayList<>();
@@ -315,12 +360,178 @@ public class JSONUtils {
             imageItem.setImageId(jImage.getInt(Constant.JSON.IMAGE_ID));
             imageItem.setOriginUrl(jImage.getString(Constant.JSON.IMAGE_PATH));
             imageItem.setThumbUrl(jImage.getString(Constant.JSON.IMAGE_PATH_THUMB));
-
+            imageItem.setImageStatus(jImage.getInt(Constant.JSON.IMAGE_STATUS));
             imageItems.add(imageItem);
         }
+        galleryItem.setImageItems(imageItems);
+        return galleryItem;
+    }
 
-        photoItem.setImageItems(imageItems);
+    public static UserItem parseMyMenuItem(JSONObject jData) throws JSONException {
+        JSONObject jMyInfo = jData.getJSONObject(Constant.JSON.MY_INFO);
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
+        userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
+        if (jMyInfo.has(Constant.JSON.AVATAR)) {
+            JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
+            if (jAvatar.length() > 0) {
+                ImageItem imageItem = JSONUtils.parseImageItem(jAvatar);
+                userItem.setAvatarItem(imageItem);
+            }else {
+                userItem.setAvatarItem(null);
+            }
+        } else {
+            userItem.setAvatarItem(null);
+        }
+        return userItem;
+    }
 
-        return photoItem;
+    public static ImageItem parseImageItem(JSONObject jAvatar) throws JSONException {
+        ImageItem imageItem = new ImageItem();
+        int imageId = jAvatar.getInt(Constant.JSON.ID);
+        String originPath = jAvatar.getString(Constant.JSON.PATH);
+        String thumbnail = jAvatar.getString(Constant.JSON.THUMBNAIL);
+        int imageStatus = jAvatar.getInt(Constant.JSON.STATUS);
+        imageItem.setImageId(imageId);
+        imageItem.setOriginUrl(originPath);
+        imageItem.setImageStatus(imageStatus);
+        imageItem.setThumbUrl(thumbnail);
+        return imageItem;
+    }
+
+    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, Context context) throws JSONException {
+        ArrayList<BaseChatItem> result = new ArrayList<>();
+
+        HashMap<String,UserItem> members = getMembers(data.getJSONArray(Constant.JSON.MEMBERS));
+
+        JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
+        int sectionFirstPosition = 0;
+        for (int i = 0; i < jListMessages.length(); i++) {
+            JSONObject jListMessage = jListMessages.getJSONObject(i);
+
+            result.add(getHeaderChatItem(jListMessage,sectionFirstPosition, context));
+
+            JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.MESSAGES);
+            for (int j = 0; j < jMessages.length(); j++) {
+                JSONObject jMessage = jMessages.getJSONObject(j);
+                result.add(getBaseChatItemInHistory(jMessage,sectionFirstPosition, members));
+            }
+            sectionFirstPosition = result.size();
+        }
+        return result;
+    }
+
+    private static HashMap<String,UserItem> getMembers(JSONArray jsonArray) throws JSONException {
+        HashMap<String, UserItem> members = new HashMap<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jMember = jsonArray.getJSONObject(i);
+            UserItem userItem = new UserItem();
+            userItem.setUserId(jMember.getString(Constant.JSON.ID));
+            userItem.setUsername(jMember.getString(Constant.JSON.HANDLE_NAME));
+
+            SipItem sipItem = new SipItem();
+            sipItem.setExtension(jMember.getString(Constant.JSON.EXTENSION));
+            userItem.setSipItem(sipItem);
+
+            ImageItem imageItem = new ImageItem();
+            imageItem.setOriginUrl(jMember.getString(Constant.JSON.AVATAR));
+            imageItem.setThumbUrl(imageItem.getOriginUrl());
+            userItem.setAvatarItem(imageItem);
+
+            members.put(userItem.getUserId(), userItem);
+        }
+        return members;
+    }
+
+    private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition,
+                                                         HashMap<String, UserItem> members) throws JSONException {
+
+        BaseChatItem baseChatItem;
+        UserItem owner = ConfigManager.getInstance().getCurrentUser();
+        int type = jMessage.getInt(Constant.JSON.TYPE);
+        switch (type) {
+            case BaseChatItem.ChatType.CHAT_TEXT:
+                baseChatItem = new TextChatItem();
+                ((TextChatItem)baseChatItem).setMessage(jMessage.getJSONObject(Constant.JSON.TEXT).
+                        getString(Constant.JSON.CONTENT));
+                break;
+            case BaseChatItem.ChatType.CHAT_IMAGE:
+                baseChatItem = new ImageChatItem();
+                JSONObject jImage = jMessage.getJSONObject(Constant.JSON.IMAGE);
+                ImageItem imageItem = new ImageItem(jImage.getString(Constant.JSON.PATH),
+                        jImage.getString(Constant.JSON.THUMBNAIL));
+                ((ImageChatItem) baseChatItem).setImageItem(imageItem);
+                break;
+            default:
+                baseChatItem = new BaseChatItem();
+        }
+        baseChatItem.setFullDate(jMessage.getString(Constant.JSON.DATE));
+        baseChatItem.setShortDate(DateTimeUtils.getShortTime(baseChatItem.getFullDate()));
+        baseChatItem.setChatType(type);
+        baseChatItem.setMessageId(jMessage.getInt(Constant.JSON.MESSAGE_ID));
+        baseChatItem.setMessageState(jMessage.getInt(Constant.JSON.STATUS));
+        baseChatItem.setSectionFirstPosition(sectionFirstPosition);
+
+        String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
+        baseChatItem.setOwner(members.get(sendId));
+        if (baseChatItem.getOwner().getUserId().equalsIgnoreCase(owner.getUserId())) {
+            baseChatItem.setOwner(true);
+        }
+        return baseChatItem;
+    }
+
+    private static BaseChatItem getHeaderChatItem(JSONObject jListMessage, int sectionFirstPosition, Context context) throws JSONException {
+        BaseChatItem header = new BaseChatItem();
+        header.setChatType(BaseChatItem.ChatType.HEADER);
+        String strDate = jListMessage.getString(Constant.JSON.DATE);
+        header.setFullDate(strDate);
+
+        String displayDate = DateTimeUtils.getHeaderDisplayDateInChatHistory(
+                DateTimeUtils.convertStringToDate(strDate, DateTimeUtils.ENGLISH_DATE_FORMAT),context);
+        header.setDisplayDate(displayDate);
+
+        header.setSectionFirstPosition(sectionFirstPosition);
+        return header;
+    }
+
+    public static List<GiftItem> parseGiftsList(JSONArray jGifts) throws JSONException {
+        ArrayList<GiftItem>  giftItems = new ArrayList<>();
+        for(int index = 0, n=jGifts.length(); index < n; index ++) {
+            JSONObject jGift = jGifts.getJSONObject(index);
+            GiftItem giftItem = new GiftItem();
+            giftItem.setGiftId(jGift.getInt(Constant.JSON.ID));
+            giftItem.setName(jGift.getString(Constant.JSON.NAME));
+            ImageItem imageItem = new ImageItem();
+            imageItem.setOriginUrl(jGift.getString(Constant.JSON.IMAGE));
+            giftItem.setGiftImage(imageItem);
+            giftItem.setPrice(jGift.getInt(Constant.JSON.PRICE));
+            giftItems.add(giftItem);
+        }
+        return giftItems;
+    }
+    public static List<RoomChatItem> parseListRoomChat(JSONArray jsonArray) throws JSONException {
+        ArrayList<RoomChatItem> result = new ArrayList<>();
+        for (int index=0, n = jsonArray.length(); index<n ;index++) {
+            JSONObject jRoomChat = jsonArray.getJSONObject(index);
+            JSONObject jInteractionUser = jRoomChat.getJSONObject(Constant.JSON.INTERACTION_USER);
+            RoomChatItem roomChatItem = new RoomChatItem();
+            String roomId = jRoomChat.getString(Constant.JSON.ROOM_ID);
+            roomChatItem.setRoomId(roomId);
+            UserItem userItem = new UserItem();
+            userItem.setUserId(jInteractionUser.getString(Constant.JSON.ID));
+            userItem.setUsername(jInteractionUser.getString(Constant.JSON.HANDLE_NAME));
+            SipItem sipItem = new SipItem();
+            sipItem.setExtension(jInteractionUser.getString(Constant.JSON.EXTENSION));
+            ImageItem avatar = new ImageItem();
+            avatar.setOriginUrl(jInteractionUser.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(avatar);
+            userItem.setSipItem(sipItem);
+            roomChatItem.setUserChat(userItem);
+            roomChatItem.setLastMessage(jRoomChat.getString(Constant.JSON.LAST_MSG_DESCRIPTION));
+            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.LAST_MSG_TIMESTAMP));
+            roomChatItem.setNumberMessageUnRead(jRoomChat.getInt(Constant.JSON.UNREAD_NUMBER));
+            result.add(roomChatItem);
+        }
+        return result;
     }
 }

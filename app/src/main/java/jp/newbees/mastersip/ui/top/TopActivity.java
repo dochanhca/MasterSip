@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,8 +10,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 
@@ -22,6 +28,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
+    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 205;
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 206;
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
@@ -29,7 +37,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private static final int CHAT_GROUP_FRAGMENT = 1;
     private static final int FOOT_PRINT_FRAGMENT = 2;
     private static final int FLOW_FRAGMENT = 3;
-    private static final int PROFILE_FRAGMENT = 4;
+    private static final int MY_MENU_FRAGMENT = 4;
 
     private Animation slide_down;
     private Animation slide_up;
@@ -40,6 +48,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public boolean isShowNavigationBar;
 
     private NavigationLayoutGroup navigationLayoutGroup;
+    private NavigationLayoutChild navigationMessage;
 
     public boolean isShowNavigationBar() {
         return isShowNavigationBar;
@@ -59,6 +68,10 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
         @Override
         public void onPageSelected(int position) {
+            if (position == MY_MENU_FRAGMENT) {
+                MyMenuFragment fragment = (MyMenuFragment) getFragmentForPosition(position);
+                if (null != fragment) fragment.onTabSelected();
+            }
             navigationLayoutGroup.setSelectedItem(position);
         }
 
@@ -75,12 +88,16 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        topPresenter = new TopPresenter(getApplicationContext(),this);
+        topPresenter = new TopPresenter(getApplicationContext(), this);
         navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
+        navigationMessage = (NavigationLayoutChild) findViewById(R.id.nav_message);
+
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -91,6 +108,22 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         topPresenter.requestPermissions();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     *
+     * @param roomChatEvent
+     */
+    @Subscribe
+    public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
+        setUnreadMessageValue(roomChatEvent.getNumberOfRoomUnRead());
+    }
+
     private void fillData() {
         myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(myPagerAdapter);
@@ -98,14 +131,22 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     public void showNavigation() {
         isShowNavigationBar = true;
-        clearViewAnimation(navigationLayoutGroup,slide_up,View.VISIBLE);
+        clearViewAnimation(navigationLayoutGroup, slide_up, View.VISIBLE);
         navigationLayoutGroup.startAnimation(slide_up);
     }
 
     public void hideNavigation() {
         isShowNavigationBar = false;
-        clearViewAnimation(navigationLayoutGroup,slide_down,View.GONE);
+        clearViewAnimation(navigationLayoutGroup, slide_down, View.GONE);
         navigationLayoutGroup.startAnimation(slide_down);
+    }
+
+    public void setUnreadMessageValue(int value) {
+        if (value == 0) {
+            navigationMessage.setShowBoxValue(false);
+        } else {
+            navigationMessage.showBoxValue(value);
+        }
     }
 
     @Override
@@ -128,8 +169,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                 case FOOT_PRINT_FRAGMENT:
                     return FootPrintFragment.newInstance();
                 case FLOW_FRAGMENT:
-//                    return FlowFragment.newInstance();
-                case PROFILE_FRAGMENT:
+                    return FollowFragment.newInstance();
+                case MY_MENU_FRAGMENT:
                     return MyMenuFragment.newInstance();
                 default:
                     return null;
@@ -141,7 +182,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
             return navigationLayoutGroup.getChildCount();
         }
     }
-
 
 
     @Override
@@ -156,5 +196,27 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
             case PERMISSIONS_ENABLED_MIC:
                 break;
         }
+    }
+
+    /**
+     * @param containerViewId the ViewPager this adapter is being supplied to
+     * @param id              pass in getItemId(position) as this is whats used internally in this class
+     * @return the tag used for this pages fragment
+     */
+    public static String makeFragmentName(int containerViewId, long id) {
+        return "android:switcher:" + containerViewId + ":" + id;
+    }
+
+    /**
+     * @return may return null if the fragment has not been instantiated yet for that position - this depends on if the fragment has been viewed
+     * yet OR is a sibling covered by {@link android.support.v4.view.ViewPager#setOffscreenPageLimit(int)}. Can use this to call methods on
+     * the current positions fragment.
+     */
+    public
+    @Nullable
+    Fragment getFragmentForPosition(int position) {
+        String tag = makeFragmentName(viewPager.getId(), position);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        return fragment;
     }
 }

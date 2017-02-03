@@ -8,6 +8,10 @@ import jp.newbees.mastersip.model.BaseChatItem;
 public class ReceivingReadMessageEvent {
     private BaseChatItem baseChatItem;
 
+    /**
+     *
+     * @param baseChatItem
+     */
     public ReceivingReadMessageEvent(BaseChatItem baseChatItem) {
         this.baseChatItem = baseChatItem;
     }

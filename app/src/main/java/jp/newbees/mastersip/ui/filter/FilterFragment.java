@@ -107,7 +107,6 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         btnSearch.setOnClickListener(this);
         imgBack.setOnClickListener(this);
 
-//        filterItem = configManager.getFilterUser();
         getFilterCondition();
     }
 
@@ -341,7 +340,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         FilterLocationFragment filterLocationFragment = FilterLocationFragment.newInstance(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
-        transaction.replace(R.id.fragment_search_container, filterLocationFragment,
+        transaction.add(R.id.fragment_search_container, filterLocationFragment,
                 FilterLocationFragment.class.getName())
                 .addToBackStack(null).commit();
     }
@@ -350,7 +349,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
         FilterByNameFragment filterByNameFragment = FilterByNameFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
-        transaction.replace(R.id.fragment_search_container, filterByNameFragment)
+        transaction.add(R.id.fragment_search_container, filterByNameFragment)
                 .addToBackStack(null).commit();
     }
 

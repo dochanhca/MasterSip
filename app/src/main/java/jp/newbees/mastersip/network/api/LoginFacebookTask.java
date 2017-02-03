@@ -39,6 +39,10 @@ public class LoginFacebookTask extends BaseTask<UserItem> {
         return jParams;
     }
 
+    public UserItem getUserItem() {
+        return userItem;
+    }
+
     @NonNull
     @Override
     protected String getUrl() {

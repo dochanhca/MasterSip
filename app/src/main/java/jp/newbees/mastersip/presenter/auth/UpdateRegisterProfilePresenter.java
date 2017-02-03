@@ -5,6 +5,7 @@ import android.content.Context;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.UpdateProfileTask;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/15/16.
@@ -51,7 +52,12 @@ public class UpdateRegisterProfilePresenter extends RegisterPresenterBase {
 
     @Override
     protected void onDidRegisterVoIPSuccess() {
+        this.saveInfoUser();
         view.onUpdateRegisterProfileSuccess(userItem);
+    }
+
+    private void saveInfoUser(){
+        ConfigManager.getInstance().saveUser(userItem);
     }
 
     @Override

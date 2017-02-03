@@ -13,7 +13,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 1/19/17.
@@ -22,15 +22,13 @@ import jp.newbees.mastersip.model.UserItem;
 
 public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.ViewHolder> {
 
-    private int gender;
-    private List<ImageItem> datas;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private List<ImageItem> photos;
 
-    public UserPhotoAdapter(Context context, List<ImageItem> datas, int gender) {
-        this.datas = datas;
+    public UserPhotoAdapter(Context context, List<ImageItem> photos) {
+        this.photos = photos;
         this.context = context;
-        this.gender = gender;
     }
 
     @Override
@@ -51,15 +49,20 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageItem item = datas.get(position);
+        ImageItem item = photos.get(position);
 
         loadUserProfileImage(item, holder);
     }
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return photos.size();
     }
+
+    public void setPhotos(List<ImageItem> photos) {
+        this.photos = photos;
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -73,8 +76,7 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
     }
 
     private void loadUserProfileImage(ImageItem item, ViewHolder holder) {
-        int drawableId = gender == UserItem.MALE ? R.drawable.ic_boy_default :
-                R.drawable.ic_girl_default;
+        int drawableId = ConfigManager.getInstance().getImageCalleeDefault();
 
         Glide.with(context).load(item.getOriginUrl())
                 .error(drawableId).placeholder(drawableId)

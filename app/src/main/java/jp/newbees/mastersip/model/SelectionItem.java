@@ -11,6 +11,10 @@ import java.io.Serializable;
 
 public class SelectionItem implements Serializable, Parcelable {
 
+    /**
+     * @param itemId
+     * @param itemTitle
+     */
     public SelectionItem(int itemId, String itemTitle) {
         this.id = itemId;
         this.title = itemTitle;

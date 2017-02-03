@@ -1,10 +1,14 @@
 package jp.newbees.mastersip.utils;
 
+import android.content.Context;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import jp.newbees.mastersip.R;
 
 /**
  * Created by ducpv on 12/9/16.
@@ -16,6 +20,9 @@ public class DateTimeUtils {
             Locale.JAPAN);
 
     public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
+            Locale.ENGLISH);
+
+    public static final SimpleDateFormat HEADER_CHAT_FORMAT = new SimpleDateFormat("MM/dd",
             Locale.ENGLISH);
 
     public static final SimpleDateFormat ENGLISH_FACEBOOK_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy",
@@ -39,7 +46,7 @@ public class DateTimeUtils {
         return diff;
     }
 
-    public static final String convertDateToString(Date date,SimpleDateFormat format) {
+    public static final String convertDateToString(Date date, SimpleDateFormat format) {
         String mData = format.format(date);
         return mData;
     }
@@ -84,7 +91,36 @@ public class DateTimeUtils {
         Calendar calendarCurrent = Calendar.getInstance();
         Date current = calendarCurrent.getTime();
         calendarCurrent = getCalendar(current);
-        int age =  calendarCurrent.get(Calendar.YEAR) - calendarDoB.get(Calendar.YEAR);
+        int age = calendarCurrent.get(Calendar.YEAR) - calendarDoB.get(Calendar.YEAR);
         return age;
+    }
+
+    public static String getHeaderDisplayDateInChatHistory(Date headerDate, Context context) {
+        String strHeader = ENGLISH_DATE_FORMAT.format(headerDate);
+        Calendar calendar = Calendar.getInstance();
+        String today = ENGLISH_DATE_FORMAT.format(calendar.getTime());
+
+        if (strHeader.equals(today)) {
+            strHeader = context.getResources().getString(R.string.today);
+        } else {
+            strHeader = DateTimeUtils.convertDateToString(headerDate, HEADER_CHAT_FORMAT);
+            strHeader += "(" + DateTimeUtils.getJapanDayOfWeek(headerDate) + ")";
+        }
+        return strHeader;
+    }
+
+    private static String getJapanDayOfWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.JAPANESE);
+    }
+
+    public static Date getDateWithoutTime(Date date) {
+        try {
+            return ENGLISH_DATE_FORMAT.parse(ENGLISH_DATE_FORMAT.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

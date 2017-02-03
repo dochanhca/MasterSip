@@ -21,8 +21,9 @@ import jp.newbees.mastersip.presenter.top.FilterByNamePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
-import jp.newbees.mastersip.ui.top.AdapterSearchUserModeList;
+import jp.newbees.mastersip.adapter.AdapterSearchUserModeList;
 import jp.newbees.mastersip.ui.top.TopActivity;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -119,6 +120,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         setFragmentTitle(getString(R.string.filter_by_name));
+        restoreNavigationBarState();
         userItems = new ArrayList<>();
         filterUserPresenter = new FilterByNamePresenter(getActivity().getApplicationContext(), this);
 
@@ -160,6 +162,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
                 break;
             case R.id.img_back:
                 hideSoftwareKeyboard();
+                restoreNavigationBarState();
                 getFragmentManager().popBackStack();
                 break;
             default:
@@ -222,11 +225,11 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     private void showProfileDetailFragment(int position) {
         ProfileDetailFragment profileDetailFragment =
-                ProfileDetailFragment.newInstance(userItems, position);
+                ProfileDetailFragment.newInstance(userItems, position, "0", Constant.API.ALL_USER);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_search_container, profileDetailFragment,
+        transaction.add(R.id.fragment_search_container, profileDetailFragment,
                 ProfileDetailFragment.class.getName()).commit();
     }
 }

@@ -101,8 +101,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         updateGenderForFacebookUser();
     }
 
-    private void updateGenderForFacebookUser(){
-        if (userItem!=null) {
+    private void updateGenderForFacebookUser() {
+        if (userItem != null) {
             layoutGender.setClickable(false);
             String gender = userItem.getGender() == UserItem.MALE ? genders[MALE] : genders[FEMALE];
             txtGender.setText(gender);
@@ -145,8 +145,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
             return;
         if (userItem == null) {
             userItem = new UserItem();
-            userItem.setGender((gender == 0) ? UserItem.MALE : UserItem.FEMALE);
         }
+        userItem.setGender((gender == 0) ? UserItem.MALE : UserItem.FEMALE);
         userItem.setDateOfBirth(dateSendToServer);
         showLoading();
         registerPresenter.registerUser(userItem);
@@ -268,7 +268,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     }
 
     private void fillData(UserItem userItem) {
-        gender = (userItem.getGender() == UserItem.MALE) ? 0 : 1;
+        gender = (userItem.getGender() == UserItem.MALE) ? MALE : FEMALE;
         txtGender.setText(genders[gender]);
         try {
             defaultDate = DateTimeUtils.ENGLISH_DATE_FORMAT.parse(userItem.getDateOfBirth());
@@ -318,7 +318,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         removeUser();
     }
 
-    private void removeUser(){
+    private void removeUser() {
         ConfigManager.getInstance().removeUser();
     }
 }

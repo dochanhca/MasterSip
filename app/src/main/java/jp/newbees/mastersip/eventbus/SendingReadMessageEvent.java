@@ -11,6 +11,12 @@ public class SendingReadMessageEvent {
     private UserItem currentUser;
     private UserItem replyUser;
 
+    /**
+     *
+     * @param baseChatItem
+     * @param currentUser
+     * @param replyUser
+     */
     public SendingReadMessageEvent(BaseChatItem baseChatItem, UserItem currentUser, UserItem replyUser) {
         this.baseChatItem = baseChatItem;
         this.currentUser = currentUser;

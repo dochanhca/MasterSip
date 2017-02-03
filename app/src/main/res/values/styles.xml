@@ -130,10 +130,10 @@
         <item name="android:minWidth">@dimen/action_profile_detail_w</item>
         <item name="android:gravity">center</item>
         <item name="android:button">@null</item>
-        <item name="android:paddingLeft">@dimen/normal_margin</item>
-        <item name="android:paddingRight">@dimen/normal_margin</item>
-        <item name="android:paddingTop">@dimen/normal_margin</item>
-        <item name="android:paddingBottom">@dimen/normal_margin</item>
+        <item name="android:paddingLeft">@dimen/margin_5</item>
+        <item name="android:paddingRight">@dimen/margin_5</item>
+        <item name="android:paddingTop">@dimen/margin_5</item>
+        <item name="android:paddingBottom">@dimen/margin_5</item>
         <item name="android:textSize">@dimen/text_size_12</item>
     </style>
 
@@ -206,5 +206,18 @@
         <item name="android:layout_marginRight">@dimen/common_margin</item>
         <item name="android:paddingBottom">@dimen/margin_2</item>
         <item name="android:gravity">left</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+    <style name="custom_button">
+        <item name="android:minHeight">@dimen/header_search_height</item>
+        <item name="android:minWidth">@dimen/action_profile_detail_w</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">@dimen/margin_5</item>
+        <item name="android:paddingRight">@dimen/margin_5</item>
+        <item name="android:paddingTop">@dimen/margin_5</item>
+        <item name="android:paddingBottom">@dimen/margin_5</item>
+        <item name="android:drawablePadding">@dimen/margin_5</item>
+        <item name="android:textSize">@dimen/text_size_12</item>
     </style>
 </resources>

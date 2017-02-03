@@ -97,6 +97,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     }
 
     private void loginByFacebook() {
+        showLoading();
         startPresenter.loginFacebook(this, callbackManager);
     }
 
@@ -134,11 +135,13 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     public void didLoginVoIP() {
+        disMissLoading();
         startTopScreenWithNewTask();
     }
 
     @Override
     public void didErrorVoIP(String errorMessage) {
+        disMissLoading();
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
@@ -150,6 +153,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     public void didLoadFacebookFailure(String errorMessage) {
+        disMissLoading();
         Logger.e(TAG, errorMessage);
     }
 

@@ -31,9 +31,4 @@ public class AdapterViewPagerProfileDetail extends FragmentStatePagerAdapter {
     public int getCount() {
         return userItems.size();
     }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return POSITION_NONE;
-    }
 }

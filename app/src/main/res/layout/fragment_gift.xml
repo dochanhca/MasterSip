@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_green_normal"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/layout_action_bar" />
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_gifts_description"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_15dp"
+        android:textColor="@color/blue_gifts_desc"
+        android:text="@string/gifts_description_male"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/_15sp"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/_15dp"
+        android:id="@+id/rcv_gifts_list"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:spanCount="3"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

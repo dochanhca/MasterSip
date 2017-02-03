@@ -9,13 +9,13 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.apache.http.HttpEntity;
@@ -41,6 +41,10 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by thanglh on 13/11/2014.
  */
 public abstract class BaseUploadTask<T extends Object> {
+
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_FILE = 2;
+
     private static final int NETWORK_TIME_OUT = 30000;
     private Request<T> mRequest;
     private Context mContext;
@@ -158,7 +162,8 @@ public abstract class BaseUploadTask<T extends Object> {
 
     private void buildMultipartEntity() {
         mEntityBuilder = MultipartEntityBuilder.create();
-        mEntityBuilder.addBinaryBody(getNameEntity(), getInputStream(), ContentType.create("image/jpeg"), getFileName());
+
+        mEntityBuilder.addBinaryBody(getNameEntity(), getInputStream(), ContentType.MULTIPART_FORM_DATA, getFileName());
         mEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         mEntityBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
         Map<String, Object> params = genBodyParam();
@@ -191,11 +196,15 @@ public abstract class BaseUploadTask<T extends Object> {
         return urlBuilder.toString();
     }
 
-    protected String getVersion(){
+    protected String getVersion() {
         return Constant.API.VERSION;
     }
 
     protected abstract String getNameEntity();
+
+//    protected abstract int getType();
+//
+//    protected abstract File getFile();
 
     protected abstract T didResponse(JSONObject data) throws JSONException;
 

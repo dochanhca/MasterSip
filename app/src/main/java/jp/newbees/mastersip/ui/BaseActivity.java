@@ -28,7 +28,7 @@ import jp.newbees.mastersip.utils.ToastExceptionVolleyHelper;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private static boolean mIsDialogShowing;
+    private boolean mIsDialogShowing;
     private boolean mInterrupted;
     private LoadingDialog loadingDialog;
     private boolean isActivityPaused;
@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    private String TAG = getClass().getSimpleName();
+    protected String TAG;
     private MessageDialog messageDialog;
 
     protected ImageView imgBack;
@@ -51,6 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();
         setContentView(layoutId());
@@ -66,7 +67,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             mInterrupted = false;
             showLoading(mCurrentContentLoading);
         }
-
     }
 
     @Override
@@ -222,7 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                //Unused
             }
 
             @Override
@@ -233,7 +233,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
+                //Unused
             }
         });
     }

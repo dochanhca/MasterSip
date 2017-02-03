@@ -9,6 +9,10 @@ import jp.newbees.mastersip.model.BaseChatItem;
 public class NewChatMessageEvent {
     private BaseChatItem baseChatItem;
 
+    /**
+     *
+     * @param baseChatItem
+     */
     public NewChatMessageEvent(BaseChatItem baseChatItem) {
         this.baseChatItem = baseChatItem;
     }

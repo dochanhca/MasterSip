@@ -3,7 +3,9 @@ package jp.newbees.mastersip.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.TopActivity;
 
 /**
@@ -11,9 +13,6 @@ import jp.newbees.mastersip.ui.top.TopActivity;
  */
 
 public abstract class RegisterBaseActivity extends BaseActivity {
-
-    private final String TAG = getClass().getSimpleName();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,4 +25,9 @@ public abstract class RegisterBaseActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    protected void confirmDeleteAvatar() {
+        String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
+        TextDialog.openTextDialog(getSupportFragmentManager(),
+                confirmDeleteAvatar, "");
+    }
 }

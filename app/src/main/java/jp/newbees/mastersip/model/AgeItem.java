@@ -12,6 +12,9 @@ public class AgeItem implements Parcelable, Cloneable {
     private SelectionItem selectionItem;
     private boolean isDisable;
 
+    /**
+     *
+     */
     public AgeItem() {
     }
 
