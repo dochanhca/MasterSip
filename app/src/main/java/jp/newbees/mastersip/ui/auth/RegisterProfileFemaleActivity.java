@@ -260,9 +260,10 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
 
     /**
      * On Confirm Delete Image Click Ok listener
+     * @param requestCode
      */
     @Override
-    public void onTextDialogOkClick() {
+    public void onTextDialogOkClick(int requestCode) {
         showMessageDialog("", getString(R.string.mess_delete_image_success), "", true);
         hideAvatar();
 

@@ -89,7 +89,7 @@ public abstract class BaseFragment extends Fragment {
                 errorCode, errorMessage);
     }
 
-    protected void showMessageDialog(String title, String content, String note,
+    protected final void showMessageDialog(String title, String content, String note,
                                      boolean isHideActionButton) {
         if (null == messageDialog) {
             messageDialog = new MessageDialog();

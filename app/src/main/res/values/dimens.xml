@@ -97,4 +97,5 @@
     <dimen name="size_thumb_photo_gallery">60dp</dimen>
     <dimen name="_25dp">25dp</dimen>
     <dimen name="_7dp">7dp</dimen>
+    <dimen name="margin_22">22dp</dimen>
 </resources>

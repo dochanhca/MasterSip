@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/xnormal_margin"
+    android:paddingRight="@dimen/normal_margin">
+
+    <ImageView
+        android:id="@+id/comma"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_comma_chat_item" />
+
+    <RelativeLayout
+        android:id="@+id/group_gift"
+        android:layout_marginRight="-8dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/comma"
+        android:background="@drawable/bg_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_gift"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="@dimen/size_50dp"
+            android:layout_height="@dimen/size_50dp"
+            android:src="@drawable/ic_boy_default" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/img_gift"
+            style="@style/origin_style_content_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="@dimen/max_chat_item_width"
+            android:lineSpacingMultiplier="1.2"
+            android:padding="@dimen/normal_margin"
+            android:text="ちあきさんがたくみさんへ
+「スイーツ」ギフト(10pts)
+を送りました。"
+            android:textSize="@dimen/text_size_13"
+            android:textColor="@color/text_color_gray" />
+
+    </RelativeLayout>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_tiny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/group_gift"
+        android:layout_toLeftOf="@id/group_gift"
+        android:paddingRight="@dimen/small_margin"
+        android:text="12:34"
+        android:textColor="@color/dark_gray" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_state"
+        style="@style/origin_style_content_text_view_tiny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txt_time"
+        android:layout_toLeftOf="@id/group_gift"
+        android:paddingRight="@dimen/small_margin"
+        android:text="@string/txt_already_read"
+        android:textColor="@color/dark_gray"
+        android:visibility="visible" />
+</RelativeLayout>

@@ -181,18 +181,6 @@ public class BaseChatItem implements Parcelable, Serializable {
         }
     }
 
-    public static final Creator<BaseChatItem> CREATOR = new Creator<BaseChatItem>() {
-        @Override
-        public BaseChatItem createFromParcel(Parcel in) {
-            return new BaseChatItem(in);
-        }
-
-        @Override
-        public BaseChatItem[] newArray(int size) {
-            return new BaseChatItem[size];
-        }
-    };
-
     public UserItem getOwner() {
         return sender;
     }
