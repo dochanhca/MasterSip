@@ -62,9 +62,10 @@ public abstract class BaseFragment extends Fragment {
     protected void setFragmentTitle(String title) {
         txtActionBarTitle = (TextView) mRoot.findViewById(R.id.txt_action_bar_title);
         imgBackButton = (ImageView) mRoot.findViewById(R.id.img_back);
-        if(null!=imgBackButton) imgBackButton.setOnClickListener(new View.OnClickListener() {
+        if (null != imgBackButton) imgBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onImageBackPressed();
                 getFragmentManager().popBackStack();
             }
         });
@@ -90,7 +91,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected final void showMessageDialog(String title, String content, String note,
-                                     boolean isHideActionButton) {
+                                           boolean isHideActionButton) {
         if (null == messageDialog) {
             messageDialog = new MessageDialog();
         }
@@ -117,6 +118,7 @@ public abstract class BaseFragment extends Fragment {
 
     /**
      * clear animation and set visible of view after animation finish
+     *
      * @param view
      * @param anim
      * @param visibility
@@ -141,5 +143,9 @@ public abstract class BaseFragment extends Fragment {
         if (!isNavigationBarShowing()) {
             ((TopActivity) getActivity()).showNavigation();
         }
+    }
+
+    protected void onImageBackPressed () {
+        //Default do not anything
     }
 }

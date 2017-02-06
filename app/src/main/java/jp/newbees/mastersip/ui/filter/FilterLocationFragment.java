@@ -52,11 +52,9 @@ public class FilterLocationFragment extends BaseFragment implements
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         recyclerLocation = (RecyclerView) mRoot.findViewById(R.id.recycler_location);
-        imgBack = (ImageView) mRoot.findViewById(R.id.img_back);
         btnUnCheckAll = (ImageView) mRoot.findViewById(R.id.btn_un_check_all);
 
         btnUnCheckAll.setOnClickListener(this);
-        imgBack.setOnClickListener(this);
 
         setFragmentTitle(getString(R.string.region_selection));
 
@@ -76,6 +74,7 @@ public class FilterLocationFragment extends BaseFragment implements
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     putDataBack();
+                    getFragmentManager().popBackStack();
                     return true;
                 }
                 return false;
@@ -88,10 +87,12 @@ public class FilterLocationFragment extends BaseFragment implements
         if (view == btnUnCheckAll) {
             unCheckAllArea();
         }
+    }
 
-        if (view == imgBack) {
-            putDataBack();
-        }
+    @Override
+    protected void onImageBackPressed() {
+        super.onImageBackPressed();
+        putDataBack();
     }
 
     private void putDataBack() {
@@ -104,7 +105,6 @@ public class FilterLocationFragment extends BaseFragment implements
 
         // send selected locations to Filter Fragment
         EventBus.getDefault().postSticky(new SelectLocationEvent(selectedItems, true));
-        getFragmentManager().popBackStack();
     }
 
     private void unCheckAllArea() {
