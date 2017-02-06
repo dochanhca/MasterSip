@@ -209,7 +209,7 @@
         <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
 
-    <style name="custom_button">
+    <style name="custom_button" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:minHeight">@dimen/header_search_height</item>
         <item name="android:minWidth">@dimen/action_profile_detail_w</item>
         <item name="android:gravity">center</item>

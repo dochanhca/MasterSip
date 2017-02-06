@@ -28,6 +28,6 @@ public abstract class RegisterBaseActivity extends BaseActivity {
     protected void confirmDeleteAvatar() {
         String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
         TextDialog.openTextDialog(getSupportFragmentManager(),
-                confirmDeleteAvatar, "");
+                confirmDeleteAvatar, "", "", false);
     }
 }
