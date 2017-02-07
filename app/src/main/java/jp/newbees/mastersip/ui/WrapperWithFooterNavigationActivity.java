@@ -1,0 +1,47 @@
+package jp.newbees.mastersip.ui;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+
+import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.ui.top.TopActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
+
+/**
+ * Created by thangit14 on 2/7/17.
+ */
+
+public abstract class WrapperWithFooterNavigationActivity extends BaseActivity implements BaseActivity.FooterNavigation {
+
+    private NavigationLayoutGroup.OnChildItemClickListener onChildItemClickListener = new NavigationLayoutGroup.OnChildItemClickListener() {
+        @Override
+        public void onChildItemClick(View view, int position) {
+            goTopActivity();
+        }
+    };
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_wrapper_with_footer;
+    }
+
+    @Override
+    protected void initViews(Bundle savedInstanceState) {
+        navigationLayoutGroup.setOnChildItemClickListener(onChildItemClickListener);
+        setUnreadMessageValue(ConfigManager.getInstance().getUnreadMessage());
+    }
+
+    public void showFragmentContent(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, fragment).commit();
+    }
+
+    private void goTopActivity() {
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+        startActivity(intent);
+    }
+}

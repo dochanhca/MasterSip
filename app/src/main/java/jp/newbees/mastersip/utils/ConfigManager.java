@@ -260,4 +260,14 @@ final public class ConfigManager {
         }
         return imageDrawableCallerId;
     }
+
+    public void saveUnreadMessage(int unReadMessage) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(Constant.Application.UNREAD_MESSAGE, unReadMessage);
+        editor.commit();
+    }
+
+    public int getUnreadMessage() {
+        return sharedPreferences.getInt(Constant.Application.UNREAD_MESSAGE, 0);
+    }
 }

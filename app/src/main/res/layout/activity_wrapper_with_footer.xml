@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/fragment_container"
-    android:orientation="vertical"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <include
+        android:id="@+id/action_bar01"
+        layout="@layout/layout_action_bar" />
+
     <FrameLayout
-        android:id="@+id/fragment_search_container"
+        android:layout_below="@id/action_bar01"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
 
-</LinearLayout>
+    <include layout="@layout/footer_navigation" />
+</RelativeLayout>

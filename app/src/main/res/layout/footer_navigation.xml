@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jp.newbees.mastersip.customviews.NavigationLayoutGroup android:id="@+id/navigation_bar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/action_bar_h"
+    android:background="@color/white"
+    android:layout_alignParentBottom="true"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <jp.newbees.mastersip.customviews.NavigationLayoutChild
+        android:id="@+id/nav_member"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:iconNormal="@drawable/ic_memer_off"
+        app:iconSelected="@drawable/ic_member_on"
+        app:text = "@string/search"
+        app:state ="true"
+        app:textColorNormal="@color/dark_gray"
+        app:textColorSelected="@color/selected_color">
+
+    </jp.newbees.mastersip.customviews.NavigationLayoutChild>
+
+    <jp.newbees.mastersip.customviews.NavigationLayoutChild
+        android:id="@+id/nav_message"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:showBoxValue="true"
+        app:iconNormal="@drawable/ic_message_off"
+        app:iconSelected="@drawable/ic_message_on"
+        app:text = "@string/message"
+        app:textColorNormal="@color/dark_gray"
+        app:textColorSelected="@color/selected_color">
+
+    </jp.newbees.mastersip.customviews.NavigationLayoutChild>
+
+    <jp.newbees.mastersip.customviews.NavigationLayoutChild
+        android:id="@+id/nav_leg"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:showBoxValue="true"
+        app:iconNormal="@drawable/ic_leg_off"
+        app:iconSelected="@drawable/ic_leg_on"
+        app:text = "@string/leg"
+        app:textColorNormal="@color/dark_gray"
+        app:textColorSelected="@color/selected_color"/>
+
+    <jp.newbees.mastersip.customviews.NavigationLayoutChild
+        android:id="@+id/nav_heart"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:iconNormal="@drawable/ic_heart_off"
+        app:iconSelected="@drawable/ic_heart_on"
+        app:text = "@string/heart"
+        app:textColorNormal="@color/dark_gray"
+        app:textColorSelected="@color/selected_color"/>
+
+    <jp.newbees.mastersip.customviews.NavigationLayoutChild
+        android:id="@+id/nav_menu"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        app:iconNormal="@drawable/ic_menu_off"
+        app:iconSelected="@drawable/ic_menu_on"
+        app:text = "@string/menu"
+        app:textColorNormal="@color/dark_gray"
+        app:textColorSelected="@color/selected_color"/>
+</jp.newbees.mastersip.customviews.NavigationLayoutGroup>

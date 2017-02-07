@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -47,7 +48,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
         void didSendingReadMessageToServerError(int errorCode, String errorMessage);
 
-        void didLoadChatHistory(ArrayList<BaseChatItem> chatItems);
+        void didLoadChatHistory(List<BaseChatItem> chatItems);
 
         void didLoadChatHistoryError(int errorCode, String errorMessage);
 
