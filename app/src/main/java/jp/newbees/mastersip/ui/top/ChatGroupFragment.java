@@ -31,7 +31,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class ChatGroupFragment extends BaseFragment implements ChatGroupPresenter.ChatGroupView, ChatGroupAdapter.OnItemClickListener {
 
     @BindView(R.id.txt_action_bar_title)
-    TextView txtActionBarTitle;
+    TextView txtHeaderTitle;
     @BindView(R.id.recycler_chat_group)
     RecyclerView recyclerChatGroup;
     @BindView(R.id.swipe_refresh_layout)
@@ -62,7 +62,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         ButterKnife.bind(this, mRoot);
         presenter = new ChatGroupPresenter(getContext(), this);
         initRecyclerChatGroup();
-        txtActionBarTitle.setText(getString(R.string.chat_list));
+        txtHeaderTitle.setText(getString(R.string.chat_list));
 
         showLoading();
         presenter.loadListRoom();

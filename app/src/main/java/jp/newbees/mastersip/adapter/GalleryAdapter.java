@@ -44,7 +44,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         updatePhotoView(item, holder, position);
     }
 
-    private void updatePhotoView(ImageItem item,GalleryAdapter.ViewHolder holder,final int position) {
+    private void updatePhotoView(ImageItem item, GalleryAdapter.ViewHolder holder, final int position) {
         int drawableId = ConfigManager.getInstance().getImageCallerDefault();
 
         Glide.with(context).load(item.getOriginUrl())
@@ -55,16 +55,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 .dontTransform()
                 .into(holder.imgPhoto);
 
-        if (item.getImageStatus() == ImageItem.IMAGE_APPROVED){
+        holder.imgPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onUserImageClick(position);
+            }
+        });
+
+        if (item.getImageStatus() == ImageItem.IMAGE_APPROVED) {
             holder.txtApproving.setVisibility(View.GONE);
             holder.imgMask.setVisibility(View.GONE);
-            holder.imgPhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClickListener.onUserImageClick(position);
-                }
-            });
-        }else {
+        } else {
             holder.txtApproving.setVisibility(View.VISIBLE);
             holder.imgMask.setVisibility(View.VISIBLE);
         }
@@ -81,7 +82,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     public void addPhoto(ImageItem photo) {
-        this.photos.add(FIRST_POSITION,photo);
+        this.photos.add(FIRST_POSITION, photo);
     }
 
     public void setMorePhotos(List<ImageItem> photos) {
@@ -102,7 +103,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             txtApproving = (TextView) root.findViewById(R.id.txt_approving);
         }
     }
-
 
 
     public void setOnItemClickListener(UserPhotoAdapter.OnItemClickListener onItemClickListener) {

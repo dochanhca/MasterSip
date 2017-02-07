@@ -23,6 +23,7 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,7 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.MyMenuPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
@@ -125,6 +127,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private boolean isLoadingMorePhoto;
     private int visibleThreshold = 5;
     private boolean isFragmentRunning = false;
+    private List<ImageItem> photos;
 
     public static Fragment newInstance() {
         Fragment fragment = new MyMenuFragment();
@@ -155,12 +158,15 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private void initDefaultViews() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
+
         this.txtActionBarTitle.setText(userItem.getUsername());
         this.imgAvatar.setImageResource(defaultAvatar);
         this.txtPoint.setText("" + userItem.getCoin());
         int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE;
         this.btnBuyPoint.setVisibility(isShowButtonBuyPoint);
+
         this.galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
+        this.galleryAdapter.setOnItemClickListener(this);
         this.rcvListPhoto.setAdapter(galleryAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rcvListPhoto.getContext(),
                 DividerItemDecoration.HORIZONTAL);
@@ -226,6 +232,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.btn_change_avatar:
                 // change avatar
+                break;
             case R.id.group_avatar:
                 handleUploadAvatar();
                 break;
@@ -273,6 +280,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadGallery(GalleryItem galleryItem) {
+        this.photos = galleryItem.getPhotos();
         this.galleryAdapter.setPhotos(galleryItem.getPhotos());
         this.galleryAdapter.notifyDataSetChanged();
     }
@@ -321,6 +329,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadMorePhotosInGallery(GalleryItem gallery) {
+        this.photos.addAll(gallery.getPhotos());
         isLoadingMorePhoto = false;
         galleryAdapter.setMorePhotos(gallery.getPhotos());
         galleryAdapter.notifyDataSetChanged();
@@ -397,6 +406,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onUserImageClick(int position) {
         // Show full Image
+        ImageDetailActivity.startActivity(getActivity(), photos, position, true);
+
     }
 
     @Override

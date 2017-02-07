@@ -185,7 +185,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_photo_in_chat"
-                    app:text="@string/photo"
+                    app:text="@string/list_photo"
                     app:textColorNormal="@color/white">
 
                 </jp.newbees.mastersip.customviews.NavigationLayoutChild>
