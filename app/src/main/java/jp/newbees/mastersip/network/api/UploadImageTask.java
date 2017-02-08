@@ -70,8 +70,7 @@ public class UploadImageTask extends BaseUploadTask<ImageItem> {
 
     @Override
     protected String getFileName() {
-        String fileName = "android_" + System.currentTimeMillis() + ".jpg";
-        return fileName;
+        return "android_" + System.currentTimeMillis() + ".jpg";
     }
 
     @Nullable

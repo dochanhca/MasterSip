@@ -48,7 +48,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
@@ -56,9 +56,9 @@ import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
-import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.AVATAR_NAME;
-import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.PICK_AVATAR_CAMERA;
-import static jp.newbees.mastersip.ui.dialog.SelectAvatarDialog.PICK_AVATAR_GALLERY;
+import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.AVATAR_NAME;
+import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_CAMERA;
+import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLERY;
 import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 
 /**
@@ -432,13 +432,13 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+            case SelectImageDialog.PICK_AVATAR_CAMERA:
                 if (resultCode == RESULT_OK) {
                     isShowDialogForHandleImage = true;
                     handleImageFromCamera();
                 }
                 break;
-            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+            case SelectImageDialog.PICK_AVATAR_GALLERY:
                 if (resultCode == RESULT_OK) {
                     handleImageFromGallery(data.getData());
                     isShowDialogForHandleImage = true;
@@ -532,7 +532,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     }
 
     private void handleImageFromCamera() {
-        File outFile = new File(Environment.getExternalStorageDirectory() + SelectAvatarDialog.AVATAR_NAME);
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectImageDialog.AVATAR_NAME);
         if (!outFile.exists()) {
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {

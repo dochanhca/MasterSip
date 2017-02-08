@@ -2,12 +2,18 @@ package jp.newbees.mastersip.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +25,22 @@ import jp.newbees.mastersip.adapter.GalleryPagerAdapter;
 import jp.newbees.mastersip.customviews.HackyViewPager;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.presenter.ImageDetailPresenter;
+import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallCenterActivity {
+public class ImageDetailActivity extends CallCenterActivity implements ImageDetailPresenter.PhotoDetailView {
 
     private static final String LIST_PHOTO = "LIST_PHOTO";
     private static final String IS_FROM_MY_MENU = "IS_FROM_MY_MENU";
     public static final String POSITION = "POSITION";
-    private static final int VIEW_ALL_PHOTO = 1;
+    private static final int VIEW_ALL_PHOTO = 12;
 
     @BindView(R.id.view_pager_gallery)
     HackyViewPager viewPagerGallery;
@@ -44,10 +54,15 @@ public class ImageDetailActivity extends CallCenterActivity {
     HiraginoTextView txtDeletePhoto;
     @BindView(R.id.layout_bottom_action)
     LinearLayout layoutBottomAction;
+    @BindView(R.id.prw_update_image)
+    ProgressWheel progressWheel;
 
     private List<ImageItem> photos;
     private int currentPosition;
     private boolean isFromMyMenu;
+    private ImageDetailPresenter imageDetailPresenter;
+    private Uri pickedImage;
+    private GalleryPagerAdapter galleryPagerAdapter;
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -86,7 +101,7 @@ public class ImageDetailActivity extends CallCenterActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-
+        imageDetailPresenter = new ImageDetailPresenter(getApplicationContext(), this);
     }
 
     @OnClick({R.id.txt_save_photo, R.id.txt_change_photo, R.id.txt_report, R.id.txt_delete_photo,
@@ -96,6 +111,7 @@ public class ImageDetailActivity extends CallCenterActivity {
             case R.id.txt_save_photo:
                 break;
             case R.id.txt_change_photo:
+                SelectImageDialog.showDialogSelectAvatar(this, false);
                 break;
             case R.id.txt_report:
                 break;
@@ -112,14 +128,61 @@ public class ImageDetailActivity extends CallCenterActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == VIEW_ALL_PHOTO && resultCode == RESULT_OK) {
-            int position = data.getIntExtra(POSITION, 0);
-            viewPagerGallery.setCurrentItem(position);
+        switch (requestCode) {
+            case SelectImageDialog.PICK_AVATAR_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    handleImageFromCamera();
+                }
+                break;
+            case SelectImageDialog.PICK_AVATAR_GALLERY:
+                if (resultCode == RESULT_OK) {
+                    pickedImage = data.getData();
+                    handleImageFromGallery();
+                }
+                break;
+            case SelectImageDialog.CROP_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    handleImageCropped(data);
+                }
+                break;
+            case VIEW_ALL_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    int position = data.getIntExtra(POSITION, 0);
+                    viewPagerGallery.setCurrentItem(position);
+                }
+                break;
         }
     }
 
+    @Override
+    public void didUpdateImage(ImageItem imageItem) {
+        progressWheel.setVisibility(View.GONE);
+        photos.set(currentPosition, imageItem);
+        galleryPagerAdapter.notifyDataSetChanged();
+        viewPagerGallery.setPagingEnabled(true);
+    }
+
+    @Override
+    public void didUpdateImageError(int errorCode, String errorMessage) {
+        progressWheel.setVisibility(View.GONE);
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        viewPagerGallery.setPagingEnabled(true);
+    }
+
+    @Override
+    public void onUpdateImageProgressChanged(float percent) {
+        progressWheel.setProgress(percent);
+    }
+
+    @Override
+    public void onStartUploadPhotoGallery(String filePath) {
+        progressWheel.resetCount();
+        progressWheel.setVisibility(View.VISIBLE);
+        viewPagerGallery.setPagingEnabled(false);
+    }
+
     private void initViewPager() {
-        GalleryPagerAdapter galleryPagerAdapter = new GalleryPagerAdapter(photos, getApplicationContext());
+        galleryPagerAdapter = new GalleryPagerAdapter(photos, getApplicationContext());
         viewPagerGallery.setAdapter(galleryPagerAdapter);
         viewPagerGallery.setCurrentItem(currentPosition);
         viewPagerGallery.addOnPageChangeListener(onPageChangeListener);
@@ -150,6 +213,41 @@ public class ImageDetailActivity extends CallCenterActivity {
         StringBuilder header = new StringBuilder();
         header.append(currentPosition + 1).append("/").append(photos.size());
         txtActionBarTitle.setText(header.toString());
+    }
+
+    private void handleImageCropped(Intent data) {
+        byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
+
+        imageDetailPresenter.uploadPhotoForGallery(photos.get(currentPosition), result);
+    }
+
+    private void handleImageFromCamera() {
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectImageDialog.AVATAR_NAME);
+        if (!outFile.exists()) {
+            Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
+        } else {
+            pickedImage = Uri.fromFile(outFile);
+            gotoCropImageScreen(pickedImage);
+        }
+    }
+
+    private void handleImageFromGallery() {
+        getImageFilePath();
+    }
+
+    private void getImageFilePath() {
+        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
+            pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
+        }
+        gotoCropImageScreen(pickedImage);
+    }
+
+    private void gotoCropImageScreen(Uri imagePath) {
+        Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
+
+        intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
+
+        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
     }
 
     /**

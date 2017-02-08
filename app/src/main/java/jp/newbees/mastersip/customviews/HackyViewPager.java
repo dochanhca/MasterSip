@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 
 public class HackyViewPager extends ViewPager {
 
+    private boolean isPagingEnabled = true;
+
     public HackyViewPager(Context context) {
         super(context);
     }
@@ -20,13 +22,22 @@ public class HackyViewPager extends ViewPager {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return this.isPagingEnabled && super.onTouchEvent(event);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         try {
-            return super.onInterceptTouchEvent(ev);
+            return this.isPagingEnabled && super.onInterceptTouchEvent(ev);
         } catch (IllegalArgumentException e) {
             //uncomment if you really want to see these errors
             //e.printStackTrace();
             return false;
         }
+    }
+
+    public void setPagingEnabled(boolean enabled) {
+        this.isPagingEnabled = enabled;
     }
 }

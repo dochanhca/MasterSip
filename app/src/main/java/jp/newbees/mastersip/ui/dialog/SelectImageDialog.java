@@ -28,7 +28,7 @@ import static android.support.v4.content.ContextCompat.checkSelfPermission;
  * Created by ducpv on 12/14/16.
  */
 
-public class SelectAvatarDialog extends BaseDialog implements View.OnClickListener {
+public class SelectImageDialog extends BaseDialog implements View.OnClickListener {
 
     public static final int PICK_AVATAR_CAMERA = 1;
     public static final int PICK_AVATAR_GALLERY = 2;
@@ -133,7 +133,7 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
         super.onCreate(savedInstanceState);
         if (getTargetFragment() != null) {
             try {
-                this.onSelectAvatarDiaLogClick = (SelectAvatarDialog.OnSelectAvatarDiaLogClick) getTargetFragment();
+                this.onSelectAvatarDiaLogClick = (SelectImageDialog.OnSelectAvatarDiaLogClick) getTargetFragment();
             } catch (ClassCastException e) {
                 throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
             }
@@ -190,24 +190,24 @@ public class SelectAvatarDialog extends BaseDialog implements View.OnClickListen
     }
 
     public static void showDialogSelectAvatar(FragmentActivity context, boolean isShowButtonDeleteImage) {
-        SelectAvatarDialog selectAvatarDialog = new SelectAvatarDialog();
+        SelectImageDialog selectImageDialog = new SelectImageDialog();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
         bundle.putBoolean(CALL_FROM_ACTIVITY, true);
-        selectAvatarDialog.setArguments(bundle);
-        selectAvatarDialog.show(context.getSupportFragmentManager(), "SelectAvatarDialog");
+        selectImageDialog.setArguments(bundle);
+        selectImageDialog.show(context.getSupportFragmentManager(), "SelectImageDialog");
     }
 
     public static void showDialogSelectAvatar(Fragment fragment, int requestCode,
                                               FragmentManager fragmentManager, boolean isShowButtonDeleteImage) {
-        SelectAvatarDialog selectionDialog = new SelectAvatarDialog();
+        SelectImageDialog selectionDialog = new SelectImageDialog();
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, isShowButtonDeleteImage);
         bundle.putBoolean(CALL_FROM_ACTIVITY, false);
         bundle.putInt(REQUEST_CODE, requestCode);
         selectionDialog.setArguments(bundle);
         selectionDialog.setTargetFragment(fragment, requestCode);
-        selectionDialog.show(fragmentManager, "SelectAvatarDialog");
+        selectionDialog.show(fragmentManager, "SelectImageDialog");
     }
 
 
