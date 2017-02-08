@@ -15,8 +15,11 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_content"
-        style="@style/origin_style_content_text_view_small"
+        style="@style/origin_style_content_text_view_xtiny"
+        android:background="@drawable/bg_chat_header"
         android:layout_gravity="center"
+        android:padding="@dimen/small_margin"
+        android:textColor="@color/white"
         android:gravity="center"
         android:text="header"
         tools:text="Header Item"
