@@ -14,11 +14,13 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -114,6 +116,18 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
         setUnreadMessageValue(roomChatEvent.getNumberOfRoomUnRead());
+    }
+
+    @Subscribe
+    public void onReloadProfileEvent(ReLoadProfileEvent event) {
+        if (event.isNeedReload()) {
+            FragmentManager manager = getSupportFragmentManager();
+            MyMenuFragment myMenuFragment = (MyMenuFragment) manager.
+                    findFragmentByTag(makeFragmentName(viewPager.getId(), MY_MENU_FRAGMENT));
+
+            myMenuFragment.reloadData();
+        }
+        Logger.e(TAG, "" + event.isNeedReload());
     }
 
     private void fillData() {
