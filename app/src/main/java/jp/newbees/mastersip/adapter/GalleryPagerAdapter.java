@@ -20,7 +20,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * Created by ducpv on 2/7/17.
  */
 
-public class    GalleryPagerAdapter extends PagerAdapter {
+public class GalleryPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater inflater;
@@ -71,5 +71,10 @@ public class    GalleryPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 }

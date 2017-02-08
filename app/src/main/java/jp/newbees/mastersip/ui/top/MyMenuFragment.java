@@ -42,7 +42,7 @@ import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
-import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -55,7 +55,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, UserPhotoAdapter.OnItemClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogClick {
+        SelectImageDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogClick {
 
     private static final int REQUEST_SELECT_PHOTO_FOR_AVATAR = 8888;
     private static final int REQUEST_SELECT_PHOTO_FOR_GALLERY = 8989;
@@ -242,7 +242,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private void handleUploadPhotoForGallery() {
         if (!uploadingPhoto) {
             currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_GALLERY;
-            SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
+            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
         }
     }
 
@@ -251,11 +251,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         if (userItem.hasAvatar() && !uploadingAvatar) {
             if (userItem.getAvatarItem().isApproved()) {
                 currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
-                SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), true);
+                SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), true);
             }
         } else if (!userItem.hasAvatar() && !uploadingAvatar) {
             currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
-            SelectAvatarDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
+            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
         }
     }
 
@@ -431,18 +431,18 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+            case SelectImageDialog.PICK_AVATAR_CAMERA:
                 if (resultCode == RESULT_OK) {
                     handleImageFromCamera();
                 }
                 break;
-            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+            case SelectImageDialog.PICK_AVATAR_GALLERY:
                 if (resultCode == RESULT_OK) {
                     pickedImage = data.getData();
                     handleImageFromGallery();
                 }
                 break;
-            case SelectAvatarDialog.CROP_IMAGE:
+            case SelectImageDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
                 }
@@ -451,7 +451,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void handleImageFromCamera() {
-        File outFile = new File(Environment.getExternalStorageDirectory() + SelectAvatarDialog.AVATAR_NAME);
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectImageDialog.AVATAR_NAME);
         if (!outFile.exists()) {
             Toast.makeText(getContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
@@ -483,7 +483,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private void gotoCropImageScreen(Uri imagePath) {
         Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
-        startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
+        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
     }
 
 }

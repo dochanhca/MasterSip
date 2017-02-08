@@ -33,7 +33,7 @@ import jp.newbees.mastersip.network.api.UploadImageTask;
 import jp.newbees.mastersip.presenter.auth.UpdateRegisterProfilePresenter;
 import jp.newbees.mastersip.presenter.auth.UploadImagePresenter;
 import jp.newbees.mastersip.ui.InputActivity;
-import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -45,7 +45,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class RegisterProfileMaleActivity extends RegisterBaseActivity implements View.OnClickListener,
-        SelectAvatarDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
+        SelectImageDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
         UploadImagePresenter.View, UpdateRegisterProfilePresenter.View, TextDialog.OnTextDialogClick {
 
     private static final long TIME_DELAY = 2000;
@@ -109,10 +109,10 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_select_avatar:
-                SelectAvatarDialog.showDialogSelectAvatar(this, false);
+                SelectImageDialog.showDialogSelectAvatar(this, false);
                 break;
             case R.id.img_avatar:
-                SelectAvatarDialog.showDialogSelectAvatar(this, true);
+                SelectImageDialog.showDialogSelectAvatar(this, true);
                 break;
             case R.id.layout_area:
                 if (provinceItem == null) {
@@ -136,18 +136,18 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SelectAvatarDialog.PICK_AVATAR_CAMERA:
+            case SelectImageDialog.PICK_AVATAR_CAMERA:
                 if (resultCode == RESULT_OK) {
                     handleImageFromCamera();
                 }
                 break;
-            case SelectAvatarDialog.PICK_AVATAR_GALLERY:
+            case SelectImageDialog.PICK_AVATAR_GALLERY:
                 if (resultCode == RESULT_OK) {
                     pickedImage = data.getData();
                     handleImageFromGallery();
                 }
                 break;
-            case SelectAvatarDialog.CROP_IMAGE:
+            case SelectImageDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
                 }
@@ -273,7 +273,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     }
 
     private void handleImageFromCamera() {
-        File outFile = new File(Environment.getExternalStorageDirectory() + SelectAvatarDialog.AVATAR_NAME);
+        File outFile = new File(Environment.getExternalStorageDirectory() + SelectImageDialog.AVATAR_NAME);
         if (!outFile.exists()) {
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
@@ -298,7 +298,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
 
-        startActivityForResult(intent, SelectAvatarDialog.CROP_IMAGE);
+        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
     }
 
     private void showAvatar() {

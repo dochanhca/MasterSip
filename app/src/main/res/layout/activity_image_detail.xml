@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,6 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </jp.newbees.mastersip.customviews.HackyViewPager>
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/prw_update_image"
+        app:matProg_rimColor="@color/white"
+        app:matProg_rimWidth="3dp"
+        android:visibility="gone"
+        app:matProg_barColor="@color/blue_dark"
+        android:layout_centerInParent="true"
+        android:layout_width="35dp"
+        android:layout_height="35dp" />
 
     <LinearLayout
         android:id="@+id/layout_bottom_action"

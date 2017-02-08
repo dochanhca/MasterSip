@@ -146,7 +146,6 @@ public final class Constant {
 
     public static final class API {
 
-
         private API() {
             //Prevent init constructor
         }
@@ -202,6 +201,7 @@ public final class Constant {
         public static final String LIST_ROOM = "chatrooms";
         public static final String GIFTS_LIST = "gifts";
         public static final String SEND_GIFT = "gift/send";
+        public static final String UPDATE_IMAGE = "image/update";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
