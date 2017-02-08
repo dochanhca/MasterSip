@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_action_bar"
+        android:layout_above="@+id/layout_bottom_action"
+        android:background="@color/black"></FrameLayout>
+
+    <jp.newbees.mastersip.customviews.HackyViewPager
+        android:id="@+id/view_pager_gallery"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </jp.newbees.mastersip.customviews.HackyViewPager>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_action"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_h"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black_transparent_30"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rl_left_action"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_save_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/ic_download_photo"
+                android:paddingTop="@dimen/_5dp"
+                android:drawablePadding="@dimen/_2dp"
+                android:gravity="center_horizontal"
+                android:text="@string/save"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_change_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/ic_change_photo"
+                android:paddingTop="@dimen/_5dp"
+                android:drawablePadding="@dimen/_5dp"
+                android:gravity="center_horizontal"
+                android:text="@string/change_photo"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_right_action"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_report"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/ic_report"
+                android:paddingTop="@dimen/_5dp"
+                android:drawablePadding="@dimen/_2dp"
+                android:gravity="center_horizontal"
+                android:layout_centerInParent="true"
+                android:text="@string/report"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12" />
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_delete_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/ic_delete"
+                android:paddingTop="@dimen/_5dp"
+                android:drawablePadding="@dimen/_5dp"
+                android:gravity="center_horizontal"
+                android:layout_centerInParent="true"
+                android:text="@string/delete"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_h"
+        android:background="@color/black_transparent_30"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_15"
+            android:src="@drawable/ic_back_button" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_action_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:paddingLeft="@dimen/small_margin"
+            android:paddingRight="@dimen/small_margin"
+            android:text="Title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_action_bar" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/btn_view_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10"
+            android:background="@drawable/bg_dark_with_large_border"
+            android:gravity="center"
+            android:padding="@dimen/normal_margin"
+            android:text="@string/view_all"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_13"
+            android:layout_alignBaseline="@+id/txt_action_bar_title"
+            android:layout_alignBottom="@+id/txt_action_bar_title"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+</RelativeLayout>

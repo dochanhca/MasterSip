@@ -144,6 +144,14 @@
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.ImageDetailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeDarkActionBar"></activity>
+
+        <activity android:name=".ui.PhotoGalleryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

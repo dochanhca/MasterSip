@@ -90,8 +90,10 @@ public class ChatGroupPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        Logger.e(TAG, errorMessage);
-        chatGroupView.didLoadChatRoomFailure(errorCode, errorMessage);
+        if (task instanceof GetListRoomTask) {
+            Logger.e(TAG, errorMessage);
+            chatGroupView.didLoadChatRoomFailure(errorCode, errorMessage);
+        }
     }
 
     public interface ChatGroupView {

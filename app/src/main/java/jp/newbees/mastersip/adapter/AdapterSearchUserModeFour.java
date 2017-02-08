@@ -58,7 +58,6 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
                 placeholder(defaultImageId).
                 error(defaultImageId).into(holder.imgAvatar);
-
     }
 
     @Override

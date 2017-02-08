@@ -241,7 +241,8 @@
     <string name="profile">プロフィール</string>
     <string name="follow">フォローする</string>
     <string name="gift">ギフトを贈る</string>
-    <string name="photo">背景 のコピー 11</string>
+    <string name="list_photo">背景 のコピー 11</string>
+    <string name="photos">枚の写真</string>
     <string name="txt_already_read">既読</string>
     <string name="pt">pt</string>
     <string name="search">検索</string>
@@ -285,4 +286,10 @@
     <string name="buy_point">ポイント購入</string>
     <string name="title_send_gift_success">送信完了</string>
     <string name="content_send_gift_success">%1$sさんに「%2$s」ギフトを \n贈りました！</string>
+    <string name="save">保存</string>
+    <string name="report">通報</string>
+    <string name="view_all">すべて見る</string>
+    <string name="change_photo">写真を変更</string>
+    <string name="delete">削除</string>
+    <string name="photo_gallery">写真ギャラリー</string>
 </resources>
