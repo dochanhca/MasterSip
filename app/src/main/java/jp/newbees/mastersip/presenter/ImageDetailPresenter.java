@@ -6,8 +6,10 @@ import android.os.Handler;
 import com.android.volley.Response;
 
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
+import jp.newbees.mastersip.network.api.DeleteImageTask;
 import jp.newbees.mastersip.network.api.UpdateImageTask;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.FileUtils;
@@ -30,6 +32,10 @@ public class ImageDetailPresenter extends BasePresenter {
         void onUpdateImageProgressChanged(float percent);
 
         void onStartUploadPhotoGallery(String filePath);
+
+        void didDeleteImage();
+
+        void didDeleteImageError(int errorCode, String errorMessage);
     }
 
     public ImageDetailPresenter(Context context, PhotoDetailView view) {
@@ -38,13 +44,19 @@ public class ImageDetailPresenter extends BasePresenter {
         this.handler = new Handler();
     }
 
+    public void deleteImage(ImageItem imageItem) {
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        DeleteImageTask deleteImageTask = new DeleteImageTask(context, userItem, imageItem);
+        requestToServer(deleteImageTask);
+    }
+
     public void uploadPhotoForGallery(final ImageItem imageItem, final byte[] result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
                 String fileName = "android_" + System.currentTimeMillis() + ".png";
-                final String filePath = FileUtils.saveImageBytesToFile(result,fileName);
+                final String filePath = FileUtils.saveImageBytesToFile(result, fileName);
                 long end = System.currentTimeMillis() - start;
                 Logger.e("Update photo", "time : " + end);
                 handler.post(new Runnable() {
@@ -93,11 +105,15 @@ public class ImageDetailPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-
+        if (task instanceof DeleteImageTask) {
+            view.didDeleteImage();
+        }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        if (task instanceof DeleteImageTask) {
+            view.didDeleteImageError(errorCode, errorMessage);
+        }
     }
 }

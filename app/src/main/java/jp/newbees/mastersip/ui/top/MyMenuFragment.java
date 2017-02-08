@@ -210,6 +210,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
     @OnClick({
             R.id.btn_buy_point,
             R.id.btn_upload_photo,
@@ -419,6 +424,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     /**
      * On Confirm Delete Image Click Ok listener
+     *
      * @param requestCode
      */
     @Override
@@ -484,6 +490,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
         intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
         startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
+    }
+
+    public void reloadData() {
+        presenter.requestMyMenuInfo();
     }
 
 }

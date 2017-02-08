@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,18 +26,21 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryPagerAdapter;
 import jp.newbees.mastersip.customviews.HackyViewPager;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallCenterActivity implements ImageDetailPresenter.PhotoDetailView {
+public class ImageDetailActivity extends CallCenterActivity implements ImageDetailPresenter.PhotoDetailView,
+        TextDialog.OnTextDialogClick {
 
     private static final String LIST_PHOTO = "LIST_PHOTO";
     private static final String IS_FROM_MY_MENU = "IS_FROM_MY_MENU";
@@ -63,6 +68,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     private ImageDetailPresenter imageDetailPresenter;
     private Uri pickedImage;
     private GalleryPagerAdapter galleryPagerAdapter;
+    private boolean needReloadProfile;
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
@@ -116,6 +122,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             case R.id.txt_report:
                 break;
             case R.id.txt_delete_photo:
+                confirmDeleteImage();
                 break;
             case R.id.btn_view_all:
                 PhotoGalleryActivity.startActivityForResult(this, photos, VIEW_ALL_PHOTO);
@@ -160,6 +167,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         photos.set(currentPosition, imageItem);
         galleryPagerAdapter.notifyDataSetChanged();
         viewPagerGallery.setPagingEnabled(true);
+        needReloadProfile = true;
     }
 
     @Override
@@ -179,6 +187,52 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         progressWheel.resetCount();
         progressWheel.setVisibility(View.VISIBLE);
         viewPagerGallery.setPagingEnabled(false);
+    }
+
+    @Override
+    public void didDeleteImage() {
+        disMissLoading();
+        needReloadProfile = true;
+        photos.remove(currentPosition);
+        if ((photos.size() == 0)) {
+            EventBus.getDefault().post(new ReLoadProfileEvent(true));
+            super.onBackPressed();
+        }
+        galleryPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void didDeleteImageError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        showLoading();
+        imageDetailPresenter.deleteImage(photos.get(currentPosition));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (needReloadProfile) {
+            EventBus.getDefault().post(new ReLoadProfileEvent(true));
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onImageBackPressed() {
+        if (needReloadProfile) {
+            EventBus.getDefault().post(new ReLoadProfileEvent(true));
+        }
+        super.onImageBackPressed();
+    }
+
+    private void confirmDeleteImage() {
+        TextDialog.openTextDialog(getSupportFragmentManager(), getString(R.string.do_you_want_to_delete_this_photo),
+                getString(R.string.delete_photo),
+                "", false);
     }
 
     private void initViewPager() {
