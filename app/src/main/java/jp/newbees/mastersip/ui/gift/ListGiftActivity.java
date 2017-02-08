@@ -8,14 +8,13 @@ import android.support.v4.app.Fragment;
 import java.io.Serializable;
 
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.WrapperWithFooterNavigationActivity;
-import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
+import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 
 /**
  * Created by thangit14 on 2/7/17.
  */
 
-public class ListGiftActivity extends WrapperWithFooterNavigationActivity {
+public class ListGiftActivity extends WrapperWithBottomNavigationActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {

@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,12 +18,13 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView, BaseActivity.FooterNavigation {
+public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView, BaseActivity.BottomNavigation {
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
@@ -44,6 +46,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         @Override
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
+            ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
         }
     };
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -94,6 +97,14 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
+        viewPager.setCurrentItem(position, false);
+        navigationLayoutGroup.setSelectedItem(position);
     }
 
     /**

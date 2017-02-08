@@ -15,24 +15,26 @@ import jp.newbees.mastersip.utils.ConfigManager;
  * Created by thangit14 on 2/7/17.
  */
 
-public abstract class WrapperWithFooterNavigationActivity extends BaseActivity implements BaseActivity.FooterNavigation {
+public abstract class WrapperWithBottomNavigationActivity extends BaseActivity implements BaseActivity.BottomNavigation {
 
     private NavigationLayoutGroup.OnChildItemClickListener onChildItemClickListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
+            ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
             goTopActivity();
         }
     };
 
     @Override
     protected int layoutId() {
-        return R.layout.activity_wrapper_with_footer;
+        return R.layout.activity_wrapper_with_bottom_navgiation;
     }
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
         navigationLayoutGroup.setOnChildItemClickListener(onChildItemClickListener);
         setUnreadMessageValue(ConfigManager.getInstance().getUnreadMessage());
+        navigationLayoutGroup.setSelectedItem(ConfigManager.getInstance().getCurrentTabInRootNavigater());
     }
 
     public void showFragmentContent(Fragment fragment) {

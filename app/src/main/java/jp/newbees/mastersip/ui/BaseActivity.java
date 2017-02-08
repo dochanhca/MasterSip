@@ -69,7 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setupSharePreference();
         setContentView(layoutId());
 
-        if (this instanceof FooterNavigation) {
+        if (this instanceof BottomNavigation) {
             navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
             navigationMessage = (NavigationLayoutChild) findViewById(R.id.nav_message);
             navigationLeg = (NavigationLayoutChild) findViewById(R.id.nav_leg);
@@ -297,7 +297,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public interface FooterNavigation {
+    public interface BottomNavigation {
     }
 }
 
