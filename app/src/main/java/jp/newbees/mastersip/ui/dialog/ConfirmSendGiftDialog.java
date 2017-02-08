@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.dialog;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -66,6 +67,18 @@ public class ConfirmSendGiftDialog extends BaseDialog implements View.OnClickLis
         dismiss();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getTargetFragment() == null) {
+            try {
+                this.onConfirmSendGiftDialog = (OnConfirmSendGiftDialog) context;
+            } catch (ClassCastException e) {
+                throw new ClassCastException("Calling activity must implement DialogClickListener interface");
+            }
+        }
+    }
+
     /**
      * Call from fragment
      * @param fragment
@@ -81,6 +94,16 @@ public class ConfirmSendGiftDialog extends BaseDialog implements View.OnClickLis
 
         confirmSendGiftDialog.setArguments(bundle);
         confirmSendGiftDialog.setTargetFragment(fragment, requestCode);
+        confirmSendGiftDialog.show(fragmentManager, "ConfirmSendGiftDialog");
+    }
+
+    public static void openConfirmSendGiftDialog(FragmentManager fragmentManager, String userName) {
+        ConfirmSendGiftDialog confirmSendGiftDialog = new ConfirmSendGiftDialog();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_NAME, userName);
+
+        confirmSendGiftDialog.setArguments(bundle);
         confirmSendGiftDialog.show(fragmentManager, "ConfirmSendGiftDialog");
     }
 }

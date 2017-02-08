@@ -18,6 +18,7 @@ import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.gift.GiftListPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.ChatActivity;
@@ -50,11 +51,12 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     private GiftItem currentGiftSelected;
     private int openFrom;
 
-    public static final Fragment newInstance(UserItem userItem, int openFrom) {
+    public static final Fragment newInstance(UserItem userItem, int openFrom, boolean showFragmentActionBar) {
         Fragment fragment = new ListGiftFragment();
         Bundle argument = new Bundle();
         argument.putParcelable(ListGiftFragment.USER_ITEM, userItem);
         argument.putInt(ListGiftFragment.OPEN_FROM, openFrom);
+        argument.putBoolean(SHOW_FRAGMENT_ACTION_BAR, showFragmentActionBar);
         fragment.setArguments(argument);
         return fragment;
     }
@@ -67,8 +69,15 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
+
         String titleGiftsList = getString(R.string.gifts_list);
-        setFragmentTitle(titleGiftsList);
+        if (getArguments().getBoolean(SHOW_FRAGMENT_ACTION_BAR)) {
+            setFragmentTitle(titleGiftsList);
+        } else {
+            hideFragmentActionBar();
+            ((BaseActivity)getActivity()).changeHeaderText(titleGiftsList);
+        }
+
         userItem = getArguments().getParcelable(ListGiftFragment.USER_ITEM);
         openFrom = getArguments().getInt(ListGiftFragment.OPEN_FROM);
         txtGiftsDescription.setText(getDescription());
@@ -80,7 +89,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         rcvGiftsList.addItemDecoration(itemDecoration);
     }
 
-    private String getDescription(){
+    private String getDescription() {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         int titleId = userItem.getGender() == UserItem.MALE ? R.string.gifts_description_male : R.string.gifts_description_female;
         return getString(titleId);
@@ -108,14 +117,14 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     public void didSendGiftSuccess(GiftChatItem giftChatItem) {
         if (openFrom == OPEN_FROM_PROFILE_DETAILS) {
             showDialogSendGiftSuccess(giftChatItem);
-        }else if (openFrom == OPEN_FROM_CHAT){
-
+        } else if (openFrom == OPEN_FROM_CHAT) {
+            openChatScreen();
         }
     }
 
     private void showDialogSendGiftSuccess(GiftChatItem giftChatItem) {
         String title = getString(R.string.title_send_gift_success);
-        String content = String.format(getString(R.string.content_send_gift_success),userItem.getUsername(),currentGiftSelected.getName());
+        String content = String.format(getString(R.string.content_send_gift_success), userItem.getUsername(), currentGiftSelected.getName());
         String positiveButton = getString(R.string.buy_point);
         TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, positiveButton);
     }
@@ -128,27 +137,27 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     @Override
     public void didSendGiftErrorCauseNotEnoughPoint() {
         UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        if (currentUser.getGender() == UserItem.FEMALE){
+        if (currentUser.getGender() == UserItem.FEMALE) {
             showDialogNotEnoughPointForFemale(currentUser);
-        }else {
+        } else {
             showDialogNotEnoughPointForMale(currentUser);
         }
     }
 
     private void showDialogNotEnoughPointForMale(UserItem currentUser) {
         String title = getString(R.string.notify_not_enough_point_male);
-        String giftPrice = String.valueOf(currentGiftSelected.getPrice())+"pt";
-        String currentPoint = currentUser.getCoin()+"pt";
-        String content = String.format(getString(R.string.content_not_enough_point_male),giftPrice,currentPoint);
+        String giftPrice = String.valueOf(currentGiftSelected.getPrice()) + "pt";
+        String currentPoint = currentUser.getCoin() + "pt";
+        String content = String.format(getString(R.string.content_not_enough_point_male), giftPrice, currentPoint);
         String positiveButton = getString(R.string.buy_point);
         TextDialog.openTextDialog(this, REQUEST_BUY_POINT, getFragmentManager(), content, title, positiveButton);
     }
 
     private void showDialogNotEnoughPointForFemale(UserItem currentUser) {
-        String giftPrice = String.valueOf(currentGiftSelected.getPrice())+"pt";
-        String currentPoint = currentUser.getCoin()+"pt";
+        String giftPrice = String.valueOf(currentGiftSelected.getPrice()) + "pt";
+        String currentPoint = currentUser.getCoin() + "pt";
         String title = getString(R.string.notify_not_enough_point_female);
-        String content = String.format(getString(R.string.content_not_enough_point_female),giftPrice, currentPoint);
+        String content = String.format(getString(R.string.content_not_enough_point_female), giftPrice, currentPoint);
         showMessageDialog(title, content, "", false);
     }
 
@@ -156,36 +165,30 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     public void onGiftItemSelect(GiftItem giftItem) {
         this.currentGiftSelected = giftItem;
         String title = getString(R.string.title_send_gift);
-        String content = String.format(getString(R.string.confirm_send_gift),userItem.getUsername(), giftItem.getName());
-        TextDialog.openTextDialog(this,REQUEST_SEND_GIFT,getFragmentManager(),content,title);
+        String content = String.format(getString(R.string.confirm_send_gift), userItem.getUsername(), giftItem.getName());
+        TextDialog.openTextDialog(this, REQUEST_SEND_GIFT, getFragmentManager(), content, title);
     }
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
-        if(requestCode == REQUEST_SEND_GIFT) {
+        if (requestCode == REQUEST_SEND_GIFT) {
             giftListPresenter.sendGiftToUser(userItem, currentGiftSelected);
-        }else if(requestCode == REQUEST_BUY_POINT) {
+        } else if (requestCode == REQUEST_BUY_POINT) {
             showBuyCoinScreen();
-        }else if (requestCode == REQUEST_NOTIFY_SEND_GIFT_SUCESS) {
-            if (openFrom == OPEN_FROM_CHAT) {
-                backToChatScreen();
-            }else if(openFrom == OPEN_FROM_PROFILE_DETAILS) {
-                openChatScreen();
-            }
+        } else if (requestCode == REQUEST_NOTIFY_SEND_GIFT_SUCESS) {
+            openChatScreen();
         }
     }
 
-    /**
-     * TODO : Need implement function : Open Chat Screen
-     */
+    @Override
+    protected void onImageBackPressed() {
+        if (openFrom == OPEN_FROM_CHAT) {
+            getActivity().finish();
+        }
+    }
+
     private void openChatScreen() {
         ChatActivity.startChatActivity(getContext(), userItem);
-    }
-    /**
-     * TODO : Need implement function : Back to Chat Screen
-     */
-    private void backToChatScreen() {
-
     }
 
     /**

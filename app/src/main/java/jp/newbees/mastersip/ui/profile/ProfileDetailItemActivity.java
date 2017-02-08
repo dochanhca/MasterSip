@@ -15,10 +15,12 @@ import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 
 public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivity {
 
+    private UserItem userItem;
+
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        UserItem userItem = getIntent().getParcelableExtra(ProfileDetailItemFragment.USER_ITEM);
-        Fragment fragment = ProfileDetailItemFragment.newInstance(userItem);
+        userItem = getIntent().getParcelableExtra(ProfileDetailItemFragment.USER_ITEM);
+        Fragment fragment = ProfileDetailItemFragment.newInstance(userItem, false);
         initHeader(userItem.getUsername());
         showFragmentContent(fragment);
     }
@@ -27,5 +29,11 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
         Intent intent = new Intent(context, ProfileDetailItemActivity.class);
         intent.putExtra(ProfileDetailItemFragment.USER_ITEM, (Parcelable) userItem);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        changeHeaderText(userItem.getUsername());
+        super.onBackPressed();
     }
 }

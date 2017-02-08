@@ -19,6 +19,10 @@ public class RelationshipItem implements Parcelable {
     private int isFollowed;
     private int isNotification;
 
+    public RelationshipItem(int isFollowed) {
+        this.isFollowed = isFollowed;
+    }
+
     protected RelationshipItem(Parcel in) {
         isFollowed = in.readInt();
         isNotification = in.readInt();

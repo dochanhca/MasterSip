@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import java.io.Serializable;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 
@@ -19,9 +20,11 @@ public class ListGiftActivity extends WrapperWithBottomNavigationActivity {
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         UserItem userItem = getIntent().getParcelableExtra(ListGiftFragment.USER_ITEM);
-        Fragment fragment = ListGiftFragment.newInstance(userItem, ListGiftFragment.OPEN_FROM_CHAT);
-        initHeader(userItem.getUsername());
+        Fragment fragment = ListGiftFragment.newInstance(userItem, ListGiftFragment.OPEN_FROM_CHAT, false);
         showFragmentContent(fragment);
+        String titleGiftsList = getString(R.string.gifts_list);
+        initHeader(titleGiftsList);
+//        hideActionBar();
     }
 
     public static void startActivity(Context context, UserItem userItem) {
