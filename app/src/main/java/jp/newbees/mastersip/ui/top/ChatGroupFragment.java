@@ -113,7 +113,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
 
     @Override
     public void onRoomChatItemClick(RoomChatItem item, int position) {
-        ChatActivity.startChatAcitivity(getContext(), item.getUserChat());
+        ChatActivity.startChatActivity(getContext(), item.getUserChat());
     }
 
     @Subscribe()

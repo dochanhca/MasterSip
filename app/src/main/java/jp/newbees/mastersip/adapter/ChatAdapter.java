@@ -40,6 +40,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BaseChatItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private OnFriendAvatarClickListener onFriendAvatarClickListener;
 
     public ChatAdapter(Context context, List<BaseChatItem> data) {
         this.initDay = DateTimeUtils.getDateWithoutTime(Calendar.getInstance().getTime());
@@ -61,7 +62,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
-                    viewHolder = new ViewHolderTextMessageReply(view, context);
+                    viewHolder = new ViewHolderTextMessageReply(view, context, onFriendAvatarClickListener);
                 } else {
                     view = layoutInflater.inflate(R.layout.my_chat_text_item, parent, false);
                     viewHolder = new ViewHolderTextMessage(view, context);
@@ -70,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_IMAGE:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_image_item, parent, false);
-                    viewHolder = new ViewHolderImageMessageReply(view, context);
+                    viewHolder = new ViewHolderImageMessageReply(view, context, onFriendAvatarClickListener);
                 } else {
                     view = layoutInflater.inflate(R.layout.my_chat_image_item, parent, false);
                     viewHolder = new ViewHolderImageMessage(view, context);
@@ -83,7 +84,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_GIFT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_gift_item, parent, false);
-                    viewHolder = new ViewHolderGiftMessageReply(view, context);
+                    viewHolder = new ViewHolderGiftMessageReply(view, context, onFriendAvatarClickListener);
                 }else {
                     view = layoutInflater.inflate(R.layout.my_chat_gift_item, parent, false);
                     viewHolder = new ViewHolderGiftMessage(view, context);
@@ -113,16 +114,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         View itemView = holder.itemView;
 
         final GridSLM.LayoutParams layoutParams = GridSLM.LayoutParams.from(itemView.getLayoutParams());
-//        switch (viewType) {
-//            case BaseChatItem.ChatType.CHAT_TEXT:
-//                bindChatTextItem(item, holder, isReplyMessage);
-//                break;
-//            case BaseChatItem.ChatType.HEADER:
-//                fixLayoutParams(item, holder, layoutParams);
-//                break;
-//            default:
-//                break;
-//        }
+
         if (viewType == BaseChatItem.ChatType.HEADER) {
             layoutParams.headerDisplay = LayoutManager.LayoutParams.HEADER_OVERLAY | LayoutManager.LayoutParams.HEADER_STICKY;
             layoutParams.headerEndMarginIsAuto = true;
@@ -268,6 +260,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onItemClick(BaseChatItem item, int position);
     }
 
+    public interface OnFriendAvatarClickListener {
+        void onFriendProfileClick();
+    }
+
     public BaseChatItem getLastSendeeUnreadMessage() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
@@ -320,4 +316,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void setOnFriendAvatarClickListener(OnFriendAvatarClickListener onFriendAvatarClickListener) {
+        this.onFriendAvatarClickListener = onFriendAvatarClickListener;
+    }
 }

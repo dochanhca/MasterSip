@@ -167,7 +167,7 @@
                 app:showDivider="true">
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
-                    android:id="@+id/nav_member"
+                    android:id="@+id/nav_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -180,7 +180,7 @@
                 </jp.newbees.mastersip.customviews.NavigationLayoutChild>
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
-                    android:id="@+id/nav_message"
+                    android:id="@+id/nav_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -191,7 +191,7 @@
                 </jp.newbees.mastersip.customviews.NavigationLayoutChild>
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
-                    android:id="@+id/nav_leg"
+                    android:id="@+id/nav_gift"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -200,7 +200,7 @@
                     app:textColorNormal="@color/white" />
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
-                    android:id="@+id/nav_menu"
+                    android:id="@+id/nav_follow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"

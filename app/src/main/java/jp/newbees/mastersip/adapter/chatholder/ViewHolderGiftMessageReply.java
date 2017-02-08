@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -17,14 +18,14 @@ import jp.newbees.mastersip.utils.ConfigManager;
  * Created by vietbq on 2/3/17.
  */
 
-public class ViewHolderGiftMessageReply extends BaseChatViewHolder<GiftChatItem> {
+public class ViewHolderGiftMessageReply extends BaseChatReplyViewHolder<GiftChatItem> {
     private CircleImageView imgGift;
     private TextView txtContent;
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderGiftMessageReply(View root, Context context) {
-        super(root, context);
+    public ViewHolderGiftMessageReply(View root, Context context , ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
+        super(root, context, onFriendAvatarClickListener);
     }
 
     @Override
@@ -33,6 +34,7 @@ public class ViewHolderGiftMessageReply extends BaseChatViewHolder<GiftChatItem>
         txtContent = (HiraginoTextView) root.findViewById(R.id.txt_content);
         txtTime = (TextView) root.findViewById(R.id.txt_time);
         imgAvatar = (ImageView) root.findViewById(R.id.img_reply_avatar);
+        setFriendAvatarClickListener(imgAvatar);
     }
 
     @Override

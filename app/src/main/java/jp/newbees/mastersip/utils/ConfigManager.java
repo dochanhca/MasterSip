@@ -43,6 +43,9 @@ final public class ConfigManager {
     private HashMap<String, String> waitingCallId;
     private int imageDrawableCallerId = -1;
 
+    private int unReadMessage;
+    private int currentTabInRootNavigater;
+
     public final static void initConfig(Context context) {
         if (instance == null) {
             instance = new ConfigManager(context);
@@ -259,5 +262,21 @@ final public class ConfigManager {
                     : R.drawable.ic_girl_default;
         }
         return imageDrawableCallerId;
+    }
+
+    public void setUnreadMessage(int unReadMessage) {
+        this.unReadMessage = unReadMessage;
+    }
+
+    public int getUnreadMessage() {
+        return unReadMessage;
+    }
+
+    public int getCurrentTabInRootNavigater() {
+        return currentTabInRootNavigater;
+    }
+
+    public void setCurrentTabInRootNavigater(int currentTabInRootNavigater) {
+        this.currentTabInRootNavigater = currentTabInRootNavigater;
     }
 }

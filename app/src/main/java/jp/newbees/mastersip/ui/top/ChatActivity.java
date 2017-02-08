@@ -30,6 +30,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +49,7 @@ import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectAvatarDialog;
+import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -65,6 +67,11 @@ import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick {
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
+
+    public static final int NAV_PROFILE = 0;
+    public static final int NAV_GALLERY = 1;
+    public static final int NAV_GIFT = 2;
+    public static final int NAV_FOLLOW = 3;
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
@@ -95,14 +102,9 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     @BindView(R.id.img_left_bottom_action)
     ImageView imgLeftBottomAction;
 
-    private enum UIMode {
-        INPUT_TEXT_MODE, SELECT_IMAGE_MODE;
-    }
-
     private UIMode uiMode = UIMode.INPUT_TEXT_MODE;
 
     private ChatAdapter chatAdapter;
-
     private ChatPresenter presenter;
 
     private UserItem userItem;
@@ -119,6 +121,32 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     private Bitmap bitmap;
     private int maxImageSize = Constant.Application.MAX_IMAGE_SIZE;
+
+    private ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener = new ChatAdapter.OnFriendAvatarClickListener() {
+        @Override
+        public void onFriendProfileClick() {
+            gotoProfileDetailActivity();
+        }
+    };
+
+    private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener = new NavigationLayoutGroup.OnChildItemClickListener() {
+        @Override
+        public void onChildItemClick(View view, int position) {
+            switch (position) {
+                case NAV_PROFILE:
+                    gotoProfileDetailActivity();
+                    break;
+                case NAV_GALLERY:
+                    break;
+                case NAV_GIFT:
+                    break;
+                case NAV_FOLLOW:
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     private View.OnClickListener mOnSwitchModeClickListener = new View.OnClickListener() {
         @Override
@@ -188,7 +216,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
 
         @Override
-        public void didLoadChatHistory(ArrayList<BaseChatItem> chatItems) {
+        public void didLoadChatHistory(List<BaseChatItem> chatItems) {
             boolean needScroolToTheEnd = false;
             if (chatAdapter.getItemCount() == 0) {
                 needScroolToTheEnd = true;
@@ -234,7 +262,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     };
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-        public int dy;
+        private int dy;
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -273,6 +301,13 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
     };
 
+    private View.OnClickListener mOnHeaderClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            gotoProfileDetailActivity();
+        }
+    };
+
     @Override
     protected int layoutId() {
         return R.layout.activity_chat;
@@ -295,6 +330,8 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         });
         recyclerChat.addOnScrollListener(onScrollListener);
         container.setListener(softKeyboardListener);
+
+        customActionHeaderInChat.setOnChildItemClickListener(onCustomActionHeaderInChatClickListener);
     }
 
     private int getLastMessageId() {
@@ -309,10 +346,11 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         presenter = new ChatPresenter(this, mOnChatListener);
         userItem = getIntent().getParcelableExtra(USER);
 
-        initHeader(userItem.getUsername());
+        initHeader(userItem.getUsername(), mOnHeaderClickListener);
         EventBus.getDefault().register(this);
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
+        chatAdapter.setOnFriendAvatarClickListener(onFriendAvatarClickListener);
         LayoutManager layoutManager = new LayoutManager(ChatActivity.this);
 
         recyclerChat.setLayoutManager(layoutManager);
@@ -453,7 +491,12 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         }
     }
 
-    public static void startChatAcitivity(Context context, UserItem userItem) {
+    /**
+     * start new instance of ChatActivity
+     * @param context
+     * @param userItem
+     */
+    public static void startChatActivity(Context context, UserItem userItem) {
         Intent starter = new Intent(context, ChatActivity.class);
         starter.putExtra(USER, (Parcelable) userItem);
         context.startActivity(starter);
@@ -551,5 +594,13 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     private void showSoftKeyboard() {
         Utils.showKeyboard(this, edtChat);
+    }
+
+    private void gotoProfileDetailActivity() {
+        ProfileDetailItemActivity.startActivity(this,userItem);
+    }
+
+    private enum UIMode {
+        INPUT_TEXT_MODE, SELECT_IMAGE_MODE;
     }
 }

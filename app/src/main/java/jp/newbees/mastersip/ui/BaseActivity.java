@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.customviews.NavigationLayoutChild;
+import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
@@ -43,6 +46,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected ImageView imgBack;
     protected TextView txtActionBarTitle;
 
+    protected boolean isShowNavigationBar;
+    protected NavigationLayoutGroup navigationLayoutGroup;
+    protected NavigationLayoutChild navigationMessage;
+    protected NavigationLayoutChild navigationLeg;
+    protected NavigationLayoutChild navigationHeart;
+    protected NavigationLayoutChild navigationMenu;
+
+    private Animation slide_down;
+    private Animation slide_up;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(MyContextWrapper.wrap(newBase, Constant.Application.DEFAULT_LANGUAGE));
@@ -55,6 +68,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         Logger.e(TAG, "Create");
         setupSharePreference();
         setContentView(layoutId());
+
+        if (this instanceof BottomNavigation) {
+            navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
+            navigationMessage = (NavigationLayoutChild) findViewById(R.id.nav_message);
+            navigationLeg = (NavigationLayoutChild) findViewById(R.id.nav_leg);
+            navigationHeart = (NavigationLayoutChild) findViewById(R.id.nav_heart);
+            navigationMenu = (NavigationLayoutChild) findViewById(R.id.nav_menu);
+        }
+
         initViews(savedInstanceState);
         initVariables(savedInstanceState);
     }
@@ -88,10 +110,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initVariables(Bundle savedInstanceState);
 
     public void initHeader(String title) {
+        initHeader(title,null);
+    }
+
+    public void initHeader(String title, View.OnClickListener onHeaderClickListener) {
         txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
         imgBack = (ImageView) findViewById(R.id.img_back);
 
         txtActionBarTitle.setText(title);
+        if (onHeaderClickListener != null) {
+            txtActionBarTitle.setOnClickListener(onHeaderClickListener);
+        }
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,6 +265,39 @@ public abstract class BaseActivity extends AppCompatActivity {
                 //Unused
             }
         });
+    }
+
+    public void showNavigation() {
+        if (slide_up == null) {
+            slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
+        }
+        isShowNavigationBar = true;
+        clearViewAnimation(navigationLayoutGroup, slide_up, View.VISIBLE);
+        navigationLayoutGroup.startAnimation(slide_up);
+    }
+
+    public void hideNavigation() {
+        if (slide_down == null) {
+            slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
+        }
+        isShowNavigationBar = false;
+        clearViewAnimation(navigationLayoutGroup, slide_down, View.GONE);
+        navigationLayoutGroup.startAnimation(slide_down);
+    }
+
+    public boolean isShowNavigationBar() {
+        return isShowNavigationBar;
+    }
+
+    public void setUnreadMessageValue(int value) {
+        if (value == 0) {
+            navigationMessage.setShowBoxValue(false);
+        } else {
+            navigationMessage.showBoxValue(value);
+        }
+    }
+
+    public interface BottomNavigation {
     }
 }
 

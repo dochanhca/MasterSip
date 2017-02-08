@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
-import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -133,7 +132,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected boolean isNavigationBarShowing() {
-        return ((TopActivity) getActivity()).isShowNavigationBar();
+        return ((BaseActivity) getActivity()).isShowNavigationBar();
     }
 
     /**
@@ -141,11 +140,11 @@ public abstract class BaseFragment extends Fragment {
      */
     protected void restoreNavigationBarState() {
         if (!isNavigationBarShowing()) {
-            ((TopActivity) getActivity()).showNavigation();
+            ((BaseActivity) getActivity()).showNavigation();
         }
     }
 
-    protected void onImageBackPressed () {
+    protected void onImageBackPressed() {
         //Default do not anything
     }
 }

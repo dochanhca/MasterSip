@@ -37,12 +37,12 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.top.ChatActivity;
-import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -120,7 +120,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @BindView(R.id.layout_video_call)
     ViewGroup layoutVideoCall;
 
-    private static final String USER_ITEM = "USER_ITEM";
+    public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFRIM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
 
@@ -154,11 +154,11 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
 
         private void hideNavigationBar() {
-            ((TopActivity) getActivity()).hideNavigation();
+            ((BaseActivity) getActivity()).hideNavigation();
         }
 
         private void showNavigationBar() {
-            ((TopActivity) getActivity()).showNavigation();
+                ((BaseActivity) getActivity()).showNavigation();
         }
     };
 
@@ -205,7 +205,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case R.id.btn_on_off_notify:
                 break;
             case R.id.layout_chat:
-                ChatActivity.startChatAcitivity(getContext(), userItem);
+                ChatActivity.startChatActivity(getContext(), userItem);
                 break;
             case R.id.layout_voice_call:
                 ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,

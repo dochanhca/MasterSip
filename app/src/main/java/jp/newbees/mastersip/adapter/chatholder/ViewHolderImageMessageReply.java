@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -16,13 +17,13 @@ import jp.newbees.mastersip.utils.ConfigManager;
  * Created by thangit14 on 1/25/17.
  */
 
-public class ViewHolderImageMessageReply extends BaseChatViewHolder {
+public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
     private ImageView imgChat;
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderImageMessageReply(View root, Context context) {
-        super(root, context);
+    public ViewHolderImageMessageReply(View root, Context context, ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
+        super(root, context, onFriendAvatarClickListener);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class ViewHolderImageMessageReply extends BaseChatViewHolder {
         imgChat = (ImageView) root.findViewById(R.id.img_chat_item);
         txtTime = (TextView) root.findViewById(R.id.txt_time);
         imgAvatar = (ImageView) root.findViewById(R.id.img_reply_avatar);
+        setFriendAvatarClickListener(imgAvatar);
     }
 
     @Override

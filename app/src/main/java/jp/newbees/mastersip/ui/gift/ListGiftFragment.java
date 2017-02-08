@@ -31,7 +31,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         AdapterGiftsList.OnGiftItemSelectListener,
         TextDialog.OnTextDialogClick {
 
-    private static final String USER_ITEM = "USER_ITEM";
+    public static final String USER_ITEM = "USER_ITEM";
     private static final String OPEN_FROM = "OPEN FROM";
     private static final int REQUEST_SEND_GIFT = 1;
     private static final int REQUEST_BUY_POINT = 2;
@@ -179,7 +179,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
      * TODO : Need implement function : Open Chat Screen
      */
     private void openChatScreen() {
-        ChatActivity.startChatAcitivity(getContext(), userItem);
+        ChatActivity.startChatActivity(getContext(), userItem);
     }
     /**
      * TODO : Need implement function : Back to Chat Screen

@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,24 +8,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView {
+public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView, BaseActivity.BottomNavigation {
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
@@ -39,25 +39,14 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private static final int FLOW_FRAGMENT = 3;
     private static final int MY_MENU_FRAGMENT = 4;
 
-    private Animation slide_down;
-    private Animation slide_up;
-
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
-
-    public boolean isShowNavigationBar;
-
-    private NavigationLayoutGroup navigationLayoutGroup;
-    private NavigationLayoutChild navigationMessage;
-
-    public boolean isShowNavigationBar() {
-        return isShowNavigationBar;
-    }
 
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
+            ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
         }
     };
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -89,9 +78,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     @Override
     protected void initViews(Bundle savedInstanceState) {
         topPresenter = new TopPresenter(getApplicationContext(), this);
-        navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
-        navigationMessage = (NavigationLayoutChild) findViewById(R.id.nav_message);
-
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(3);
@@ -102,8 +88,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
-        slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
         fillData();
         topPresenter.requestPermissions();
     }
@@ -113,6 +97,14 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
+        viewPager.setCurrentItem(position, false);
+        navigationLayoutGroup.setSelectedItem(position);
     }
 
     /**
@@ -127,26 +119,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private void fillData() {
         myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(myPagerAdapter);
-    }
-
-    public void showNavigation() {
-        isShowNavigationBar = true;
-        clearViewAnimation(navigationLayoutGroup, slide_up, View.VISIBLE);
-        navigationLayoutGroup.startAnimation(slide_up);
-    }
-
-    public void hideNavigation() {
-        isShowNavigationBar = false;
-        clearViewAnimation(navigationLayoutGroup, slide_down, View.GONE);
-        navigationLayoutGroup.startAnimation(slide_down);
-    }
-
-    public void setUnreadMessageValue(int value) {
-        if (value == 0) {
-            navigationMessage.setShowBoxValue(false);
-        } else {
-            navigationMessage.showBoxValue(value);
-        }
     }
 
     @Override
