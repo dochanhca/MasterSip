@@ -5,11 +5,13 @@ import android.os.Handler;
 
 import com.android.volley.Response;
 
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.DeleteImageTask;
+import jp.newbees.mastersip.network.api.MyPhotosTask;
 import jp.newbees.mastersip.network.api.UpdateImageTask;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.FileUtils;
@@ -36,6 +38,10 @@ public class ImageDetailPresenter extends BasePresenter {
         void didDeleteImage();
 
         void didDeleteImageError(int errorCode, String errorMessage);
+
+        void didLoadMorePhotos(GalleryItem galleryItem);
+
+        void didLoadMorePhotosError(int errorCode, String errorMessage);
     }
 
     public ImageDetailPresenter(Context context, PhotoDetailView view) {
@@ -68,6 +74,11 @@ public class ImageDetailPresenter extends BasePresenter {
                 });
             }
         }).start();
+    }
+
+    public void loadMorePhotos(GalleryItem galleryItem) {
+        MyPhotosTask myPhotosTask = new MyPhotosTask(context, galleryItem);
+        requestToServer(myPhotosTask);
     }
 
     private void updateImage(ImageItem imageItem, String imagePath) {
@@ -107,6 +118,9 @@ public class ImageDetailPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof DeleteImageTask) {
             view.didDeleteImage();
+        } else if (task instanceof MyPhotosTask) {
+            GalleryItem galleryItem = ((MyPhotosTask) task).getDataResponse();
+            view.didLoadMorePhotos(galleryItem);
         }
     }
 
@@ -114,6 +128,8 @@ public class ImageDetailPresenter extends BasePresenter {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof DeleteImageTask) {
             view.didDeleteImageError(errorCode, errorMessage);
+        } else if (task instanceof MyPhotosTask) {
+            view.didLoadMorePhotosError(errorCode, errorMessage);
         }
     }
 }

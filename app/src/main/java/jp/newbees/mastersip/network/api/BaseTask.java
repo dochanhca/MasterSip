@@ -35,6 +35,7 @@ public abstract class BaseTask<T extends Object> {
 
     private static final int NETWORK_TIME_OUT = 30000;
     private static final int REQUEST_OK = 0;
+    private static final String ANDROID = "android";
     protected static String TAG;
     private Request<T> request;
     //    private RequestQueue requestQueue;
@@ -195,6 +196,7 @@ public abstract class BaseTask<T extends Object> {
             userItem = gson.fromJson(jUser, type);
             jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
             jParams.put(Constant.JSON.REGIST_TOKEN, this.registerToken);
+            jParams.put(Constant.JSON.PLATFORM, ANDROID);
         }
     }
 
@@ -208,6 +210,7 @@ public abstract class BaseTask<T extends Object> {
             userItem = gson.fromJson(jUser, type);
             jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
             jParams.put(Constant.JSON.REGIST_TOKEN, this.registerToken);
+            jParams.put(Constant.JSON.PLATFORM, ANDROID);
         }
     }
 

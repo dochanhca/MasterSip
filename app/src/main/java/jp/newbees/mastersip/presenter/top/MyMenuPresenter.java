@@ -28,7 +28,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/19/17.
  */
 
-public class MyMenuPresenter extends BasePresenter  {
+public class MyMenuPresenter extends BasePresenter {
 
     private final MyMenuView menuView;
     private Handler handler;
@@ -45,13 +45,13 @@ public class MyMenuPresenter extends BasePresenter  {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        if (task instanceof LogoutTask){
+        if (task instanceof LogoutTask) {
             menuView.didLogout();
-        }else if(task instanceof MyProfileTask) {
+        } else if (task instanceof MyProfileTask) {
             this.handleMyInfo((MyProfileTask) task);
-        }else if(task instanceof MyPhotosTask) {
+        } else if (task instanceof MyPhotosTask) {
             this.handleMyPhotos((MyPhotosTask) task);
-        }else if(task instanceof DeleteImageTask) {
+        } else if (task instanceof DeleteImageTask) {
             this.handleDeleteAvatar();
         }
     }
@@ -65,15 +65,15 @@ public class MyMenuPresenter extends BasePresenter  {
 
     private void handleMyPhotos(MyPhotosTask task) {
         this.lastGalleryItem = task.getDataResponse();
-        if (isLoadMorePhotoInGallery){
+        if (isLoadMorePhotoInGallery) {
             menuView.didLoadMorePhotosInGallery(lastGalleryItem);
-        }else {
+        } else {
             menuView.didLoadGallery(lastGalleryItem);
         }
     }
 
     private void handleMyInfo(MyProfileTask task) {
-        UserItem userItem =  task.getDataResponse();
+        UserItem userItem = task.getDataResponse();
         ConfigManager.getInstance().saveUser(userItem);
         menuView.didLoadMyProfile(userItem);
         isRequestingMyInfo = false;
@@ -86,12 +86,12 @@ public class MyMenuPresenter extends BasePresenter  {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof LogoutTask) {
             menuView.didLogout();
-        }else if(task instanceof DeleteImageTask) {
+        } else if (task instanceof DeleteImageTask) {
             menuView.didDeleteAvatarFailure();
         }
     }
 
-    public final void requestMyMenuInfo(){
+    public final void requestMyMenuInfo() {
         if (!isRequestingMyInfo) {
             isRequestingMyInfo = true;
             MyProfileTask myProfileTask = new MyProfileTask(context);
@@ -113,7 +113,7 @@ public class MyMenuPresenter extends BasePresenter  {
     public void requestLogout() {
         stopLinphoneService();
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        LogoutTask logoutTask = new LogoutTask(getContext(),userItem);
+        LogoutTask logoutTask = new LogoutTask(getContext(), userItem);
         requestToServer(logoutTask);
         ConfigManager.getInstance().resetSettings();
     }
@@ -123,7 +123,7 @@ public class MyMenuPresenter extends BasePresenter  {
         getContext().stopService(intent);
     }
 
-    public void uploadPhoto(final String filePath,final int uploadType) {
+    public void uploadPhoto(final String filePath, final int uploadType) {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         UploadImageWithProcessTask uploadImageWithProcessTask = new UploadImageWithProcessTask(getContext(),
                 userItem.getUserId(),
@@ -134,7 +134,7 @@ public class MyMenuPresenter extends BasePresenter  {
             public void onResponse(ImageItem response) {
                 if (response.getImageType() == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR) {
                     handleDidUploadAvatar(response);
-                }else if(response.getImageType() == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
+                } else if (response.getImageType() == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
                     handleDidUploadPhotoForGallery(response);
                 }
             }
@@ -146,7 +146,7 @@ public class MyMenuPresenter extends BasePresenter  {
         }, new Response.ProgressListener() {
             @Override
             public void onProgress(long transferredBytes, long totalSize) {
-                handleUpdateProgressUploadImage(transferredBytes, totalSize,uploadType);
+                handleUpdateProgressUploadImage(transferredBytes, totalSize, uploadType);
             }
         });
     }
@@ -155,14 +155,14 @@ public class MyMenuPresenter extends BasePresenter  {
         menuView.didUploadPhotoGallery(photo);
     }
 
-    private void handleUpdateProgressUploadImage(final long transferredBytes,final long totalSize,final int uploadType) {
+    private void handleUpdateProgressUploadImage(final long transferredBytes, final long totalSize, final int uploadType) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                float percent = (transferredBytes*100) / totalSize;
+                float percent = (transferredBytes * 100) / totalSize;
                 if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR) {
                     menuView.onUploadAvatarProgressChanged(percent);
-                }else if(uploadType == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
+                } else if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {
                     menuView.onUploadGalleryProgressChanged(percent);
                 }
             }
@@ -199,7 +199,7 @@ public class MyMenuPresenter extends BasePresenter  {
 
     public void deleteAvatar() {
         UserItem userItem = getCurrentUserItem();
-        DeleteImageTask deleteImageTask = new DeleteImageTask(getContext(),userItem, userItem.getAvatarItem());
+        DeleteImageTask deleteImageTask = new DeleteImageTask(getContext(), userItem, userItem.getAvatarItem());
         requestToServer(deleteImageTask);
     }
 
@@ -209,7 +209,7 @@ public class MyMenuPresenter extends BasePresenter  {
             public void run() {
                 long start = System.currentTimeMillis();
                 String fileName = "android_" + System.currentTimeMillis() + ".png";
-                final String filePath = FileUtils.saveImageBytesToFile(result,fileName);
+                final String filePath = FileUtils.saveImageBytesToFile(result, fileName);
                 long end = System.currentTimeMillis() - start;
                 Logger.e("Upload photo", "time : " + end);
                 handler.post(new Runnable() {
@@ -224,10 +224,10 @@ public class MyMenuPresenter extends BasePresenter  {
     }
 
     public void loadMorePhotoInGallery() {
-        if (null!=lastGalleryItem && lastGalleryItem.hasMorePhotos()) {
+        if (null != lastGalleryItem && lastGalleryItem.hasMorePhotos()) {
             isLoadMorePhotoInGallery = true;
             requestGetGallery(lastGalleryItem);
-        }else {
+        } else {
             menuView.photoNoMoreInGallery();
         }
     }

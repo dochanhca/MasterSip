@@ -22,6 +22,7 @@ public final class Constant {
         public static final String GIFT_ID = "gift_id";
         public static final String GIFT = "gift";
         public static final String CONTEXT = "context";
+        public static final String PLATFORM = "platform";
 
         private JSON() {
             //Prevent init constructor
