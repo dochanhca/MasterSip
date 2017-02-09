@@ -86,10 +86,12 @@
         <activity
             android:name=".ui.auth.RegisterProfileMaleActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.auth.RegisterProfileFemaleActivity"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
