@@ -125,9 +125,19 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onImageBackPressed();
-                finish();
+                onBackPressed();
             }
         });
+    }
+
+    public void changeHeaderText(String title) {
+        if (txtActionBarTitle != null) {
+            txtActionBarTitle.setText(title);
+        }
+    }
+
+    public void hideActionBar() {
+        findViewById(R.id.action_bar01).setVisibility(View.GONE);
     }
 
     public void showSwitchModeInHeader(View.OnClickListener onSwitchModeListener) {

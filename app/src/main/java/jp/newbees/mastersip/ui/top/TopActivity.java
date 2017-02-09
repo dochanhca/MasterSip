@@ -19,6 +19,7 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -181,6 +182,15 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                 break;
             case PERMISSIONS_ENABLED_MIC:
                 break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_search_container);
+        if (fragment != null && fragment instanceof ListGiftFragment) {
+            getSupportFragmentManager().popBackStack();
         }
     }
 

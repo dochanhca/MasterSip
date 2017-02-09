@@ -39,7 +39,7 @@ public abstract class WrapperWithBottomNavigationActivity extends BaseActivity i
 
     public void showFragmentContent(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, fragment).commit();
+        fragmentTransaction.add(R.id.fragment_search_container, fragment).commit();
     }
 
     private void goTopActivity() {

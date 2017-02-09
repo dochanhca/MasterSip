@@ -123,7 +123,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFRIM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-
+    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
 
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
@@ -158,15 +158,16 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
 
         private void showNavigationBar() {
-                ((BaseActivity) getActivity()).showNavigation();
+            ((BaseActivity) getActivity()).showNavigation();
         }
     };
 
 
-    public static ProfileDetailItemFragment newInstance(UserItem data) {
+    public static ProfileDetailItemFragment newInstance(UserItem data, boolean needShowActionBarInGiftFragment) {
         ProfileDetailItemFragment profileDetailItemFragment = new ProfileDetailItemFragment();
         Bundle args = new Bundle();
         args.putParcelable(ProfileDetailItemFragment.USER_ITEM, data);
+        args.putBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT, needShowActionBarInGiftFragment);
         profileDetailItemFragment.setArguments(args);
         return profileDetailItemFragment;
     }
@@ -329,7 +330,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(), imageItems);
         userPhotoAdapter.setOnItemClickListener(this);
 
-        RecyclerView.LayoutManager mLayoutManager; mLayoutManager = new LinearLayoutManager(
+        RecyclerView.LayoutManager mLayoutManager;
+        mLayoutManager = new LinearLayoutManager(
                 getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerUserImage.setLayoutManager(mLayoutManager);
         recyclerUserImage.setAdapter(userPhotoAdapter);
@@ -451,7 +453,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     private void showGiftFragment() {
-        Fragment giftFragment = ListGiftFragment.newInstance(userItem,ListGiftFragment.OPEN_FROM_PROFILE_DETAILS);
+        boolean needShowActionBar = getArguments().getBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT);
+        Fragment giftFragment = ListGiftFragment.newInstance(userItem, ListGiftFragment.OPEN_FROM_PROFILE_DETAILS, needShowActionBar);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         setTransitionAnimation(transaction);
         transaction.addToBackStack(null);

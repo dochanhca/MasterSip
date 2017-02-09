@@ -5,7 +5,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/layout_action_bar" />
+    <include layout="@layout/layout_action_bar"
+        android:id="@+id/fragment_action_bar"/>
+
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_gifts_description"
         android:gravity="center_horizontal"

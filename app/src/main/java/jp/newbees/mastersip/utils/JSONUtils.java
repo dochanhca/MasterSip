@@ -400,10 +400,8 @@ public class JSONUtils {
         return imageItem;
     }
 
-    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, Context context) throws JSONException {
+    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, HashMap<String, UserItem> members, Context context) throws JSONException {
         ArrayList<BaseChatItem> result = new ArrayList<>();
-
-        HashMap<String,UserItem> members = getMembers(data.getJSONArray(Constant.JSON.MEMBERS));
 
         JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
         int sectionFirstPosition = 0;
@@ -422,7 +420,7 @@ public class JSONUtils {
         return result;
     }
 
-    private static HashMap<String,UserItem> getMembers(JSONArray jsonArray) throws JSONException {
+    public static HashMap<String,UserItem> getMembers(JSONArray jsonArray) throws JSONException {
         HashMap<String, UserItem> members = new HashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jMember = jsonArray.getJSONObject(i);
@@ -438,6 +436,10 @@ public class JSONUtils {
             imageItem.setOriginUrl(jMember.getString(Constant.JSON.AVATAR));
             imageItem.setThumbUrl(imageItem.getOriginUrl());
             userItem.setAvatarItem(imageItem);
+
+            RelationshipItem relationshipItem = new RelationshipItem();
+            relationshipItem.setFollowed(jMember.getInt(Constant.JSON.FOLLOWED));
+            userItem.setRelationshipItem(relationshipItem);
 
             members.put(userItem.getUserId(), userItem);
         }

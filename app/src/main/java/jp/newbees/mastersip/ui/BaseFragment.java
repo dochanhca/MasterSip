@@ -20,6 +20,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public abstract class BaseFragment extends Fragment {
+    public static final String SHOW_FRAGMENT_ACTION_BAR = "SHOW_FRAGMENT_ACTION_BAR";
     protected View mRoot;
 
     protected TextView txtActionBarTitle;
@@ -71,6 +72,16 @@ public abstract class BaseFragment extends Fragment {
         txtActionBarTitle.setText(title);
     }
 
+    protected void showFragmentActionBar(boolean showFragmentActionBar) {
+        View view = mRoot.findViewById(R.id.fragment_action_bar);
+        if (view != null) {
+            view.setVisibility(showFragmentActionBar ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    protected void hideFragmentActionBar() {
+        showFragmentActionBar(false);
+    }
 
     protected void showLoading() {
         ((BaseActivity) getActivity()).showLoading();

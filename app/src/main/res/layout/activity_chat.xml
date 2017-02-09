@@ -205,7 +205,9 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_follow_in_chat"
+                    app:iconSelected="@drawable/ic_un_follow_in_chat"
                     app:text="@string/follow"
+                    app:textColorSelected="@color/rose"
                     app:textColorNormal="@color/white" />
             </jp.newbees.mastersip.customviews.NavigationLayoutGroup>
 
