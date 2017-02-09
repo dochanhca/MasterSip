@@ -22,8 +22,8 @@ public class ViewHolderTextMessageReply extends BaseChatReplyViewHolder<BaseChat
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderTextMessageReply(View root, Context context, ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
-        super(root, context, onFriendAvatarClickListener);
+    public ViewHolderTextMessageReply(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
+        super(root, context, onItemClickListener);
     }
 
     @Override

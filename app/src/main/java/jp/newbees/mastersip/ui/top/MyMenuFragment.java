@@ -338,7 +338,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void updatePhotos(GalleryItem gallery) {
-        List<ImageItem> tempPhotos = galleryItem.getPhotos();
+        List<ImageItem> tempPhotos = this.galleryItem.getPhotos();
         this.galleryItem = gallery;
         tempPhotos.addAll(gallery.getPhotos());
         this.galleryItem.setImageItems(tempPhotos);
@@ -416,7 +416,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onUserImageClick(int position) {
         // Show full Image
-        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, true);
+        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
 
     }
 

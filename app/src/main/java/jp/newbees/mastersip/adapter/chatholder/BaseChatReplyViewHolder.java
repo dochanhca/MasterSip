@@ -13,18 +13,18 @@ import jp.newbees.mastersip.model.BaseChatItem;
 
 public abstract class BaseChatReplyViewHolder<T extends BaseChatItem> extends BaseChatViewHolder<T> {
 
-    private final ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener;
+    protected final ChatAdapter.OnItemClickListener onItemClickListener;
 
-    public BaseChatReplyViewHolder(View root, Context context, ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
+    public BaseChatReplyViewHolder(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
         super(root, context);
-        this.onFriendAvatarClickListener = onFriendAvatarClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void setFriendAvatarClickListener(ImageView imgAvatar) {
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onFriendAvatarClickListener.onFriendProfileClick();
+                onItemClickListener.onFriendAvatarClick();
             }
         });
     }

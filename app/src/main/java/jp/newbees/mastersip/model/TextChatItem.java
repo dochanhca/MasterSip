@@ -1,13 +1,12 @@
 package jp.newbees.mastersip.model;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  * Created by vietbq on 1/4/17.
  */
 
-public class TextChatItem extends BaseChatItem implements Parcelable{
+public class TextChatItem extends BaseChatItem {
 
     private String message;
 
@@ -35,38 +34,26 @@ public class TextChatItem extends BaseChatItem implements Parcelable{
     public TextChatItem() {
     }
 
-//    public TextChatItem(String message, String extensionSender) {
-//        this(message);
-//        this.setOwner(genUserItemFromExtension(extensionSender));
-//    }
-//
-//    private  final UserItem genUserItemFromExtension(String extension){
-//        UserItem userItem = new UserItem();
-//        SipItem sipItem = new SipItem(extension);
-//        userItem.setSipItem(sipItem);
-//        return userItem;
-//    }
+    protected TextChatItem(Parcel in) {
+        super(in);
+        message = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(message);
+    }
 
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(this.message);
-    }
-
-    protected TextChatItem(Parcel in) {
-        super(in);
-        this.message = in.readString();
-    }
-
     public static final Creator<TextChatItem> CREATOR = new Creator<TextChatItem>() {
         @Override
-        public TextChatItem createFromParcel(Parcel source) {
-            return new TextChatItem(source);
+        public TextChatItem createFromParcel(Parcel in) {
+            return new TextChatItem(in);
         }
 
         @Override

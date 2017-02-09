@@ -16,7 +16,7 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.DeleteImageTask;
 import jp.newbees.mastersip.network.api.LogoutTask;
-import jp.newbees.mastersip.network.api.MyPhotosTask;
+import jp.newbees.mastersip.network.api.GetMyPhotosTask;
 import jp.newbees.mastersip.network.api.MyProfileTask;
 import jp.newbees.mastersip.network.api.UploadImageWithProcessTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -49,8 +49,8 @@ public class MyMenuPresenter extends BasePresenter {
             menuView.didLogout();
         } else if (task instanceof MyProfileTask) {
             this.handleMyInfo((MyProfileTask) task);
-        } else if (task instanceof MyPhotosTask) {
-            this.handleMyPhotos((MyPhotosTask) task);
+        } else if (task instanceof GetMyPhotosTask) {
+            this.handleMyPhotos((GetMyPhotosTask) task);
         } else if (task instanceof DeleteImageTask) {
             this.handleDeleteAvatar();
         }
@@ -63,7 +63,7 @@ public class MyMenuPresenter extends BasePresenter {
         menuView.didDeleteAvatar();
     }
 
-    private void handleMyPhotos(MyPhotosTask task) {
+    private void handleMyPhotos(GetMyPhotosTask task) {
         this.lastGalleryItem = task.getDataResponse();
         if (isLoadMorePhotoInGallery) {
             menuView.didLoadMorePhotosInGallery(lastGalleryItem);
@@ -100,8 +100,8 @@ public class MyMenuPresenter extends BasePresenter {
     }
 
     private void requestGetGallery(GalleryItem galleryItem) {
-        MyPhotosTask myPhotosTask = new MyPhotosTask(context, galleryItem);
-        requestToServer(myPhotosTask);
+        GetMyPhotosTask getMyPhotosTask = new GetMyPhotosTask(context, galleryItem);
+        requestToServer(getMyPhotosTask);
     }
 
     /**

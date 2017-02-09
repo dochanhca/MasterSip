@@ -24,8 +24,8 @@ public class ViewHolderGiftMessageReply extends BaseChatReplyViewHolder<GiftChat
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderGiftMessageReply(View root, Context context , ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
-        super(root, context, onFriendAvatarClickListener);
+    public ViewHolderGiftMessageReply(View root, Context context , ChatAdapter.OnItemClickListener onItemClickListener) {
+        super(root, context, onItemClickListener);
     }
 
     @Override

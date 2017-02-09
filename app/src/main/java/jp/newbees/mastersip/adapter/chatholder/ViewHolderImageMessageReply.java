@@ -22,8 +22,9 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderImageMessageReply(View root, Context context, ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener) {
-        super(root, context, onFriendAvatarClickListener);
+    public ViewHolderImageMessageReply(View root, Context context,
+                                       ChatAdapter.OnItemClickListener onItemClickListener) {
+        super(root, context, onItemClickListener);
     }
 
     @Override
@@ -32,6 +33,12 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
         txtTime = (TextView) root.findViewById(R.id.txt_time);
         imgAvatar = (ImageView) root.findViewById(R.id.img_reply_avatar);
         setFriendAvatarClickListener(imgAvatar);
+        imgChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onImageClick(getAdapterPosition());
+            }
+        });
     }
 
     @Override

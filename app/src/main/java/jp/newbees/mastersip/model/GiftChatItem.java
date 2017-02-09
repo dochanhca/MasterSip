@@ -8,6 +8,34 @@ import android.os.Parcelable;
  */
 
 public class GiftChatItem extends BaseChatItem implements Parcelable {
+    protected GiftChatItem(Parcel in) {
+        giftItem = in.readParcelable(GiftItem.class.getClassLoader());
+        content = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(giftItem, flags);
+        dest.writeString(content);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<GiftChatItem> CREATOR = new Creator<GiftChatItem>() {
+        @Override
+        public GiftChatItem createFromParcel(Parcel in) {
+            return new GiftChatItem(in);
+        }
+
+        @Override
+        public GiftChatItem[] newArray(int size) {
+            return new GiftChatItem[size];
+        }
+    };
+
     public void setGiftItem(GiftItem giftItem) {
         this.giftItem = giftItem;
     }
@@ -30,34 +58,4 @@ public class GiftChatItem extends BaseChatItem implements Parcelable {
     public void setContent(String content) {
         this.content = content;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeParcelable(this.giftItem, flags);
-        dest.writeString(this.content);
-    }
-
-    protected GiftChatItem(Parcel in) {
-        super(in);
-        this.giftItem = in.readParcelable(GiftItem.class.getClassLoader());
-        this.content = in.readString();
-    }
-
-    public static final Creator<GiftChatItem> CREATOR = new Creator<GiftChatItem>() {
-        @Override
-        public GiftChatItem createFromParcel(Parcel source) {
-            return new GiftChatItem(source);
-        }
-
-        @Override
-        public GiftChatItem[] newArray(int size) {
-            return new GiftChatItem[size];
-        }
-    };
 }

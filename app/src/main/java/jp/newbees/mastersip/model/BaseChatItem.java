@@ -3,15 +3,14 @@ package jp.newbees.mastersip.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/4/17.
  */
 
-public class BaseChatItem implements Parcelable, Serializable {
+public class BaseChatItem implements Parcelable {
 
-    private boolean isOwner;
     private int roomId;
     private int messageId;
     private String fullDate;
@@ -39,7 +38,6 @@ public class BaseChatItem implements Parcelable, Serializable {
     }
 
     /**
-     *
      * @param roomType
      * @param sender
      * @param sendee
@@ -50,7 +48,61 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.sendee = sendee;
     }
 
-    public static final class ChatType implements Parcelable{
+    protected BaseChatItem(Parcel in) {
+        roomId = in.readInt();
+        messageId = in.readInt();
+        fullDate = in.readString();
+        displayDate = in.readString();
+        chatType = in.readInt();
+        cellIndex = in.readInt();
+        cellIdentifier = in.readString();
+        messageState = in.readInt();
+        roomType = in.readInt();
+        shortDate = in.readString();
+        shortTimeStamp = in.readString();
+        sectionFirstPosition = in.readInt();
+        sectionManager = in.readInt();
+        sender = in.readParcelable(UserItem.class.getClassLoader());
+        sendee = in.readParcelable(UserItem.class.getClassLoader());
+    }
+
+    public static final Creator<BaseChatItem> CREATOR = new Creator<BaseChatItem>() {
+        @Override
+        public BaseChatItem createFromParcel(Parcel in) {
+            return new BaseChatItem(in);
+        }
+
+        @Override
+        public BaseChatItem[] newArray(int size) {
+            return new BaseChatItem[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(roomId);
+        parcel.writeInt(messageId);
+        parcel.writeString(fullDate);
+        parcel.writeString(displayDate);
+        parcel.writeInt(chatType);
+        parcel.writeInt(cellIndex);
+        parcel.writeString(cellIdentifier);
+        parcel.writeInt(messageState);
+        parcel.writeInt(roomType);
+        parcel.writeString(shortDate);
+        parcel.writeString(shortTimeStamp);
+        parcel.writeInt(sectionFirstPosition);
+        parcel.writeInt(sectionManager);
+        parcel.writeParcelable(sender, i);
+        parcel.writeParcelable(sendee, i);
+    }
+
+    public static final class ChatType implements Parcelable {
         public static final int CHAT_DELETED = 0;
         public static final int CHAT_VOICE = 1; //!!!
         public static final int CHAT_TEXT = 2;
@@ -87,7 +139,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         }
     }
 
-    public static final class CallType implements Parcelable{
+    public static final class CallType implements Parcelable {
         public static final int MISS_CALL = 3;
         public static final int CANCEL_CALL = 4;
         public static final int BUSY_CALL = 5;
@@ -119,7 +171,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         }
     }
 
-    public static final class RoomType implements Parcelable{
+    public static final class RoomType implements Parcelable {
         public static final int ROOM_CHAT_CHAT = 1;
         public static final int ROOM_VIDEO_CHAT = 2;
 
@@ -149,7 +201,7 @@ public class BaseChatItem implements Parcelable, Serializable {
     }
 
 
-    public static final class MessageState implements Parcelable{
+    public static final class MessageState implements Parcelable {
         public static final int STT_NONE = 0;
         public static final int STT_SENT = 1;
         public static final int STT_READ = 2;
@@ -181,6 +233,7 @@ public class BaseChatItem implements Parcelable, Serializable {
         }
     }
 
+
     public UserItem getOwner() {
         return sender;
     }
@@ -195,14 +248,6 @@ public class BaseChatItem implements Parcelable, Serializable {
 
     public void setSendee(UserItem sendee) {
         this.sendee = sendee;
-    }
-
-    public boolean isOwner() {
-        return isOwner;
-    }
-
-    public void setOwner(boolean sender) {
-        isOwner = sender;
     }
 
     public int getRoomId() {
@@ -310,42 +355,8 @@ public class BaseChatItem implements Parcelable, Serializable {
         this.sectionFirstPosition = sectionFirstPosition;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isOwner() {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        return this.getOwner().getUserId().equalsIgnoreCase(currentUser.getUserId());
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.sender, flags);
-        dest.writeParcelable(this.sendee, flags);
-        dest.writeByte(this.isOwner ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.roomId);
-        dest.writeInt(this.messageId);
-        dest.writeString(this.fullDate);
-        dest.writeInt(this.chatType);
-        dest.writeInt(this.cellIndex);
-        dest.writeString(this.cellIdentifier);
-        dest.writeInt(this.messageState);
-        dest.writeInt(this.roomType);
-        dest.writeString(this.shortDate);
-        dest.writeString(this.shortTimeStamp);
-    }
-
-    protected BaseChatItem(Parcel in) {
-        this.sender = in.readParcelable(UserItem.class.getClassLoader());
-        this.sendee = in.readParcelable(UserItem.class.getClassLoader());
-        this.isOwner = in.readByte() != 0;
-        this.roomId = in.readInt();
-        this.messageId = in.readInt();
-        this.fullDate = in.readString();
-        this.chatType = in.readInt();
-        this.cellIndex = in.readInt();
-        this.cellIdentifier = in.readString();
-        this.messageState = in.readInt();
-        this.roomType = in.readInt();
-        this.shortDate = in.readString();
-        this.shortTimeStamp = in.readString();
-    }
-
 }

@@ -17,12 +17,12 @@ import jp.newbees.mastersip.utils.JSONUtils;
  * Created by vietbq on 1/20/17.
  */
 
-public class MyPhotosTask extends BaseTask<GalleryItem> {
+public class GetMyPhotosTask extends BaseTask<GalleryItem> {
 
     private static final int NUMBER_OF_PHOTO = 40;
     private final GalleryItem galleryItem;
 
-    public MyPhotosTask(Context context, GalleryItem galleryItem) {
+    public GetMyPhotosTask(Context context, GalleryItem galleryItem) {
         super(context);
         this.galleryItem = galleryItem;
     }

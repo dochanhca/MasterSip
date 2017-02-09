@@ -14,12 +14,20 @@ public class ImageItem implements Parcelable, Serializable {
     public static final int IMAGE_PENDING  = 0;
     public static final int IMAGE_APPROVED = 1;
 
+    private int messageId;
     private int imageId;
     private String thumbUrl;
     private String originUrl;
     private int imageType;
     private int imageStatus;
 
+    public int getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
+    }
 
     public int getImageStatus() {
         return imageStatus;
@@ -86,6 +94,7 @@ public class ImageItem implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.messageId);
         dest.writeInt(this.imageId);
         dest.writeString(this.thumbUrl);
         dest.writeString(this.originUrl);
@@ -94,6 +103,7 @@ public class ImageItem implements Parcelable, Serializable {
     }
 
     protected ImageItem(Parcel in) {
+        this.messageId = in.readInt();
         this.imageId = in.readInt();
         this.thumbUrl = in.readString();
         this.originUrl = in.readString();
