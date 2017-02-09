@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "376170065122",
+    "firebase_url": "https://mastersip-153207.firebaseio.com",
+    "project_id": "mastersip-153207",
+    "storage_bucket": "mastersip-153207.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376170065122:android:24af983a490d848e",
+        "android_client_info": {
+          "package_name": "jp.newbees.mastersip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376170065122-ebk99ubdsuo2o0dgesu2eghse296jpgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCd8kklG0VU4gbnHE8gaIZOX6ZZW9-6pfU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
