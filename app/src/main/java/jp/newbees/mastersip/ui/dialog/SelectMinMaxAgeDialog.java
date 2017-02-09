@@ -58,7 +58,6 @@ public class SelectMinMaxAgeDialog extends BaseDialog implements
             maxAge.add(age.clone());
         }
 
-
         selectedMinAge = getArguments().getInt(MIN_AGE_SELECTED);
         selectedMaxAge = getArguments().getInt(MAX_AGE_SELECTED);
 

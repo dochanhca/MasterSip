@@ -23,8 +23,9 @@ public class GalleryItem implements Parcelable {
         this.nextId = nextId;
     }
 
-    public GalleryItem(Parcel in) {
+    protected GalleryItem(Parcel in) {
         nextId = in.readString();
+        totalImage = in.readInt();
         imageItems = in.createTypedArrayList(ImageItem.CREATOR);
     }
 
@@ -64,6 +65,10 @@ public class GalleryItem implements Parcelable {
         this.imageItems = imageItems;
     }
 
+    public boolean hasMorePhotos() {
+        return nextId.equalsIgnoreCase("") ? false : true;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -72,11 +77,7 @@ public class GalleryItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(nextId);
-        parcel.writeTypedList(imageItems);
         parcel.writeInt(totalImage);
-    }
-
-    public boolean hasMorePhotos() {
-        return nextId.equalsIgnoreCase("") ? false : true;
+        parcel.writeTypedList(imageItems);
     }
 }

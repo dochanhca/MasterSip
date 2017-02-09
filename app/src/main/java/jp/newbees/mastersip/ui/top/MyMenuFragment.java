@@ -48,7 +48,6 @@ import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -127,7 +126,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private boolean isLoadingMorePhoto;
     private int visibleThreshold = 5;
     private boolean isFragmentRunning = false;
-    private List<ImageItem> photos;
+    private GalleryItem galleryItem;
 
     public static Fragment newInstance() {
         Fragment fragment = new MyMenuFragment();
@@ -285,7 +284,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadGallery(GalleryItem galleryItem) {
-        this.photos = galleryItem.getPhotos();
+        this.galleryItem = galleryItem;
         this.galleryAdapter.setPhotos(galleryItem.getPhotos());
         this.galleryAdapter.notifyDataSetChanged();
     }
@@ -334,9 +333,15 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadMorePhotosInGallery(GalleryItem gallery) {
-        this.photos.addAll(gallery.getPhotos());
+        updatePhotos(gallery);
         isLoadingMorePhoto = false;
-        galleryAdapter.setMorePhotos(gallery.getPhotos());
+    }
+
+    private void updatePhotos(GalleryItem gallery) {
+        List<ImageItem> tempPhotos = galleryItem.getPhotos();
+        this.galleryItem = gallery;
+        tempPhotos.addAll(gallery.getPhotos());
+        this.galleryItem.setImageItems(tempPhotos);
         galleryAdapter.notifyDataSetChanged();
     }
 
@@ -411,7 +416,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onUserImageClick(int position) {
         // Show full Image
-        ImageDetailActivity.startActivity(getActivity(), photos, position, true);
+        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, true);
 
     }
 
@@ -462,7 +467,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             Toast.makeText(getContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
             pickedImage = Uri.fromFile(outFile);
-            gotoCropImageScreen(pickedImage);
+            CropImageActivity.startActivityForResult(this, pickedImage);
         }
     }
 
@@ -483,13 +488,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
             pickedImage = ImageUtils.getImageUrlWithAuthority(getContext(), pickedImage);
         }
-        gotoCropImageScreen(pickedImage);
-    }
-
-    private void gotoCropImageScreen(Uri imagePath) {
-        Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
-        intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
-        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
+        CropImageActivity.startActivityForResult(this, pickedImage);
     }
 
     public void reloadData() {

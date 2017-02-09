@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,7 +15,6 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,6 +25,7 @@ import jp.newbees.mastersip.adapter.GalleryPagerAdapter;
 import jp.newbees.mastersip.customviews.HackyViewPager;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
+import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
@@ -42,7 +41,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
 public class ImageDetailActivity extends CallCenterActivity implements ImageDetailPresenter.PhotoDetailView,
         TextDialog.OnTextDialogClick {
 
-    private static final String LIST_PHOTO = "LIST_PHOTO";
+    private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String IS_FROM_MY_MENU = "IS_FROM_MY_MENU";
     public static final String POSITION = "POSITION";
     private static final int VIEW_ALL_PHOTO = 12;
@@ -62,6 +61,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     @BindView(R.id.prw_update_image)
     ProgressWheel progressWheel;
 
+    private GalleryItem galleryItem;
     private List<ImageItem> photos;
     private int currentPosition;
     private boolean isFromMyMenu;
@@ -69,11 +69,17 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     private Uri pickedImage;
     private GalleryPagerAdapter galleryPagerAdapter;
     private boolean needReloadProfile;
+    private boolean isLoadingMorePhotos = false;
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        boolean lastPageChanged = false;
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            int lastIndex = galleryPagerAdapter.getCount() - 1;
+            if (lastPageChanged && position == lastIndex && !isLoadingMorePhotos && galleryItem.hasMorePhotos()) {
+                loadMorePhotos();
+            }
         }
 
         @Override
@@ -84,7 +90,8 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
 
         @Override
         public void onPageScrollStateChanged(int state) {
-
+            int lastIndex = galleryPagerAdapter.getCount() - 1;
+            lastPageChanged = (currentPosition == lastIndex && state == 1) ? true : false;
         }
     };
 
@@ -96,10 +103,11 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ButterKnife.bind(this);
-        photos = getIntent().getParcelableArrayListExtra(LIST_PHOTO);
+        galleryItem = getIntent().getParcelableExtra(GALLERY_ITEM);
         currentPosition = getIntent().getIntExtra(POSITION, 0);
         isFromMyMenu = getIntent().getBooleanExtra(IS_FROM_MY_MENU, false);
 
+        photos = galleryItem.getPhotos();
         initHeader(currentPosition + 1 + "/" + photos.size());
         initBottomActions();
         initViewPager();
@@ -125,7 +133,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
                 confirmDeleteImage();
                 break;
             case R.id.btn_view_all:
-                PhotoGalleryActivity.startActivityForResult(this, photos, VIEW_ALL_PHOTO);
+                PhotoGalleryActivity.startActivityForResult(this, galleryItem, VIEW_ALL_PHOTO);
                 break;
             default:
                 break;
@@ -208,6 +216,21 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     }
 
     @Override
+    public void didLoadMorePhotos(GalleryItem galleryItem) {
+        isLoadingMorePhotos = false;
+        updatePhotos(galleryItem);
+        disMissLoading();
+        viewPagerGallery.setCurrentItem(++currentPosition);
+    }
+
+    @Override
+    public void didLoadMorePhotosError(int errorCode, String errorMessage) {
+        isLoadingMorePhotos = false;
+        disMissLoading();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+    }
+
+    @Override
     public void onTextDialogOkClick(int requestCode) {
         showLoading();
         imageDetailPresenter.deleteImage(photos.get(currentPosition));
@@ -281,7 +304,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
             pickedImage = Uri.fromFile(outFile);
-            gotoCropImageScreen(pickedImage);
+            CropImageActivity.startActivityForResult(this, pickedImage);
         }
     }
 
@@ -293,27 +316,33 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
             pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
         }
-        gotoCropImageScreen(pickedImage);
+        CropImageActivity.startActivityForResult(this, pickedImage);
     }
 
-    private void gotoCropImageScreen(Uri imagePath) {
-        Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
+    private void loadMorePhotos() {
+        showLoading();
+        isLoadingMorePhotos = true;
+        imageDetailPresenter.loadMorePhotos(galleryItem);
+    }
 
-        intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
+    private void updatePhotos(GalleryItem galleryItem) {
+        this.galleryItem = galleryItem;
+        this.photos.addAll(galleryItem.getPhotos());
+        this.galleryItem.setImageItems(photos);
 
-        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
+        galleryPagerAdapter.notifyDataSetChanged();
     }
 
     /**
      * @param activity
-     * @param imageItems
+     * @param galleryItem
      * @param imagePosition
      * @param isFromMyMenu
      */
-    public static void startActivity(Activity activity, List<ImageItem> imageItems, int imagePosition,
+    public static void startActivity(Activity activity, GalleryItem galleryItem, int imagePosition,
                                      boolean isFromMyMenu) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
-        intent.putParcelableArrayListExtra(LIST_PHOTO, (ArrayList<? extends Parcelable>) imageItems);
+        intent.putExtra(GALLERY_ITEM, galleryItem);
         intent.putExtra(POSITION, imagePosition);
         intent.putExtra(IS_FROM_MY_MENU, isFromMyMenu);
         activity.startActivity(intent);

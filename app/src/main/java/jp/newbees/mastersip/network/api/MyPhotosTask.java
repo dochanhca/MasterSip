@@ -32,7 +32,7 @@ public class MyPhotosTask extends BaseTask<GalleryItem> {
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
         jParams.put(Constant.JSON.PAGINATE, NUMBER_OF_PHOTO);
-        if (null!=galleryItem.getNextId()) {
+        if (null != galleryItem.getNextId()) {
             jParams.put(Constant.JSON.IMAGE_ID, galleryItem.getNextId());
         }
         return jParams;

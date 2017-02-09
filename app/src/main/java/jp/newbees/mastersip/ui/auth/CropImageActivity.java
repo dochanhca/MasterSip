@@ -1,9 +1,11 @@
 package jp.newbees.mastersip.ui.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmCropImageDialog;
+import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -120,5 +123,29 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     private void showDialogConfirm() {
         ConfirmCropImageDialog confirmCropImageDialog = new ConfirmCropImageDialog();
         confirmCropImageDialog.show(getSupportFragmentManager(), "ConfirmCropImageDialog");
+    }
+
+    /**
+     *
+     * @param activity
+     * @param imageUri
+     */
+    public static void startActivityForResult(Activity activity, Uri imageUri) {
+        Intent intent = new Intent(activity, CropImageActivity.class);
+        intent.putExtra(CropImageActivity.IMAGE_URI, imageUri);
+
+        activity.startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
+    }
+
+    /**
+     *
+     * @param fragment
+     * @param imageUri
+     */
+    public static void startActivityForResult(Fragment fragment, Uri imageUri) {
+        Intent intent = new Intent(fragment.getActivity().getApplicationContext(), CropImageActivity.class);
+        intent.putExtra(CropImageActivity.IMAGE_URI, imageUri);
+
+        fragment.startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
     }
 }

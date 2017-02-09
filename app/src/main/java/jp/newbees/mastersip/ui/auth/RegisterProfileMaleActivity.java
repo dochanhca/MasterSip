@@ -278,7 +278,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
             pickedImage = Uri.fromFile(outFile);
-            gotoCropImageScreen(pickedImage);
+            CropImageActivity.startActivityForResult(this, pickedImage);
         }
     }
 
@@ -290,15 +290,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
             pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
         }
-        gotoCropImageScreen(pickedImage);
-    }
-
-    private void gotoCropImageScreen(Uri imagePath) {
-        Intent intent = new Intent(getApplicationContext(), CropImageActivity.class);
-
-        intent.putExtra(CropImageActivity.IMAGE_URI, imagePath);
-
-        startActivityForResult(intent, SelectImageDialog.CROP_IMAGE);
+        CropImageActivity.startActivityForResult(this, pickedImage);
     }
 
     private void showAvatar() {
