@@ -161,16 +161,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addItemAndHeaderIfNeed(BaseChatItem item) {
-        int sectionFirstPosition = 0;
         if (hasNewDay(item)) {
             updateAllHeaderItem(false);
         }
 
         if (needToAddHeader(item)) {
             addHeaderItem(item);
-        } else {
-            sectionFirstPosition = getLastHeader();
         }
+        int sectionFirstPosition = getLastHeader();
         item.setSectionFirstPosition(sectionFirstPosition);
         add(item);
         notifyDataSetChanged();
