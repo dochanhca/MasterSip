@@ -36,11 +36,13 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.top.ChatActivity;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -52,7 +54,8 @@ import jp.newbees.mastersip.utils.Utils;
 
 public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
-        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick {
+        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
+        TextDialog.OnTextDialogClick {
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
     @BindView(R.id.txt_name)
@@ -121,8 +124,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     ViewGroup layoutVideoCall;
 
     public static final String USER_ITEM = "USER_ITEM";
-    private static final int CONFRIM_SEND_GIFT_DIALOG = 11;
+    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
+    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
+
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
 
     private ProfileDetailPresenter profileDetailPresenter;
@@ -209,14 +214,24 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 ChatActivity.startChatActivity(getContext(), userItem);
                 break;
             case R.id.layout_voice_call:
-                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
-                        CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
+                handleVoiceCallClick();
                 break;
             case R.id.layout_video_call:
                 // Make a video call
                 break;
             default:
                 break;
+        }
+    }
+
+    private void handleVoiceCallClick() {
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            String content = getResources().getString(R.string.confirm_request_enable_voice_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
+                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
         }
     }
 
@@ -259,7 +274,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void didFollowUser() {
         disMissLoading();
-        ConfirmSendGiftDialog.openConfirmSendGiftDialog(this, CONFRIM_SEND_GIFT_DIALOG,
+        ConfirmSendGiftDialog.openConfirmSendGiftDialog(this, CONFIRM_SEND_GIFT_DIALOG,
                 getFragmentManager(), userItem.getUsername());
     }
 
@@ -285,6 +300,18 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableVoiceCallTask.Type type) {
+        disMissLoading();
+        TextDialog.openTextDialog(this, -1, getFragmentManager(),
+                profileDetailPresenter.getMessageSendRequestSuccess(userItem, type), "", true);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+        disMissLoading();
+    }
+
 
     @Override
     public void onUserImageClick(int position) {
@@ -294,6 +321,14 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onOkConfirmSendGiftClick() {
         showGiftFragment();
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
+            showLoading();
+            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableVoiceCallTask.Type.VOICE);
+        }
     }
 
     private void doFollowUser() {

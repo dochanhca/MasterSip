@@ -294,4 +294,12 @@
     <string name="photo_gallery">写真ギャラリー</string>
     <string name="delete_photo">写真を削除</string>
     <string name="do_you_want_to_delete_this_photo">この写真を削除しますか？</string>
+    <string name="confirm_request_enable_voice_call">たくみさんは現在通話ができません。 チャットで誘ってみましょう！(無料)</string>
+    <string name="confirm_request_enable_voice_call_positive">チャットする</string>
+    <string name="message_request_enable_voice">%1$sさん、よかったらお喋りしませんか？</string>
+    <string name="message_request_enable_video">%1$sさん、よかったらビデオでお喋りしませんか？</string>
+    <string name="message_request_enable_video_chat">%1$sさん、よかったらビデオ/チャットでお喋りしませんか？</string>
+    <string name="message_request_enable_voice_success">%1$sさんに音声通話リクエストを送りました。</string>
+    <string name="message_request_enable_video_success">%1$sさんにビデオ通話リクエストを送りました。</string>
+    <string name="message_request_enable_video_chat_success">%1$sさんにビデオ/チャット通話リクエストを送りました</string>
 </resources>

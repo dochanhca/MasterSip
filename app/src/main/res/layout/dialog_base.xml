@@ -28,6 +28,8 @@
         android:id="@+id/layout_actions"
         android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:weightSum="2"
+        android:gravity="center_horizontal"
         android:background="@drawable/bg_dialog_simple"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_5">

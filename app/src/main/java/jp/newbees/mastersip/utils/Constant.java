@@ -22,6 +22,7 @@ public final class Constant {
         public static final String GIFT_ID = "gift_id";
         public static final String GIFT = "gift";
         public static final String CONTEXT = "context";
+        public static final String DIS_EXTENSION = "dis_extension";
         public static final String PLATFORM = "platform";
 
         private JSON() {
@@ -203,6 +204,7 @@ public final class Constant {
         public static final String GIFTS_LIST = "gifts";
         public static final String SEND_GIFT = "gift/send";
         public static final String UPDATE_IMAGE = "image/update";
+        public static final String REQUEST_ENABLE_VOICE_CALL = "putmess";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
