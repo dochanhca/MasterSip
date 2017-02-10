@@ -35,7 +35,8 @@
     <color name="blue_dark">#388d92</color>
     <color name="opacity_gray">#88dddddd</color>
     <color name="blue_gifts_desc">#7db5b8</color>
-    <color name="blue_chat_header">#6671c3c8</color>
+    <color name="blue_chat_header">#7771c3c8</color>
     <color name="rose">#ffbfc8</color>
+    <color name="text_chat_color">#004b50</color>
 
 </resources>

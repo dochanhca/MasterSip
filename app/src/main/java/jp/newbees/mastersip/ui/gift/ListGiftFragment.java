@@ -125,8 +125,8 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     private void showDialogSendGiftSuccess(GiftChatItem giftChatItem) {
         String title = getString(R.string.title_send_gift_success);
         String content = String.format(getString(R.string.content_send_gift_success), userItem.getUsername(), currentGiftSelected.getName());
-        String positiveButton = getString(R.string.buy_point);
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, positiveButton);
+//        String positiveButton = getString(R.string.buy_point);
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, true);
     }
 
     @Override
