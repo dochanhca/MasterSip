@@ -19,9 +19,9 @@
         android:layout_gravity="center"
         android:background="@drawable/bg_chat_header"
         android:gravity="center"
+        android:minWidth="@dimen/min_header_width"
         android:padding="@dimen/small_margin"
-        android:text="header"
-        android:textColor="@color/white"
-        tools:text="Header Item" />
+        android:text="abc"
+        android:textColor="@color/white" />
 
 </LinearLayout>
