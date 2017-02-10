@@ -667,7 +667,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     }
 
     private enum UIMode {
-        INPUT_TEXT_MODE, SELECT_IMAGE_MODE;
+        INPUT_TEXT_MODE, SELECT_IMAGE_MODE
     }
 
     private void updateFollowView(RelationshipItem relationshipItem) {

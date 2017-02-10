@@ -20,34 +20,34 @@
 
     <RelativeLayout
         android:id="@+id/group_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/offset_comma"
         android:layout_toRightOf="@id/comma"
-        android:layout_width="wrap_content"
-        android:background="@drawable/bg_white"
-        android:layout_height="wrap_content">
+        android:background="@drawable/bg_white">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_gift"
+            android:layout_width="@dimen/size_50dp"
+            android:layout_height="@dimen/margin_50"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_10dp"
-            android:src="@drawable/ic_boy_default"
-            android:layout_width="@dimen/size_50dp"
-            android:layout_height="@dimen/margin_50" />
+            android:src="@drawable/ic_boy_default" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_content"
-            android:layout_below="@id/img_gift"
             style="@style/origin_style_content_text_view"
-            android:textSize="@dimen/text_size_13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/max_chat_item_width"
+            android:layout_below="@id/img_gift"
             android:lineSpacingMultiplier="1.2"
+            android:maxWidth="@dimen/max_chat_item_width"
             android:padding="@dimen/normal_margin"
             android:text="たくみさんがちあきさんへ
 「スイーツ」ギフト(10pts)
 を送りました。"
-            android:textColor="@color/text_color_gray" />
+            android:textColor="@color/text_chat_color"
+            android:textSize="@dimen/text_size_13" />
 
     </RelativeLayout>
 

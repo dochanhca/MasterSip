@@ -2,27 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/normal_margin"
     android:textDirection="locale"
     app:slm_headerDisplay="sticky"
     app:slm_isHeader="true"
     app:slm_section_headerMarginStart="56dip"
-    app:slm_section_sectionManager="linear"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/normal_margin"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:slm_section_sectionManager="linear">
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_content"
         style="@style/origin_style_content_text_view_xtiny"
-        android:background="@drawable/bg_chat_header"
         android:layout_gravity="center"
-        android:padding="@dimen/small_margin"
-        android:textColor="@color/white"
+        android:background="@drawable/bg_chat_header"
         android:gravity="center"
-        android:text="header"
-        tools:text="Header Item"
-        />
+        android:minWidth="@dimen/min_header_width"
+        android:padding="@dimen/small_margin"
+        android:text="abc"
+        android:textColor="@color/white" />
 
 </LinearLayout>
