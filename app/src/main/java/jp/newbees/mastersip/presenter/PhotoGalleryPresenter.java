@@ -4,7 +4,7 @@ import android.content.Context;
 
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.MyPhotosTask;
+import jp.newbees.mastersip.network.api.GetMyPhotosTask;
 
 /**
  * Created by ducpv on 2/9/17.
@@ -26,21 +26,21 @@ public class PhotoGalleryPresenter extends BasePresenter {
     }
 
     public void loadMorePhotos(GalleryItem galleryItem) {
-        MyPhotosTask myPhotosTask = new MyPhotosTask(context, galleryItem);
-        requestToServer(myPhotosTask);
+        GetMyPhotosTask getMyPhotosTask = new GetMyPhotosTask(context, galleryItem);
+        requestToServer(getMyPhotosTask);
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        if (task instanceof MyPhotosTask) {
-            GalleryItem galleryItem = ((MyPhotosTask) task).getDataResponse();
+        if (task instanceof GetMyPhotosTask) {
+            GalleryItem galleryItem = ((GetMyPhotosTask) task).getDataResponse();
             photoGalleryView.didLoadMorePhotos(galleryItem);
         }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        if (task instanceof MyPhotosTask) {
+        if (task instanceof GetMyPhotosTask) {
             photoGalleryView.didLoadMorePhotosError(errorCode, errorMessage);
         }
     }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -20,9 +21,11 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
     private ImageView imgChat;
     private TextView txtTime;
     private TextView txtState;
+    private ChatAdapter.OnItemClickListener onItemClickListener;
 
-    public ViewHolderImageMessage(View root, Context context) {
+    public ViewHolderImageMessage(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
         super(root, context);
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -30,6 +33,12 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
         imgChat = (ImageView) root.findViewById(R.id.img_chat_item);
         txtTime = (TextView) root.findViewById(R.id.txt_time);
         txtState = (TextView) root.findViewById(R.id.txt_state);
+        imgChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onImageClick(getAdapterPosition());
+            }
+        });
     }
 
     @Override

@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.top;
+package jp.newbees.mastersip.ui.chatting;
 
 import android.content.Context;
 import android.content.Intent;
@@ -64,12 +64,11 @@ import jp.newbees.mastersip.utils.Utils;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.AVATAR_NAME;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_CAMERA;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLERY;
-import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ConfirmSendGiftDialog.OnConfirmSendGiftDialog {
+public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener {
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
 
@@ -131,13 +130,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     private HashMap<String, UserItem> members;
 
-    private ChatAdapter.OnFriendAvatarClickListener onFriendAvatarClickListener = new ChatAdapter.OnFriendAvatarClickListener() {
-        @Override
-        public void onFriendProfileClick() {
-            gotoProfileDetailActivity();
-        }
-    };
-
     private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener =
             new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
@@ -147,6 +139,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
                     gotoProfileDetailActivity();
                     break;
                 case NAV_GALLERY:
+                    ChattingPhotoGalleryActivity.startActivity(ChatActivity.this, userItem.getUserId());
                     break;
                 case NAV_GIFT:
                     gotoListGiftActivity();
@@ -389,8 +382,8 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        slideDown = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down_to_show);
-        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up_to_hide);
+        slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down_to_show);
+        slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_to_hide);
 
         presenter = new ChatPresenter(this, mOnChatListener);
         userItem = getIntent().getParcelableExtra(USER);
@@ -399,7 +392,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         EventBus.getDefault().register(this);
 
         chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
-        chatAdapter.setOnFriendAvatarClickListener(onFriendAvatarClickListener);
+        chatAdapter.setOnItemClickListener(this);
         LayoutManager layoutManager = new LayoutManager(ChatActivity.this);
 
         recyclerChat.setLayoutManager(layoutManager);
@@ -509,6 +502,22 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         donotHideSoftKeyboard = true;
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
+    }
+
+    @Override
+    public void onOkConfirmSendGiftClick() {
+        gotoListGiftActivity();
+    }
+
+    @Override
+    public void onImageClick(int position) {
+        ImageChatItem imageChatItem = (ImageChatItem) chatAdapter.getData().get(position);
+        ChatImageDetailActivity.startActivity(this, imageChatItem);
+    }
+
+    @Override
+    public void onFriendAvatarClick() {
+        gotoProfileDetailActivity();
     }
 
     private void updateTopPaddingRecycle() {
@@ -655,11 +664,6 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     private void gotoProfileDetailActivity() {
         ProfileDetailItemActivity.startActivity(this,userItem);
-    }
-
-    @Override
-    public void onOkConfirmSendGiftClick() {
-        gotoListGiftActivity();
     }
 
     private void gotoListGiftActivity() {

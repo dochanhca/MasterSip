@@ -140,7 +140,9 @@ public final class Constant {
         public static final String MESSAGES = "messages";
         public static final String MEMBERS = "members";
         public static final String TOTAL_COUNT = "total_count";
+        public static final String TOTAL = "total";
         public static final String LIST_IMAGE = "list_images";
+        public static final String LIST_PHOTO = "list_photos";
         public static final String IMAGE = "image";
 
         public static final String DEST_USER_ID = "dest_user_id";
@@ -205,6 +207,7 @@ public final class Constant {
         public static final String SEND_GIFT = "gift/send";
         public static final String UPDATE_IMAGE = "image/update";
         public static final String REQUEST_ENABLE_VOICE_CALL = "putmess";
+        public static final String CHATTING_PHOTO = "chatting/photos";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

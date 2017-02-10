@@ -40,7 +40,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BaseChatItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
-    private OnFriendAvatarClickListener onFriendAvatarClickListener;
 
     public ChatAdapter(Context context, List<BaseChatItem> data) {
         this.initDay = DateTimeUtils.getDateWithoutTime(Calendar.getInstance().getTime());
@@ -62,7 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
-                    viewHolder = new ViewHolderTextMessageReply(view, context, onFriendAvatarClickListener);
+                    viewHolder = new ViewHolderTextMessageReply(view, context, onItemClickListener);
                 } else {
                     view = layoutInflater.inflate(R.layout.my_chat_text_item, parent, false);
                     viewHolder = new ViewHolderTextMessage(view, context);
@@ -71,10 +70,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_IMAGE:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_image_item, parent, false);
-                    viewHolder = new ViewHolderImageMessageReply(view, context, onFriendAvatarClickListener);
+                    viewHolder = new ViewHolderImageMessageReply(view, context, onItemClickListener);
                 } else {
                     view = layoutInflater.inflate(R.layout.my_chat_image_item, parent, false);
-                    viewHolder = new ViewHolderImageMessage(view, context);
+                    viewHolder = new ViewHolderImageMessage(view, context, onItemClickListener);
                 }
                 break;
             case BaseChatItem.ChatType.HEADER:
@@ -84,8 +83,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case BaseChatItem.ChatType.CHAT_GIFT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_gift_item, parent, false);
-                    viewHolder = new ViewHolderGiftMessageReply(view, context, onFriendAvatarClickListener);
-                }else {
+                    viewHolder = new ViewHolderGiftMessageReply(view, context, onItemClickListener);
+                } else {
                     view = layoutInflater.inflate(R.layout.my_chat_gift_item, parent, false);
                     viewHolder = new ViewHolderGiftMessage(view, context);
                 }
@@ -136,7 +135,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemViewType(int position) {
         BaseChatItem baseChatItem = data.get(position);
         int type = baseChatItem.getChatType();
-        if (!baseChatItem.isOwner()) {
+        if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER && !baseChatItem.isOwner()) {
             type += OFFSET_RETURN_TYPE;
         }
         return type;
@@ -154,6 +153,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void clearData() {
         data.clear();
         notifyDataSetChanged();
+    }
+
+    public List<BaseChatItem> getData() {
+        return data;
     }
 
     private void add(BaseChatItem item) {
@@ -255,17 +258,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     public interface OnItemClickListener {
-        void onItemClick(BaseChatItem item, int position);
-    }
+        void onImageClick(int position);
 
-    public interface OnFriendAvatarClickListener {
-        void onFriendProfileClick();
+        void onFriendAvatarClick();
     }
 
     public BaseChatItem getLastSendeeUnreadMessage() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
-            if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+            if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
+                    !baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 return baseChatItem;
             }
         }
@@ -314,7 +316,4 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void setOnFriendAvatarClickListener(OnFriendAvatarClickListener onFriendAvatarClickListener) {
-        this.onFriendAvatarClickListener = onFriendAvatarClickListener;
-    }
 }

@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
@@ -25,6 +26,7 @@ import jp.newbees.mastersip.adapter.GalleryPagerAdapter;
 import jp.newbees.mastersip.customviews.HackyViewPager;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
+import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
@@ -42,9 +44,12 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         TextDialog.OnTextDialogClick {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
-    private static final String IS_FROM_MY_MENU = "IS_FROM_MY_MENU";
+    private static final String VIEW_TYPE = "VIEW_TYPE";
     public static final String POSITION = "POSITION";
     private static final int VIEW_ALL_PHOTO = 12;
+
+    public static final int MY_PHOTOS = 1;
+    public static final int RECEIVED_PHOTOS_FROM_CHAT = 2;
 
     @BindView(R.id.view_pager_gallery)
     HackyViewPager viewPagerGallery;
@@ -60,11 +65,13 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     LinearLayout layoutBottomAction;
     @BindView(R.id.prw_update_image)
     ProgressWheel progressWheel;
+    @BindView(R.id.btn_view_all)
+    TextView btnViewAll;
 
     private GalleryItem galleryItem;
     private List<ImageItem> photos;
     private int currentPosition;
-    private boolean isFromMyMenu;
+    private int viewType;
     private ImageDetailPresenter imageDetailPresenter;
     private Uri pickedImage;
     private GalleryPagerAdapter galleryPagerAdapter;
@@ -105,11 +112,11 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         ButterKnife.bind(this);
         galleryItem = getIntent().getParcelableExtra(GALLERY_ITEM);
         currentPosition = getIntent().getIntExtra(POSITION, 0);
-        isFromMyMenu = getIntent().getBooleanExtra(IS_FROM_MY_MENU, false);
+        viewType = getIntent().getIntExtra(VIEW_TYPE, 1);
 
         photos = galleryItem.getPhotos();
         initHeader(currentPosition + 1 + "/" + photos.size());
-        initBottomActions();
+        initViewsWithViewType();
         initViewPager();
     }
 
@@ -231,6 +238,29 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     }
 
     @Override
+    public void didLoadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem) {
+        isLoadingMorePhotos = false;
+        disMissLoading();
+        updatePhotos(chattingGalleryItem);
+        viewPagerGallery.setCurrentItem(++currentPosition);
+    }
+
+    @Override
+    public void didLoadMorePhotos(GalleryItem galleryItem) {
+        isLoadingMorePhotos = false;
+        updatePhotos(galleryItem);
+        disMissLoading();
+        viewPagerGallery.setCurrentItem(++currentPosition);
+    }
+
+    @Override
+    public void didLoadMorePhotosError(int errorCode, String errorMessage) {
+        isLoadingMorePhotos = false;
+        disMissLoading();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+    }
+
+    @Override
     public void onTextDialogOkClick(int requestCode) {
         showLoading();
         imageDetailPresenter.deleteImage(photos.get(currentPosition));
@@ -238,18 +268,10 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
 
     @Override
     public void onBackPressed() {
-        if (needReloadProfile) {
+        if (needReloadProfile && viewType == MY_PHOTOS) {
             EventBus.getDefault().post(new ReLoadProfileEvent(true));
         }
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onImageBackPressed() {
-        if (needReloadProfile) {
-            EventBus.getDefault().post(new ReLoadProfileEvent(true));
-        }
-        super.onImageBackPressed();
     }
 
     private void confirmDeleteImage() {
@@ -266,17 +288,13 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         updateViewVisibility();
     }
 
-    private void initBottomActions() {
-        if (isFromMyMenu) {
-            txtChangePhoto.setVisibility(View.VISIBLE);
-            txtDeletePhoto.setVisibility(View.VISIBLE);
-            txtSavePhoto.setVisibility(View.GONE);
-            txtReport.setVisibility(View.GONE);
-        } else {
+    private void initViewsWithViewType() {
+        if (viewType == RECEIVED_PHOTOS_FROM_CHAT) {
             txtChangePhoto.setVisibility(View.GONE);
             txtDeletePhoto.setVisibility(View.GONE);
             txtSavePhoto.setVisibility(View.VISIBLE);
             txtReport.setVisibility(View.VISIBLE);
+            btnViewAll.setVisibility(View.GONE);
         }
     }
 
@@ -322,7 +340,12 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     private void loadMorePhotos() {
         showLoading();
         isLoadingMorePhotos = true;
-        imageDetailPresenter.loadMorePhotos(galleryItem);
+        if (viewType == MY_PHOTOS) {
+            imageDetailPresenter.loadMorePhotos(galleryItem);
+        } else {
+            ChattingGalleryItem chattingGalleryItem = (ChattingGalleryItem) galleryItem;
+            imageDetailPresenter.loadMoreChattingPhotos(chattingGalleryItem);
+        }
     }
 
     private void updatePhotos(GalleryItem galleryItem) {
@@ -337,14 +360,14 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
      * @param activity
      * @param galleryItem
      * @param imagePosition
-     * @param isFromMyMenu
+     * @param type
      */
     public static void startActivity(Activity activity, GalleryItem galleryItem, int imagePosition,
-                                     boolean isFromMyMenu) {
+                                     int type) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
         intent.putExtra(GALLERY_ITEM, galleryItem);
         intent.putExtra(POSITION, imagePosition);
-        intent.putExtra(IS_FROM_MY_MENU, isFromMyMenu);
+        intent.putExtra(VIEW_TYPE, type);
         activity.startActivity(intent);
     }
 }

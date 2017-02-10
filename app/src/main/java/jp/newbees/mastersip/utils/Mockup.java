@@ -51,8 +51,6 @@ public class Mockup {
     public static TextChatItem getTextChatItem(boolean isOwner, String message) {
         TextChatItem textChatItem = new TextChatItem(message);
         textChatItem.setChatType(BaseChatItem.ChatType.CHAT_TEXT);
-        textChatItem.setOwner(isOwner);
-
         textChatItem.setSendee(getUserItem(0));
         return textChatItem;
     }

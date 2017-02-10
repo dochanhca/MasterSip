@@ -115,7 +115,7 @@
             android:theme="@style/AppThemeHasActionBar"></activity>
 
         <activity
-            android:name=".ui.top.ChatActivity"
+            android:name=".ui.chatting.ChatActivity"
             android:configChanges="orientation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
@@ -138,10 +138,6 @@
             android:name=".ui.call.OutgoingVoiceActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
 
         <activity
@@ -163,6 +159,15 @@
             android:screenOrientation="portrait"></activity>
 
         <activity android:name=".ui.gift.ListGiftActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".ui.chatting.ChatImageDetailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeDarkActionBar"></activity>
+
+        <activity android:name=".ui.chatting.ChattingPhotoGalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
     </application>

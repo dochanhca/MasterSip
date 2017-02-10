@@ -5,13 +5,15 @@ import android.os.Handler;
 
 import com.android.volley.Response;
 
+import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.DeleteImageTask;
-import jp.newbees.mastersip.network.api.MyPhotosTask;
+import jp.newbees.mastersip.network.api.GetListChattingPhotos;
+import jp.newbees.mastersip.network.api.GetMyPhotosTask;
 import jp.newbees.mastersip.network.api.UpdateImageTask;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.FileUtils;
@@ -42,6 +44,8 @@ public class ImageDetailPresenter extends BasePresenter {
         void didLoadMorePhotos(GalleryItem galleryItem);
 
         void didLoadMorePhotosError(int errorCode, String errorMessage);
+
+        void didLoadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem);
     }
 
     public ImageDetailPresenter(Context context, PhotoDetailView view) {
@@ -77,8 +81,16 @@ public class ImageDetailPresenter extends BasePresenter {
     }
 
     public void loadMorePhotos(GalleryItem galleryItem) {
-        MyPhotosTask myPhotosTask = new MyPhotosTask(context, galleryItem);
-        requestToServer(myPhotosTask);
+        GetMyPhotosTask getMyPhotosTask = new GetMyPhotosTask(context, galleryItem);
+        requestToServer(getMyPhotosTask);
+    }
+
+    public void loadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem) {
+        String userID = chattingGalleryItem.getSender().getUserId();
+        GetListChattingPhotos getListChattingPhotos = new GetListChattingPhotos(context,
+                chattingGalleryItem.getNextId(), userID);
+        requestToServer(getListChattingPhotos);
+
     }
 
     private void updateImage(ImageItem imageItem, String imagePath) {
@@ -118,9 +130,11 @@ public class ImageDetailPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof DeleteImageTask) {
             view.didDeleteImage();
-        } else if (task instanceof MyPhotosTask) {
-            GalleryItem galleryItem = ((MyPhotosTask) task).getDataResponse();
+        } else if (task instanceof GetMyPhotosTask) {
+            GalleryItem galleryItem = ((GetMyPhotosTask) task).getDataResponse();
             view.didLoadMorePhotos(galleryItem);
+        } else if (task instanceof GetListChattingPhotos) {
+            view.didLoadMoreChattingPhotos(((GetListChattingPhotos) task).getDataResponse());
         }
     }
 
@@ -128,7 +142,7 @@ public class ImageDetailPresenter extends BasePresenter {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof DeleteImageTask) {
             view.didDeleteImageError(errorCode, errorMessage);
-        } else if (task instanceof MyPhotosTask) {
+        } else if (task instanceof GetMyPhotosTask || task instanceof GetListChattingPhotos) {
             view.didLoadMorePhotosError(errorCode, errorMessage);
         }
     }

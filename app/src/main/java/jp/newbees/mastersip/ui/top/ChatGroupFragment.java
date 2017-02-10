@@ -22,6 +22,7 @@ import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.presenter.top.ChatGroupPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
