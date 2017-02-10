@@ -53,7 +53,7 @@ public class GiftListPresenter extends BasePresenter {
         if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
             giftListView.didSendGiftErrorCauseNotEnoughPoint();
         }else {
-            giftListView.didLoadGiftsListFailure(errorCode, errorMessage);
+            giftListView.didSendGiftFailure(errorCode, errorMessage);
         }
     }
 

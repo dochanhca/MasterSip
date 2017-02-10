@@ -41,7 +41,7 @@
         android:layout_toRightOf="@id/txt_content"
         android:paddingLeft="@dimen/small_margin"
         android:text="12:34"
-        android:textColor="@color/text_chat_color" />
+        android:textColor="@color/dark_gray" />
 
     <!--<jp.newbees.mastersip.customviews.HiraginoTextView-->
     <!--android:id="@+id/txt_state"-->
