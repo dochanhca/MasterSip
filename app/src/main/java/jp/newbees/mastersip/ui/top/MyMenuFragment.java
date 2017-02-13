@@ -23,7 +23,6 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -338,10 +337,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void updatePhotos(GalleryItem gallery) {
-        List<ImageItem> tempPhotos = this.galleryItem.getPhotos();
+        gallery.addALlFromFirst(this.galleryItem.getPhotos());
         this.galleryItem = gallery;
-        tempPhotos.addAll(gallery.getPhotos());
-        this.galleryItem.setImageItems(tempPhotos);
         galleryAdapter.notifyDataSetChanged();
     }
 

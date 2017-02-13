@@ -80,4 +80,8 @@ public class GalleryItem implements Parcelable {
         parcel.writeInt(totalImage);
         parcel.writeTypedList(imageItems);
     }
+
+    public void addALlFromFirst(List<ImageItem> photos) {
+        imageItems.addAll(0, photos);
+    }
 }
