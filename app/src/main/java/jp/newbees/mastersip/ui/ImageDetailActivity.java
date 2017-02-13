@@ -246,21 +246,6 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     }
 
     @Override
-    public void didLoadMorePhotos(GalleryItem galleryItem) {
-        isLoadingMorePhotos = false;
-        updatePhotos(galleryItem);
-        disMissLoading();
-        viewPagerGallery.setCurrentItem(++currentPosition);
-    }
-
-    @Override
-    public void didLoadMorePhotosError(int errorCode, String errorMessage) {
-        isLoadingMorePhotos = false;
-        disMissLoading();
-        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-    }
-
-    @Override
     public void onTextDialogOkClick(int requestCode) {
         showLoading();
         imageDetailPresenter.deleteImage(photos.get(currentPosition));
