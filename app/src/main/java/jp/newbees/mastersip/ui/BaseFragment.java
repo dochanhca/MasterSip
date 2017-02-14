@@ -137,7 +137,7 @@ public abstract class BaseFragment extends Fragment {
         ((BaseActivity) getActivity()).clearViewAnimation(view, anim, visibility);
     }
 
-    protected void setTransitionAnimation(FragmentTransaction transaction) {
+    public void setTransitionAnimation(FragmentTransaction transaction) {
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
     }

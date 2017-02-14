@@ -302,4 +302,17 @@
     <string name="message_request_enable_voice_success">%1$sさんに音声通話リクエストを送りました。</string>
     <string name="message_request_enable_video_success">%1$sさんにビデオ通話リクエストを送りました。</string>
     <string name="message_request_enable_video_chat_success">%1$sさんにビデオ/チャット通話リクエストを送りました</string>
+    <string name="notice">お知らせ</string>
+    <string name="call_history">通話履歴</string>
+    <string name="block_list">ブロックリスト</string>
+    <string name="setting">設定</string>
+    <string name="notify_settings">通知設定</string>
+    <string name="mail_address_setting">メールアドレス設定</string>
+    <string name="call_settings">通話設定</string>
+    <string name="how_to_use">使い方</string>
+    <string name="contact_us">お問い合わせ</string>
+    <string name="check_your_profile_page">自分のプロフィールページを確認</string>
+    <string name="various_guidance">各種案内</string>
+    <string name="girl">女の子</string>
+    <string name="boy">男性</string>
 </resources>

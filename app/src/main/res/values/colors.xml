@@ -25,7 +25,6 @@
     <color name="radio_button_selected_color">#e0e0e0</color>
     <color name="radio_button_unselected_color">#2d495e</color>
     <color name="bg_item_search_user">#99000a00</color>
-    <color name="bg_content_search">#dfdfdf</color>
     <color name="red">#fb5050</color>
     <color name="on_phone_color_in_search">#5ea5d4</color>
     <color name="on_video_color_in_search">#996ec5</color>

@@ -2,13 +2,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_container"
-    android:layout_width="@dimen/size_thumb_photo_gallery"
-    android:layout_height="@dimen/size_thumb_photo_gallery"
+    android:layout_width="@dimen/small_user_image_size"
+    android:layout_height="@dimen/small_user_image_size"
     app:cardCornerRadius="@dimen/corner_5">
 
     <RelativeLayout
-        android:layout_width="@dimen/size_thumb_photo_gallery"
-        android:layout_height="@dimen/size_thumb_photo_gallery"
+        android:layout_width="@dimen/small_user_image_size"
+        android:layout_height="@dimen/small_user_image_size"
         android:layout_marginRight="@dimen/_10dp"
         >
         <ImageView
