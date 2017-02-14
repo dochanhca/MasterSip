@@ -280,6 +280,12 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             txtSavePhoto.setVisibility(View.VISIBLE);
             txtReport.setVisibility(View.VISIBLE);
             btnViewAll.setVisibility(View.GONE);
+        } else {
+            txtChangePhoto.setVisibility(View.VISIBLE);
+            txtDeletePhoto.setVisibility(View.VISIBLE);
+            txtSavePhoto.setVisibility(View.GONE);
+            txtReport.setVisibility(View.GONE);
+            btnViewAll.setVisibility(View.VISIBLE);
         }
     }
 
