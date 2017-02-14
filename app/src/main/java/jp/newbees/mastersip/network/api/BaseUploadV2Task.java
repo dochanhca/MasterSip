@@ -40,14 +40,14 @@ public abstract class BaseUploadV2Task<T extends Object>  {
 
     private static final int REQUEST_OK = 0;
 
-    protected static String Tag;
+    protected static String TAG;
 
     protected BaseUploadV2Task(Context context) {
         this.mContext = context;
         sharedPreferences = mContext.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         authorization = sharedPreferences.getString(Constant.Application.AUTHORIZATION, "");
         registerToken = sharedPreferences.getString(Constant.Application.REGISTER_TOKEN, "");
-        Tag = getClass().getName();
+        TAG = getClass().getName();
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class BaseUploadV2Task<T extends Object>  {
      */
     public final void request(final Response.Listener<T> listener, final BaseUploadTask.ErrorListener errorListener, Response.ProgressListener progressListener) {
         String url = genURL();
-        Logger.e(Tag, "URL request : " + url);
+        Logger.e(TAG, "URL request : " + url);
 
         mRequest = new MultiPartRequest<T>(getMethod(), url,listener, new Response.ErrorListener() {
             @Override
@@ -75,6 +75,7 @@ public abstract class BaseUploadV2Task<T extends Object>  {
             @Override
             protected Response<T> parseNetworkResponse(NetworkResponse response) {
                 String data = new String(response.data);
+                Logger.e("API - " + TAG, data);
                 T result = null;
                 SipError sipError;
                 try {

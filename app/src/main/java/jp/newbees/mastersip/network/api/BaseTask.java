@@ -48,7 +48,7 @@ public abstract class BaseTask<T extends Object> {
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         authorization = ConfigManager.getInstance().getAuthId();
         registerToken = ConfigManager.getInstance().getRegisterToken();
-        TAG = getClass().getName();
+        TAG = getClass().getSimpleName();
     }
 
     final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
@@ -108,7 +108,7 @@ public abstract class BaseTask<T extends Object> {
             @Override
             protected Response<T> parseNetworkResponse(NetworkResponse response) {
                 String data = new String(response.data);
-                Logger.e("API",data);
+                Logger.e("API - " + TAG, data);
                 T result = null;
                 SipError sipError;
                 try {
