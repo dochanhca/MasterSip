@@ -583,4 +583,26 @@ public class JSONUtils {
         jsonObject.put(Constant.JSON.CODE, code);
         return jsonObject;
     }
+
+    public static UserItem parseUserLoginWithEmail(JSONObject jData) throws JSONException {
+        UserItem userItem = new UserItem();
+
+        String userID = jData.getString(Constant.JSON.ID);
+        String registerToken = jData.getString(Constant.JSON.REGIST_TOKEN);
+
+        userItem.setUserId(userID);
+        userItem.setUsername(jData.getString(Constant.JSON.HANDLE_NAME));
+        userItem.setGender(jData.getInt(Constant.JSON.GENDER));
+
+        // Sip Item
+        SipItem sipItem = new SipItem();
+        sipItem.setExtension(jData.getString(Constant.JSON.EXTENSION));
+        sipItem.setSecret(jData.getString(Constant.JSON.PASSWORD));
+        userItem.setSipItem(sipItem);
+
+        ConfigManager.getInstance().saveRegisterToken(registerToken);
+        ConfigManager.getInstance().saveUser(userItem);
+        ConfigManager.getInstance().saveAuthId(userID);
+        return userItem;
+    }
 }

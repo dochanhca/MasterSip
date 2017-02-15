@@ -27,6 +27,16 @@
             android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_15" />
 
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_25"
+            android:orientation="vertical"
+            android:text="@string/handle_name_search"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -156,16 +166,6 @@
                 android:text="@string/search_with_condition"
                 android:textSize="@dimen/text_size_15" />
         </LinearLayout>
-
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_10"
-            android:layout_marginTop="@dimen/margin_25"
-            android:orientation="vertical"
-            android:text="@string/handle_name_search"
-            android:textColor="@color/text_color_gray"
-            android:textSize="@dimen/text_size_15" />
 
         <FrameLayout
             android:layout_width="match_parent"

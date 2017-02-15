@@ -333,4 +333,7 @@
     <string name="girl">女の子</string>
     <string name="boy">男性</string>
     <string name="title_check_code_fragment">メールアドレス設定</string>
+    <string name="forgot_password">＞パスワードをお忘れですか？</string>
+    <string name="err_mail_is_not_registered">メールが登録されていません</string>
+    <string name="error_wrong_email_or_pass">メールアドレス、もしくはパスワードが違います</string>
 </resources>

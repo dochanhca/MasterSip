@@ -16,12 +16,14 @@ public class RegisterPresenter extends BasePresenter {
     public interface RegisterView {
         /**
          * Callback when register User VoIP OK
+         *
          * @param userItem
          */
         public void onRegistered(UserItem userItem);
 
         /**
          * Failure when requester VoIP Account
+         *
          * @param errorCode
          * @param errorMessage
          */
@@ -33,20 +35,20 @@ public class RegisterPresenter extends BasePresenter {
     private final Context context;
     private final RegisterView view;
 
-    public RegisterPresenter(Context context, RegisterView view){
+    public RegisterPresenter(Context context, RegisterView view) {
         super(context);
         this.context = context;
         this.view = view;
     }
 
-    public final void registerUser(UserItem userItem){
+    public final void registerUser(UserItem userItem) {
         RegisterTask registerTask = new RegisterTask(context, userItem);
         requestToServer(registerTask);
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        if (task instanceof RegisterTask){
+        if (task instanceof RegisterTask) {
             UserItem userItem = (UserItem) task.getDataResponse();
             view.onRegistered(userItem);
         }
@@ -54,11 +56,6 @@ public class RegisterPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        view.onRegisterFailure(errorCode,errorMessage);
+        view.onRegisterFailure(errorCode, errorMessage);
     }
-
-    public final void saveUser(UserItem userItem){
-
-    }
-
 }
