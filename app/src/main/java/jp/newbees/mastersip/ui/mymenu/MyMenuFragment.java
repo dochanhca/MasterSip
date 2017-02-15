@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.top;
+package jp.newbees.mastersip.ui.mymenu;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -43,6 +43,7 @@ import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 
@@ -90,16 +91,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     RecyclerView rcvListPhoto;
     @BindView(R.id.group_2)
     LinearLayout group2;
-    @BindView(R.id.btn_logout)
-    ImageButton btnLogout;
-    @BindView(R.id.img_logout)
-    ImageView imgLogout;
-    @BindView(R.id.btn_backup_email)
-    ImageButton btnBackupEmail;
-    @BindView(R.id.img_email)
-    ImageView imgEmail;
-    @BindView(R.id.txt_back_up_email)
-    HiraginoTextView txtBackUpEmail;
     @BindView(R.id.txt_approving)
     TextView txtApproving;
     @BindView(R.id.img_mask_approving)
@@ -112,7 +103,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     ProgressWheel prwUploadPhotoGallery;
     @BindView(R.id.group_upload_photo_gallery)
     RelativeLayout groupUploadPhotoGallery;
-
+    @BindView(R.id.txt_message_number)
+    HiraginoTextView txtMessageNumber;
+    @BindView(R.id.txt_online_list)
+    HiraginoTextView txtOnlineList;
 
     private MyMenuPresenter presenter;
     private int defaultAvatar;
@@ -157,21 +151,36 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
 
-        this.txtActionBarTitle.setText(userItem.getUsername());
-        this.imgAvatar.setImageResource(defaultAvatar);
-        this.txtPoint.setText("" + userItem.getCoin());
-        int isShowButtonBuyPoint = userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE;
-        this.btnBuyPoint.setVisibility(isShowButtonBuyPoint);
+        txtActionBarTitle.setText(userItem.getUsername());
+        imgAvatar.setImageResource(defaultAvatar);
+        txtPoint.setText("" + userItem.getCoin());
 
-        this.galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
-        this.galleryAdapter.setOnItemClickListener(this);
-        this.rcvListPhoto.setAdapter(galleryAdapter);
+        initViewWithGender(userItem);
+
+        galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
+        galleryAdapter.setOnItemClickListener(this);
+        rcvListPhoto.setAdapter(galleryAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rcvListPhoto.getContext(),
                 DividerItemDecoration.HORIZONTAL);
         dividerItemDecoration.setDrawable(getDivider());
         rcvListPhoto.addItemDecoration(dividerItemDecoration);
-        this.needRefreshData = getArguments().getBoolean(REFRESH_DATA);
-        this.initLoadMorePhotoInGallery();
+        needRefreshData = getArguments().getBoolean(REFRESH_DATA);
+        initLoadMorePhotoInGallery();
+    }
+
+    private void initViewWithGender(UserItem userItem) {
+        StringBuilder onlineList = new StringBuilder();
+        if (userItem.getGender() == UserItem.MALE) {
+            onlineList.append(getString(R.string.girl)).append("\n").append(getString(R.string.online_notify));
+            btnBuyPoint.setVisibility(View.VISIBLE);
+            txtOnlineList.setText(onlineList.toString());
+            txtOnlineList.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_online_list_female, 0, 0);
+        } else {
+            onlineList.append(getString(R.string.boy)).append("\n").append(getString(R.string.online_notify));
+            btnBuyPoint.setVisibility(View.GONE);
+            txtOnlineList.setText(onlineList.toString());
+            txtOnlineList.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_oneline_list_male, 0, 0);
+        }
     }
 
     private void initLoadMorePhotoInGallery() {
@@ -214,21 +223,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @OnClick({
-            R.id.btn_buy_point,
-            R.id.btn_upload_photo,
-            R.id.btn_logout,
-            R.id.btn_backup_email,
-            R.id.btn_change_avatar,
-            R.id.group_avatar})
+            R.id.btn_buy_point, R.id.btn_upload_photo, R.id.btn_change_avatar,
+            R.id.group_avatar, R.id.layout_my_notify, R.id.txt_online_list, R.id.txt_call_history,
+            R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_mail_backup_setting,
+            R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
+            R.id.layout_common_guide, R.id.layout_profile_detail})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_buy_point:
-                break;
-            case R.id.btn_logout:
-                this.handleLogout();
-                break;
-            case R.id.btn_backup_email:
-                // implement back up email
                 break;
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
@@ -238,6 +240,37 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.group_avatar:
                 handleUploadAvatar();
+                break;
+            case R.id.layout_my_notify:
+                break;
+            case R.id.txt_online_list:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.txt_call_history:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.txt_block_list:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.txt_notify_setting:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.txt_mail_backup_setting:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.txt_call_setting:
+                MyMenuContainerFragment.showSettingCallFragment(getActivity(), this);
+                break;
+            case R.id.layout_guide:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.layout_contact:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.layout_common_guide:
+                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                break;
+            case R.id.layout_profile_detail:
                 break;
         }
     }
@@ -414,7 +447,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onUserImageClick(int position) {
         // Show full Image
         ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
-
     }
 
     @Override
@@ -491,5 +523,4 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void reloadData() {
         presenter.requestMyMenuInfo();
     }
-
 }

@@ -20,6 +20,7 @@ import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -31,8 +32,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public static final int PERMISSIONS_REQUEST_CAMERA = 202;
     public static final int PERMISSIONS_ENABLED_CAMERA = 203;
     public static final int PERMISSIONS_ENABLED_MIC = 204;
-    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 205;
-    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 206;
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
@@ -61,7 +60,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         @Override
         public void onPageSelected(int position) {
             if (position == MY_MENU_FRAGMENT) {
-                MyMenuFragment fragment = (MyMenuFragment) getFragmentForPosition(position);
+                MyMenuContainerFragment fragment = (MyMenuContainerFragment) getFragmentForPosition(position);
                 if (null != fragment) fragment.onTabSelected();
             }
             navigationLayoutGroup.setSelectedItem(position);
@@ -158,7 +157,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                 case FLOW_FRAGMENT:
                     return FollowFragment.newInstance();
                 case MY_MENU_FRAGMENT:
-                    return MyMenuFragment.newInstance();
+                    return MyMenuContainerFragment.newInstance();
                 default:
                     return null;
             }
@@ -208,9 +207,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
      * yet OR is a sibling covered by {@link android.support.v4.view.ViewPager#setOffscreenPageLimit(int)}. Can use this to call methods on
      * the current positions fragment.
      */
-    public
     @Nullable
-    Fragment getFragmentForPosition(int position) {
+    public Fragment getFragmentForPosition(int position) {
         String tag = makeFragmentName(viewPager.getId(), position);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         return fragment;

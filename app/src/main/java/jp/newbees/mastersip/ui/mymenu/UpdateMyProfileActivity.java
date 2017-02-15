@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.ui.myprofile;
+package jp.newbees.mastersip.ui.mymenu;
 
 import android.os.Bundle;
 
