@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_gray_bg"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/action_bar01"
+        layout="@layout/layout_action_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <jp.newbees.mastersip.customviews.HiraginoEditText
+            android:id="@+id/edt_code"
+            style="@style/origin_style_edit_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edt_input_height"
+            android:hint="@string/hint_code" />
+
+        <View style="@style/divider" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_send"
+        style="@style/style_button_normal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height_default"
+        android:layout_marginLeft="@dimen/large_margin"
+        android:layout_marginRight="@dimen/large_margin"
+        android:layout_marginTop="@dimen/large_margin"
+        android:background="@drawable/bg_blue_button_large_radius"
+        android:text="@string/send" />
+
+
+</LinearLayout>

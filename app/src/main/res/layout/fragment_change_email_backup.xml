@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_gray_bg"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/action_bar01"
+        layout="@layout/layout_action_bar" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        style="@style/origin_style_content_text_view_small"
+        android:background="@color/color_gray_bg"
+        android:padding="@dimen/large_margin"
+        android:text="@string/note_register_mail_backup"
+        android:textAlignment="center"
+        android:textColor="@color/text_color_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <jp.newbees.mastersip.customviews.HiraginoEditText
+            android:id="@+id/edt_email"
+            style="@style/origin_style_edit_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edt_input_height"
+            android:hint="@string/hint_email" />
+
+        <View style="@style/divider" />
+
+        <jp.newbees.mastersip.customviews.HiraginoEditText
+            android:id="@+id/edt_password"
+            style="@style/origin_style_edit_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edt_input_height"
+            android:hint="@string/hint_pass"
+            android:inputType="textPassword" />
+
+        <View style="@style/divider" />
+
+        <jp.newbees.mastersip.customviews.HiraginoEditText
+            android:id="@+id/edt_re_password"
+            style="@style/origin_style_edit_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edt_input_height"
+            android:hint="@string/hint_re_pass"
+            android:inputType="textPassword" />
+
+        <View style="@style/divider" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_register"
+        style="@style/style_button_normal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height_default"
+        android:layout_marginLeft="@dimen/large_margin"
+        android:layout_marginRight="@dimen/large_margin"
+        android:layout_marginTop="@dimen/large_margin"
+        android:background="@drawable/bg_blue_button_large_radius"
+        android:text="@string/register" />
+
+
+</LinearLayout>
