@@ -9,7 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.AESHelper;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -31,8 +33,9 @@ public class LoginEmailTask extends BaseTask<UserItem> {
     protected JSONObject genParams() throws JSONException {
         String deviceId = getDeviceId();
         JSONObject jData = new JSONObject();
-        jData.put(Constant.JSON.DEVICE_ID,deviceId);
-        jData.put(Constant.JSON.PASSWORD,this.password);
+        jData.put(Constant.JSON.DEVICE_ID, deviceId);
+        String encrypted = AESHelper.encrypt(this.password);
+        jData.put(Constant.JSON.PASSWORD, encrypted);
         jData.put(Constant.JSON.EMAIL, this.email);
         return jData;
     }
@@ -49,6 +52,7 @@ public class LoginEmailTask extends BaseTask<UserItem> {
 
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
-        return new UserItem();
+        JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
+        return JSONUtils.parseUserLoginWithEmail(jData);
     }
 }
