@@ -202,6 +202,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         messageDialog.show(getFragmentManager(), "MessageDialog");
     }
 
+    protected void showMessageDialog(String content) {
+        showMessageDialog("", content, "", false);
+    }
+
     protected void disMissMessageDialog() {
         if (null != messageDialog) {
             messageDialog.dismiss();

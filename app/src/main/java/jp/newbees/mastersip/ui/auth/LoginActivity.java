@@ -53,6 +53,7 @@ public class LoginActivity extends RegisterBaseActivity implements View.OnClickL
                 doLoginByEmail();
                 break;
             case R.id.txt_forgot_pass:
+                ForgotPasswordActivity.startActivity(this);
                 break;
         }
     }

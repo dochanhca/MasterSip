@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by ducpv on 12/15/16.
@@ -30,9 +26,6 @@ public class InputActivity extends BaseActivity {
     private EditText edtData;
     private String title;
     private String textContent;
-    private ViewGroup rootView;
-
-    private boolean isKeyboardShowing = false;
 
     @Override
     protected int layoutId() {
@@ -48,7 +41,6 @@ public class InputActivity extends BaseActivity {
 
         txtActionBarTitle = (TextView) findViewById(R.id.txt_action_bar_title);
         imgBack = (ImageView) findViewById(R.id.img_back);
-        rootView = (ViewGroup) findViewById(R.id.root_view);
 
         txtActionBarTitle.setText(title);
         edtData.setText(textContent);

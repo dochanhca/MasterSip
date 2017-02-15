@@ -335,5 +335,11 @@
     <string name="title_check_code_fragment">メールアドレス設定</string>
     <string name="forgot_password">＞パスワードをお忘れですか？</string>
     <string name="err_mail_is_not_registered">メールが登録されていません</string>
-    <string name="error_wrong_email_or_pass">メールアドレス、もしくはパスワードが違います</string>
+    <string name="err_wrong_email_or_pass">メールアドレス、もしくはパスワードが違います</string>
+    <string name="password_resetting">パスワード再設定</string>
+    <string name="pls_enter_email_you_registered">登録した際のメールアドレスを入力してください</string>
+    <string name="authentication_code">認証コード</string>
+    <string name="registration">登録</string>
+    <string name="password_setting">パスワード設定</string>
+    <string name="err_invalid_code">コードが無効です</string>
 </resources>

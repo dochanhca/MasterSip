@@ -170,6 +170,15 @@
         <activity android:name=".ui.chatting.ChattingPhotoGalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".ui.auth.ForgotPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".ui.auth.ChangePasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

@@ -103,16 +103,20 @@ public class Utils {
 
     public static String validateEmailAndPassword(Context context,
                                                   String email, String password, String repassword) {
-        final Pattern hasSpecialChar = Pattern.compile("[^a-zA-Z0-9 ]");
 
         String content = "";
         if (!Utils.isValidEmail(email)) {
             content = context.getResources().getString(R.string.content_wrong_email_format);
-        } else if (password.length() < 6 || hasSpecialChar.matcher(password).find()) {
+        } else if (!isValidPassword(password)) {
             content = context.getResources().getString(R.string.wrong_password_format);
         } else if (!password.equals(repassword)) {
             content = context.getResources().getString(R.string.content_wrong_password_confirmation);
         }
         return content;
+    }
+
+    public static boolean isValidPassword(String password) {
+        final Pattern hasSpecialChar = Pattern.compile("[^a-zA-Z0-9 ]");
+        return (password.length() >= 6 && !hasSpecialChar.matcher(password).find());
     }
 }

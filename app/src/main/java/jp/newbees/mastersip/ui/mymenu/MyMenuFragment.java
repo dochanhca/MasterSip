@@ -264,6 +264,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.layout_profile_detail:
                 break;
+            default:
+                break;
         }
     }
 
@@ -478,6 +480,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 if (resultCode == RESULT_OK) {
                     handleImageCropped(data);
                 }
+                break;
+            default:
                 break;
         }
     }
