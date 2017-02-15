@@ -229,6 +229,20 @@
         <item name="android:textSize">@dimen/text_size_12</item>
     </style>
 
+    <style name="origin_style_edit_text_input">
+        <item name="android:textSize">@dimen/text_size_17</item>
+        <item name="android:textColorHint">@color/text_color_gray_hint</item>
+        <item name="android:layout_marginRight">@dimen/normal_margin</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingLeft">@dimen/margin_15</item>
+    </style>
+
+    <style name="divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+
     <style name="style_text_view_with_button_my_menu">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

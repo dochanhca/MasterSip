@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -121,8 +120,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private boolean isFragmentRunning = false;
     private GalleryItem galleryItem;
 
-    public static Fragment newInstance() {
-        Fragment fragment = new MyMenuFragment();
+    public static BaseFragment newInstance() {
+        BaseFragment fragment = new MyMenuFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(REFRESH_DATA, true);
         fragment.setArguments(bundle);
@@ -236,7 +235,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 handleUploadPhotoForGallery();
                 break;
             case R.id.btn_change_avatar:
-                // change avatar
                 break;
             case R.id.group_avatar:
                 handleUploadAvatar();
@@ -244,31 +242,25 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.layout_my_notify:
                 break;
             case R.id.txt_online_list:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                MyMenuContainerFragment.showOnlineListFragment(getActivity());
                 break;
             case R.id.txt_call_history:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.txt_block_list:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.txt_notify_setting:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.txt_mail_backup_setting:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
+                MyMenuContainerFragment.showRegisterEmailBackupFragment(getActivity());
                 break;
             case R.id.txt_call_setting:
-                MyMenuContainerFragment.showSettingCallFragment(getActivity(), this);
+                MyMenuContainerFragment.showSettingCallFragment(getActivity());
                 break;
             case R.id.layout_guide:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.layout_contact:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.layout_common_guide:
-                MyMenuContainerFragment.showOnlineListFragment(getActivity(), this);
                 break;
             case R.id.layout_profile_detail:
                 break;

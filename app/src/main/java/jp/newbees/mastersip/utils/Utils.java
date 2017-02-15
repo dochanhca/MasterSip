@@ -3,6 +3,7 @@ package jp.newbees.mastersip.utils;
 import android.content.Context;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
+
+import jp.newbees.mastersip.R;
 
 /**
  * Created by ducpv on 12/15/16.
@@ -26,7 +30,7 @@ public class Utils {
     }
 
     public static int getScreenWidth(Context context) {
-        return  context.getResources().getDisplayMetrics().widthPixels;
+        return context.getResources().getDisplayMetrics().widthPixels;
     }
 
     public static int getScreenHeight(Context context) {
@@ -59,13 +63,13 @@ public class Utils {
         age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
 
         // If birth date is greater than todays date (after 2 days adjustment of leap year) then decrement age one year
-        if ( (birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) ||
-                (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH ))){
+        if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) ||
+                (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
             age--;
 
             // If birth date and todays date are of same month and birth day of month is greater than todays day of month then decrement age
-        }else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH )) &&
-                (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH ))){
+        } else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) &&
+                (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
             age--;
         }
 
@@ -91,5 +95,24 @@ public class Utils {
         }
 
         return locale;
+    }
+
+    public static final boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public static String validateEmailAndPassword(Context context,
+                                                  String email, String password, String repassword) {
+        final Pattern hasSpecialChar = Pattern.compile("[^a-zA-Z0-9 ]");
+
+        String content = "";
+        if (!Utils.isValidEmail(email)) {
+            content = context.getResources().getString(R.string.content_wrong_email_format);
+        } else if (password.length() < 6 || hasSpecialChar.matcher(password).find()) {
+            content = context.getResources().getString(R.string.wrong_password_format);
+        } else if (!password.equals(repassword)) {
+            content = context.getResources().getString(R.string.content_wrong_password_confirmation);
+        }
+        return content;
     }
 }

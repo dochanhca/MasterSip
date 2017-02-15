@@ -1,39 +1,22 @@
 package jp.newbees.mastersip.ui.top;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.mailbackup.CheckCodeFragment;
+import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
 
 /**
- * Created by ducpv on 2/14/17.
+ * Created by thangit14 on 2/14/17.
  */
 
 public class MyMenuContainerFragment extends BaseFragment {
-
-    private static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
-    private static final int MY_MENU_FRAGMENT = 0;
-    private int mCurrentlyShowingFragment;
-
-    public static Fragment newInstance() {
-        Fragment myMenuContainerFragment = new MyMenuContainerFragment();
-        Bundle bundle = new Bundle();
-        myMenuContainerFragment.setArguments(bundle);
-        return myMenuContainerFragment;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_FRAGMENT, mCurrentlyShowingFragment);
-    }
 
     @Override
     protected int layoutId() {
@@ -42,42 +25,51 @@ public class MyMenuContainerFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-
+        showMyMenuFragment();
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) {
-            showMyMenu();
-            mCurrentlyShowingFragment = MY_MENU_FRAGMENT;
-        } else {
-            mCurrentlyShowingFragment = savedInstanceState.getInt(CURRENT_FRAGMENT);
-        }
+
+    private void showMyMenuFragment() {
+        BaseFragment currentFragment = MyMenuFragment.newInstance();
+        performShowFragment(getActivity(),currentFragment,MyMenuFragment.class.getName());
     }
 
-    private void showMyMenu() {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_my_menu_container, MyMenuFragment.newInstance(),
-                MyMenuFragment.class.getName()).commit();
+    public static void showRegisterEmailBackupFragment(FragmentActivity activity) {
+        BaseFragment currentFragment = RegisterEmailBackupFragment.newInstance();
+        performShowFragment(activity, currentFragment, RegisterEmailBackupFragment.class.getName());
     }
 
-    public static void showSettingCallFragment(FragmentActivity activity, BaseFragment fragment) {
-        SettingCallFragment settingFragment = SettingCallFragment.newInstance();
+//    public static void showChangeEmailBackupFragment(FragmentActivity activity) {
+//        BaseFragment currentFragment = ChangeEmailBackupFragment.newInstance();
+//        performShowFragment(activity, currentFragment, ChangeEmailBackupFragment.class.getName());
+//    }
+
+    public static void showCheckCodeFragment(FragmentActivity activity, CheckCodeFragment.CallFrom callFrom) {
+        BaseFragment currentFragment = CheckCodeFragment.newInstance(callFrom);
+        performShowFragment(activity, currentFragment, CheckCodeFragment.class.getName());
+    }
+
+    private static void performShowFragment(FragmentActivity activity, BaseFragment fragment, String name) {
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
         fragment.setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_my_menu_container, settingFragment,
-                SettingCallFragment.class.getName()).commit();
+        transaction.replace(R.id.fragment_my_menu_container, fragment, name).commit();
     }
 
-    public static void showOnlineListFragment(FragmentActivity activity, BaseFragment fragment) {
-        Fragment onlineListFragment = OnlineListFragment.newInstance();
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-        fragment.setTransitionAnimation(transaction);
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_my_menu_container, onlineListFragment,
-                SettingCallFragment.class.getName()).commit();
+    public static MyMenuContainerFragment newInstance() {
+        MyMenuContainerFragment fragment = new MyMenuContainerFragment();
+        return fragment;
+    }
+
+    public static void showSettingCallFragment(FragmentActivity activity) {
+        BaseFragment fragment = SettingCallFragment.newInstance();
+        performShowFragment(activity,fragment,SettingCallFragment.class.getName());
+    }
+
+    public static void showOnlineListFragment(FragmentActivity activity) {
+        BaseFragment fragment = OnlineListFragment.newInstance();
+        performShowFragment(activity,fragment,OnlineListFragment.class.getName());
+
     }
 
     public final void onTabSelected() {

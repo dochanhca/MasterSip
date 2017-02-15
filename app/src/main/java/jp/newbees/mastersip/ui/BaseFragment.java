@@ -100,7 +100,7 @@ public abstract class BaseFragment extends Fragment {
                 errorCode, errorMessage);
     }
 
-    protected final void showMessageDialog(String title, String content, String note,
+    public final void showMessageDialog(String title, String content, String note,
                                            boolean isHideActionButton) {
         if (null == messageDialog) {
             messageDialog = new MessageDialog();
@@ -124,6 +124,10 @@ public abstract class BaseFragment extends Fragment {
         if (null != messageDialog) {
             messageDialog.dismiss();
         }
+    }
+
+    public final void showMessageDialog(String message) {
+        showMessageDialog("", message, "", false);
     }
 
     /**

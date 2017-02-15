@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.ui.mymenu;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
@@ -13,8 +12,8 @@ import jp.newbees.mastersip.ui.BaseFragment;
 
 public class OnlineListFragment extends BaseFragment {
 
-    public static Fragment newInstance() {
-        Fragment onlineListFragment = new OnlineListFragment();
+    public static BaseFragment newInstance() {
+        BaseFragment onlineListFragment = new OnlineListFragment();
         Bundle args = new Bundle();
         onlineListFragment.setArguments(args);
         return onlineListFragment;

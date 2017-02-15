@@ -302,6 +302,23 @@
     <string name="message_request_enable_voice_success">%1$sさんに音声通話リクエストを送りました。</string>
     <string name="message_request_enable_video_success">%1$sさんにビデオ通話リクエストを送りました。</string>
     <string name="message_request_enable_video_chat_success">%1$sさんにビデオ/チャット通話リクエストを送りました</string>
+    <string name="note_register_mail_backup">メールアドレス・パスワードを登録すると、 機種変更やデータ紛失の際などに ご利用データを引き継ぐことができます。</string>
+    <string name="hint_email">メールアドレス</string>
+    <string name="hint_pass">パスワード</string>
+    <string name="hint_re_pass">パスワード(確認用)</string>
+    <string name="register">登録</string>
+    <string name="title_register_backup_email">メールアドレス設定</string>
+    <string name="wrong_password_format">パスワードは半角英数字の 6文字以上で入力してください。</string>
+    <string name="title_send_confirm_email_backup">認証メールを送信しました。</string>
+    <string name="content_send_confirm_email_backup_error">※誤って迷惑メールフォルダに送信される 場合がございます。10分経っても認証メールが 届かない場合はご確認ください。</string>
+    <string name="content_wrong_password_confirmation">パスワードと確認用のパスワードが 一致しません。</string>
+    <string name="content_wrong_email_format">ご利用いただけないメールアドレスです。</string>
+    <string name="hint_code">認証コード</string>
+    <string name="content_code_success_register_new_mail_backup">メールアドレスとパスワードの登録が\n完了しました。</string>
+    <string name="title_code_success_register_new_mail_backup">登録完了</string>
+    <string name="title_code_success_register_change_mail_backup">変更完了</string>
+    <string name="content_code_success_register_change_mail_backup">メールアドレスとパスワードの変更が/n完了しました。</string>
+    <string name="content_different_code">認証コードが違います。</string>
     <string name="notice">お知らせ</string>
     <string name="call_history">通話履歴</string>
     <string name="block_list">ブロックリスト</string>
@@ -315,4 +332,5 @@
     <string name="various_guidance">各種案内</string>
     <string name="girl">女の子</string>
     <string name="boy">男性</string>
+    <string name="title_check_code_fragment">メールアドレス設定</string>
 </resources>

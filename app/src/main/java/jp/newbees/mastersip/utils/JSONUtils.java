@@ -26,6 +26,7 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.model.MailBackupItem;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_GIFT;
@@ -564,5 +565,22 @@ public class JSONUtils {
         chattingGalleryItem.setSender(sender);
 
         return chattingGalleryItem;
+    }
+
+    public static JSONObject genParamsToRegisterMailBackup(MailBackupItem mailBackupItem) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.JSON.EMAIL, mailBackupItem.getEmail());
+        String encrypted = AESHelper.encrypt(mailBackupItem.getPass());
+        jsonObject.put(Constant.JSON.PASSWORD, encrypted);
+        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, encrypted);
+        jsonObject.put(Constant.JSON.EXTENSION, mailBackupItem.getExtension());
+
+        return jsonObject;
+    }
+
+    public static JSONObject genParamsToCheckCode(String code) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.JSON.CODE, code);
+        return jsonObject;
     }
 }

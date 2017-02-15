@@ -24,6 +24,7 @@ public final class Constant {
         public static final String CONTEXT = "context";
         public static final String DIS_EXTENSION = "dis_extension";
         public static final String PLATFORM = "platform";
+        public static final String PASSWORD_CONFIRMATION = "password_confirmation";
 
         private JSON() {
             //Prevent init constructor
@@ -208,6 +209,8 @@ public final class Constant {
         public static final String UPDATE_IMAGE = "image/update";
         public static final String REQUEST_ENABLE_VOICE_CALL = "putmess";
         public static final String CHATTING_PHOTO = "chatting/photos";
+        public static final String UPDATE_USER_PASS = "adduserpass/update-user-pass";
+        public static final String CHECK_CODE = "adduserpass/check-code";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
