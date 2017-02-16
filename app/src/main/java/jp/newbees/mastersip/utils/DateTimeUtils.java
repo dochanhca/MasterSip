@@ -87,12 +87,7 @@ public class DateTimeUtils {
 
     public static int getCurrentAgeFromDoB(String dateOfBirth) {
         Date dob = convertStringToDate(dateOfBirth, ENGLISH_FACEBOOK_DATE_FORMAT);
-        Calendar calendarDoB = getCalendar(dob);
-        Calendar calendarCurrent = Calendar.getInstance();
-        Date current = calendarCurrent.getTime();
-        calendarCurrent = getCalendar(current);
-        int age = calendarCurrent.get(Calendar.YEAR) - calendarDoB.get(Calendar.YEAR);
-        return age;
+        return calculateAgeWithDOB(dob);
     }
 
     public static String getHeaderDisplayDateInChatHistory(Date headerDate, Context context) {
