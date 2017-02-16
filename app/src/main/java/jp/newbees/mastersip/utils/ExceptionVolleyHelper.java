@@ -9,12 +9,12 @@ import jp.newbees.mastersip.R;
 /**
  * Created by thanglh on 03/12/14.
  */
-public class ToastExceptionVolleyHelper {
+public class ExceptionVolleyHelper {
     private int errorCode;
     private String message;
     private Context mContext;
 
-    public ToastExceptionVolleyHelper(Context context, int errorCode, String message) {
+    public ExceptionVolleyHelper(Context context, int errorCode, String message) {
         this.mContext = context;
         this.errorCode = errorCode;
         this.message = message;
@@ -42,9 +42,6 @@ public class ToastExceptionVolleyHelper {
 
     public boolean showCommonError() {
         switch (errorCode) {
-            case Constant.Error.NO_NETWORK:
-                showShortToast(R.string.err_no_network);
-                return  true;
             case Constant.Error.INVALID_TOKEN:
                 showShortToast(R.string.err_invalid_token);
                 return true;

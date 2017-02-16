@@ -342,4 +342,6 @@
     <string name="registration">登録</string>
     <string name="password_setting">パスワード設定</string>
     <string name="err_invalid_code">コードが無効です</string>
+    <string name="network_error">ネットワークエラー</string>
+    <string name="mess_check_network">ネットワーク状態を確認した後、やり直してください</string>
 </resources>

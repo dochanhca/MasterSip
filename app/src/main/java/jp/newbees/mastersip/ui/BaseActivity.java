@@ -21,9 +21,9 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.ExceptionVolleyHelper;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.MyContextWrapper;
-import jp.newbees.mastersip.utils.ToastExceptionVolleyHelper;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -110,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initVariables(Bundle savedInstanceState);
 
     public void initHeader(String title) {
-        initHeader(title,null);
+        initHeader(title, null);
     }
 
     public void initHeader(String title, View.OnClickListener onHeaderClickListener) {
@@ -234,10 +234,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
-        ToastExceptionVolleyHelper toastExceptionVolleyHelper = new ToastExceptionVolleyHelper(context, errorCode, errorMessage);
-        if (!toastExceptionVolleyHelper.showCommonError()) {
+        ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
+        if (errorCode == Constant.Error.NO_NETWORK) {
+            showMessageDialog(getString(R.string.network_error), getString(R.string.mess_check_network),
+                    "", false);
+        } else if (!exceptionVolleyHelper.showCommonError()) {
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
         }
+
         Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
     }
 
@@ -251,12 +255,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         return gson.fromJson(jUser, UserItem.class);
     }
 
-    protected void onImageBackPressed () {
+    protected void onImageBackPressed() {
         //Default do not anything
     }
 
     /**
      * clear animation and set visible of view after animation finish
+     *
      * @param view
      * @param anim
      * @param visibility
