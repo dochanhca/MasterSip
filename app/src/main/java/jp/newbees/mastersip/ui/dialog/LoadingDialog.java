@@ -25,11 +25,6 @@ public class LoadingDialog extends BaseDialog {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     protected int getLayoutDialog() {
         return R.layout.dialog_loading;
     }

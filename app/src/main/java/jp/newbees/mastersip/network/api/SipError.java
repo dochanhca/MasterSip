@@ -46,14 +46,12 @@ public class SipError extends VolleyError {
     }
 
     private static boolean isServerProblem(VolleyError error) {
-        return (error instanceof ServerError || error instanceof AuthFailureError);
+        return error instanceof ServerError || error instanceof AuthFailureError;
     }
 
     private boolean isNetworkAvailable(VolleyError volleyError) {
-        if (volleyError instanceof NetworkError || volleyError instanceof NoConnectionError)
-            return true;
-        else
-            return false;
+        return (volleyError instanceof NetworkError || volleyError instanceof NoConnectionError) ?
+                true : false;
     }
 
     public int getErrorCode() {
