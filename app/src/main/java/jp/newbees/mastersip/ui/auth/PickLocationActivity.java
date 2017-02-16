@@ -236,9 +236,16 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
             AlertDialog.Builder builder = new AlertDialog.Builder(this).setMessage(R.string.mess_enable_gps)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialogInterface, int which) {
                             Intent viewIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(viewIntent);
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                         }
                     });
             dialog = builder.create();
