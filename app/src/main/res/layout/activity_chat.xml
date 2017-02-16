@@ -38,18 +38,21 @@
                     android:paddingLeft="@dimen/normal_margin"
                     android:src="@drawable/img_capture" />
 
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    android:id="@+id/txt_send"
-                    style="@style/origin_style_content_text_view_with_padding_LR"
+                <ImageView
+                    android:id="@+id/img_send"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/height_footer_chat_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/height_footer_chat_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/normal_margin"
-                    android:background="@drawable/bg_blue_dark"
-                    android:gravity="center"
-                    android:text="@string/send"
-                    android:textColor="@color/white" />
+                    android:src="@drawable/ic_call_white"
+                    android:paddingLeft="@dimen/_15dp"
+                    android:paddingRight="@dimen/_15dp"
+                    android:paddingTop="@dimen/_3dp"
+                    android:paddingBottom="@dimen/_3dp"
+                    android:layout_marginRight="@dimen/margin_10"
+                    android:background="@drawable/bg_blue_dark_selector"
+                    />
 
                 <LinearLayout
                     android:layout_width="0px"
@@ -64,7 +67,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/normal_margin"
                     android:layout_marginRight="@dimen/small_margin"
-                    android:layout_toLeftOf="@id/txt_send"
+                    android:layout_toLeftOf="@id/img_send"
                     android:layout_toRightOf="@id/img_left_bottom_action"
                     android:background="@drawable/bg_white_blue_stroke"
                     android:minHeight="@dimen/height_footer_chat_content"

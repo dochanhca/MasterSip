@@ -52,7 +52,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private Date currentDate;
     private Calendar calendar;
 
-    private int gender = -1;
+    private int gender = 0;
 
     private RegisterPresenter registerPresenter;
 
@@ -194,7 +194,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(1);
-        numberPicker.setValue(0);
+        numberPicker.setValue(gender);
         numberPicker.setDisplayedValues(genders);
 
         final AlertDialog alertDialog = alerBuilder.create();
