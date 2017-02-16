@@ -18,6 +18,7 @@
         <jp.newbees.mastersip.customviews.HiraginoEditText
             android:id="@+id/edt_code"
             style="@style/origin_style_edit_text_input"
+            android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/edt_input_height"
             android:hint="@string/hint_code" />
@@ -36,5 +37,14 @@
         android:background="@drawable/bg_blue_button_large_radius"
         android:text="@string/send" />
 
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_resend_code"
+        style="@style/origin_style_content_text_view"
+        android:paddingBottom="@dimen/small_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/large_margin"
+        android:text="@string/resend_code_underscore" />
 
 </LinearLayout>

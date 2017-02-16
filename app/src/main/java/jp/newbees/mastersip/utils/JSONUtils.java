@@ -13,6 +13,7 @@ import java.util.List;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
+import jp.newbees.mastersip.model.EmailBackupItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.model.GiftItem;
@@ -26,7 +27,6 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.model.MailBackupItem;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_GIFT;
@@ -350,7 +350,7 @@ public class JSONUtils {
             if (jAvatar.length() > 0) {
                 ImageItem imageItem = JSONUtils.parseImageItem(jAvatar);
                 userItem.setAvatarItem(imageItem);
-            }else {
+            } else {
                 userItem.setAvatarItem(null);
             }
         } else {
@@ -380,19 +380,19 @@ public class JSONUtils {
         for (int i = 0; i < jListMessages.length(); i++) {
             JSONObject jListMessage = jListMessages.getJSONObject(i);
 
-            result.add(getHeaderChatItem(jListMessage,sectionFirstPosition, context));
+            result.add(getHeaderChatItem(jListMessage, sectionFirstPosition, context));
 
             JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.MESSAGES);
             for (int j = 0; j < jMessages.length(); j++) {
                 JSONObject jMessage = jMessages.getJSONObject(j);
-                result.add(getBaseChatItemInHistory(jMessage,sectionFirstPosition, members));
+                result.add(getBaseChatItemInHistory(jMessage, sectionFirstPosition, members));
             }
             sectionFirstPosition = result.size();
         }
         return result;
     }
 
-    public static HashMap<String,UserItem> getMembers(JSONArray jsonArray) throws JSONException {
+    public static HashMap<String, UserItem> getMembers(JSONArray jsonArray) throws JSONException {
         HashMap<String, UserItem> members = new HashMap<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jMember = jsonArray.getJSONObject(i);
@@ -427,7 +427,7 @@ public class JSONUtils {
         switch (type) {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 baseChatItem = new TextChatItem();
-                ((TextChatItem)baseChatItem).setMessage(jMessage.getJSONObject(Constant.JSON.TEXT).
+                ((TextChatItem) baseChatItem).setMessage(jMessage.getJSONObject(Constant.JSON.TEXT).
                         getString(Constant.JSON.CONTENT));
                 break;
             case BaseChatItem.ChatType.CHAT_IMAGE:
@@ -484,7 +484,7 @@ public class JSONUtils {
         header.setFullDate(strDate);
 
         String displayDate = DateTimeUtils.getHeaderDisplayDateInChatHistory(
-                DateTimeUtils.convertStringToDate(strDate, DateTimeUtils.ENGLISH_DATE_FORMAT),context);
+                DateTimeUtils.convertStringToDate(strDate, DateTimeUtils.ENGLISH_DATE_FORMAT), context);
         header.setDisplayDate(displayDate);
 
         header.setSectionFirstPosition(sectionFirstPosition);
@@ -492,8 +492,8 @@ public class JSONUtils {
     }
 
     public static List<GiftItem> parseGiftsList(JSONArray jGifts) throws JSONException {
-        ArrayList<GiftItem>  giftItems = new ArrayList<>();
-        for(int index = 0, n=jGifts.length(); index < n; index ++) {
+        ArrayList<GiftItem> giftItems = new ArrayList<>();
+        for (int index = 0, n = jGifts.length(); index < n; index++) {
             JSONObject jGift = jGifts.getJSONObject(index);
             GiftItem giftItem = new GiftItem();
             giftItem.setGiftId(jGift.getInt(Constant.JSON.ID));
@@ -506,9 +506,10 @@ public class JSONUtils {
         }
         return giftItems;
     }
+
     public static List<RoomChatItem> parseListRoomChat(JSONArray jsonArray) throws JSONException {
         ArrayList<RoomChatItem> result = new ArrayList<>();
-        for (int index=0, n = jsonArray.length(); index<n ;index++) {
+        for (int index = 0, n = jsonArray.length(); index < n; index++) {
             JSONObject jRoomChat = jsonArray.getJSONObject(index);
             JSONObject jInteractionUser = jRoomChat.getJSONObject(Constant.JSON.INTERACTION_USER);
             RoomChatItem roomChatItem = new RoomChatItem();
@@ -567,13 +568,13 @@ public class JSONUtils {
         return chattingGalleryItem;
     }
 
-    public static JSONObject genParamsToRegisterMailBackup(MailBackupItem mailBackupItem) throws JSONException {
+    public static JSONObject genParamsToRegisterEmailBackup(EmailBackupItem emailBackupItem) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constant.JSON.EMAIL, mailBackupItem.getEmail());
-        String encrypted = AESHelper.encrypt(mailBackupItem.getPass());
+        jsonObject.put(Constant.JSON.EMAIL, emailBackupItem.getEmail());
+        String encrypted = AESHelper.encrypt(emailBackupItem.getPass());
         jsonObject.put(Constant.JSON.PASSWORD, encrypted);
         jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, encrypted);
-        jsonObject.put(Constant.JSON.EXTENSION, mailBackupItem.getExtension());
+        jsonObject.put(Constant.JSON.EXTENSION, emailBackupItem.getExtension());
 
         return jsonObject;
     }
@@ -604,5 +605,17 @@ public class JSONUtils {
         ConfigManager.getInstance().saveUser(userItem);
         ConfigManager.getInstance().saveAuthId(userID);
         return userItem;
+    }
+
+    public static JSONObject genParamsToChangeEmailBackup(EmailBackupItem item) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.JSON.EMAIL_OLD, item.getOldEmail());
+        jsonObject.put(Constant.JSON.PASSWORD_OLD, AESHelper.encrypt(item.getOldPass()));
+        jsonObject.put(Constant.JSON.EMAIL_NEW, item.getEmail());
+        String pass = AESHelper.encrypt(item.getPass());
+        jsonObject.put(Constant.JSON.PASSWORD_NEW, pass);
+        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, pass);
+        jsonObject.put(Constant.JSON.EXTENSION, item.getExtension());
+        return jsonObject;
     }
 }

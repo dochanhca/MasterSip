@@ -198,6 +198,14 @@ public class UserItem implements Serializable, Parcelable {
         this.avatarItem = avatarItem;
     }
 
+    /**
+     * @return true if login by facebook
+     */
+    public boolean isLoginByFacebook() {
+        return !(facebookId == null || facebookId.length() == 0
+                || facebookId.equalsIgnoreCase("") || facebookId.equalsIgnoreCase("0"));
+    }
+
     @Nullable
     public String getFacebookId() {
         return facebookId;
@@ -297,9 +305,9 @@ public class UserItem implements Serializable, Parcelable {
     };
 
     public boolean hasAvatar() {
-        if (this.avatarItem!=null && !avatarItem.getOriginUrl().equalsIgnoreCase("")){
+        if (this.avatarItem != null && !avatarItem.getOriginUrl().equalsIgnoreCase("")) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

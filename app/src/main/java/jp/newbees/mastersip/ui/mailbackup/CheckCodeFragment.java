@@ -11,6 +11,7 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.presenter.mailbackup.CheckCodePresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -56,20 +57,20 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
         }
     }
 
-    @OnClick(R.id.btn_send)
-    public void onClick() {
-        showLoading();
-        checkCodePresenter.checkCode(edtCode.getText().toString());
+    @OnClick({R.id.btn_send, R.id.txt_resend_code})
+    public void onClick(View view) {
+        if (view.getId() == R.id.btn_send) {
+            showLoading();
+            checkCodePresenter.checkCode(edtCode.getText().toString());
+        } else if (view.getId() == R.id.txt_resend_code) {
+            getActivity().onBackPressed();
+        }
     }
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == SUCCESS_DIALOG) {
-            if (callFrom == CallFrom.NEW_BACKUP_EMAIL) {
-
-            } else {
-                getActivity().onBackPressed();
-            }
+            MyMenuContainerFragment.showChangeEmailBackupFragment(getActivity());
         }
     }
 
@@ -102,6 +103,6 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
     }
 
     public enum CallFrom {
-        NEW_BACKUP_EMAIL,CHANGE_BACKUP_EMAIL
+        NEW_BACKUP_EMAIL, CHANGE_BACKUP_EMAIL
     }
 }

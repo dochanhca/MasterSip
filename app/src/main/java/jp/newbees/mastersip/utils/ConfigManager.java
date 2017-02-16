@@ -178,6 +178,15 @@ final public class ConfigManager {
         editor.commit();
     }
 
+    public void saveBackupEmail(String email) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constant.Application.BACKUP_EMAIL, email);
+        editor.commit();
+    }
+
+    public String getBackupEmail() {
+        return sharedPreferences.getString(Constant.Application.BACKUP_EMAIL, "");
+    }
 
     public int getImageCalleeDefault() {
         if (imageDrawableCalleeId == -1) {

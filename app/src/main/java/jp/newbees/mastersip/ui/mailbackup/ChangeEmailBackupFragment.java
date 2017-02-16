@@ -2,18 +2,26 @@ package jp.newbees.mastersip.ui.mailbackup;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
+import jp.newbees.mastersip.model.EmailBackupItem;
 import jp.newbees.mastersip.presenter.mailbackup.ChangeEmailBackupPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 2/14/17.
  */
-public class ChangeEmailBackupFragment extends BaseFragment{
+public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEmailBackupPresenter.ChangeEmailBackupListener, TextDialog.OnTextDialogClick {
 
     private static final int CONFIRM_CHECK_CODE_DIALOG = 1;
 
@@ -23,19 +31,90 @@ public class ChangeEmailBackupFragment extends BaseFragment{
     HiraginoEditText edtPassword;
     @BindView(R.id.edt_re_password)
     HiraginoEditText edtRePassword;
-    @BindView(R.id.btn_register)
-    Button btnRegister;
+    @BindView(R.id.txt_old_email)
+    TextView txtOldEmail;
+    @BindView(R.id.edt_old_pass)
+    TextView edtOldPass;
 
     private ChangeEmailBackupPresenter presenter;
+
+    public static ChangeEmailBackupFragment newInstance() {
+        ChangeEmailBackupFragment fragment = new ChangeEmailBackupFragment();
+        return fragment;
+    }
 
     @Override
     protected int layoutId() {
         return R.layout.fragment_change_email_backup;
-
     }
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
+        setFragmentTitle(getResources().getString(R.string.title_change_email_backup_fragment));
+        ButterKnife.bind(this, mRoot);
+        txtOldEmail.setText(ConfigManager.getInstance().getBackupEmail());
+        presenter = new ChangeEmailBackupPresenter(getContext(), this);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setOnBackPressed(new BaseActivity.OnBackPressed() {
+            @Override
+            public void onBackPressed() {
+                presenter.backToMyMenuFragment(getFragmentManager());
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        setOnBackPressed(null);
+    }
+
+    @Override
+    public void onChangeEmailBackupSuccess() {
+        disMissLoading();
+        Utils.showDialogRegisterSuccess(CONFIRM_CHECK_CODE_DIALOG, this);
+    }
+
+    @Override
+    public void onChangeEmailBackupError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == CONFIRM_CHECK_CODE_DIALOG) {
+            MyMenuContainerFragment.showCheckCodeFragment(getActivity(), CheckCodeFragment.CallFrom.CHANGE_BACKUP_EMAIL);
+        }
+    }
+
+    @Override
+    protected void onImageBackPressed() {
+        presenter.backToMyMenuFragment(getFragmentManager());
+    }
+
+    @OnClick(R.id.btn_change)
+    public void onClick() {
+        String message = presenter.validateParam(edtOldPass, edtEmail, edtPassword, edtRePassword);
+        if (message.length() == 0) {
+            showLoading();
+            presenter.changeEmail(getEmailBackupItem());
+        } else {
+            showMessageDialog(message);
+        }
+    }
+
+    private EmailBackupItem getEmailBackupItem() {
+        EmailBackupItem item = new EmailBackupItem();
+        item.setEmail(edtEmail.getText().toString());
+        item.setPass(edtPassword.getText().toString());
+        item.setExtension(ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension());
+        item.setOldEmail(txtOldEmail.getText().toString());
+        item.setOldPass(edtOldPass.getText().toString());
+        return item;
     }
 }

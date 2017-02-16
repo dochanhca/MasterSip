@@ -333,6 +333,15 @@
     <string name="girl">女の子</string>
     <string name="boy">男性</string>
     <string name="title_check_code_fragment">メールアドレス設定</string>
+    <string name="resend_code_underscore"><u>＞認証メールが届かない方はこちら</u></string>
+    <string name="change">変更</string>
+    <string name="label_new_email_pass">新しいメールアドレスとパスワードを入力</string>
+    <string name="title_forgot_password">＞パスワードをお忘れの方</string>
+    <string name="hint_new_email">新しいメールアドレス</string>
+    <string name="hint_old_pass">現在のパスワード</string>
+    <string name="label_enter_current_pass">現在のパスワードを入力</string>
+    <string name="title_email_registed">登録中のメールアドレス</string>
+    <string name="title_change_email_backup_fragment">メールアドレス設定</string>
     <string name="forgot_password">＞パスワードをお忘れですか？</string>
     <string name="err_mail_is_not_registered">メールが登録されていません</string>
     <string name="err_wrong_email_or_pass">メールアドレス、もしくはパスワードが違います</string>

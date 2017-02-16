@@ -9,7 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
-import jp.newbees.mastersip.model.MailBackupItem;
+import jp.newbees.mastersip.model.EmailBackupItem;
 import jp.newbees.mastersip.presenter.mailbackup.RegisterEmailBackupPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -65,13 +65,7 @@ public class RegisterEmailBackupFragment extends BaseFragment implements Registe
     @Override
     public void onRegisterEmailBackupSuccess() {
         disMissLoading();
-        showDialogRegisterSuccess();
-    }
-
-    private void showDialogRegisterSuccess() {
-        String title = getResources().getString(R.string.title_send_confirm_email_backup);
-        String content = getResources().getString(R.string.content_send_confirm_email_backup_error);
-        TextDialog.openTextDialog(this, CONFIRM_CHECK_CODE_DIALOG, getFragmentManager(), content, title, true);
+        Utils.showDialogRegisterSuccess(CONFIRM_CHECK_CODE_DIALOG,this);
     }
 
     @Override
@@ -87,8 +81,8 @@ public class RegisterEmailBackupFragment extends BaseFragment implements Registe
         }
     }
 
-    private MailBackupItem getMailBackupItem() {
-        MailBackupItem item = new MailBackupItem();
+    private EmailBackupItem getMailBackupItem() {
+        EmailBackupItem item = new EmailBackupItem();
         item.setEmail(edtEmail.getText().toString());
         item.setPass(edtPassword.getText().toString());
         item.setExtension(ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension());

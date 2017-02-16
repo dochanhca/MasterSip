@@ -232,7 +232,7 @@
     <style name="origin_style_edit_text_input">
         <item name="android:textSize">@dimen/text_size_17</item>
         <item name="android:textColorHint">@color/text_color_gray_hint</item>
-        <item name="android:layout_marginRight">@dimen/normal_margin</item>
+        <item name="android:paddingRight">@dimen/normal_margin</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingLeft">@dimen/margin_15</item>
     </style>

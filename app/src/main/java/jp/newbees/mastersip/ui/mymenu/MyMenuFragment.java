@@ -106,6 +106,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtMessageNumber;
     @BindView(R.id.txt_online_list)
     HiraginoTextView txtOnlineList;
+    @BindView(R.id.txt_email_backup_setting)
+    HiraginoTextView txtEmailBackup;
+    @BindView(R.id.divider_email_backup)
+    View dividerEmailBackup;
+
 
     private MyMenuPresenter presenter;
     private int defaultAvatar;
@@ -155,6 +160,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         txtPoint.setText("" + userItem.getCoin());
 
         initViewWithGender(userItem);
+        initMailBackupView(userItem);
 
         galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
         galleryAdapter.setOnItemClickListener(this);
@@ -165,6 +171,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         rcvListPhoto.addItemDecoration(dividerItemDecoration);
         needRefreshData = getArguments().getBoolean(REFRESH_DATA);
         initLoadMorePhotoInGallery();
+    }
+
+    private void initMailBackupView(UserItem userItem) {
+        int visible = userItem.isLoginByFacebook() ? View.GONE : View.VISIBLE;
+        txtEmailBackup.setVisibility(visible);
+        dividerEmailBackup.setVisibility(visible);
     }
 
     private void initViewWithGender(UserItem userItem) {
@@ -216,15 +228,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
     @OnClick({
             R.id.btn_buy_point, R.id.btn_upload_photo, R.id.btn_change_avatar,
             R.id.group_avatar, R.id.layout_my_notify, R.id.txt_online_list, R.id.txt_call_history,
-            R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_mail_backup_setting,
+            R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_email_backup_setting,
             R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
             R.id.layout_common_guide, R.id.layout_profile_detail})
     public void onClick(View view) {
@@ -250,8 +257,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.txt_notify_setting:
                 break;
-            case R.id.txt_mail_backup_setting:
-                MyMenuContainerFragment.showRegisterEmailBackupFragment(getActivity());
+            case R.id.txt_email_backup_setting:
+                if (ConfigManager.getInstance().getBackupEmail().length() == 0) {
+                    MyMenuContainerFragment.showRegisterEmailBackupFragment(getActivity());
+                } else {
+                    MyMenuContainerFragment.showChangeEmailBackupFragment(getActivity());
+                }
                 break;
             case R.id.txt_call_setting:
                 MyMenuContainerFragment.showSettingCallFragment(getActivity());

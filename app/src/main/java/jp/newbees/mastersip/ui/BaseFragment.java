@@ -159,7 +159,17 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    /**
+     * set listener from image back in action bar
+     */
     protected void onImageBackPressed() {
         //Default do not anything
+    }
+
+    /**
+     * set listener from button back in android hardware
+     */
+    protected void setOnBackPressed(BaseActivity.OnBackPressed listener) {
+        ((BaseActivity)getActivity()).setOnBackPressed(listener);
     }
 }
