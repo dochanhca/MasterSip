@@ -18,7 +18,7 @@
         android:src="@drawable/img_capture" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
-        android:id="@+id/txt_send"
+        android:id="@+id/img_send"
         style="@style/origin_style_content_text_view_with_padding_LR"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_footer_chat_content"
@@ -43,7 +43,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginRight="@dimen/small_margin"
-        android:layout_toLeftOf="@id/txt_send"
+        android:layout_toLeftOf="@id/img_send"
         android:layout_toRightOf="@id/img_left_bottom_action"
         android:background="@drawable/bg_white_blue_stroke"
         android:minHeight="@dimen/height_footer_chat_content"

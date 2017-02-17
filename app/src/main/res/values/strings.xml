@@ -351,4 +351,9 @@
     <string name="registration">登録</string>
     <string name="password_setting">パスワード設定</string>
     <string name="err_invalid_code">コードが無効です</string>
+    <string name="network_error">ネットワークエラー</string>
+    <string name="mess_check_network">ネットワーク状態を確認した後、やり直してください</string>
+    <string name="mess_notify_user_under_the_age_of_18">お客様のfacebook情報では登録できません。MasterSIPでは18歳未満のご利用を禁止しています。</string>
+    <string name="close">閉じる</string>
+    <string name="dummy_splash">ダミー \nスプラッシュ</string>
 </resources>

@@ -53,14 +53,23 @@
             android:value="AIzaSyDGHE93m3lSKewntsAw-QKGkY97NS2k7Qs" />
         <service android:name=".linphone.LinphoneService" />
 
-        <activity
-            android:name=".ui.StartActivity"
+        <activity android:name=".ui.SplashActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.StartActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <activity

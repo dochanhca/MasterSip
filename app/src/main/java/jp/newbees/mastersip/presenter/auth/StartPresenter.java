@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Date;
 
-import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -38,10 +37,16 @@ public class StartPresenter extends RegisterPresenterBase {
 
     public interface StartView {
         void didLoginVoIP();
+
         void didErrorVoIP(String errorMessage);
+
         void didLoadFacebookFailure(String errorMessage);
+
         void didLoginFacebookMissingBirthday(UserItem userItem);
+
         void didLoginFacebookButNotRegisterOnServer(UserItem userItem);
+
+        void didBirthdayIsBelow18();
     }
 
     public StartPresenter(Context context, StartView startView) {
@@ -73,7 +78,7 @@ public class StartPresenter extends RegisterPresenterBase {
                     }
                 });
 
-        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile","email","user_birthday"));
+        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "email", "user_birthday"));
     }
 
 
@@ -91,6 +96,7 @@ public class StartPresenter extends RegisterPresenterBase {
             public void onSuccess(JSONObject userInfo) {
                 handleFacebookUserInfo(userInfo, userItem, accessToken);
             }
+
             @Override
             public void onFailure(FacebookException error) {
                 startView.didLoadFacebookFailure(error.toString());
@@ -98,21 +104,23 @@ public class StartPresenter extends RegisterPresenterBase {
         });
     }
 
-    private void handleFacebookUserInfo(final JSONObject userInfo,final UserItem userItem,final String accessToken) {
+    private void handleFacebookUserInfo(final JSONObject userInfo, final UserItem userItem, final String accessToken) {
         try {
             String name = userInfo.getString("name");
             if (userInfo.has("birthday")) {
                 String birthday = userInfo.getString("birthday");
+                if (!isAbove18Age(birthday)) {
+                    startView.didBirthdayIsBelow18();
+                }
                 userItem.setDateOfBirth(birthday);
-            }else {
+            } else {
                 userItem.setDateOfBirth(null);
             }
             String gender = userInfo.getString("gender");
             userItem.setUsername(name);
             userItem.setGender(gender.equalsIgnoreCase("female") ? UserItem.FEMALE : UserItem.MALE);
             this.getAvatarFacebook(userItem, accessToken);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -121,7 +129,7 @@ public class StartPresenter extends RegisterPresenterBase {
         FacebookUtils.getGraphPictureRequest(accessToken, new Utility.GraphMeRequestWithCacheCallback() {
             @Override
             public void onSuccess(JSONObject userInfo) {
-                ImageItem avatar = parseAvatarFacebook(userInfo,userItem);
+                ImageItem avatar = parseAvatarFacebook(userInfo);
                 userItem.setAvatarItem(avatar);
                 requestLoginFacebook(userItem);
             }
@@ -133,7 +141,7 @@ public class StartPresenter extends RegisterPresenterBase {
         });
     }
 
-    private ImageItem parseAvatarFacebook(JSONObject userInfo, UserItem userItem) {
+    private ImageItem parseAvatarFacebook(JSONObject userInfo) {
         ImageItem avatarItem = new ImageItem();
         try {
             JSONObject jData = userInfo.getJSONObject("data");
@@ -141,7 +149,7 @@ public class StartPresenter extends RegisterPresenterBase {
             if (!isSilhouette) {
                 String urlPicture = jData.getString("url");
                 avatarItem.setOriginUrl(urlPicture);
-            }else {
+            } else {
                 avatarItem = null;
             }
         } catch (JSONException e) {
@@ -151,18 +159,16 @@ public class StartPresenter extends RegisterPresenterBase {
     }
 
 
-
     private void requestLoginFacebook(UserItem userItem) {
-        LoginFacebookTask task = new LoginFacebookTask(getContext(),userItem);
+        LoginFacebookTask task = new LoginFacebookTask(getContext(), userItem);
         requestToServer(task);
     }
-
 
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof LoginFacebookTask) {
             this.loginVoIP();
-        }else if(task instanceof RegisterTask) {
+        } else if (task instanceof RegisterTask) {
             UserItem userItem = ((RegisterTask) task).getDataResponse();
             this.startView.didLoginFacebookButNotRegisterOnServer(userItem);
         }
@@ -172,24 +178,19 @@ public class StartPresenter extends RegisterPresenterBase {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (Constant.Error.SOCIAL_ID_IS_NOT_EXIST == errorCode) {
             handleNotRegisterFacebook((LoginFacebookTask) task);
-        }else if(task instanceof LoginFacebookTask){
+        } else if (task instanceof LoginFacebookTask) {
             startView.didLoadFacebookFailure(errorMessage);
-        }else {
+        } else {
             Logger.e(TAG, errorMessage);
         }
     }
 
-    private void handleNotRegisterFacebook(LoginFacebookTask task){
+    private void handleNotRegisterFacebook(LoginFacebookTask task) {
         UserItem userItem = task.getUserItem();
         if (userItem.getDateOfBirth() == null) {
             startView.didLoginFacebookMissingBirthday(userItem);
         } else if (userItem.getDateOfBirth() != null) {
-            if (isAbove18Age(userItem.getDateOfBirth())) {
-                this.registerUser(userItem);
-            }else {
-                String errorMessageBelow18Age = context.getString(R.string.err_facebook_age_below_18);
-                startView.didLoadFacebookFailure(errorMessageBelow18Age);
-            }
+            this.registerUser(userItem);
         } else {
             this.registerUser(userItem);
         }
@@ -204,8 +205,7 @@ public class StartPresenter extends RegisterPresenterBase {
     }
 
     private boolean isAbove18Age(String dateOfBirth) {
-        int age = DateTimeUtils.getCurrentAgeFromDoB(dateOfBirth);
-        return age >= MIN_AGE ? true : false;
+        return DateTimeUtils.getCurrentAgeFromDoB(dateOfBirth) >= MIN_AGE;
     }
 
     @Override
@@ -215,7 +215,7 @@ public class StartPresenter extends RegisterPresenterBase {
 
     @Override
     protected void onDidRegisterVoIPError(int errorCode, String errorMessage) {
-
+        startView.didErrorVoIP(errorMessage);
     }
 
 }

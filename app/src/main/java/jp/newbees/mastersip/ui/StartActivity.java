@@ -1,5 +1,8 @@
 package jp.newbees.mastersip.ui;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -48,7 +51,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        startPresenter = new StartPresenter(getApplicationContext(),this);
+        startPresenter = new StartPresenter(getApplicationContext(), this);
         btnRegister = (Button) findViewById(R.id.btn_register);
         btnLogin = (Button) findViewById(R.id.btn_login);
         imgFbLogin = (ImageView) findViewById(R.id.img_fb_login);
@@ -71,11 +74,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
-        if (checkUserLogin()) {
-            startPresenter.loginVoIP();
-        } else {
-            handleRegisterException();
-        }
     }
 
 
@@ -119,19 +117,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
         drawableIds.add(R.drawable.slide_tutorial_page_4);
         return drawableIds;
     }
-    /**
-     * User registered
-     * if gender = Male redirect to Register Profile Screen
-     * else redirect to Tip Page Screen
-     */
-    private void handleRegisterException() {
-        if (getUserItem() == null) {
-            return;
-        }
-        Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
-        intent.putExtra(IS_REGISTERED, true);
-        startActivity(intent);
-    }
 
     @Override
     public void didLoginVoIP() {
@@ -169,14 +154,27 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     @Override
     public void didLoginFacebookButNotRegisterOnServer(UserItem userItem) {
-        if (userItem.getGender() == UserItem.FEMALE){
+        if (userItem.getGender() == UserItem.FEMALE) {
             gotoTipScreen();
-        }else {
+        } else {
             gotoMaleProfile();
         }
     }
 
-    private void gotoTipScreen(){
+    @Override
+    public void didBirthdayIsBelow18() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).
+                setMessage(R.string.mess_notify_user_under_the_age_of_18)
+                .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
+    private void gotoTipScreen() {
         Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
         startActivity(intent);
     }
@@ -184,5 +182,10 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     private void gotoMaleProfile() {
         Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
         startActivity(intent);
+    }
+
+    public static void startActivity(Activity activity) {
+        Intent intent = new Intent(activity, StartActivity.class);
+        activity.startActivity(intent);
     }
 }
