@@ -14,6 +14,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.mailbackup.ChangeEmailBackupPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.auth.ForgotPasswordActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -100,8 +101,17 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
         presenter.backToMyMenuFragment(getFragmentManager());
     }
 
-    @OnClick(R.id.btn_change)
-    public void onClick() {
+    @OnClick({R.id.btn_change,R.id.txt_forgot_pass})
+    public void onClick(View view) {
+        if (view.getId() == R.id.btn_change) {
+            handleChangeEmailClick();
+
+        } else if (view.getId() == R.id.txt_forgot_pass) {
+            ForgotPasswordActivity.startActivity(getActivity());
+        }
+    }
+
+    private void handleChangeEmailClick() {
         String message = presenter.validateParam(edtOldPass, edtEmail, edtPassword, edtRePassword);
         if (message.length() == 0) {
             showLoading();
