@@ -110,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initVariables(Bundle savedInstanceState);
 
     public void initHeader(String title) {
-        initHeader(title,null);
+        initHeader(title, null);
     }
 
     public void initHeader(String title, View.OnClickListener onHeaderClickListener) {
@@ -128,6 +128,24 @@ public abstract class BaseActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    public interface OnBackPressed {
+        void onBackPressed();
+    }
+
+    private OnBackPressed onBackPressed;
+
+    public void setOnBackPressed(OnBackPressed onBackPressed) {
+        this.onBackPressed = onBackPressed;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (onBackPressed != null) {
+            onBackPressed.onBackPressed();
+        }
+        super.onBackPressed();
     }
 
     public void changeHeaderText(String title) {
@@ -251,12 +269,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         return gson.fromJson(jUser, UserItem.class);
     }
 
-    protected void onImageBackPressed () {
+    protected void onImageBackPressed() {
         //Default do not anything
     }
 
     /**
      * clear animation and set visible of view after animation finish
+     *
      * @param view
      * @param anim
      * @param visibility

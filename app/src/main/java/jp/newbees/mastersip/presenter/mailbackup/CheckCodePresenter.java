@@ -12,13 +12,6 @@ import jp.newbees.mastersip.presenter.BasePresenter;
 public class CheckCodePresenter extends BasePresenter {
     private CheckCodeListener checkCodeListener;
 
-    public interface CheckCodeListener {
-        void onCheckCodeSuccessful();
-
-        void onCheckCodeError(int errorCode, String errorMessage);
-
-    }
-
     public CheckCodePresenter(Context context, CheckCodeListener checkCodeListener) {
         super(context);
         this.checkCodeListener = checkCodeListener;
@@ -41,5 +34,11 @@ public class CheckCodePresenter extends BasePresenter {
     public void checkCode(String code) {
         CheckCodeTask checkCodeTask = new CheckCodeTask(context, code);
         requestToServer(checkCodeTask);
+    }
+
+    public interface CheckCodeListener {
+        void onCheckCodeSuccessful();
+
+        void onCheckCodeError(int errorCode, String errorMessage);
     }
 }

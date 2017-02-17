@@ -377,12 +377,13 @@
                         android:background="@color/color_gray_bg"/>
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
-                        android:id="@+id/txt_mail_backup_setting"
+                        android:id="@+id/txt_email_backup_setting"
                         style="@style/style_text_view_with_button_my_menu"
                         android:text="@string/mail_address_setting"
                         android:drawableTop="@drawable/ic_mail_backup_setting" />
 
                     <View
+                        android:id="@+id/divider_email_backup"
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
                         android:background="@color/color_gray_bg"/>

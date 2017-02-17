@@ -3,6 +3,7 @@ package jp.newbees.mastersip.utils;
 import android.content.Context;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 
 /**
  * Created by ducpv on 12/15/16.
@@ -118,5 +120,11 @@ public class Utils {
     public static boolean isValidPassword(String password) {
         final Pattern hasSpecialChar = Pattern.compile("[^a-zA-Z0-9 ]");
         return (password.length() >= 6 && !hasSpecialChar.matcher(password).find());
+    }
+
+    public static void showDialogRegisterSuccess(int requestCode, Fragment fragment) {
+        String title = fragment.getContext().getResources().getString(R.string.title_send_confirm_email_backup);
+        String content = fragment.getContext().getResources().getString(R.string.content_send_confirm_email_backup_error);
+        TextDialog.openTextDialog(fragment, requestCode, fragment.getFragmentManager(), content, title, true);
     }
 }

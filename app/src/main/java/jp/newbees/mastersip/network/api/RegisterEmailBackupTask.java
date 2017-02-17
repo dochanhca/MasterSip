@@ -9,25 +9,26 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.model.MailBackupItem;
+import jp.newbees.mastersip.model.EmailBackupItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 
 /**
  * Created by thangit14 on 2/14/17.
  */
-public class RegisterMailBackupTask extends BaseTask<Void>{
-    private MailBackupItem mailBackupItem;
+public class RegisterEmailBackupTask extends BaseTask<Void>{
+    private EmailBackupItem emailBackupItem;
 
-    public RegisterMailBackupTask(Context context, MailBackupItem mailBackupItem) {
+    public RegisterEmailBackupTask(Context context, EmailBackupItem emailBackupItem) {
         super(context);
-        this.mailBackupItem = mailBackupItem;
+        this.emailBackupItem = emailBackupItem;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
-        return JSONUtils.genParamsToRegisterMailBackup(mailBackupItem);
+        return JSONUtils.genParamsToRegisterEmailBackup(emailBackupItem);
     }
 
     @NonNull
@@ -43,6 +44,7 @@ public class RegisterMailBackupTask extends BaseTask<Void>{
 
     @Override
     protected Void didResponse(JSONObject data) throws JSONException {
+        ConfigManager.getInstance().saveBackupEmail(emailBackupItem.getEmail());
         return null;
     }
 }

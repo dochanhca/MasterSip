@@ -25,6 +25,10 @@ public final class Constant {
         public static final String DIS_EXTENSION = "dis_extension";
         public static final String PLATFORM = "platform";
         public static final String PASSWORD_CONFIRMATION = "password_confirmation";
+        public static final String EMAIL_OLD = "email_old";
+        public static final String PASSWORD_OLD = "password_old";
+        public static final String EMAIL_NEW = "email_new";
+        public static final String PASSWORD_NEW = "password_new";
         public static final String NEW_PASS = "new_password";
 
         private JSON() {
@@ -214,6 +218,7 @@ public final class Constant {
         public static final String CHECK_CODE = "adduserpass/check-code";
         public static final String FORGOT_PASS = "forgotpass/forgot-pass";
         public static final String CHANGE_PASS = "forgotpass/change-pass";
+        public static final String CHANGE_EMAIL_BACKUP = "adduserpass/change-user-pass-new";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -287,6 +292,8 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
 
         public static final int MAX_IMAGE_SIZE = 1024;
+        public static final String BACKUP_EMAIL = "BACKUP_EMAIL";
+
     }
 
     public class SOCKET {

@@ -9,12 +9,73 @@
         android:id="@+id/action_bar01"
         layout="@layout/layout_action_bar" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/normal_margin"
+        android:paddingLeft="@dimen/xnormal_margin"
+        android:paddingTop="@dimen/normal_margin">
+
+        <TextView
+            style="@style/origin_style_content_text_view_tiny"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_email_registed"
+            android:textColor="@color/dark_gray" />
+
+        <TextView
+            android:id="@+id/txt_old_email"
+            style="@style/origin_style_content_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test@nail.vn"
+            android:textColor="@color/text_color_gray" />
+
+    </LinearLayout>
+
     <jp.newbees.mastersip.customviews.HiraginoTextView
         style="@style/origin_style_content_text_view_small"
+        android:layout_height="@dimen/title_height"
+        android:layout_marginLeft="@dimen/xnormal_margin"
+        android:layout_marginTop="@dimen/normal_margin"
         android:background="@color/color_gray_bg"
-        android:padding="@dimen/large_margin"
-        android:text="@string/note_register_mail_backup"
-        android:textAlignment="center"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/normal_margin"
+        android:text="@string/label_enter_current_pass"
+        android:textColor="@color/text_color_gray" />
+
+    <jp.newbees.mastersip.customviews.HiraginoEditText
+        android:id="@+id/edt_old_pass"
+        style="@style/origin_style_edit_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edt_input_height"
+        android:background="@color/white"
+        android:hint="@string/hint_old_pass"
+        android:inputType="textPassword"
+        android:paddingRight="@dimen/normal_margin" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_forgot_pass"
+        style="@style/origin_style_content_text_view_xtiny"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"
+        android:background="@color/bg_text_color_gray"
+        android:gravity="right|center"
+        android:paddingRight="@dimen/large_margin"
+        android:text="@string/title_forgot_password" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        style="@style/origin_style_content_text_view_small"
+        android:layout_height="@dimen/title_height"
+        android:layout_marginLeft="@dimen/xnormal_margin"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:background="@color/color_gray_bg"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/normal_margin"
+        android:text="@string/label_new_email_pass"
         android:textColor="@color/text_color_gray" />
 
     <LinearLayout
@@ -28,7 +89,11 @@
             style="@style/origin_style_edit_text_input"
             android:layout_width="match_parent"
             android:layout_height="@dimen/edt_input_height"
-            android:hint="@string/hint_email" />
+            android:hint="@string/hint_new_email"
+            android:imeOptions="actionNext"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <View style="@style/divider" />
 
@@ -54,7 +119,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/btn_change"
         style="@style/style_button_normal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height_default"
@@ -62,7 +127,7 @@
         android:layout_marginRight="@dimen/large_margin"
         android:layout_marginTop="@dimen/large_margin"
         android:background="@drawable/bg_blue_button_large_radius"
-        android:text="@string/register" />
+        android:text="@string/change" />
 
 
 </LinearLayout>
