@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,11 +74,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
-        if (checkUserLogin()) {
-            startPresenter.loginVoIP();
-        } else {
-            handleRegisterException();
-        }
     }
 
 
@@ -120,20 +116,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
         drawableIds.add(R.drawable.slide_tutorial_page_3);
         drawableIds.add(R.drawable.slide_tutorial_page_4);
         return drawableIds;
-    }
-
-    /**
-     * User registered
-     * if gender = Male redirect to Register Profile Screen
-     * else redirect to Tip Page Screen
-     */
-    private void handleRegisterException() {
-        if (getUserItem() == null) {
-            return;
-        }
-        Intent intent = new Intent(getApplicationContext(), RegisterDateOfBirthActivity.class);
-        intent.putExtra(IS_REGISTERED, true);
-        startActivity(intent);
     }
 
     @Override
@@ -200,5 +182,10 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     private void gotoMaleProfile() {
         Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
         startActivity(intent);
+    }
+
+    public static void startActivity(Activity activity) {
+        Intent intent = new Intent(activity, StartActivity.class);
+        activity.startActivity(intent);
     }
 }

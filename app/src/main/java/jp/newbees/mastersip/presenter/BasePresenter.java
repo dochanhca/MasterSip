@@ -20,12 +20,12 @@ public abstract class BasePresenter {
     protected Context context;
     protected String TAG;
 
-    public BasePresenter(Context context){
+    public BasePresenter(Context context) {
         this.context = context;
         this.TAG = this.getClass().getSimpleName();
     }
 
-    protected void requestToServer(final BaseTask task){
+    protected void requestToServer(final BaseTask task) {
 
         TaskManager.requestTask(task, new Response.Listener() {
             @Override
@@ -39,14 +39,14 @@ public abstract class BasePresenter {
                     handleInvalidToken();
                 } else {
                     Logger.e(TAG, errorCode + " : " + errorMessage);
-                    didErrorRequestTask(task,errorCode,errorMessage);
+                    didErrorRequestTask(task, errorCode, errorMessage);
                 }
             }
         });
     }
 
 
-    private void handleInvalidToken(){
+    private void handleInvalidToken() {
 
     }
 
@@ -60,5 +60,5 @@ public abstract class BasePresenter {
 
     protected abstract void didResponseTask(BaseTask task);
 
-    protected abstract void didErrorRequestTask(BaseTask task,int errorCode,String errorMessage);
+    protected abstract void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage);
 }

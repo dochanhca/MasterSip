@@ -13,7 +13,6 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.GetListRoomTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/4/17.
@@ -91,7 +90,6 @@ public class ChatGroupPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof GetListRoomTask) {
-            Logger.e(TAG, errorMessage);
             chatGroupView.didLoadChatRoomFailure(errorCode, errorMessage);
         }
     }

@@ -151,7 +151,15 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
 
         txtActionBarTitle.setText(userItem.getUsername());
-        imgAvatar.setImageResource(defaultAvatar);
+
+        if (userItem.getAvatarItem() == null) {
+            imgAvatar.setImageResource(defaultAvatar);
+        } else {
+            Glide.with(this).load(userItem.getAvatarItem().getOriginUrl())
+                    .placeholder(defaultAvatar)
+                    .error(defaultAvatar)
+                    .centerCrop().into(imgAvatar);
+        }
         txtPoint.setText("" + userItem.getCoin());
 
         initViewWithGender(userItem);
@@ -287,11 +295,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
             SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
         }
-    }
-
-    private void handleLogout() {
-        showLoading();
-        presenter.requestLogout();
     }
 
     @Override
