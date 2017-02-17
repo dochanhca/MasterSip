@@ -10,6 +10,7 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.model.EmailBackupItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.mailbackup.ChangeEmailBackupPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
@@ -37,6 +38,7 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
     TextView edtOldPass;
 
     private ChangeEmailBackupPresenter presenter;
+    private UserItem currentUser;
 
     public static ChangeEmailBackupFragment newInstance() {
         ChangeEmailBackupFragment fragment = new ChangeEmailBackupFragment();
@@ -52,7 +54,8 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
     protected void init(View mRoot, Bundle savedInstanceState) {
         setFragmentTitle(getResources().getString(R.string.title_change_email_backup_fragment));
         ButterKnife.bind(this, mRoot);
-        txtOldEmail.setText(ConfigManager.getInstance().getBackupEmail());
+        currentUser = ConfigManager.getInstance().getCurrentUser();
+        txtOldEmail.setText(currentUser.getEmail());
         presenter = new ChangeEmailBackupPresenter(getContext(), this);
     }
 
@@ -112,7 +115,7 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
         EmailBackupItem item = new EmailBackupItem();
         item.setEmail(edtEmail.getText().toString());
         item.setPass(edtPassword.getText().toString());
-        item.setExtension(ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension());
+        item.setExtension(currentUser.getSipItem().getExtension());
         item.setOldEmail(txtOldEmail.getText().toString());
         item.setOldPass(edtOldPass.getText().toString());
         return item;

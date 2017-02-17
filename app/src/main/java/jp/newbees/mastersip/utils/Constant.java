@@ -292,8 +292,6 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
 
         public static final int MAX_IMAGE_SIZE = 1024;
-        public static final String BACKUP_EMAIL = "BACKUP_EMAIL";
-
     }
 
     public class SOCKET {
