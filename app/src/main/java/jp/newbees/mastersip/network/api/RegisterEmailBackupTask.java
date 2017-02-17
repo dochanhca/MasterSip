@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.EmailBackupItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;

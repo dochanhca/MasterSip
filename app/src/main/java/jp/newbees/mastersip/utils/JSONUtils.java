@@ -602,7 +602,6 @@ public class JSONUtils {
         userItem.setSipItem(sipItem);
 
         ConfigManager.getInstance().saveRegisterToken(registerToken);
-        ConfigManager.getInstance().saveUser(userItem);
         ConfigManager.getInstance().saveAuthId(userID);
         return userItem;
     }

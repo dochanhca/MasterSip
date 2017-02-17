@@ -266,7 +266,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.txt_notify_setting:
                 break;
             case R.id.txt_email_backup_setting:
-                if (ConfigManager.getInstance().getBackupEmail().length() == 0) {
+                if (ConfigManager.getInstance().getCurrentUser().getEmail().length() == 0) {
                     MyMenuContainerFragment.showRegisterEmailBackupFragment(getActivity());
                 } else {
                     MyMenuContainerFragment.showChangeEmailBackupFragment(getActivity());
