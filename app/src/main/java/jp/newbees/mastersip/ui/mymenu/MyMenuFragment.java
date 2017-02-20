@@ -241,7 +241,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             R.id.group_avatar, R.id.layout_my_notify, R.id.txt_online_list, R.id.txt_call_history,
             R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_email_backup_setting,
             R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
-            R.id.layout_common_guide, R.id.layout_profile_detail})
+            R.id.layout_common_guide, R.id.layout_profile_detail, R.id.btn_logout})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_buy_point:
@@ -283,6 +283,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.layout_profile_detail:
                 break;
+            case R.id.btn_logout:
+                handleLogout();
+                break;
             default:
                 break;
         }
@@ -308,12 +311,23 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         }
     }
 
+    private void handleLogout() {
+        showLoading();
+        presenter.requestLogout();
+    }
+
     @Override
     public void didLogout() {
         disMissLoading();
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void didLogoutError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
     @Override
@@ -344,9 +358,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void didUploadAvatarFailure(String errorMessage) {
+    public void didUploadAvatarFailure(int errorCode, String errorMessage) {
         uploadingAvatar = false;
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        showToastExceptionVolleyError(errorCode, errorMessage);
         groupUploadAvatar.setVisibility(View.GONE);
         imgMaskApproving.setVisibility(View.INVISIBLE);
         txtApproving.setVisibility(View.INVISIBLE);
@@ -412,8 +426,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void didDeleteAvatarFailure() {
+    public void didDeleteAvatarFailure(int erroCode, String errorMessage) {
         disMissLoading();
+        showToastExceptionVolleyError(erroCode, errorMessage);
     }
 
     @Override

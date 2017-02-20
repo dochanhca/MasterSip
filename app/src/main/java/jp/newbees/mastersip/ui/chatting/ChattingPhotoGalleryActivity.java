@@ -54,6 +54,7 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
 
     @Override
     public void didLoadChattingPhotos(ChattingGalleryItem chattingGalleryItem) {
+        makeAllImageApproved(chattingGalleryItem);
         this.galleryItem = chattingGalleryItem;
         galleryModeFourAdapter.addAll(chattingGalleryItem.getPhotos());
         disMissLoading();
@@ -66,6 +67,7 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
 
     @Override
     public void didLoadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem) {
+        makeAllImageApproved(chattingGalleryItem);
         galleryModeFourAdapter.addAll(chattingGalleryItem.getPhotos());
         updatePhotos(chattingGalleryItem);
         disMissLoading();
@@ -75,6 +77,16 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.enter_from_top, R.anim.exit_to_bot);
+    }
+
+    /**
+     * Trick because images from chat room don't need approve
+     * @param chattingGalleryItem
+     */
+    private void makeAllImageApproved(ChattingGalleryItem chattingGalleryItem) {
+        for (ImageItem item : chattingGalleryItem.getPhotos()) {
+            item.setImageStatus(ImageItem.IMAGE_APPROVED);
+        }
     }
 
     private void updatePhotos(ChattingGalleryItem chattingGallery) {

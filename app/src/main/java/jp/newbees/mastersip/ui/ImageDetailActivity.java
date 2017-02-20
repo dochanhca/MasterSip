@@ -214,6 +214,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             EventBus.getDefault().post(new ReLoadProfileEvent(true));
             super.onBackPressed();
         }
+        updateHeaderView();
         galleryPagerAdapter.notifyDataSetChanged();
     }
 
@@ -226,6 +227,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     @Override
     public void didLoadMorePhotos(GalleryItem galleryItem) {
         isLoadingMorePhotos = false;
+        makeAllImageApproved(galleryItem);
         updatePhotos(galleryItem);
         disMissLoading();
         viewPagerGallery.setCurrentItem(++currentPosition);
@@ -242,6 +244,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     public void didLoadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem) {
         isLoadingMorePhotos = false;
         disMissLoading();
+        makeAllImageApproved(chattingGalleryItem);
         updatePhotos(chattingGalleryItem);
         viewPagerGallery.setCurrentItem(++currentPosition);
     }
@@ -258,6 +261,18 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             EventBus.getDefault().post(new ReLoadProfileEvent(true));
         }
         super.onBackPressed();
+    }
+
+    /**
+     * Trick because images from chat room don't need approve
+     * @param galleryItem
+     */
+    private void makeAllImageApproved(GalleryItem galleryItem) {
+        if (viewType == RECEIVED_PHOTOS_FROM_CHAT) {
+            for (ImageItem item : galleryItem.getPhotos()) {
+                item.setImageStatus(ImageItem.IMAGE_APPROVED);
+            }
+        }
     }
 
     private void confirmDeleteImage() {
@@ -302,6 +317,11 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
         } else {
             layoutBottomAction.setVisibility(View.VISIBLE);
         }
+        updateHeaderView();
+
+    }
+
+    private void updateHeaderView() {
         StringBuilder header = new StringBuilder();
         header.append(currentPosition + 1).append("/").append(photos.size());
         txtActionBarTitle.setText(header.toString());

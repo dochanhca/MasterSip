@@ -85,9 +85,9 @@ public class MyMenuPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof LogoutTask) {
-            menuView.didLogout();
+            menuView.didLogoutError(errorCode, errorMessage);
         } else if (task instanceof DeleteImageTask) {
-            menuView.didDeleteAvatarFailure();
+            menuView.didDeleteAvatarFailure(errorCode, errorMessage);
         }
     }
 
@@ -141,7 +141,7 @@ public class MyMenuPresenter extends BasePresenter {
         }, new BaseUploadTask.ErrorListener() {
             @Override
             public void onErrorListener(int errorCode, String errorMessage) {
-                menuView.didUploadAvatarFailure(errorMessage);
+                menuView.didUploadAvatarFailure(errorCode, errorMessage);
             }
         }, new Response.ProgressListener() {
             @Override
@@ -235,6 +235,8 @@ public class MyMenuPresenter extends BasePresenter {
     public interface MyMenuView {
         void didLogout();
 
+        void didLogoutError(int errorCode, String errorMessage);
+
         void didLoadMyProfile(UserItem userItem);
 
         void didLoadGallery(GalleryItem galleryItem);
@@ -243,13 +245,13 @@ public class MyMenuPresenter extends BasePresenter {
 
         void onUploadAvatarProgressChanged(float percent);
 
-        void didUploadAvatarFailure(String errorMessage);
+        void didUploadAvatarFailure(int errorCode, String errorMessage);
 
         void onStartUploadAvatarBitmap(String filePath);
 
         void didDeleteAvatar();
 
-        void didDeleteAvatarFailure();
+        void didDeleteAvatarFailure(int errorCode, String errorMessage);
 
         void didUploadPhotoGallery(ImageItem photo);
 

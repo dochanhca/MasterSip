@@ -356,7 +356,8 @@ public class BaseChatItem implements Parcelable {
     }
 
     public boolean isOwner() {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        return this.getOwner().getUserId().equalsIgnoreCase(currentUser.getUserId());
+        String currentUser = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        return this.getOwner().getSipItem().getExtension().
+                equalsIgnoreCase(currentUser);
     }
 }
