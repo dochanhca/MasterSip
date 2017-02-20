@@ -45,7 +45,7 @@
     <string name="message">チャット</string>
     <string name="leg">足あと</string>
     <string name="heart">フォロワー</string>
-    <string name="menu">マイメニュー</string>
+    <string name="menu">メニュー</string>
     <string name="enable_location">位置情報を利用する</string>
     <string name="mess_enable_gps">You must enable your location access</string>
     <string name="err_user_name_empty">氏名を入力してください</string>
@@ -317,7 +317,7 @@
     <string name="content_code_success_register_new_mail_backup">メールアドレスとパスワードの登録が\n完了しました。</string>
     <string name="title_code_success_register_new_mail_backup">登録完了</string>
     <string name="title_code_success_register_change_mail_backup">変更完了</string>
-    <string name="content_code_success_register_change_mail_backup">メールアドレスとパスワードの変更が/n完了しました。</string>
+    <string name="content_code_success_register_change_mail_backup">メールアドレスとパスワードの変更が\n完了しました。</string>
     <string name="content_different_code">認証コードが違います。</string>
     <string name="notice">お知らせ</string>
     <string name="call_history">通話履歴</string>

@@ -60,7 +60,8 @@ public class ExceptionVolleyHelper {
             case Constant.Error.EMAIL_OR_PASS_IS_WRONG:
                 showShortToast(R.string.err_wrong_email_or_pass);
                 return true;
-            case Constant.Error.RESET_CODE_IS_NOT_EXIST | Constant.Error.RESET_CODE_IS_NOT_MATCH:
+            case Constant.Error.RESET_CODE_IS_NOT_EXIST | Constant.Error.RESET_CODE_IS_NOT_MATCH
+                    | Constant.Error.RESET_CODE_INVALID:
                 showShortToast(R.string.err_invalid_code);
                 return true;
             default:

@@ -59,6 +59,10 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
         return photos.size();
     }
 
+    public void addAll(List<ImageItem> data) {
+        this.photos.addAll(data);
+        notifyDataSetChanged();
+    }
     public void setPhotos(List<ImageItem> photos) {
         this.photos = photos;
     }

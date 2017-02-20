@@ -49,6 +49,7 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
     private static final int VIEW_ALL_PHOTO = 12;
 
     public static final int MY_PHOTOS = 1;
+    public static final int OTHER_USER_PHOTOS = 3;
     public static final int RECEIVED_PHOTOS_FROM_CHAT = 2;
 
     @BindView(R.id.view_pager_gallery)
@@ -280,12 +281,17 @@ public class ImageDetailActivity extends CallCenterActivity implements ImageDeta
             txtSavePhoto.setVisibility(View.VISIBLE);
             txtReport.setVisibility(View.VISIBLE);
             btnViewAll.setVisibility(View.GONE);
-        } else {
+        } else if (viewType == MY_PHOTOS) {
             txtChangePhoto.setVisibility(View.VISIBLE);
             txtDeletePhoto.setVisibility(View.VISIBLE);
             txtSavePhoto.setVisibility(View.GONE);
             txtReport.setVisibility(View.GONE);
             btnViewAll.setVisibility(View.VISIBLE);
+        } else {
+            txtChangePhoto.setVisibility(View.GONE);
+            txtDeletePhoto.setVisibility(View.GONE);
+            txtSavePhoto.setVisibility(View.GONE);
+            txtReport.setVisibility(View.GONE);
         }
     }
 

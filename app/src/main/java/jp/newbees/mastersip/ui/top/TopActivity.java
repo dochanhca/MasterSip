@@ -20,7 +20,6 @@ import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
-import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -39,7 +38,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     private static final int CHAT_GROUP_FRAGMENT = 1;
     private static final int FOOT_PRINT_FRAGMENT = 2;
     private static final int FLOW_FRAGMENT = 3;
-    private static final int MY_MENU_FRAGMENT = 4;
+    private static final int MY_MENU_CONTAINER_FRAGMENT = 4;
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
@@ -59,7 +58,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
         @Override
         public void onPageSelected(int position) {
-            if (position == MY_MENU_FRAGMENT) {
+            if (position == MY_MENU_CONTAINER_FRAGMENT) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) getFragmentForPosition(position);
                 if (null != fragment) fragment.onTabSelected();
             }
@@ -122,9 +121,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public void onReloadProfileEvent(ReLoadProfileEvent event) {
         if (event.isNeedReload()) {
             FragmentManager manager = getSupportFragmentManager();
-            MyMenuFragment myMenuFragment = (MyMenuFragment) manager.
-                    findFragmentByTag(makeFragmentName(viewPager.getId(), MY_MENU_FRAGMENT));
-
+            MyMenuContainerFragment myMenuFragment = (MyMenuContainerFragment) manager.
+                    findFragmentByTag(makeFragmentName(viewPager.getId(), MY_MENU_CONTAINER_FRAGMENT));
             myMenuFragment.reloadData();
         }
         Logger.e(TAG, "" + event.isNeedReload());
@@ -156,7 +154,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
                     return FootPrintFragment.newInstance();
                 case FLOW_FRAGMENT:
                     return FollowFragment.newInstance();
-                case MY_MENU_FRAGMENT:
+                case MY_MENU_CONTAINER_FRAGMENT:
                     return MyMenuContainerFragment.newInstance();
                 default:
                     return null;

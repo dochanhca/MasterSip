@@ -77,7 +77,7 @@ public class RegisterEmailBackupFragment extends BaseFragment implements Registe
     @Override
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == CONFIRM_CHECK_CODE_DIALOG) {
-            MyMenuContainerFragment.showCheckCodeFragment(getActivity(), CheckCodeFragment.CallFrom.NEW_BACKUP_EMAIL);
+            MyMenuContainerFragment.showCheckCodeFragmentFromRegisterEmailBackUp(getActivity());
         }
     }
 

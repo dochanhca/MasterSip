@@ -57,10 +57,17 @@ public class MyMenuContainerFragment extends BaseFragment {
         performShowFragment(activity, fragment);
     }
 
-    public static void showCheckCodeFragment(FragmentActivity activity, CheckCodeFragment.CallFrom callFrom) {
-        BaseFragment fragment = CheckCodeFragment.newInstance(callFrom);
+    public static void showCheckCodeFragmentFromRegisterEmailBackUp(FragmentActivity activity) {
+        BaseFragment fragment = CheckCodeFragment.newInstanceFromRegisterBackupEmail();
         performShowFragment(activity, fragment);
     }
+
+    public static void showCheckCodeFragmentFromChangeEmailBackUp(FragmentActivity activity,
+                                                                  String email) {
+        BaseFragment fragment = CheckCodeFragment.newInstanceFromChangeBackupEmail(email);
+        performShowFragment(activity, fragment);
+    }
+
 
     private static void showFragmentAndAddToBackstack(FragmentActivity activity, BaseFragment fragment) {
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
@@ -109,7 +116,16 @@ public class MyMenuContainerFragment extends BaseFragment {
             showFragmentAndAddToBackstack(activity, fragment);
         } else {
             FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragment_my_menu_container, fragment).commit();
+            transaction.add(R.id.fragment_my_menu_container, fragment, MyMenuFragment.class.getName()).commit();
+        }
+    }
+
+    public void reloadData() {
+        MyMenuFragment fragment = (MyMenuFragment) getFragmentManager().
+                findFragmentByTag(MyMenuFragment.class.getName());
+
+        if (null != fragment) {
+            fragment.reloadData();
         }
     }
 }

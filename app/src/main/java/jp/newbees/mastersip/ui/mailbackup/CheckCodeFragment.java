@@ -12,12 +12,15 @@ import jp.newbees.mastersip.presenter.mailbackup.CheckCodePresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by thangit14 on 2/14/17.
  */
 public class CheckCodeFragment extends BaseFragment implements CheckCodePresenter.CheckCodeListener, TextDialog.OnTextDialogClick {
+
+    private static final String EMAIL = "EMAIL";
 
     @BindView(R.id.edt_code)
     HiraginoEditText edtCode;
@@ -43,6 +46,10 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
 
     @Override
     public void onCheckCodeSuccessful() {
+        if (callFrom == CallFrom.CHANGE_BACKUP_EMAIL) {
+            String newEmail = getArguments().getString(EMAIL);
+            ConfigManager.getInstance().saveBackupEmail(newEmail);
+        }
         disMissLoading();
         showDialogSuccessful();
     }
@@ -50,7 +57,8 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
     @Override
     public void onCheckCodeError(int errorCode, String errorMessage) {
         disMissLoading();
-        if (errorCode == Constant.Error.RESET_CODE_IS_NOT_MATCH) {
+        if (errorCode == Constant.Error.RESET_CODE_IS_NOT_MATCH |
+                errorCode == Constant.Error.RESET_CODE_INVALID) {
             showMessageDialog(getResources().getString(R.string.content_different_code));
         } else {
             showToastExceptionVolleyError(errorCode, errorMessage);
@@ -94,15 +102,24 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
         TextDialog.openTextDialog(this, SUCCESS_DIALOG, getFragmentManager(), content, title, true);
     }
 
-    public static CheckCodeFragment newInstance(CallFrom callFrom) {
+    private static CheckCodeFragment newInstance(CallFrom callFrom, String email) {
         Bundle args = new Bundle();
         args.putSerializable(CALL_FROM, callFrom);
+        args.putString(EMAIL, email);
         CheckCodeFragment fragment = new CheckCodeFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public enum CallFrom {
+    public static CheckCodeFragment newInstanceFromChangeBackupEmail(String email) {
+        return newInstance(CallFrom.CHANGE_BACKUP_EMAIL, email);
+    }
+
+    public static CheckCodeFragment newInstanceFromRegisterBackupEmail() {
+        return newInstance(CallFrom.NEW_BACKUP_EMAIL, "");
+    }
+
+    private enum CallFrom {
         NEW_BACKUP_EMAIL, CHANGE_BACKUP_EMAIL
     }
 }

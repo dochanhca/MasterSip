@@ -92,7 +92,8 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
     @Override
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == CONFIRM_CHECK_CODE_DIALOG) {
-            MyMenuContainerFragment.showCheckCodeFragment(getActivity(), CheckCodeFragment.CallFrom.CHANGE_BACKUP_EMAIL);
+            MyMenuContainerFragment.showCheckCodeFragmentFromChangeEmailBackUp(getActivity(),
+                    edtEmail.getText().toString().trim());
         }
     }
 
