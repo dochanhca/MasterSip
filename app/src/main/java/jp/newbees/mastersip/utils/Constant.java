@@ -258,6 +258,7 @@ public final class Constant {
         public static final int EMAIL_IS_NOT_EXIST = 1041;
         public static final int RESET_CODE_IS_NOT_MATCH = 1501;
         public static final int RESET_CODE_IS_NOT_EXIST = 1500;
+        public static final int RESET_CODE_INVALID = 2011;
         public static final int INVALID_GENDER = 1002;
         public static final int NO_MESSAGE_TO_UPDATE_STATUS = 1410;
         public static final int INVALID_PASSWORD = 1009;

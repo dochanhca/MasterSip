@@ -40,11 +40,12 @@ import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.ImageDetailActivity;
+import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
-import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -132,7 +133,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
-    private List<ImageItem> imageItems;
+    private GalleryItem galleryItem;
     private boolean isLoading;
 
     private UserPhotoAdapter userPhotoAdapter;
@@ -251,17 +252,16 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     public void didGetListPhotos(GalleryItem galleryItem) {
-        imageItems.clear();
-        imageItems.addAll(galleryItem.getPhotos());
-        userPhotoAdapter.notifyDataSetChanged();
+        this.galleryItem = galleryItem;
+        userPhotoAdapter.addAll(galleryItem.getPhotos());
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void didLoadMoreListPhotos(GalleryItem galleryItem) {
         isLoading = false;
-        imageItems.addAll(galleryItem.getPhotos());
-        userPhotoAdapter.notifyDataSetChanged();
+        userPhotoAdapter.addAll(galleryItem.getPhotos());
+        updatePhotos(galleryItem);
     }
 
     @Override
@@ -316,6 +316,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onUserImageClick(int position) {
         //do something
+        ImageDetailActivity.startActivity(getActivity(), galleryItem, position,ImageDetailActivity.OTHER_USER_PHOTOS);
     }
 
     @Override
@@ -345,6 +346,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         profileDetailPresenter.checkVoiceCall(userItem);
     }
 
+    private void updatePhotos(GalleryItem galleryItem) {
+        List<ImageItem> tempPhotos = this.galleryItem.getPhotos();
+        this.galleryItem = galleryItem;
+        tempPhotos.addAll(galleryItem.getPhotos());
+        this.galleryItem.setImageItems(tempPhotos);
+    }
+
     private void initVariables() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -361,8 +369,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     private void initRecyclerUserImage() {
-        imageItems = new ArrayList<>();
-        userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(), imageItems);
+        userPhotoAdapter = new UserPhotoAdapter(getActivity().getApplicationContext(),
+                new ArrayList<ImageItem>());
         userPhotoAdapter.setOnItemClickListener(this);
 
         RecyclerView.LayoutManager mLayoutManager;
