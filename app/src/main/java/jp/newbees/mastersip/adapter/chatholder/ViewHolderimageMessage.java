@@ -12,6 +12,7 @@ import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 1/25/17.
@@ -48,11 +49,18 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
         txtState.setVisibility(
                 imageChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
                         View.VISIBLE : View.GONE);
+        int w = Utils.getScreenWidth(getContext());
+        int h = Utils.getScreenHeight(getContext());
 
         int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
         Glide.with(getContext()).load(imageChatItem.getImageItem().getThumbUrl())
+                .override(w / 2, h / 2)
                 .placeholder(defaultImageId)
-                .error(defaultImageId).into(imgChat);
+                .error(defaultImageId)
+                .thumbnail(0.1f)
+                .fitCenter()
+                .dontAnimate()
+                .into(imgChat);
     }
 
 }
