@@ -284,4 +284,14 @@ final public class ConfigManager {
         userItem.setEmail(email);
         saveUser(userItem);
     }
+
+    public void saveFirstTimeChattingFlag() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.CHATTING_FLAG, true);
+        editor.commit();
+    }
+
+    public boolean getFirstTimeChattingFlag() {
+        return sharedPreferences.getBoolean(Constant.Application.CHATTING_FLAG, false);
+    }
 }
