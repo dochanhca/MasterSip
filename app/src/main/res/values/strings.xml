@@ -356,4 +356,11 @@
     <string name="mess_notify_user_under_the_age_of_18">お客様のfacebook情報では登録できません。MasterSIPでは18歳未満のご利用を禁止しています。</string>
     <string name="close">閉じる</string>
     <string name="dummy_splash">ダミー \nスプラッシュ</string>
+    <string name="there_is_no_conversation_yet">まだチャットでのやりとりが0件です。</string>
+    <string name="mess_chat_room_for_boy">まずはチャットやおしゃべりができる女の子を
+探しましょう。</string>
+    <string name="mess_chat_room_for_girl">まずは暇な男性を探してどんどん「お小遣い」を
+稼ぎましょう。</string>
+    <string name="i_will_go_looking_for_a_girl">女の子を探しに行く</string>
+
 </resources>

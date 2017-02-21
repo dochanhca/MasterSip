@@ -211,4 +211,8 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         return fragment;
     }
+
+    public void showSearchFragment() {
+        viewPager.setCurrentItem(0, false);
+    }
 }

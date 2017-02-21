@@ -289,6 +289,7 @@ public final class Constant {
         public static final int MIN_AGE = 18;
         public static final int MAX_AGE = 120;
         public static final String SETTING_FILTER = "SETTING_FILTER";
+        public static final String CHATTING_FLAG = "ChatingFlag";
         public static final int LAST_LOGIN = 1;
         public static final int LAST_REGISTER = 2;
 
