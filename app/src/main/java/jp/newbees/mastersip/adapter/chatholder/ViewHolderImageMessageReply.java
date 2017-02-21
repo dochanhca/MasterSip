@@ -12,6 +12,7 @@ import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 1/25/17.
@@ -46,16 +47,24 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
         ImageChatItem imageChatItem = (ImageChatItem) item;
         txtTime.setText(imageChatItem.getShortDate());
 
+        int w = Utils.getScreenWidth(getContext());
+        int h = Utils.getScreenHeight(getContext());
         int defaultChatImage = ConfigManager.getInstance().getImageCalleeDefault();
         Glide.with(getContext()).load(imageChatItem.getImageItem().getThumbUrl())
+                .override(w / 2, h / 2)
                 .placeholder(defaultChatImage)
-                .error(defaultChatImage).into(imgChat);
+                .error(defaultChatImage)
+                .fitCenter()
+                .thumbnail(0.1f)
+                .dontAnimate()
+                .into(imgChat);
 
         int defaultAvatar = ConfigManager.getInstance().getImageCalleeDefault();
         if (imageChatItem.getOwner().getAvatarItem() != null) {
             Glide.with(getContext()).load(imageChatItem.getOwner().getAvatarItem().getThumbUrl())
                     .placeholder(defaultAvatar)
-                    .error(defaultAvatar).into(imgAvatar);
+                    .error(defaultAvatar)
+                    .into(imgAvatar);
         } else {
             imgAvatar.setImageResource(defaultAvatar);
         }

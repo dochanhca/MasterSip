@@ -31,8 +31,7 @@
             android:layout_width="@dimen/size_50dp"
             android:layout_height="@dimen/margin_50"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_10dp"
-            android:src="@drawable/ic_boy_default" />
+            android:layout_marginTop="@dimen/_10dp" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_content"

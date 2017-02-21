@@ -226,6 +226,9 @@ public class JSONUtils {
     }
 
     private static BaseChatItem parseImageChatItem(JSONObject jData, UserItem me) throws JSONException {
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
+        String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
+
         ImageChatItem imageChatItem = new ImageChatItem();
 
         int roomType = jData.getInt(Constant.JSON.ROOM_TYPE);
@@ -233,8 +236,18 @@ public class JSONUtils {
         imageChatItem.setChatType(CHAT_IMAGE);
         imageChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
         imageChatItem.setRoomId(jData.getInt(Constant.JSON.ROOM_ID));
+        UserItem userItem = new UserItem();
+        SipItem sipItem = new SipItem(extensionSender);
+        userItem.setSipItem(sipItem);
 
-        imageChatItem.setOwner(me);
+        if (jSender.optBoolean(Constant.JSON.AVATAR)) {
+            ImageItem myAvatar = new ImageItem();
+            myAvatar.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
+            myAvatar.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(myAvatar);
+        }
+
+        imageChatItem.setOwner(userItem);
         imageChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
         imageChatItem.setShortDate(DateTimeUtils.getShortTime(imageChatItem.getFullDate()));
 
@@ -251,6 +264,7 @@ public class JSONUtils {
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
         DeletedChatItem deletedChatItem = new DeletedChatItem();
         JSONObject jDeletedItem = jData.getJSONObject(Constant.JSON.DELETED);
+        String extensionSender = jData.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.EXTENSION);
         String content = jDeletedItem.getString(Constant.JSON.CONTENT);
 
         deletedChatItem.setOwner(sender);
@@ -282,7 +296,7 @@ public class JSONUtils {
         userItem.setAvatarItem(imageItem);
         userItem.setSipItem(sipItem);
 
-        textChatItem.setOwner(me);
+        textChatItem.setOwner(userItem);
         textChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
         textChatItem.setShortDate(DateTimeUtils.getShortTime(textChatItem.getFullDate()));
         return textChatItem;

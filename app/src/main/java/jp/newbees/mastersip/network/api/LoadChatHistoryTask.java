@@ -23,7 +23,7 @@ import static jp.newbees.mastersip.utils.JSONUtils.getMembers;
 /**
  * Created by thangit14 on 1/17/17.
  */
-public class LoadChatHistoryTask extends BaseTask<LoadChatHistoryResultItem>{
+public class LoadChatHistoryTask extends BaseTask<LoadChatHistoryResultItem> {
     private Context context;
     private String userID;
     private String friendUserId;
@@ -46,7 +46,7 @@ public class LoadChatHistoryTask extends BaseTask<LoadChatHistoryResultItem>{
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.CHAT_HISTORY+"/"+userID+"/"+friendUserId+"/"+lastMessageId;
+        return Constant.API.CHAT_HISTORY + "/" + userID + "/" + friendUserId + "/" + lastMessageId;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class LoadChatHistoryTask extends BaseTask<LoadChatHistoryResultItem>{
     @Override
     protected LoadChatHistoryResultItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        HashMap<String,UserItem> members = getMembers(jData.getJSONArray(Constant.JSON.MEMBERS));
+        HashMap<String, UserItem> members = getMembers(jData.getJSONArray(Constant.JSON.MEMBERS));
         ArrayList<BaseChatItem> baseChatItems = JSONUtils.parseChatHistory(jData, members, context);
         return new LoadChatHistoryResultItem(members, baseChatItems);
     }

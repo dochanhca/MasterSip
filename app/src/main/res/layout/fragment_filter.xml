@@ -170,6 +170,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_15"
             android:background="@drawable/bg_corner_layout">
 
             <jp.newbees.mastersip.customviews.HiraginoButton

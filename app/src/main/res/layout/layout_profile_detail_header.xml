@@ -12,8 +12,7 @@
             android:id="@+id/img_avatar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/profile_detail_header_h"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_girl_default" />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"

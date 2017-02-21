@@ -561,7 +561,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/action_bar_h"
                     android:layout_marginTop="@dimen/common_margin"
-                    android:layout_marginBottom="@dimen/action_bar_h"
                     android:background="@drawable/bg_item_lv_common">
                     <ImageView
                         android:id="@+id/img_search"
@@ -589,6 +588,17 @@
                         android:layout_marginRight="@dimen/margin_10"
                         android:src="@drawable/ic_arrow_right_blue" />
                 </RelativeLayout>
+
+                <jp.newbees.mastersip.customviews.HiraginoButton
+                    android:id="@+id/btn_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:background="@color/colorPrimary"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_15"
+                    android:layout_marginBottom="@dimen/action_bar_h"
+                    android:text="@string/logout"/>
             </LinearLayout>
 
         </RelativeLayout>

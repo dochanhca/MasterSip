@@ -58,10 +58,6 @@ public class PacketManager {
         };
     }
 
-    public static void initInstance() {
-        instance = new PacketManager();
-    }
-
     public final BaseSocketProcessor getProcessor(PacketItem data) {
         String action = data.getAction();
         BaseSocketProcessor processor = null;
