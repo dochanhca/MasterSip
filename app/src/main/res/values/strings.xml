@@ -362,5 +362,11 @@
     <string name="mess_chat_room_for_girl">まずは暇な男性を探してどんどん「お小遣い」を
 稼ぎましょう。</string>
     <string name="i_will_go_looking_for_a_girl">女の子を探しに行く</string>
+    <string name="read_all">すべて既読</string>
+    <string name="edit">編集</string>
+    <string name="would_you_like_mark_all_message_as_read">すべてのメッセージを既読にしますか？</string>
+    <string name="done">完了</string>
+    <string name="delete_selected_message">選択したメッセージを削除しますか？</string>
+    <string name="remove_all">すべて解除</string>
 
 </resources>

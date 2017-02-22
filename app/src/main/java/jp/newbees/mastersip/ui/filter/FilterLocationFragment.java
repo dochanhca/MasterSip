@@ -31,7 +31,6 @@ public class FilterLocationFragment extends BaseFragment implements
     private final String TAG = getClass().getSimpleName();
 
     private RecyclerView recyclerLocation;
-    private ImageView imgBack;
     private ImageView btnUnCheckAll;
 
     private List<LocationItem> locationItems;

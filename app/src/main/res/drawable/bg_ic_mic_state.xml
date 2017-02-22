@@ -5,7 +5,7 @@
     <item android:state_pressed="true" android:drawable="@drawable/ic_on_mic"/>
     <!--currently pressed turning the toggle off-->
     <item android:state_checked="true" android:drawable="@drawable/ic_off_mic" />
-    <!--not pressed default checked state-->
+    <!--not pressed default selected state-->
     <item android:drawable="@drawable/ic_on_mic"/>
-    <!--default non-pressed non-checked-->
+    <!--default non-pressed non-selected-->
 </selector>

@@ -42,7 +42,7 @@
                 android:id="@+id/btn_un_check_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/bg_img_primary_dark_x_small" />
+                android:src="@drawable/bg_img_primary_dark_x_small_selector" />
             <jp.newbees.mastersip.customviews.HiraginoTextView
                 style="@style/style_button_small"
                 android:layout_width="wrap_content"

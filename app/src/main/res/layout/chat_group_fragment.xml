@@ -7,22 +7,50 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/ll_action_bar"
+        android:id="@+id/layout_action_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_search_height"
         android:background="@color/colorPrimary">
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_read_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:background="@drawable/bg_img_primary_dark_x_small_selector"
+            android:gravity="center"
+            android:padding="@dimen/normal_margin"
+            android:text="@string/read_all"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_13" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_action_bar_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:paddingLeft="@dimen/small_margin"
+            android:paddingLeft="@dimen/_15dp"
             android:paddingRight="@dimen/small_margin"
             android:text="Title"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_action_bar" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txt_action_bar_title"
+            android:layout_alignBottom="@+id/txt_action_bar_title"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/margin_10"
+            android:background="@drawable/bg_btn_primary_dark_xx_small_selector"
+            android:gravity="center"
+            android:padding="@dimen/normal_margin"
+            android:text="@string/edit"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_13" />
     </RelativeLayout>
 
     <LinearLayout
@@ -30,8 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/common_margin"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_message"
@@ -46,31 +74,78 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_20"
-            android:text="@string/mess_chat_room_for_boy"
-            />
+            android:text="@string/mess_chat_room_for_boy" />
 
         <jp.newbees.mastersip.customviews.HiraginoButton
             android:id="@+id/btn_go"
             style="@style/style_button_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_20"
             android:background="@drawable/bg_button_primary_big"
-            android:layout_centerHorizontal="true"
-            android:text="@string/i_will_go_looking_for_a_girl"/>
+            android:text="@string/i_will_go_looking_for_a_girl" />
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
+        android:id="@+id/layout_actions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/action_bar_h">
+        android:layout_height="@dimen/action_bar_h"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/_1dp"
+        android:visibility="gone">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_chat_group"
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/blue_dark">
+
+            <CheckBox
+                android:id="@+id/cb_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:button="@drawable/cb_white_small_selector"
+                android:checked="false"
+                android:padding="@dimen/normal_margin"
+                android:text="@string/select_all"
+                android:textColor="@color/white" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/_1dp"
+            android:layout_weight="1"
+            android:background="@color/blue_dark">
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_trash"
+                android:drawablePadding="@dimen/normal_margin"
+                android:gravity="center"
+                android:padding="@dimen/normal_margin"
+                android:text="@string/delete"
+                android:textColor="@color/white" />
+        </FrameLayout>
+    </LinearLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"></android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_marginBottom="@dimen/action_bar_h">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_chat_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
