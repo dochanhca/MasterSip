@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +20,8 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+
+import static org.linphone.mediastream.MediastreamerAndroidContext.getContext;
 
 /**
  * Created by ducpv on 2/2/17.
@@ -53,25 +58,7 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         RoomChatItem item = data.get(position);
 
-        holder.txtUserName.setText(item.getUserChat().getUsername());
-        holder.txtMessage.setText(item.getLastMessage());
-        holder.txtTime.setText(DateTimeUtils.getShortTime(item.getLastMessageTimeStamp()));
-
-        if (item.getNumberMessageUnRead() > 0) {
-            holder.txtMessageNumber.setVisibility(View.VISIBLE);
-            holder.txtMessageNumber.setText(String.valueOf(item.getNumberMessageUnRead()));
-        } else {
-            holder.txtMessageNumber.setVisibility(View.INVISIBLE);
-        }
-
-        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-
-        if (item.getUserChat().getAvatarItem() != null) {
-            Glide.with(context).load(item.getUserChat().getAvatarItem().getOriginUrl()).
-                    thumbnail(0.1f).
-                    placeholder(defaultImageId).
-                    error(defaultImageId).into(holder.imgAvatar);
-        }
+        holder.bindView(item, context);
     }
 
     @Override
@@ -94,6 +81,10 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
         notifyDataSetChanged();
     }
 
+    public List<RoomChatItem> getData() {
+        return this.data;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtUserName;
@@ -102,6 +93,7 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
         private TextView txtTime;
         private ImageView imgAvatar;
         private RelativeLayout content;
+        private CheckBox cbSelect;
 
         public ViewHolder(View root) {
             super(root);
@@ -111,6 +103,32 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
             txtTime = (TextView) root.findViewById(R.id.txt_time);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             content = (RelativeLayout) root.findViewById(R.id.content);
+            cbSelect = (CheckBox) root.findViewById(R.id.cb_select);
+        }
+
+        public void bindView(RoomChatItem item, Context context) {
+            txtUserName.setText(item.getUserChat().getUsername());
+            txtMessage.setText(item.getLastMessage());
+            txtTime.setText(DateTimeUtils.getShortTime(item.getLastMessageTimeStamp()));
+
+            if (item.getNumberMessageUnRead() > 0) {
+                txtMessageNumber.setVisibility(View.VISIBLE);
+                txtMessageNumber.setText(String.valueOf(item.getNumberMessageUnRead()));
+            } else {
+                txtMessageNumber.setVisibility(View.INVISIBLE);
+            }
+
+            int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+
+            if (item.getUserChat().getAvatarItem() != null) {
+                Glide.with(context).load(item.getUserChat().getAvatarItem().getOriginUrl()).
+                        thumbnail(0.1f).
+                        placeholder(defaultImageId).
+                        error(defaultImageId).into(imgAvatar);
+            }
+
+            cbSelect.setVisibility(item.isShowingCheckbox() ? View.VISIBLE : View.GONE);
+            cbSelect.setChecked(item.isSelected() ? true : false);
         }
     }
 

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_10"
-            android:button="@drawable/ck_location_selector"
+            android:button="@drawable/cb_location_selector"
             android:paddingLeft="@dimen/margin_5"
             android:text="@string/enable_location"
             android:textColor="@color/white"

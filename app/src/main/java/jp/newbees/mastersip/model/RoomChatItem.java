@@ -10,6 +10,29 @@ public class RoomChatItem {
     private String lastMessage;
     private String lastMessageTimeStamp;
     private int numberMessageUnRead;
+    private boolean isShowingCheckbox;
+    private boolean isSelected;
+
+    public RoomChatItem() {
+        this.isSelected = false;
+        this.isShowingCheckbox = false;
+    }
+
+    public boolean isShowingCheckbox() {
+        return isShowingCheckbox;
+    }
+
+    public void setShowingCheckbox(boolean showingCheckbox) {
+        isShowingCheckbox = showingCheckbox;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
