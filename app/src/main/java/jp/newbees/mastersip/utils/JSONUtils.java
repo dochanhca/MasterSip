@@ -585,9 +585,8 @@ public class JSONUtils {
     public static JSONObject genParamsToRegisterEmailBackup(EmailBackupItem emailBackupItem) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.JSON.EMAIL, emailBackupItem.getEmail());
-        String encrypted = AESHelper.encrypt(emailBackupItem.getPass());
-        jsonObject.put(Constant.JSON.PASSWORD, encrypted);
-        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, encrypted);
+        jsonObject.put(Constant.JSON.PASSWORD, emailBackupItem.getPass());
+        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, emailBackupItem.getPass());
         jsonObject.put(Constant.JSON.EXTENSION, emailBackupItem.getExtension());
 
         return jsonObject;
@@ -623,11 +622,10 @@ public class JSONUtils {
     public static JSONObject genParamsToChangeEmailBackup(EmailBackupItem item) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.JSON.EMAIL_OLD, item.getOldEmail());
-        jsonObject.put(Constant.JSON.PASSWORD_OLD, AESHelper.encrypt(item.getOldPass()));
+        jsonObject.put(Constant.JSON.PASSWORD_OLD, item.getOldPass());
         jsonObject.put(Constant.JSON.EMAIL_NEW, item.getEmail());
-        String pass = AESHelper.encrypt(item.getPass());
-        jsonObject.put(Constant.JSON.PASSWORD_NEW, pass);
-        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, pass);
+        jsonObject.put(Constant.JSON.PASSWORD_NEW, item.getPass());
+        jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, item.getPass());
         jsonObject.put(Constant.JSON.EXTENSION, item.getExtension());
         return jsonObject;
     }

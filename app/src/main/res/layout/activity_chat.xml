@@ -158,6 +158,7 @@
             android:id="@+id/container_action_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/header_search_height"
+            android:layout_marginTop="@dimen/_1dp"
             android:layout_below="@id/action_bar01">
 
             <jp.newbees.mastersip.customviews.NavigationLayoutGroup
@@ -173,6 +174,7 @@
                     android:id="@+id/nav_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="@dimen/_3dp"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_profile_in_chat"
                     app:state="true"
@@ -186,6 +188,7 @@
                     android:id="@+id/nav_gallery"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="@dimen/_3dp"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_photo_in_chat"
                     app:text="@string/list_photo"
@@ -197,6 +200,7 @@
                     android:id="@+id/nav_gift"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="@dimen/_3dp"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_gift_in_chat"
                     app:text="@string/gift"
