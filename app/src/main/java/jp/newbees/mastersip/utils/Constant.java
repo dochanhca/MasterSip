@@ -30,6 +30,7 @@ public final class Constant {
         public static final String EMAIL_NEW = "email_new";
         public static final String PASSWORD_NEW = "password_new";
         public static final String NEW_PASS = "new_password";
+        public static final String CHAT_SET = "chat_set";
 
         private JSON() {
             //Prevent init constructor

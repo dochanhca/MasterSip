@@ -12,9 +12,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -23,12 +24,12 @@ import jp.newbees.mastersip.utils.ConfigManager;
  */
 public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour.ViewHolder> {
 
-    private ArrayList<UserItem> datas;
+    private List<UserItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public AdapterSearchUserModeFour(Context context, ArrayList<UserItem> datas) {
-        this.datas = datas;
+    public AdapterSearchUserModeFour(Context context, List<UserItem> data) {
+        this.data = data;
         this.context = context;
     }
 
@@ -41,7 +42,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
             @Override
             public void onClick(View view) {
                 int position = viewHolder.getAdapterPosition();
-                onItemClickListener.onItemClick(datas.get(position), position);
+                onItemClickListener.onItemClick(data.get(position), position);
             }
         });
 
@@ -50,7 +51,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        UserItem item = datas.get(position);
+        UserItem item = data.get(position);
         holder.txtContent.setText(item.getUsername());
 
         int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
@@ -58,20 +59,29 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
                 placeholder(defaultImageId).
                 error(defaultImageId).into(holder.imgAvatar);
+
+        holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
+                ? View.VISIBLE : View.INVISIBLE);
+        holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
+                ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return data.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtContent;
         private ImageView imgAvatar;
+        private ImageView imgAvailableCall;
+        private ImageView imgAvailableVideo;
         private ViewGroup viewGroup;
 
         public ViewHolder(View root, Context context) {
             super(root);
+            imgAvailableCall = (ImageView) root.findViewById(R.id.img_available_call);
+            imgAvailableVideo = (ImageView) root.findViewById(R.id.img_available_video);
             txtContent = (TextView) root.findViewById(R.id.txt_name);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             viewGroup = (ViewGroup) root.findViewById(R.id.view_group);
@@ -94,24 +104,23 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
     }
 
     public void clearData() {
-        datas.clear();
+        data.clear();
         notifyDataSetChanged();
     }
 
     public void add(UserItem item) {
-        datas.add(item);
+        data.add(item);
         notifyDataSetChanged();
     }
 
-    public void addAll(ArrayList<UserItem> datas) {
-        this.datas = datas;
+    public void addAll(List<UserItem> data) {
+        this.data = data;
         notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-
 
     public interface OnItemClickListener {
         void onItemClick(UserItem item, int position);

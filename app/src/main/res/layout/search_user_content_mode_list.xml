@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/normal_margin"
             app:cardCornerRadius="@dimen/corner_5">
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
@@ -27,14 +27,24 @@
                     android:src="@drawable/ic_boy_default" />
 
                 <ImageView
-                    android:id="@+id/img_action_top"
+                    android:id="@+id/img_available_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tiny_margin"
                     android:layout_marginTop="@dimen/tiny_margin"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_avatar_message_small" />
-            </FrameLayout>
+                    android:src="@drawable/ic_avatar_phone_small" />
+
+                <ImageView
+                    android:id="@+id/img_available_video"
+                    android:layout_toRightOf="@+id/img_available_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/tiny_margin"
+                    android:layout_marginTop="@dimen/tiny_margin"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_video_small" />
+            </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <TextView

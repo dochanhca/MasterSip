@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -22,12 +23,12 @@ import jp.newbees.mastersip.utils.ConfigManager;
  */
 public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearchUserModeTwo.ViewHolder> {
 
-    private ArrayList<UserItem> datas;
+    private List<UserItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public AdapterSearchUserModeTwo(Context context, ArrayList<UserItem> datas) {
-        this.datas = datas;
+    public AdapterSearchUserModeTwo(Context context, List<UserItem> data) {
+        this.data = data;
         this.context = context;
     }
 
@@ -41,7 +42,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
             @Override
             public void onClick(View view) {
                 int position = viewHolder.getAdapterPosition();
-                onItemClickListener.onItemClick(datas.get(position), position);
+                onItemClickListener.onItemClick(data.get(position), position);
             }
         });
 
@@ -50,7 +51,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        UserItem item = datas.get(position);
+        UserItem item = data.get(position);
         holder.txtName.setText(item.getUsername());
         holder.txtAbout.setText(item.getMemo());
 
@@ -59,25 +60,32 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
         Glide.with(context).load(item.getAvatarItem().getOriginUrl()).
                 placeholder(defaultImageId).
                 error(defaultImageId).into(holder.imgAvatar);
+
+        holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
+                ? View.VISIBLE : View.INVISIBLE);
+        holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
+                ? View.VISIBLE : View.INVISIBLE);
     }
 
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return data.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgAvatar;
+        private ImageView imgAvailableCall;
+        private ImageView imgAvailableVideo;
         private TextView txtName;
-        private ImageView imgActionTop;
         private TextView txtAbout;
         private ViewGroup viewGroup;
 
         public ViewHolder(View root, Context context) {
             super(root);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
-            imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
+            imgAvailableCall = (ImageView) root.findViewById(R.id.img_available_call);
+            imgAvailableVideo = (ImageView) root.findViewById(R.id.img_available_video);
             txtAbout = (TextView) root.findViewById(R.id.txt_about);
             txtName = (TextView) root.findViewById(R.id.txt_name);
             viewGroup = (ViewGroup) root.findViewById(R.id.view_group);
@@ -100,17 +108,17 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
     }
 
     public void clearData() {
-        datas.clear();
+        data.clear();
         notifyDataSetChanged();
     }
 
     public void add(UserItem item) {
-        datas.add(item);
+        data.add(item);
         notifyDataSetChanged();
     }
 
-    public void addAll(ArrayList<UserItem> datas) {
-        datas = datas;
+    public void addAll(List<UserItem> data) {
+        this.data = data;
         notifyDataSetChanged();
     }
 
