@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -11,6 +12,7 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.DeleteChatRoomTask;
 import jp.newbees.mastersip.network.api.GetListRoomTask;
 import jp.newbees.mastersip.network.api.MarkAllMessageAsReadTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -63,6 +65,16 @@ public class ChatGroupPresenter extends BasePresenter {
         requestToServer(markAllMessageAsReadTask);
     }
 
+    public void deleteChatRoom(@Nullable List<Integer> chatRoomIds) {
+        DeleteChatRoomTask deleteChatRoomTask;
+        if (chatRoomIds == null) {
+            deleteChatRoomTask = new DeleteChatRoomTask(context);
+        } else {
+            deleteChatRoomTask = new DeleteChatRoomTask(context, chatRoomIds);
+        }
+        requestToServer(deleteChatRoomTask);
+    }
+
     public boolean hasMoreData() {
         return !nextPage.equalsIgnoreCase(NO_MORE_DATA);
     }
@@ -81,6 +93,8 @@ public class ChatGroupPresenter extends BasePresenter {
             } else {
                 chatGroupView.didLoadChatRoom(roomChatItems);
             }
+        } else if (task instanceof DeleteChatRoomTask) {
+            chatGroupView.didDeleteChatRoom();
         } else if (task instanceof MarkAllMessageAsReadTask) {
             chatGroupView.didMarkAllMessageAsRead();
         }
@@ -101,6 +115,8 @@ public class ChatGroupPresenter extends BasePresenter {
             chatGroupView.didLoadChatRoomError(errorCode, errorMessage);
         } else if (task instanceof MarkAllMessageAsReadTask) {
             chatGroupView.didMarkAllMessageAsReadError(errorCode, errorMessage);
+        } else if (task instanceof DeleteChatRoomTask) {
+            chatGroupView.didDeleteChatRoomError(errorCode, errorMessage);
         }
     }
 
@@ -111,6 +127,9 @@ public class ChatGroupPresenter extends BasePresenter {
 
         void didLoadMoreChatRoom(List<RoomChatItem> roomChatItems);
 
+        void didDeleteChatRoom();
+
+        void didDeleteChatRoomError(int errorCode, String errorMessage);
         void didMarkAllMessageAsRead();
 
         void didMarkAllMessageAsReadError(int errorCode, String errorMessage);
