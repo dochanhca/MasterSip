@@ -276,6 +276,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         disMissLoading();
         ConfirmSendGiftDialog.openConfirmSendGiftDialog(this, CONFIRM_SEND_GIFT_DIALOG,
                 getFragmentManager(), userItem.getUsername());
+        btnFollow.setText(getString(R.string.un_follow));
     }
 
     @Override
@@ -430,6 +431,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             boolean isFollowed = userItem.getRelationshipItem().isFollowed() == RelationshipItem.FOLLOW
                     ? true : false;
             btnFollow.setChecked(isFollowed);
+            btnFollow.setText(isFollowed ? getString(R.string.un_follow) : getString(R.string.follow));
         }
 
         txtNameContent.setText(userItem.getUsername());

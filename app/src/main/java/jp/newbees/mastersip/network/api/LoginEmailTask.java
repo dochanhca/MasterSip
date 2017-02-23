@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.utils.AESHelper;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
@@ -35,8 +34,7 @@ public class LoginEmailTask extends BaseTask<UserItem> {
         String deviceId = getDeviceId();
         JSONObject jData = new JSONObject();
         jData.put(Constant.JSON.DEVICE_ID, deviceId);
-        String encrypted = AESHelper.encrypt(this.password);
-        jData.put(Constant.JSON.PASSWORD, encrypted);
+        jData.put(Constant.JSON.PASSWORD, this.password);
         jData.put(Constant.JSON.EMAIL, this.email);
         return jData;
     }

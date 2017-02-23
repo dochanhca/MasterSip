@@ -9,7 +9,6 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.utils.AESHelper;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -35,8 +34,7 @@ public class ChangePasswordTask extends BaseTask {
         JSONObject jParam = new JSONObject();
         jParam.put(Constant.JSON.CODE, code);
         jParam.put(Constant.JSON.EMAIL, email);
-        String encrypted = AESHelper.encrypt(this.newPass);
-        jParam.put(Constant.JSON.NEW_PASS, encrypted);
+        jParam.put(Constant.JSON.NEW_PASS, this.newPass);
         return jParam;
     }
 
