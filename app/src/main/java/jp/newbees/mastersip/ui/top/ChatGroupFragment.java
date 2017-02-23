@@ -165,7 +165,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     }
 
     @Override
-    public void didLoadChatRoomFailure(int errorCode, String errorMessage) {
+    public void didLoadChatRoomError(int errorCode, String errorMessage) {
         showToastExceptionVolleyError(errorCode, errorMessage);
         swipeRefreshLayout.setRefreshing(false);
         disMissLoading();
@@ -177,6 +177,16 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         chatGroupAdapter.addAll(roomChatItems);
         isLoading = false;
         disMissLoading();
+    }
+
+    @Override
+    public void didMarkAllMessageAsRead() {
+        presenter.loadListRoom();
+    }
+
+    @Override
+    public void didMarkAllMessageAsReadError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
     @Override
@@ -200,6 +210,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == REQUEST_CONFIRM_MARK_ALL_MESSAGE_AS_READ) {
             // Call API mark all message as read
+            presenter.markAllMessageAsRead();
         } else if (requestCode == REQUEST_CONFIRM_DELETE_MESSAGE) {
             // Call API delete message
         }
@@ -260,10 +271,10 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
             public void onSwipeRight() {
                 super.onSwipeRight();
                 Toast.makeText(getActivity().getApplicationContext(), "slide right", Toast.LENGTH_SHORT).show();
-               if (!isEditing) {
-                   notifyChatRoomListWithMode();
-                   initEditMode();
-               }
+                if (!isEditing) {
+                    notifyChatRoomListWithMode();
+                    initEditMode();
+                }
             }
         });
     }
