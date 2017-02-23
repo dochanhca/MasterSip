@@ -12,6 +12,7 @@ import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.GetListRoomTask;
+import jp.newbees.mastersip.network.api.MarkAllMessageAsReadTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
 /**
@@ -57,6 +58,11 @@ public class ChatGroupPresenter extends BasePresenter {
         }
     }
 
+    public void markAllMessageAsRead() {
+        MarkAllMessageAsReadTask markAllMessageAsReadTask = new MarkAllMessageAsReadTask(context);
+        requestToServer(markAllMessageAsReadTask);
+    }
+
     public boolean hasMoreData() {
         return !nextPage.equalsIgnoreCase(NO_MORE_DATA);
     }
@@ -75,6 +81,8 @@ public class ChatGroupPresenter extends BasePresenter {
             } else {
                 chatGroupView.didLoadChatRoom(roomChatItems);
             }
+        } else if (task instanceof MarkAllMessageAsReadTask) {
+            chatGroupView.didMarkAllMessageAsRead();
         }
     }
 
@@ -90,16 +98,22 @@ public class ChatGroupPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof GetListRoomTask) {
-            chatGroupView.didLoadChatRoomFailure(errorCode, errorMessage);
+            chatGroupView.didLoadChatRoomError(errorCode, errorMessage);
+        } else if (task instanceof MarkAllMessageAsReadTask) {
+            chatGroupView.didMarkAllMessageAsReadError(errorCode, errorMessage);
         }
     }
 
     public interface ChatGroupView {
         void didLoadChatRoom(List<RoomChatItem> roomChatItems);
 
-        void didLoadChatRoomFailure(int errorCode, String errorMessage);
+        void didLoadChatRoomError(int errorCode, String errorMessage);
 
         void didLoadMoreChatRoom(List<RoomChatItem> roomChatItems);
+
+        void didMarkAllMessageAsRead();
+
+        void didMarkAllMessageAsReadError(int errorCode, String errorMessage);
 
     }
 }
