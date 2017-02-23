@@ -240,7 +240,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             R.id.group_avatar, R.id.layout_my_notify, R.id.txt_online_list, R.id.txt_call_history,
             R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_email_backup_setting,
             R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
-            R.id.layout_common_guide, R.id.layout_profile_detail, R.id.btn_logout})
+            R.id.layout_common_guide, R.id.layout_profile_detail, R.id.btn_logout, R.id.group_point})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_buy_point:
@@ -281,6 +281,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.layout_common_guide:
                 break;
             case R.id.layout_profile_detail:
+                break;
+            case R.id.group_point:
+                MyMenuContainerFragment.showChosePaymentTypeFragment(getActivity());
                 break;
             case R.id.btn_logout:
                 handleLogout();

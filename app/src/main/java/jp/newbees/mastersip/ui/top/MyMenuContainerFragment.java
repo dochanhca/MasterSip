@@ -13,6 +13,9 @@ import jp.newbees.mastersip.ui.mailbackup.CheckCodeFragment;
 import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
+import jp.newbees.mastersip.ui.payment.WebViewFragment;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 2/14/17.
@@ -50,6 +53,17 @@ public class MyMenuContainerFragment extends BaseFragment {
     public static void showRegisterEmailBackupFragment(FragmentActivity activity) {
         BaseFragment fragment = RegisterEmailBackupFragment.newInstance();
         performShowFragment(activity, fragment);
+    }
+
+    private static void showWebViewFragment(FragmentActivity activity, String url) {
+        BaseFragment fragment = WebViewFragment.newInstance(url);
+        performShowFragment(activity, fragment);
+    }
+
+    public static void showChosePaymentTypeFragment(FragmentActivity activity) {
+        String url = Utils.getURLChosePaymentType();
+        Logger.e("showChosePaymentTypeFragment", url);
+        showWebViewFragment(activity, url);
     }
 
     public static void showChangeEmailBackupFragment(FragmentActivity activity) {

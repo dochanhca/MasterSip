@@ -224,6 +224,7 @@ public final class Constant {
         public static final String FORGOT_PASS = "forgotpass/forgot-pass";
         public static final String CHANGE_PASS = "forgotpass/change-pass";
         public static final String CHANGE_EMAIL_BACKUP = "adduserpass/change-user-pass-new";
+        public static final String CHOSE_PAYMENT_TYPE = "http://52.197.14.30/thaihv_api/public/webview/payment?";
         public static final String MARK_MESSAGE_AS_READ = "message/mark_as_read";
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
 
