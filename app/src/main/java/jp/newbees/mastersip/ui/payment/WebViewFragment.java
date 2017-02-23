@@ -17,12 +17,14 @@ import jp.newbees.mastersip.ui.BaseFragment;
 public class WebViewFragment extends BaseFragment {
 
     private static final String MY_URL = "MY_URL";
+    private static final String TITLE = "TITLE";
     @BindView(R.id.webview)
     WebView webview;
 
-    public static WebViewFragment newInstance(String url) {
+    public static WebViewFragment newInstance(String url, String title) {
         Bundle args = new Bundle();
         args.putString(MY_URL,url);
+        args.putString(TITLE, title);
         WebViewFragment fragment = new WebViewFragment();
         fragment.setArguments(args);
         return fragment;
@@ -39,8 +41,9 @@ public class WebViewFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        setFragmentTitle("payment");
         ButterKnife.bind(this, mRoot);
+        setFragmentTitle(getArguments().getString(TITLE));
+
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new WebViewClient());
         webview.loadUrl(getArguments().getString(MY_URL));

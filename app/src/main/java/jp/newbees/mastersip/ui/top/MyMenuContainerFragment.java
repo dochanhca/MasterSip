@@ -56,7 +56,7 @@ public class MyMenuContainerFragment extends BaseFragment {
     }
 
     private static void showWebViewFragment(FragmentActivity activity, String url) {
-        BaseFragment fragment = WebViewFragment.newInstance(url);
+        BaseFragment fragment = WebViewFragment.newInstance(url,"Purchase");
         performShowFragment(activity, fragment);
     }
 
