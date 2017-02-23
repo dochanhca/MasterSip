@@ -39,12 +39,21 @@
                 android:textColor="@color/white" />
 
             <ImageView
-                android:id="@+id/img_action_top"
+                android:id="@+id/img_available_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/small_margin"
                 android:layout_marginTop="@dimen/small_margin"
-                android:src="@drawable/ic_avatar_message_large" />
+                android:src="@drawable/ic_avatar_phone_large" />
+
+            <ImageView
+                android:id="@+id/img_available_video"
+                android:layout_toRightOf="@+id/img_available_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:src="@drawable/ic_avatar_video_large" />
         </RelativeLayout>
 
         <TextView

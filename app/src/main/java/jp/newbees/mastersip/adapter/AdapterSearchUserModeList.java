@@ -13,10 +13,11 @@ import com.bumptech.glide.Glide;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -27,12 +28,12 @@ import jp.newbees.mastersip.utils.Utils;
  */
 public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearchUserModeList.ViewHolder> {
 
-    private ArrayList<UserItem> datas;
+    private List<UserItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public AdapterSearchUserModeList(Context context, ArrayList<UserItem> datas) {
-        this.datas = datas;
+    public AdapterSearchUserModeList(Context context, List<UserItem> data) {
+        this.data = data;
         this.context = context;
     }
 
@@ -45,7 +46,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
             @Override
             public void onClick(View view) {
                 int position = viewHolder.getAdapterPosition();
-                onItemClickListener.onItemClick(datas.get(position), position);
+                onItemClickListener.onItemClick(data.get(position), position);
             }
         });
         return viewHolder;
@@ -53,7 +54,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserItem item = datas.get(position);
+        UserItem item = data.get(position);
         Locale locale = Utils.getCurrentLocale(context);
         PrettyTime prettyTime = new PrettyTime(locale);
 
@@ -71,16 +72,22 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
         holder.txtValue.setText(item.getMemo());
         holder.txtTime.setText(lastLogin);
         holder.txtLocation.setText(item.getLocation().getTitle());
+
+        holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
+        ? View.VISIBLE : View.INVISIBLE);
+        holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
+                ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return data.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
-        ImageView imgActionTop;
+        ImageView imgAvailableCall;
+        ImageView imgAvailableVideo;
         TextView txtTime;
         TextView txtLocation;
         TextView txtTitle;
@@ -89,7 +96,8 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
 
         public ViewHolder(View root) {
             super(root);
-            imgActionTop = (ImageView) root.findViewById(R.id.img_action_top);
+            imgAvailableCall = (ImageView) root.findViewById(R.id.img_available_call);
+            imgAvailableVideo = (ImageView) root.findViewById(R.id.img_available_video);
             imgAvatar = (ImageView) root.findViewById(R.id.img_avatar);
             txtTime = (TextView) root.findViewById(R.id.txt_time);
             txtLocation = (TextView) root.findViewById(R.id.txt_location);
@@ -100,17 +108,17 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
     }
 
     public void clearData() {
-        datas.clear();
+        data.clear();
         notifyDataSetChanged();
     }
 
     public void add(UserItem item) {
-        datas.add(item);
+        data.add(item);
         notifyDataSetChanged();
     }
 
-    public void addAll(ArrayList<UserItem> datas) {
-        datas = datas;
+    public void addAll(List<UserItem> data) {
+        this.data = data;
         notifyDataSetChanged();
     }
 

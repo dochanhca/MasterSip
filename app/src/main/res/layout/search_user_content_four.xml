@@ -40,12 +40,23 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/img_action_top"
+            android:id="@+id/img_available_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/ic_avatar_message_small" />
+            android:layout_marginLeft="@dimen/_4dp"
+            android:layout_marginTop="@dimen/_4dp"
+            android:src="@drawable/ic_avatar_phone_small" />
+
+        <ImageView
+            android:id="@+id/img_available_video"
+            android:layout_toRightOf="@+id/img_available_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tiny_margin"
+            android:layout_marginTop="@dimen/_4dp"
+            android:src="@drawable/ic_avatar_video_small" />
+
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

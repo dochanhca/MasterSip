@@ -79,6 +79,16 @@ public class JSONUtils {
             UserItem userItem = new UserItem();
             parseBasicUserInfo(userItem, jUser);
 
+            if (jUser.has(Constant.JSON.SETTING)) {
+                JSONObject jSetting = jUser.getJSONObject(Constant.JSON.SETTING);
+                SettingItem settingItem = new SettingItem();
+
+                settingItem.setChat(jSetting.getInt(Constant.JSON.CHAT_SET));
+                settingItem.setVoiceCall(jSetting.getInt(Constant.JSON.VOICE_CALL));
+                settingItem.setVideoCall(jSetting.getInt(Constant.JSON.VIDEO_CALL));
+                userItem.setSettings(settingItem);
+            }
+
             ImageItem avatar = new ImageItem();
             avatar.setImageId(getInt(jUser, Constant.JSON.AVATAR_ID));
             avatar.setOriginUrl(jUser.getString(Constant.JSON.AVATAR));
