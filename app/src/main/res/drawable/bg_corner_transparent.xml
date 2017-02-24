@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!--bg color-->
-    <solid android:color="@color/transparent" />
+    <solid android:color="@color/black_transparent_40" />
 
     <!--set border size & color -->
     <corners

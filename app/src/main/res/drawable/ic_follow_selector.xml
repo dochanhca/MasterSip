@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_heart_blue"
         android:state_checked="false"/>
-    <item android:drawable="@drawable/ic_heart_white"
+    <item android:drawable="@drawable/ic_un_follow_in_chat"
         android:state_checked="true"/>
     <item android:drawable="@drawable/ic_heart_blue"/>
 </selector>

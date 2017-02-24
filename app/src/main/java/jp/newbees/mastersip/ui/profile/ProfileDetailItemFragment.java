@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -123,6 +124,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     ViewGroup layoutVoiceCall;
     @BindView(R.id.layout_video_call)
     ViewGroup layoutVideoCall;
+    @BindView(R.id.txt_video_call)
+    TextView txtVideoCall;
+    @BindView(R.id.txt_voice_call)
+    TextView txtVoiceCall;
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -410,10 +415,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     private void fillDataToView() {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
             layoutVideoCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+            txtVideoCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_off,0, 0, 0);
         }
 
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
             layoutVoiceCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+            txtVoiceCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_voice_call_off,0, 0, 0);
         }
 
         progressWheel.spin();

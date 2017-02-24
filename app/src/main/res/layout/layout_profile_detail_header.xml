@@ -16,7 +16,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_100"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:background="@drawable/black_gradient" />
     </RelativeLayout>
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_25"
             android:layout_marginRight="@dimen/margin_25"
-            android:layout_marginTop="@dimen/margin_15"
+            android:layout_marginTop="@dimen/_18dp"
             android:ellipsize="end"
             android:paddingBottom="@dimen/margin_2"
             android:singleLine="true"
@@ -122,5 +122,4 @@
         android:visibility="gone"
         wheel:matProg_barColor="@color/colorPrimary"
         wheel:matProg_progressIndeterminate="true" />
-
 </RelativeLayout>
