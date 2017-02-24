@@ -143,21 +143,23 @@
                             android:layout_marginLeft="@dimen/_15dp"
                             android:src="@drawable/ic_point" />
 
-                        <TextView
+                        <jp.newbees.mastersip.customviews.HiraginoTextView
                             android:id="@+id/txt_point"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@id/img_point"
+                            android:layout_marginLeft="@dimen/_3dp"
                             android:background="@color/transparent"
                             android:lines="1"
                             android:text="99999999"
                             android:textColor="@color/blue_dark"
-                            android:textSize="@dimen/_14sp"
+                            android:textSize="@dimen/text_size_16"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <jp.newbees.mastersip.customviews.HiraginoTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/_3dp"
                             android:layout_toRightOf="@id/txt_point"
                             android:text="@string/pt"
                             android:textColor="@color/blue_dark" />
