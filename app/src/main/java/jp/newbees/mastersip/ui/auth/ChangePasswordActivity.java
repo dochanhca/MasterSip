@@ -11,14 +11,13 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.presenter.auth.ChangePassPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by ducpv on 2/15/17.
  */
 
-public class ChangePasswordActivity extends BaseActivity implements ChangePassPresenter.ChangePassView {
+public class ChangePasswordActivity extends RegisterBaseActivity implements ChangePassPresenter.ChangePassView {
 
     private static final String EMAIL = "EMAIL";
     @BindView(R.id.edt_code)
@@ -59,8 +58,7 @@ public class ChangePasswordActivity extends BaseActivity implements ChangePassPr
     @Override
     public void didChangePass() {
         disMissLoading();
-        setResult(RESULT_OK);
-        finish();
+        startTopScreenWithNewTask();
     }
 
     @Override
@@ -87,9 +85,9 @@ public class ChangePasswordActivity extends BaseActivity implements ChangePassPr
      * @param activity
      * @param email
      */
-    public static void startActivityForResult(Activity activity, String email, int requestCode) {
+    public static void startActivity(Activity activity, String email) {
         Intent intent = new Intent(activity, ChangePasswordActivity.class);
         intent.putExtra(EMAIL, email);
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivity(intent);
     }
 }

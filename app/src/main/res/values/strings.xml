@@ -368,5 +368,6 @@
     <string name="done">完了</string>
     <string name="delete_selected_message">選択したメッセージを削除しますか？</string>
     <string name="remove_all">すべて解除</string>
+    <string name="err_invalid_pass">現在パスワードが違います。</string>
 
 </resources>

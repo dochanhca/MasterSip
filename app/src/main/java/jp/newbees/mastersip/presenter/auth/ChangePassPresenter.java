@@ -4,13 +4,12 @@ import android.content.Context;
 
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.ChangePasswordTask;
-import jp.newbees.mastersip.presenter.BasePresenter;
 
 /**
  * Created by ducpv on 2/15/17.
  */
 
-public class ChangePassPresenter extends BasePresenter {
+public class ChangePassPresenter extends RegisterPresenterBase {
 
     private ChangePassView view;
 
@@ -33,7 +32,7 @@ public class ChangePassPresenter extends BasePresenter {
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof ChangePasswordTask) {
-            view.didChangePass();
+            loginVoIP();
         }
     }
 
@@ -42,5 +41,15 @@ public class ChangePassPresenter extends BasePresenter {
         if (task instanceof ChangePasswordTask) {
             view.didChangePassError(errorCode, errorMessage);
         }
+    }
+
+    @Override
+    protected void onDidRegisterVoIPSuccess() {
+        view.didChangePass();
+    }
+
+    @Override
+    protected void onDidRegisterVoIPError(int errorCode, String errorMessage) {
+        view.didChangePassError(errorCode, errorMessage);
     }
 }
