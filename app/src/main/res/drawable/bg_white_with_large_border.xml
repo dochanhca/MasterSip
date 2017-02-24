@@ -2,6 +2,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/white" />
     <corners android:radius="20dp" />
-    <!--Set border line color-->
-    <stroke android:width="@dimen/_1dp" android:color="@color/colorPrimaryDark" />
 </shape>

@@ -103,32 +103,35 @@
             android:id="@+id/txt_search"
             style="@style/style_content_text_view_tiny"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/normal_margin"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/normal_margin"
             android:background="@drawable/bg_white_with_large_border"
-            android:drawableLeft="@drawable/ic_search"
-            android:drawablePadding="@dimen/normal_margin"
+            android:drawableLeft="@drawable/ic_search_header_top"
+            android:drawablePadding="@dimen/_5dp"
             android:gravity="center"
             android:paddingLeft="@dimen/normal_margin"
             android:paddingRight="@dimen/normal_margin"
+            android:paddingTop="@dimen/normal_margin"
+            android:paddingBottom="@dimen/normal_margin"
             android:text="@string/search_condition" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/btn_setting_call"
             style="@style/style_content_text_view_tiny"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"
-            android:layout_marginTop="@dimen/normal_margin"
             android:background="@drawable/bg_white_with_large_border"
-            android:drawableTop="@drawable/ic_phone"
+            android:drawableTop="@drawable/ic_call_header_top"
+            android:drawablePadding="@dimen/_2dp"
             android:gravity="center"
             android:paddingLeft="@dimen/xnormal_margin"
             android:paddingRight="@dimen/xnormal_margin"
-            android:paddingTop="@dimen/margin_2"
-            android:text="@string/call_phone" />
+            android:paddingTop="@dimen/_3dp"
+            android:paddingBottom="@dimen/_5dp"
+            android:text="@string/call_phone"
+            android:textSize="@dimen/_9sp"/>
 
     </RelativeLayout>
 
