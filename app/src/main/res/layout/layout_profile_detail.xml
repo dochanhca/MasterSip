@@ -118,6 +118,8 @@
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_type_of_men_content"
             style="@style/style_content_text_view_profile"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_5dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
@@ -142,7 +144,9 @@
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_charm_point_content"
             style="@style/style_content_text_view_profile"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_5dp"/>
     </LinearLayout>
 
     <View
@@ -187,6 +191,8 @@
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_status_content"
             style="@style/style_content_text_view_profile"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dp"
+            android:layout_marginBottom="@dimen/_5dp"/>
     </LinearLayout>
 </LinearLayout>

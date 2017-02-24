@@ -21,6 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/header_search_height"
                 android:layout_below="@+id/layout_action_bar"
+                android:paddingTop="@dimen/_1dp"
+                android:background="@color/white"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -28,6 +30,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:layout_marginRight="@dimen/_1dp"
                     android:background="@color/green"
                     android:orientation="horizontal">
 
@@ -50,6 +53,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:layout_marginRight="@dimen/_1dp"
                     android:background="@color/blue"
                     android:orientation="horizontal">
 
@@ -124,8 +128,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_btn_follow"
-                            android:drawablePadding="@dimen/margin_5"
                             android:drawableTop="@drawable/ic_follow_selector"
+                            android:paddingLeft="@dimen/margin_20"
+                            android:paddingTop="@dimen/_7dp"
+                            android:drawablePadding="@dimen/_3dp"
                             android:text="@string/follow"
                             android:textColor="@color/btn_follow_text_color" />
 
@@ -145,7 +151,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_btn_on_off_notify"
-                            android:drawableTop="@drawable/ic_speaker_blue"
+                            android:drawableTop="@drawable/ic_notify_off"
                             android:text="@string/online_notify"
                             android:textColor="@color/colorPrimaryDark" />
                     </LinearLayout>

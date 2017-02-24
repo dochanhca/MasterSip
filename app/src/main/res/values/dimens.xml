@@ -104,4 +104,5 @@
     <dimen name="huge_radius">20dp</dimen>
     <dimen name="title_height">35dp</dimen>
     <dimen name="_4dp">4dp</dimen>
+    <dimen name="_18dp">18dp</dimen>
 </resources>

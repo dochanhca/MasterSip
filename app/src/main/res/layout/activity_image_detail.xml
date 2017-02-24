@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_h"
         android:layout_alignParentBottom="true"
-        android:background="@color/black_transparent_30"
+        android:background="@color/black_transparent_70"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -111,7 +111,7 @@
         android:id="@+id/ll_action_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_h"
-        android:background="@color/black_transparent_30"
+        android:background="@color/black_transparent_70"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
 

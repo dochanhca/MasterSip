@@ -22,8 +22,6 @@ import jp.newbees.mastersip.utils.Utils;
 public class ForgotPasswordActivity extends BaseActivity implements ResetPassPresenter.ResetPassView,
         TextDialog.OnTextDialogClick {
 
-    private static final int REQUEST_CHANGE_PASS = 2;
-
     @BindView(R.id.edt_email)
     HiraginoEditText edtEmail;
 
@@ -71,16 +69,7 @@ public class ForgotPasswordActivity extends BaseActivity implements ResetPassPre
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
-        ChangePasswordActivity.startActivityForResult(this, edtEmail.getText().toString().trim(),
-                REQUEST_CHANGE_PASS);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHANGE_PASS && resultCode == RESULT_OK) {
-            finish();
-        }
+        ChangePasswordActivity.startActivity(this, edtEmail.getText().toString().trim());
     }
 
     private void showDialogRegisterSuccess() {

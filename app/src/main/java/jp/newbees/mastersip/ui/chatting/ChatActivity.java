@@ -89,8 +89,8 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     LinearLayout actionPhone;
     @BindView(R.id.action_video)
     LinearLayout actionVideo;
-    @BindView(R.id.img_send)
-    ImageView imgSend;
+    @BindView(R.id.txt_send)
+    TextView txtSend;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.swap_layout)
@@ -200,7 +200,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             Logger.e(TAG, "sending message to server success");
             chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
             edtChat.setEnabled(true);
-            imgSend.setEnabled(true);
+            txtSend.setEnabled(true);
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
 
@@ -443,7 +443,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
     }
 
-    @OnClick({R.id.action_phone, R.id.action_video, R.id.img_send, R.id.img_left_bottom_action,
+    @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send, R.id.img_left_bottom_action,
             R.id.rl_open_gallery, R.id.rl_open_camera})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -452,7 +452,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
                 break;
             case R.id.action_video:
                 break;
-            case R.id.img_send:
+            case R.id.txt_send:
                 doSendMessage();
                 break;
             case R.id.img_left_bottom_action:

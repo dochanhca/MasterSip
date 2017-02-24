@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -123,6 +124,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     ViewGroup layoutVoiceCall;
     @BindView(R.id.layout_video_call)
     ViewGroup layoutVideoCall;
+    @BindView(R.id.txt_video_call)
+    TextView txtVideoCall;
+    @BindView(R.id.txt_voice_call)
+    TextView txtVoiceCall;
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -410,10 +415,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     private void fillDataToView() {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
             layoutVideoCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+            txtVideoCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_off,0, 0, 0);
         }
 
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
             layoutVoiceCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
+            txtVoiceCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_voice_call_off,0, 0, 0);
         }
 
         progressWheel.spin();
@@ -438,7 +445,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         txtAgeContent.setText(String.valueOf(DateTimeUtils.calculateAgeWithDOB(age)));
         txtAreaContent.setText(userItem.getLocation().getTitle());
         txtProfessionContent.setText(userItem.getJobItem().getTitle());
-        txtStatusContent.setText(userItem.getMemo());
+        txtStatusContent.setText(userItem.getMemo().trim());
 
         if (userItem.getGender() == UserItem.FEMALE) {
             fillProfileForFemale();
@@ -455,10 +462,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         dividerAvailableTime.setVisibility(View.VISIBLE);
         divierCharmPoint.setVisibility(View.VISIBLE);
 
-        txtTypeContent.setText(userItem.getTypeGirl().getTitle());
-        txtTypeOfMenContent.setText(userItem.getTypeBoy());
-        txtAvailableTimeContent.setText(userItem.getAvailableTimeItem().getTitle());
-        txtCharmPointContent.setText(userItem.getCharmingPoint());
+        txtTypeContent.setText(userItem.getTypeGirl().getTitle().trim());
+        txtTypeOfMenContent.setText(userItem.getTypeBoy().trim());
+        txtAvailableTimeContent.setText(userItem.getAvailableTimeItem().getTitle().trim());
+        txtCharmPointContent.setText(userItem.getCharmingPoint().trim());
     }
 
     private void fillBasicProfile(Date age) {
@@ -470,7 +477,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 + getString(R.string.year_old));
         txtName.setText(userItem.getUsername());
         txtArea.setText(userItem.getLocation().getTitle());
-        txtSlogan.setText(userItem.getMemo());
+        txtSlogan.setText(userItem.getMemo().trim());
 
         int drawableId = userItem.getGender() == UserItem.MALE ? R.drawable.ic_boy_default :
                 R.drawable.ic_girl_default;

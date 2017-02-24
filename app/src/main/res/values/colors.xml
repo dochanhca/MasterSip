@@ -14,9 +14,12 @@
     <color name="text_color_gray_hint">#dddddd</color>
     <color name="black">#000000</color>
     <color name="black_transparent_50">#80000000</color>
-    <color name="black_transparent_95">#0D000000</color>
-    <color name="black_transparent_20">#CC000000</color>
-    <color name="black_transparent_30">#B3000000</color>
+    <color name="black_transparent_40">#66000000</color>
+    <color name="black_transparent_30">#4D000000</color>
+    <color name="black_transparent_5">#0D000000</color>
+    <color name="black_transparent_80">#CC000000</color>
+    <color name="black_transparent_70">#B3000000</color>
+    <color name="black_transparent_90">#F2000000</color>
     <color name="transparent">#00000000</color>
     <color name="divider">#ced7db</color>
     <color name="selected_color">#55aaaf</color>
@@ -37,6 +40,7 @@
     <color name="blue_gifts_desc">#7db5b8</color>
     <color name="blue_chat_header">#7771c3c8</color>
     <color name="rose">#ffbfc8</color>
+    <color name="light_pink">#ffdadf</color>
     <color name="text_chat_color">#004b50</color>
 
 </resources>

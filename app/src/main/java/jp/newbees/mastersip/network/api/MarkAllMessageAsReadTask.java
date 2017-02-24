@@ -35,7 +35,7 @@ public class MarkAllMessageAsReadTask extends BaseTask {
 
     @Override
     protected int getMethod() {
-        return Request.Method.PATCH;
+        return Request.Method.POST;
     }
 
     @Override

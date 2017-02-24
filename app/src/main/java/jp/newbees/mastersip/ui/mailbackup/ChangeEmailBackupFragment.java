@@ -18,6 +18,7 @@ import jp.newbees.mastersip.ui.auth.ForgotPasswordActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -86,7 +87,11 @@ public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEma
     @Override
     public void onChangeEmailBackupError(int errorCode, String errorMessage) {
         disMissLoading();
-        showToastExceptionVolleyError(errorCode, errorMessage);
+        if (errorCode == Constant.Error.INVALID_PASSWORD) {
+            showMessageDialog(getString(R.string.err_invalid_pass));
+        } else {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
     }
 
     @Override
