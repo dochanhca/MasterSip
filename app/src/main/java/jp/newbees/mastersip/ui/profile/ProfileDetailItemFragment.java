@@ -438,7 +438,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         txtAgeContent.setText(String.valueOf(DateTimeUtils.calculateAgeWithDOB(age)));
         txtAreaContent.setText(userItem.getLocation().getTitle());
         txtProfessionContent.setText(userItem.getJobItem().getTitle());
-        txtStatusContent.setText(userItem.getMemo());
+        txtStatusContent.setText(userItem.getMemo().trim());
 
         if (userItem.getGender() == UserItem.FEMALE) {
             fillProfileForFemale();
@@ -455,10 +455,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         dividerAvailableTime.setVisibility(View.VISIBLE);
         divierCharmPoint.setVisibility(View.VISIBLE);
 
-        txtTypeContent.setText(userItem.getTypeGirl().getTitle());
-        txtTypeOfMenContent.setText(userItem.getTypeBoy());
-        txtAvailableTimeContent.setText(userItem.getAvailableTimeItem().getTitle());
-        txtCharmPointContent.setText(userItem.getCharmingPoint());
+        txtTypeContent.setText(userItem.getTypeGirl().getTitle().trim());
+        txtTypeOfMenContent.setText(userItem.getTypeBoy().trim());
+        txtAvailableTimeContent.setText(userItem.getAvailableTimeItem().getTitle().trim());
+        txtCharmPointContent.setText(userItem.getCharmingPoint().trim());
     }
 
     private void fillBasicProfile(Date age) {
@@ -470,7 +470,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 + getString(R.string.year_old));
         txtName.setText(userItem.getUsername());
         txtArea.setText(userItem.getLocation().getTitle());
-        txtSlogan.setText(userItem.getMemo());
+        txtSlogan.setText(userItem.getMemo().trim());
 
         int drawableId = userItem.getGender() == UserItem.MALE ? R.drawable.ic_boy_default :
                 R.drawable.ic_girl_default;
