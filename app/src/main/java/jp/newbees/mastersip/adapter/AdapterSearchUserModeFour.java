@@ -61,9 +61,9 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
                 error(defaultImageId).into(holder.imgAvatar);
 
         holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
-                ? View.VISIBLE : View.INVISIBLE);
+                ? View.VISIBLE : View.GONE);
         holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
-                ? View.VISIBLE : View.INVISIBLE);
+                ? View.VISIBLE : View.GONE);
     }
 
     @Override
