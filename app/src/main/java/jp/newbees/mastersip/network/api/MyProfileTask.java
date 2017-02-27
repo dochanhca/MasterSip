@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 
@@ -42,6 +43,8 @@ public class MyProfileTask extends BaseTask<UserItem> {
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        return JSONUtils.parseMyMenuItem(jData);
+        UserItem userItem = JSONUtils.parseMyMenuItem(jData);
+        ConfigManager.getInstance().saveUser(userItem);
+        return userItem;
     }
 }
