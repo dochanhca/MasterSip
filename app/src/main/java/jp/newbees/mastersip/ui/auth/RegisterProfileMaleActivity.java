@@ -308,7 +308,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
             return;
         }
 
-        if (imgAvatar.getDrawable() != null) {
+        if (hasAvatar(userItem)) {
             showLoading();
             Bitmap avatar = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
             InputStream inputStream = ImageUtils.convertToInputStream(avatar);
@@ -317,6 +317,15 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         } else {
             doRegister();
         }
+    }
+
+    private boolean hasAvatar(UserItem userItem) {
+        if (userItem.getAvatarItem() == null ||
+                (userItem.getAvatarItem().getThumbUrl().length() == 0 &&
+                        userItem.getAvatarItem().getOriginUrl().length() == 0)) {
+            return false;
+        }
+        return true;
     }
 
     private void doRegister() {
