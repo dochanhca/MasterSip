@@ -4,6 +4,7 @@ import android.content.Context;
 
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.ChangePasswordTask;
+import jp.newbees.mastersip.network.api.LoginEmailTask;
 
 /**
  * Created by ducpv on 2/15/17.
@@ -12,6 +13,8 @@ import jp.newbees.mastersip.network.api.ChangePasswordTask;
 public class ChangePassPresenter extends RegisterPresenterBase {
 
     private ChangePassView view;
+    private String password;
+    private String email;
 
     public interface ChangePassView {
         void didChangePass();
@@ -26,12 +29,21 @@ public class ChangePassPresenter extends RegisterPresenterBase {
 
     public void changePass(String email, String newPass, String code) {
         ChangePasswordTask changePasswordTask = new ChangePasswordTask(context, email, newPass, code);
+        this.email = email;
+        this.password = newPass;
         requestToServer(changePasswordTask);
+    }
+
+    public void loginByEmail(String email, String pass) {
+        LoginEmailTask loginEmailTask = new LoginEmailTask(context, email, pass);
+        requestToServer(loginEmailTask);
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof ChangePasswordTask) {
+            loginByEmail(email, password);
+        } else if (task instanceof LoginEmailTask) {
             loginVoIP();
         }
     }
@@ -39,6 +51,8 @@ public class ChangePassPresenter extends RegisterPresenterBase {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof ChangePasswordTask) {
+            view.didChangePassError(errorCode, errorMessage);
+        } else if (task instanceof ChangePasswordTask) {
             view.didChangePassError(errorCode, errorMessage);
         }
     }

@@ -74,9 +74,9 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
         holder.txtLocation.setText(item.getLocation().getTitle());
 
         holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
-        ? View.VISIBLE : View.INVISIBLE);
+        ? View.VISIBLE : View.GONE);
         holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
-                ? View.VISIBLE : View.INVISIBLE);
+                ? View.VISIBLE : View.GONE);
     }
 
     @Override
