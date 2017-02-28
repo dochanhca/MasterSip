@@ -46,6 +46,7 @@ import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.RelationshipItem;
+import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
@@ -107,6 +108,10 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     ImageView imgLeftBottomAction;
     @BindView(R.id.nav_follow)
     NavigationLayoutChild navFollow;
+    @BindView(R.id.img_available_call)
+    ImageView imgAvailableCall;
+    @BindView(R.id.img_available_video)
+    ImageView imgAvailableVideo;
 
     private UIMode uiMode = UIMode.INPUT_TEXT_MODE;
 
@@ -132,28 +137,28 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener =
             new NavigationLayoutGroup.OnChildItemClickListener() {
-        @Override
-        public void onChildItemClick(View view, int position) {
-            switch (position) {
-                case NAV_PROFILE:
-                    gotoProfileDetailActivity();
-                    break;
-                case NAV_GALLERY:
-                    ChattingPhotoGalleryActivity.startActivity(ChatActivity.this, userItem.getUserId());
-                    break;
-                case NAV_GIFT:
-                    gotoListGiftActivity();
-                    break;
-                case NAV_FOLLOW:
-                    showLoading();
-                    presenter.doFollowUser(presenter.
-                            getUserHasRelationShipItem(userItem, members));
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+                @Override
+                public void onChildItemClick(View view, int position) {
+                    switch (position) {
+                        case NAV_PROFILE:
+                            gotoProfileDetailActivity();
+                            break;
+                        case NAV_GALLERY:
+                            ChattingPhotoGalleryActivity.startActivity(ChatActivity.this, userItem.getUserId());
+                            break;
+                        case NAV_GIFT:
+                            gotoListGiftActivity();
+                            break;
+                        case NAV_FOLLOW:
+                            showLoading();
+                            presenter.doFollowUser(presenter.
+                                    getUserHasRelationShipItem(userItem, members));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
 
     private View.OnClickListener mOnSwitchModeClickListener = new View.OnClickListener() {
         @Override
@@ -228,7 +233,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             if (chatAdapter.getItemCount() == 0) {
                 needScrollToTheEnd = true;
                 updateFollowView(presenter
-                        .getUserHasRelationShipItem(userItem,members)
+                        .getUserHasRelationShipItem(userItem, members)
                         .getRelationshipItem());
             }
             chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
@@ -236,13 +241,14 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
             if (needScrollToTheEnd) {
                 recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             }
+            initActionCalls(members.get(userItem.getUserId()));
             updateStateLastMessage();
             swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
         public void didLoadChatHistoryError(int errorCode, String errorMessage) {
-            showToastExceptionVolleyError(ChatActivity.this,errorCode,errorMessage);
+            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
 
         }
 
@@ -265,20 +271,20 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         @Override
         public void didFollowUser() {
             disMissLoading();
-            updateFollowView(presenter.setUserHasRelationShipItem(userItem,members,RelationshipItem.FOLLOW));
+            updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.FOLLOW));
             ConfirmSendGiftDialog.openConfirmSendGiftDialog(getSupportFragmentManager(), userItem.getUsername());
         }
 
         @Override
         public void didFollowUserError(String errorMessage, int errorCode) {
             disMissLoading();
-            showToastExceptionVolleyError(ChatActivity.this,errorCode,errorMessage);
+            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
         }
 
         @Override
         public void didUnFollowUser() {
             disMissLoading();
-            updateFollowView(presenter.setUserHasRelationShipItem(userItem,members,RelationshipItem.UN_FOLLOW));
+            updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.UN_FOLLOW));
 
             StringBuilder content = new StringBuilder();
             content.append(userItem.getUsername()).append(getString(R.string.notify_un_follow_user_success));
@@ -289,7 +295,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         @Override
         public void didUnFollowUserError(String errorMessage, int errorCode) {
             disMissLoading();
-            showToastExceptionVolleyError(ChatActivity.this,errorCode,errorMessage);
+            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
         }
     };
 
@@ -401,6 +407,20 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         updateTopPaddingRecycle();
 
         presenter.loadChatHistory(userItem, 0);
+    }
+
+    private void initActionCalls(UserItem userItem) {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            actionVideo.setEnabled(false);
+            imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
+        }
+
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            actionPhone.setEnabled(false);
+            imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
+        }
     }
 
     @Override
@@ -559,6 +579,7 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
 
     /**
      * start new instance of ChatActivity
+     *
      * @param context
      * @param userItem
      */
@@ -663,11 +684,11 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     }
 
     private void gotoProfileDetailActivity() {
-        ProfileDetailItemActivity.startActivity(this,userItem);
+        ProfileDetailItemActivity.startActivity(this, userItem);
     }
 
     private void gotoListGiftActivity() {
-        ListGiftActivity.startActivity(this,userItem);
+        ListGiftActivity.startActivity(this, userItem);
     }
 
     private enum UIMode {

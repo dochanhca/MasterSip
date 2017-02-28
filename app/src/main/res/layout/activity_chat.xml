@@ -232,6 +232,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/img_available_call"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="@dimen/small_margin"
@@ -256,6 +257,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/img_available_video"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="@dimen/small_margin"
