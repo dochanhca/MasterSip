@@ -4,12 +4,13 @@ android {
 
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
+
     defaultConfig {
         applicationId "jp.newbees.mastersip"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2 alpha"
         multiDexEnabled true
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,25 +30,33 @@ android {
         }
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file("mastersip.jks")
+            storePassword "123456"
+            keyAlias "Master Sip"
+            keyPassword "123456"
         }
     }
 
-    signingConfigs {
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            debuggable false
+        }
         debug {
-            storeFile file("mastersip.jks")
-            storePassword "MasterSip2016#"
-            keyAlias "mastersip"
-            keyPassword "MasterSip2016#"
+            signingConfig signingConfigs.release
+            debuggable true
         }
     }
 
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+        disable 'InvalidPackage'
     }
 
     packagingOptions {
