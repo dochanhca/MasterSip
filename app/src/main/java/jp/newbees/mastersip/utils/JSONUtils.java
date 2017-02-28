@@ -438,6 +438,12 @@ public class JSONUtils {
             relationshipItem.setFollowed(jMember.getInt(Constant.JSON.FOLLOWED));
             userItem.setRelationshipItem(relationshipItem);
 
+            SettingItem settingItem = new SettingItem();
+            settingItem.setChat(jMember.getInt(Constant.JSON.CHAT_SET));
+            settingItem.setVoiceCall(jMember.getInt(Constant.JSON.VOICE_CALL_SET));
+            settingItem.setVideoCall(jMember.getInt(Constant.JSON.VIDEO_CALL_SET));
+            userItem.setSettings(settingItem);
+
             members.put(userItem.getUserId(), userItem);
         }
         return members;
