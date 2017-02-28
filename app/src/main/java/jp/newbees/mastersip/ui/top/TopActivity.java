@@ -28,9 +28,6 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView, BaseActivity.BottomNavigation {
-    public static final int PERMISSIONS_REQUEST_CAMERA = 202;
-    public static final int PERMISSIONS_ENABLED_CAMERA = 203;
-    public static final int PERMISSIONS_ENABLED_MIC = 204;
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
@@ -170,16 +167,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_CAMERA:
-                topPresenter.didGrantedCameraPermission();
-                break;
-            case PERMISSIONS_ENABLED_CAMERA:
-//                disableVideo(grantResults[0] != PackageManager.PERMISSION_GRANTED);
-                break;
-            case PERMISSIONS_ENABLED_MIC:
-                break;
-        }
+        topPresenter.requestPermissions();
     }
 
     @Override

@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -23,67 +23,22 @@ public class TopPresenter extends BasePresenter {
         this.view = topView;
     }
 
-    public void didGrantedCameraPermission() {
-        requestReadExternalStoragePermission();
-    }
 
     public interface TopView {
 
     }
 
     public final void requestPermissions() {
-        requestCameraPermission();
-    }
-
-    private final void requestCameraPermission() {
-        int camera = context.getPackageManager().checkPermission(Manifest.permission.CAMERA, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Camera permission is "
-                +(camera == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
-
-        if (camera != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.CAMERA, TopActivity.PERMISSIONS_REQUEST_CAMERA);
-        } else {
-            requestReadExternalStoragePermission();
-        }
-    }
-
-    private final void requestMicrophonePermission() {
-        int recordAudio = context.getPackageManager().checkPermission(Manifest.permission.RECORD_AUDIO, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Record audio permission is "
-                +(recordAudio == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
-        if (recordAudio != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.RECORD_AUDIO, TopActivity.PERMISSIONS_ENABLED_MIC);
-        }
-    }
-
-    private final void requestWriteExternalStoragePermission() {
-        int writeExternalStorage = context.getPackageManager().checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Write external storage permission is "
-                +(writeExternalStorage == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
-
-        if (writeExternalStorage != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, TopActivity.PERMISSIONS_REQUEST_CAMERA);
-        } else {
-            requestMicrophonePermission();
-        }
-
-    }
-
-    private final void requestReadExternalStoragePermission() {
-        int readExternalStorage = context.getPackageManager().checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, context.getPackageName());
-        Logger.e("TopPresenter", "[Permission] Read external storage permission is "
-                +(readExternalStorage == PackageManager.PERMISSION_GRANTED ? "granted" : "denied"));
-
-        if (readExternalStorage != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, TopActivity.PERMISSIONS_REQUEST_CAMERA);
-        } else {
-            requestWriteExternalStoragePermission();
+        for (Permission permission : Permission.values()) {
+            if (ContextCompat.checkSelfPermission(context, permission.getPermission()) != PackageManager.PERMISSION_GRANTED) {
+                requestPermission(permission.getPermission(), permission.getResult());
+            }
         }
     }
 
     private void requestPermission(String permission, int result) {
-            Logger.e("TopPresenter", "[Permission] Asking for " + permission);
-            ActivityCompat.requestPermissions((Activity) view, new String[]{permission}, result);
+        Logger.e("TopPresenter", "[Permission] Asking for " + permission);
+        ActivityCompat.requestPermissions((Activity) view, new String[]{permission}, result);
     }
 
     @Override
@@ -95,4 +50,26 @@ public class TopPresenter extends BasePresenter {
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
 
     }
+
+    public enum Permission {
+        CAMERA(201, Manifest.permission.CAMERA), RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
+        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        private final int result;
+        private final String permission;
+
+        Permission(int result, String permission) {
+            this.result = result;
+            this.permission = permission;
+        }
+
+        public int getResult() {
+            return result;
+        }
+
+        public String getPermission() {
+            return permission;
+        }
+    }
+
 }

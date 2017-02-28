@@ -13,7 +13,7 @@ import jp.newbees.mastersip.ui.mailbackup.CheckCodeFragment;
 import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
-import jp.newbees.mastersip.ui.payment.WebViewFragment;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -56,7 +56,7 @@ public class MyMenuContainerFragment extends BaseFragment {
     }
 
     private static void showWebViewFragment(FragmentActivity activity, String url) {
-        BaseFragment fragment = WebViewFragment.newInstance(url,"Purchase");
+        BaseFragment fragment = PaymentFragment.newInstance(url,"Purchase");
         performShowFragment(activity, fragment);
     }
 
