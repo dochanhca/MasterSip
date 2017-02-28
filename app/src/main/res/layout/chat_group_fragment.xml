@@ -145,7 +145,6 @@
                 android:id="@+id/recycler_chat_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+                android:orientation="vertical"></android.support.v7.widget.RecyclerView>
         </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

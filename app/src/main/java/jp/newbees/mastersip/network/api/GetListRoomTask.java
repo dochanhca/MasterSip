@@ -25,23 +25,24 @@ import jp.newbees.mastersip.utils.JSONUtils;
 
 public class GetListRoomTask extends BaseTask<Map<String, Object>> {
 
-    public static final String NEXT_PAGE = "NEXT_PAGE";
     public static final String NUMBER_OF_ROOM_UNREAD = "NUMBER_OF_ROOM_UNREAD";
     public static final String LIST_ROOM_CHAT = "LIST_ROOM_CHAT";
     private final UserItem userItem;
-    private final String page;
+    private int lastRoomId;
 
-    public GetListRoomTask(Context context, UserItem userItem, String page) {
+    public GetListRoomTask(Context context, UserItem userItem, int lastRoomId) {
         super(context);
         this.userItem = userItem;
-        this.page = page;
+        this.lastRoomId = lastRoomId;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.PAGE, page);
+        if (lastRoomId != 0) {
+            jParams.put(Constant.JSON.LAST_ROOM_ID, lastRoomId);
+        }
         jParams.put(Constant.JSON.USER_ID, userItem.getUserId());
         return jParams;
     }
@@ -60,12 +61,10 @@ public class GetListRoomTask extends BaseTask<Map<String, Object>> {
     @Override
     protected Map<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
         int numberOfRoomUnread = jData.getInt(Constant.JSON.COUNT_ROOM_UNREAD);
         JSONArray arrRoomChat = jData.getJSONArray(Constant.JSON.LIST_CHAT_ROOMS);
         List<RoomChatItem> roomChatItems = JSONUtils.parseListRoomChat(arrRoomChat);
         HashMap<String, Object> result = new HashMap<>();
-        result.put(NEXT_PAGE, nextPage);
         result.put(NUMBER_OF_ROOM_UNREAD, numberOfRoomUnread);
         result.put(LIST_ROOM_CHAT, roomChatItems);
         return result;

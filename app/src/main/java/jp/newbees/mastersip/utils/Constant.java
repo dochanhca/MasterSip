@@ -33,6 +33,8 @@ public final class Constant {
         public static final String ALL = "all";
         public static final String ARR_CHAT_ROOM_ID = "arr_chat_id";
         public static final String CHAT_SET = "chat_set";
+        public static final String LAST_ROOM_ID = "last_room_id";
+        public static final String CREATED_AT = "created_at";
 
         private JSON() {
             //Prevent init constructor

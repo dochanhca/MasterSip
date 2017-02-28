@@ -269,6 +269,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             adapterSearUserModeList.setOnItemClickListener(this);
         } else {
             adapterSearUserModeList.addAll(userItems);
+            adapterSearchUserModeFour.notifyDataSetChanged();
         }
         recyclerUser.setLayoutManager(layoutManager);
         recyclerUser.setAdapter(adapterSearUserModeList);
@@ -281,6 +282,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             adapterSearchUserModeTwo.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeTwo.addAll(userItems);
+            adapterSearchUserModeFour.notifyDataSetChanged();
         }
         recyclerUser.setLayoutManager(layoutManager);
         mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_two), true);
@@ -294,6 +296,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             adapterSearchUserModeFour.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeFour.addAll(userItems);
+            adapterSearchUserModeFour.notifyDataSetChanged();
         }
         recyclerUser.setLayoutManager(layoutManager);
 

@@ -22,11 +22,8 @@ import jp.newbees.mastersip.presenter.BasePresenter;
  */
 
 public class ChatGroupPresenter extends BasePresenter {
-    private static final String NO_MORE_DATA = "";
-    private static final String FIRST_PAGE = "";
-    private String nextPage;
-    private boolean isLoadMore = false;
 
+    private int lastRoomId;
     private ChatGroupView chatGroupView;
 
     /**
@@ -36,28 +33,14 @@ public class ChatGroupPresenter extends BasePresenter {
      */
     public ChatGroupPresenter(Context context, ChatGroupView chatGroupView) {
         super(context);
-        this.nextPage = null;
         this.chatGroupView = chatGroupView;
     }
 
-    /**
-     * Get list room
-     */
-    public void loadListRoom() {
-        loadData(false, FIRST_PAGE);
-    }
-
-    private void loadData(boolean isLoadMore, String page) {
-        this.isLoadMore = isLoadMore;
+    public void loadChatRooms(int lastRoomId) {
+        this.lastRoomId = lastRoomId;
         UserItem userItem = getCurrentUserItem();
-        GetListRoomTask getListRoomTask = new GetListRoomTask(getContext(), userItem, page);
+        GetListRoomTask getListRoomTask = new GetListRoomTask(context, userItem, lastRoomId);
         requestToServer(getListRoomTask);
-    }
-
-    public void loadMoreRoom() {
-        if (hasMoreData()) {
-            loadData(true, nextPage);
-        }
     }
 
     public void markAllMessageAsRead() {
@@ -75,20 +58,15 @@ public class ChatGroupPresenter extends BasePresenter {
         requestToServer(deleteChatRoomTask);
     }
 
-    public boolean hasMoreData() {
-        return !nextPage.equalsIgnoreCase(NO_MORE_DATA);
-    }
-
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof GetListRoomTask) {
             Map<String, Object> result = ((GetListRoomTask) task).getDataResponse();
             List<RoomChatItem> roomChatItems = (List<RoomChatItem>) result.get(GetListRoomTask.LIST_ROOM_CHAT);
             int numberOfRoomUnRead = (int) result.get(GetListRoomTask.NUMBER_OF_ROOM_UNREAD);
-            this.nextPage = (String) result.get(GetListRoomTask.NEXT_PAGE);
             this.handleRoomUnRead(numberOfRoomUnRead);
 
-            if (isLoadMore) {
+            if (lastRoomId != 0) {
                 chatGroupView.didLoadMoreChatRoom(roomChatItems);
             } else {
                 chatGroupView.didLoadChatRoom(roomChatItems);
@@ -130,6 +108,7 @@ public class ChatGroupPresenter extends BasePresenter {
         void didDeleteChatRoom();
 
         void didDeleteChatRoomError(int errorCode, String errorMessage);
+
         void didMarkAllMessageAsRead();
 
         void didMarkAllMessageAsReadError(int errorCode, String errorMessage);

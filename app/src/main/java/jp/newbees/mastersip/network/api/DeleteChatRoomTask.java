@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import jp.newbees.mastersip.utils.Constant;
@@ -48,8 +47,8 @@ public class DeleteChatRoomTask extends BaseTask {
         if (roomChatIds == null) {
             jParam.put(Constant.JSON.ALL, 1);
         } else {
-            JSONArray arrChatRoomIds = new JSONArray(Arrays.asList(roomChatIds));
-            jParam.put(Constant.JSON.ARR_CHAT_ROOM_ID, arrChatRoomIds);
+            JSONArray arrChatRoomIds = new JSONArray(roomChatIds);
+            jParam.put(Constant.JSON.ARR_CHAT_ROOM_ID, arrChatRoomIds.toString());
         }
         return jParam;
     }
@@ -62,7 +61,7 @@ public class DeleteChatRoomTask extends BaseTask {
 
     @Override
     protected int getMethod() {
-        return Request.Method.DELETE;
+        return Request.Method.POST;
     }
 
     @Override
