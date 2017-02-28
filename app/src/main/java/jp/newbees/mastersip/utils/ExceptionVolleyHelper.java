@@ -63,6 +63,7 @@ public class ExceptionVolleyHelper {
             case Constant.Error.RESET_CODE_IS_NOT_EXIST:
             case Constant.Error.RESET_CODE_IS_NOT_MATCH:
             case Constant.Error.RESET_CODE_INVALID:
+            case Constant.Error.WRONG_CODE_RESET_PASS:
                 showShortToast(R.string.err_invalid_code);
                 return true;
             default:
