@@ -369,7 +369,8 @@ public class JSONUtils {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
         userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
-        userItem.setEmail(jMyInfo.getString(Constant.JSON.EMAIL));
+        userItem.setEmail((jMyInfo.isNull(Constant.JSON.EMAIL)
+                ? "" : jMyInfo.getString(Constant.JSON.EMAIL)));
         if (jMyInfo.has(Constant.JSON.AVATAR)) {
             JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
             if (jAvatar.length() > 0) {
