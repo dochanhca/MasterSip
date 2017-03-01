@@ -54,16 +54,13 @@ public class LinphoneService extends Service {
     }
 
     private void loginToVoIP(final SipItem sipItem) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Logger.e("LinephonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
-                    linphoneHandler.loginVoIPServer(
-                            sipItem.getExtension(), sipItem.getSecret());
-                } catch (LinphoneCoreException e) {
-                    Logger.e(TAG, e.getMessage());
-                }
+        new Thread(() -> {
+            try {
+                Logger.e("LinephonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                linphoneHandler.loginVoIPServer(
+                        sipItem.getExtension(), sipItem.getSecret());
+            } catch (LinphoneCoreException e) {
+                Logger.e(TAG, e.getMessage());
             }
         }).start();
     }

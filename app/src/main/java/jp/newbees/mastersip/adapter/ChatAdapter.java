@@ -40,11 +40,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<BaseChatItem> data;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private LayoutInflater layoutInflater;
 
     public ChatAdapter(Context context, List<BaseChatItem> data) {
         this.initDay = DateTimeUtils.getDateWithoutTime(Calendar.getInstance().getTime());
         this.data = data;
         this.context = context;
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -56,7 +58,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewType -= OFFSET_RETURN_TYPE;
         }
 
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
@@ -304,16 +305,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         }
         notifyDataSetChanged();
-    }
-
-
-    private void notifyHeaderChanges() {
-        for (int i = 0; i < data.size(); i++) {
-            BaseChatItem item = data.get(i);
-            if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
-                notifyItemChanged(i);
-            }
-        }
     }
 
 }

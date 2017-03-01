@@ -23,21 +23,21 @@ public class MaxAgeAdapter extends RecyclerView.Adapter<MaxAgeAdapter.ViewHolder
     private Context context;
 
     private int selectedItem;
-
-    public interface OnMaxAgeAdapterClick {
-        void onMaxAgeSelected(int position);
-    }
-
     OnMaxAgeAdapterClick onMaxAgeAdapterClick;
 
-    public void setOnMaxAgeAdapterClick(OnMaxAgeAdapterClick onMaxAgeAdapterClick) {
-        this.onMaxAgeAdapterClick = onMaxAgeAdapterClick;
+    @FunctionalInterface
+    public interface OnMaxAgeAdapterClick {
+        void onMaxAgeSelected(int position);
     }
 
     public MaxAgeAdapter(Context context, List<AgeItem> data, int selectedItem) {
         this.data = data;
         this.context = context;
         this.selectedItem = selectedItem;
+    }
+
+    public void setOnMaxAgeAdapterClick(OnMaxAgeAdapterClick onMaxAgeAdapterClick) {
+        this.onMaxAgeAdapterClick = onMaxAgeAdapterClick;
     }
 
     @Override

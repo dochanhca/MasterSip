@@ -69,7 +69,7 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
     public void onClick(View view) {
         if (view.getId() == R.id.btn_send) {
             showLoading();
-            checkCodePresenter.checkCode(edtCode.getText().toString());
+            checkCodePresenter.checkCode(edtCode.getText().toString().trim());
         } else if (view.getId() == R.id.txt_resend_code) {
             getActivity().onBackPressed();
         }

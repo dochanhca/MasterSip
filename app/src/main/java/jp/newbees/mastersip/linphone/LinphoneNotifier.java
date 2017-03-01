@@ -27,29 +27,19 @@ public class LinphoneNotifier extends TutorialNotifier {
 
     @Override
     public void notify(final String s) {
-        mHandler.post(new Runnable() {
-            public void run() {
-                // do something
-            }
+        mHandler.post(() -> {
+            // do something
         });
     }
 
     public void registerVoIPSuccess() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Logger.e(TAG,"registerVoIPSuccess");
-                EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
-            }
+        mHandler.post(() -> {
+            Logger.e(TAG,"registerVoIPSuccess");
+            EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
         });
     }
 
     public void registerVoIPFailed() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_FAILED));
-            }
-        });
+        mHandler.post(() -> EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_FAILED)));
     }
 }

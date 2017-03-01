@@ -74,7 +74,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else {
             View view = inflater.inflate(R.layout.item_parent_location, parent, false);
 
-            ParentViewHolder viewHolder = new ParentViewHolder(context, view);
+            ParentViewHolder viewHolder = new ParentViewHolder(view);
 
             setupClickableViews(viewHolder);
 
@@ -140,18 +140,25 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
              */
             if (position == 0 || position == itemSize - 1) {
                 parentView.setBackground(context.getResources().getDrawable(R.drawable.bg_corner_layout));
-            } else if (position == LocationItem.START_CHINA || position == LocationItem.START_KINKI
-                    || position == LocationItem.START_KONTO || position == LocationItem.START_MIDDLE
-                    || position == LocationItem.START_KYUSHU || position == LocationItem.START_NORTHEAST
-                    || position == LocationItem.START_SHIKOKU) {
+            } else if (positionTop(position)) {
                 parentView.setBackground(context.getResources().getDrawable(R.drawable.bg_corner_header_layout));
-            } else if (position == LocationItem.END_CHINA || position == LocationItem.END_KINKI
-                    || position == LocationItem.END_KONTO || position == LocationItem.END_KYUSHU
-                    || position == LocationItem.END_MIDDLE || position == LocationItem.END_NORTHEAST
-                    || position == LocationItem.END_SHIKOKU) {
+            } else if (positionBot(position)) {
                 parentView.setBackground(context.getResources().getDrawable(R.drawable.bg_corner_bottom_layout));
             }
+        }
 
+        private boolean positionBot(int position) {
+            return position == LocationItem.END_CHINA || position == LocationItem.END_KINKI
+                    || position == LocationItem.END_KONTO || position == LocationItem.END_KYUSHU
+                    || position == LocationItem.END_MIDDLE || position == LocationItem.END_NORTHEAST
+                    || position == LocationItem.END_SHIKOKU;
+        }
+
+        private boolean positionTop(int position) {
+            return position == LocationItem.START_CHINA || position == LocationItem.START_KINKI
+                    || position == LocationItem.START_KONTO || position == LocationItem.START_MIDDLE
+                    || position == LocationItem.START_KYUSHU || position == LocationItem.START_NORTHEAST
+                    || position == LocationItem.START_SHIKOKU;
         }
     }
 
@@ -159,7 +166,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private TextView txtCityName;
         private ImageView btnSelectAll;
 
-        public ParentViewHolder(Context context, View itemView) {
+        public ParentViewHolder(View itemView) {
             super(itemView);
             txtCityName = (TextView) itemView.findViewById(R.id.txt_city_name);
             btnSelectAll = (ImageView) itemView.findViewById(R.id.btn_select_all);
@@ -167,7 +174,6 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void bindParentView(LocationItem locationItem) {
             txtCityName.setText(locationItem.getSelectionItem().getTitle());
-
         }
     }
 }

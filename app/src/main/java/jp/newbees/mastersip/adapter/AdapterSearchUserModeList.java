@@ -74,7 +74,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
         holder.txtLocation.setText(item.getLocation().getTitle());
 
         holder.imgAvailableCall.setVisibility(item.getSettings().getVoiceCall() == SettingItem.ON
-        ? View.VISIBLE : View.GONE);
+                ? View.VISIBLE : View.GONE);
         holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
                 ? View.VISIBLE : View.GONE);
     }
@@ -126,7 +126,7 @@ public class AdapterSearchUserModeList extends RecyclerView.Adapter<AdapterSearc
         this.onItemClickListener = onItemClickListener;
     }
 
-
+    @FunctionalInterface
     public interface OnItemClickListener {
         void onItemClick(UserItem item, int position);
     }

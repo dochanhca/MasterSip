@@ -22,21 +22,21 @@ public class MinAgeAdapter extends RecyclerView.Adapter<MinAgeAdapter.ViewHolder
     private Context context;
 
     private int selectedItem;
-
-    public interface OnMinAgeAdapterClick {
-        void onMinAgeSelected(int position);
-    }
-
     private OnMinAgeAdapterClick onMinAgeAdapterClick;
 
-    public void setOnMinAgeAdapterClick(OnMinAgeAdapterClick onMinAgeAdapterClick) {
-        this.onMinAgeAdapterClick = onMinAgeAdapterClick;
+    @FunctionalInterface
+    public interface OnMinAgeAdapterClick {
+        void onMinAgeSelected(int position);
     }
 
     public MinAgeAdapter(Context context, List<AgeItem> data, int selectedItem) {
         this.data = data;
         this.context = context;
         this.selectedItem = selectedItem;
+    }
+
+    public void setOnMinAgeAdapterClick(OnMinAgeAdapterClick onMinAgeAdapterClick) {
+        this.onMinAgeAdapterClick = onMinAgeAdapterClick;
     }
 
     @Override
