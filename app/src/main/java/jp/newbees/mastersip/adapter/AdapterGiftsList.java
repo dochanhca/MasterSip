@@ -103,6 +103,7 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         this.giftItemSelectListener = giftItemSelectListener;
     }
 
+    @FunctionalInterface
     public interface OnGiftItemSelectListener {
         void onGiftItemSelect(GiftItem giftItem);
     }

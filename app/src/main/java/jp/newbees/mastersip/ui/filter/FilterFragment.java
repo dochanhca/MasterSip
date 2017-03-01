@@ -54,7 +54,6 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
 
     private String cities[];
     private ArrayList<LocationItem> selectedItems;
-    private int northeast, kanto, middle, kinki, china, shikoku, kyushu;
 
     private CheckBox cb24h;
 
@@ -202,7 +201,6 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        northeast = kanto = middle = kinki = china = shikoku = kyushu = 0;
         EventBus.getDefault().register(this);
     }
 
@@ -240,6 +238,8 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     }
 
     public void updateArea(ArrayList<LocationItem> selectedItems) {
+        int northeast = 0, kanto = 0, middle = 0, kinki = 0, china = 0, shikoku = 0, kyushu = 0;
+
         ArrayList<LocationItem> temps = new ArrayList<>();
         for (LocationItem item : selectedItems) {
             temps.add(item.clone());
@@ -386,6 +386,6 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
 
         configManager.saveFilterSetting(filterItem);
         EventBus.getDefault().postSticky(new FilterUserEvent());
-        getFragmentManager().popBackStack();
+        getFragmentManager().popBackStackImmediate();
     }
 }

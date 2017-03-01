@@ -332,6 +332,8 @@
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_call_history"
                         style="@style/style_text_view_with_button_my_menu"
+                        android:drawablePadding="@dimen/_10dp"
+                        android:paddingTop="@dimen/_25dp"
                         android:layout_height="match_parent"
                         android:text="@string/call_history"
                         android:drawableTop="@drawable/ic_call_history" />
@@ -345,6 +347,8 @@
                         android:id="@+id/txt_block_list"
                         style="@style/style_text_view_with_button_my_menu"
                         android:layout_height="match_parent"
+                        android:drawablePadding="@dimen/_10dp"
+                        android:paddingTop="@dimen/_25dp"
                         android:text="@string/block_list"
                         android:drawableTop="@drawable/ic_block_list" />
                 </LinearLayout>

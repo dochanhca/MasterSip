@@ -93,6 +93,7 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
         this.onItemClickListener = onItemClickListener;
     }
 
+    @FunctionalInterface
     public interface OnItemClickListener {
         void onUserImageClick(int position);
     }

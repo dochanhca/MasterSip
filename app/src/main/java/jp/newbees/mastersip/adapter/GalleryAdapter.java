@@ -25,7 +25,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private static final int FIRST_POSITION = 0;
     private List<ImageItem> photos;
     private final Context context;
-    private UserPhotoAdapter.OnItemClickListener onItemClickListener;
+    private OnItemClickListener onItemClickListener;
 
     public GalleryAdapter(Context context, List<ImageItem> photos) {
         this.photos = photos;
@@ -105,10 +105,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
 
-    public void setOnItemClickListener(UserPhotoAdapter.OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
+    @FunctionalInterface
     public interface OnItemClickListener {
         void onUserImageClick(int position);
     }

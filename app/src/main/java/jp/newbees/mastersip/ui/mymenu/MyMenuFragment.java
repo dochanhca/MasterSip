@@ -29,7 +29,6 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryAdapter;
-import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.GalleryItem;
@@ -52,7 +51,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by thangit14 on 12/22/16.
  */
 
-public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, UserPhotoAdapter.OnItemClickListener,
+public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, GalleryAdapter.OnItemClickListener,
         SelectImageDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogClick {
 
     private static final int REQUEST_SELECT_PHOTO_FOR_AVATAR = 8888;

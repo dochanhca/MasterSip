@@ -22,21 +22,21 @@ public class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.Sele
     private Context context;
 
     private int selectedItem = -1;
-
-    public interface OnSelectionAdapterClick {
-        abstract void onItemSelected(int position);
-    }
-
     private OnSelectionAdapterClick onSelectionAdapterClick;
 
-    public void setOnSelectionAdapterClick(OnSelectionAdapterClick onSelectionAdapterClick) {
-        this.onSelectionAdapterClick = onSelectionAdapterClick;
+    @FunctionalInterface
+    public interface OnSelectionAdapterClick {
+        void onItemSelected(int position);
     }
 
     public SelectionAdapter(Context context, List<SelectionItem> data, int selectedItem) {
         this.data = data;
         this.context = context;
         this.selectedItem = selectedItem;
+    }
+
+    public void setOnSelectionAdapterClick(OnSelectionAdapterClick onSelectionAdapterClick) {
+        this.onSelectionAdapterClick = onSelectionAdapterClick;
     }
 
     @Override

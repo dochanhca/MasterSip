@@ -96,10 +96,9 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         }
 
         private static float getAvatarHeightInModeFour(Context c) {
-            float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
-                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_four) * 5);
-            float height = screenWidth / 4;
-            return height;
+            float screenWidth = c.getResources().getDisplayMetrics().widthPixels
+                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_four) * 5;
+            return screenWidth / 4;
         }
     }
 
@@ -122,6 +121,7 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
         this.onItemClickListener = onItemClickListener;
     }
 
+    @FunctionalInterface
     public interface OnItemClickListener {
         void onItemClick(UserItem item, int position);
     }

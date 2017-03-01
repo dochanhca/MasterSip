@@ -100,10 +100,9 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
         }
 
         public static float getAvatarHeightInModeTwo(Context c) {
-            float screenWidth = (c.getResources().getDisplayMetrics().widthPixels
-                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_two) * 3);
-            float height = screenWidth / 2;
-            return height;
+            float screenWidth = c.getResources().getDisplayMetrics().widthPixels
+                    - c.getResources().getDimensionPixelOffset(R.dimen.item_offset_mode_two) * 3;
+            return screenWidth / 2;
         }
     }
 
@@ -126,7 +125,7 @@ public class AdapterSearchUserModeTwo extends RecyclerView.Adapter<AdapterSearch
         this.onItemClickListener = onItemClickListener;
     }
 
-
+    @FunctionalInterface
     public interface OnItemClickListener {
         void onItemClick(UserItem item, int position);
     }
