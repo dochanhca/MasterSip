@@ -48,4 +48,12 @@
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.google.gson.examples.android.model.** { *; }
 
+#-keepattributes JavascriptInterface
+
+#-keep public class jp.newbees.mastersip.ui.payment.PaymentFragment$WebAppInterface
+#-keep public class * p.newbees.mastersip.ui.payment.PaymentFragment$WebAppInterface
+#-keepclassmembers class p.newbees.mastersip.ui.payment.PaymentFragment$WebAppInterface {
+#    purchaseItem;
+#}
+
 ##---------------End: proguard configuration for Gson  ----------

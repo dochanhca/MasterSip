@@ -87,7 +87,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         fillData();
-        topPresenter.requestPermissions();
+//        topPresenter.requestPermissions();
     }
 
     @Override
