@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
@@ -17,17 +18,19 @@ import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopView, BaseActivity.BottomNavigation {
+public class TopActivity extends CallCenterActivity implements View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;
@@ -75,7 +78,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        topPresenter = new TopPresenter(getApplicationContext(), this);
+        topPresenter = new TopPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(3);
@@ -95,6 +98,22 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
+
+        Logger.e(TAG, "Destroying helper.");
+        if (getIabHelper() != null) {
+            topPresenter.disposeIabHelper();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (getIabHelper() == null) return;
+
+        if (!getIabHelper().handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.e(TAG, "onActivityResult handled by IABUtil.");
+        }
     }
 
     @Override
@@ -105,8 +124,11 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         navigationLayoutGroup.setSelectedItem(position);
     }
 
+    private IabHelper getIabHelper() {
+        return topPresenter.getIabHelper();
+    }
+
     /**
-     *
      * @param roomChatEvent
      */
     @Subscribe
@@ -133,6 +155,40 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onInAppBillingSuccess(String sku, String token) {
+        showLoading();
+        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+    }
+
+    @Override
+    public void onPurchaseError(int errorCode, String errorMessage, String sku, String transection) {
+        TopPresenter.PurchaseStatus status;
+        if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
+            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
+            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
+            status = TopPresenter.PurchaseStatus.FAIL;
+            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
+            disMissLoading();
+            showMessageDialog(getString(R.string.cancel_purchase));
+        }
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerSuccess(int point) {
+        disMissLoading();
+        onBackPressed();
+        showMessageDialog(String.format(getString(R.string.purchase_success), point+""));
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
@@ -198,6 +254,10 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
         String tag = makeFragmentName(viewPager.getId(), position);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         return fragment;
+    }
+
+    public TopPresenter getPresenter() {
+        return topPresenter;
     }
 
     public void showSearchFragment() {

@@ -15,7 +15,7 @@ public class RegisterPresenter extends BasePresenter {
 
     public interface RegisterView {
         /**
-         * Callback when register User VoIP OK
+         * Callback when register User VoIP SUCCESS
          *
          * @param userItem
          */

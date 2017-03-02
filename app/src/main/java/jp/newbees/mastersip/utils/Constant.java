@@ -33,6 +33,7 @@ public final class Constant {
         public static final String ALL = "all";
         public static final String ARR_CHAT_ROOM_ID = "arr_chat_id";
         public static final String CHAT_SET = "chat_set";
+        public static final String VERSION = "version";
         public static final String LAST_ROOM_ID = "last_room_id";
         public static final String CREATED_AT = "created_at";
 
@@ -157,6 +158,10 @@ public final class Constant {
         public static final String IMAGE = "image";
 
         public static final String DEST_USER_ID = "dest_user_id";
+
+        public static final String ID_ADDON = "id_addon";
+        public static final String TRANSECTION = "transection";
+        public static final String CREATE_AT = "created_at";
     }
 
     public static final class API {
@@ -227,6 +232,7 @@ public final class Constant {
         public static final String CHOSE_PAYMENT_TYPE = "http://52.197.14.30/thaihv_api/public/webview/payment?";
         public static final String MARK_MESSAGE_AS_READ = "message/mark_as_read";
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
+        public static final String SEND_PURCHASE_RESULT = "payment/os/2/addon";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -277,6 +283,9 @@ public final class Constant {
         public static final int SC_INTERNAL_SERVER_ERROR = 500;
         public static final int WRONG_ORDER_BY_CODE = 3003;
         public static final int VOIP_ERROR = 5000;
+        public static final int IN_APP_PURCHASE_FAIL = 5001;
+        public static final int IN_APP_PURCHASE_NOT_SUCCESS = 5002;
+        public static final int IN_APP_PURCHASE_CANCEL = 5003;
     }
 
     public final class Application {
@@ -285,7 +294,7 @@ public final class Constant {
             //Prevent init object
         }
 
-        public static final boolean DEBUG = false;
+        public static final boolean DEBUG = true;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";
@@ -314,4 +323,16 @@ public final class Constant {
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
     }
 
+    public static class InAppBilling{
+        public static final String SKU_TYPE_01 = "1";
+        public static final String SKU_TYPE_02 = "2";
+        public static final String SKU_TYPE_03 = "3";
+        public static final String SKU_TYPE_04 = "4";
+
+        public static final String[] SKUS = {SKU_TYPE_01, SKU_TYPE_02, SKU_TYPE_03, SKU_TYPE_04};
+        public static final int RC_REQUEST = 10001;
+
+        public static final String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqnLWbhSgEG1u+0PZ3frkI7EeRge5iD8gOthik3llKyCbSpHPCY/9YjMIXrbe97XQZj7vp2MUeX4DHMB7sBNHT/T2rcpHvoezTZrUiUEPb4rTodEd9c1Ks1pcOEJ+cZpBRHOVRkG1Y+ZM4ftvvYnfsQE9xdaGAhWm+BJDoFmBP9YNwSyLI4WC07qp4s38a9hpB3XWXJG6p20oCyhVAyY/vazW53BpWlupyGpfI4C5Au8rwOGbJ/2scl0xAfKsxQxj2pNPU7yrs1XLDUjdPiS7swSuVp803Fu8v5o1CWRnQhEXi/XPjtEqSM/MRS04JP3PoV/YjrdgYboskqIRbRbZcwIDAQAB";
+
+    }
 }

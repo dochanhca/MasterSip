@@ -497,8 +497,8 @@ public class IabHelper {
             }
         }
         else if (resultCode == Activity.RESULT_OK) {
-            // result code was OK, but in-app billing response was not OK.
-            logDebug("Result code was OK but in-app billing response was not OK: " + getResponseDesc(responseCode));
+            // result code was SUCCESS, but in-app billing response was not SUCCESS.
+            logDebug("Result code was SUCCESS but in-app billing response was not SUCCESS: " + getResponseDesc(responseCode));
             if (mPurchaseListener != null) {
                 result = new IabResult(responseCode, "Problem purchashing item.");
                 mPurchaseListener.onIabPurchaseFinished(result, null);
@@ -748,11 +748,11 @@ public class IabHelper {
      *     It also includes the result code numerically.
      */
     public static String getResponseDesc(int code) {
-        String[] iab_msgs = ("0:OK/1:User Canceled/2:Unknown/" +
+        String[] iab_msgs = ("0:SUCCESS/1:User Canceled/2:Unknown/" +
                 "3:Billing Unavailable/4:Item unavailable/" +
                 "5:Developer Error/6:Error/7:Item Already Owned/" +
                 "8:Item not owned").split("/");
-        String[] iabhelper_msgs = ("0:OK/-1001:Remote exception during initialization/" +
+        String[] iabhelper_msgs = ("0:SUCCESS/-1001:Remote exception during initialization/" +
                                    "-1002:Bad response received/" +
                                    "-1003:Purchase signature verification failed/" +
                                    "-1004:Send intent failed/" +
@@ -787,7 +787,7 @@ public class IabHelper {
     int getResponseCodeFromBundle(Bundle b) {
         Object o = b.get(RESPONSE_CODE);
         if (o == null) {
-            logDebug("Bundle with null response code, assuming OK (known issue)");
+            logDebug("Bundle with null response code, assuming SUCCESS (known issue)");
             return BILLING_RESPONSE_RESULT_OK;
         }
         else if (o instanceof Integer) return ((Integer)o).intValue();
@@ -803,7 +803,7 @@ public class IabHelper {
     int getResponseCodeFromIntent(Intent i) {
         Object o = i.getExtras().get(RESPONSE_CODE);
         if (o == null) {
-            logError("Intent with no response code, assuming OK (known issue)");
+            logError("Intent with no response code, assuming SUCCESS (known issue)");
             return BILLING_RESPONSE_RESULT_OK;
         }
         else if (o instanceof Integer) return ((Integer)o).intValue();
