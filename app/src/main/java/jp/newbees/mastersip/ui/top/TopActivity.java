@@ -214,5 +214,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
 
     public void showSearchFragment() {
         viewPager.setCurrentItem(0, false);
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

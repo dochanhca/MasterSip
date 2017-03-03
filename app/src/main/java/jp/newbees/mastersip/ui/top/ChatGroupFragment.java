@@ -9,10 +9,8 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +24,7 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatGroupAdapter;
 import jp.newbees.mastersip.customviews.OnSwipeTouchListener;
+import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -63,17 +62,21 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     LinearLayout layoutActions;
     @BindView(R.id.cb_select_all)
     CheckBox cbSelectAll;
-    @BindView(R.id.txt_delete)
-    TextView txtDelete;
+    @BindView(R.id.txt_delete_chat_room)
+    TextView txtDeleteChatRoom;
+    @BindView(R.id.txt_read_all)
+    TextView txtReadAll;
 
     private ChatGroupPresenter presenter;
     private ChatGroupAdapter chatGroupAdapter;
 
     private boolean isLoading;
+    private boolean isEnding;
     private int visibleItemCount;
     private int totalItemCount;
     private int firstVisibleItem;
     private boolean isEditing = false;
+    private boolean needReloadListRoom = false;
 
     public static Fragment newInstance() {
         Fragment fragment = new ChatGroupFragment();
@@ -93,26 +96,20 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         presenter = new ChatGroupPresenter(getContext(), this);
         initRecyclerChatGroup();
         txtHeaderTitle.setText(getString(R.string.chat_list));
+        setEnabledButtonDeleteChatRoom(false);
 
         showLoading();
-        presenter.loadListRoom();
+        presenter.loadChatRooms(0);
         // Swipe to refresh data
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.loadListRoom();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadChatRooms(0));
 
-        cbSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    selectAllChatRoom(isChecked);
-                }
-                cbSelectAll.setText(isChecked ? getString(R.string.select_all)
-                        : getString(R.string.remove_all));
+        cbSelectAll.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                selectAllChatRoom(isChecked);
+                setEnabledButtonDeleteChatRoom(true);
             }
+            cbSelectAll.setText(isChecked ? getString(R.string.select_all)
+                    : getString(R.string.remove_all));
         });
     }
 
@@ -120,7 +117,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     public void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
-        presenter.loadListRoom();
+        presenter.loadChatRooms(0);
     }
 
     @Override
@@ -129,7 +126,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.txt_read_all, R.id.txt_edit, R.id.btn_go, R.id.txt_delete, R.id.cb_select_all})
+    @OnClick({R.id.txt_read_all, R.id.txt_edit, R.id.btn_go, R.id.txt_delete_chat_room, R.id.cb_select_all})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_go:
@@ -142,13 +139,14 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
             case R.id.txt_edit:
                 updateViewWithMode();
                 break;
-            case R.id.txt_delete:
+            case R.id.txt_delete_chat_room:
                 TextDialog.openTextDialog(this, REQUEST_CONFIRM_DELETE_MESSAGE,
                         getFragmentManager(), getString(R.string.delete_selected_message), "");
                 break;
             case R.id.cb_select_all:
                 if (!cbSelectAll.isChecked()) {
                     selectAllChatRoom(false);
+                    setEnabledButtonDeleteChatRoom(false);
                 }
             default:
                 break;
@@ -157,6 +155,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
 
     @Override
     public void didLoadChatRoom(List<RoomChatItem> roomChatItems) {
+        isEnding = false;
         chatGroupAdapter.clearData();
         chatGroupAdapter.addAll(roomChatItems);
         swipeRefreshLayout.setRefreshing(false);
@@ -174,18 +173,49 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
 
     @Override
     public void didLoadMoreChatRoom(List<RoomChatItem> roomChatItems) {
+        if (roomChatItems.size() == 0) {
+            isEnding = true;
+        }
         chatGroupAdapter.addAll(roomChatItems);
         isLoading = false;
         disMissLoading();
     }
 
     @Override
+    public void didDeleteChatRoom() {
+        if (isAllChatRoomSelected()) {
+            updateViewWithMode();
+            presenter.loadChatRooms(0);
+        } else {
+            chatGroupAdapter.removeSelectedItem();
+            needReloadListRoom = true;
+        }
+        disMissLoading();
+    }
+
+    @Override
+    public void didDeleteChatRoomError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
     public void didMarkAllMessageAsRead() {
-        presenter.loadListRoom();
+        markAllMessageAsRead();
+        disMissLoading();
+    }
+
+    private void markAllMessageAsRead() {
+        for (RoomChatItem item : chatGroupAdapter.getData()) {
+            item.setNumberMessageUnRead(0);
+        }
+        chatGroupAdapter.notifyDataSetChanged();
+        EventBus.getDefault().post(new RoomChatEvent(0));
     }
 
     @Override
     public void didMarkAllMessageAsReadError(int errorCode, String errorMessage) {
+        disMissLoading();
         showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
@@ -193,6 +223,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     public void onRoomChatItemClick(RoomChatItem item, int position) {
         if (isEditing) {
             item.setSelected(!item.isSelected());
+            setEnabledButtonDeleteChatRoom();
             chatGroupAdapter.notifyDataSetChanged();
             cbSelectAll.setChecked(isAllChatRoomSelected() ? true : false);
         } else {
@@ -203,32 +234,48 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     @Subscribe()
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
         Logger.e(TAG, "ChatMessageEvent: " + newChatMessageEvent.toString());
-        presenter.loadListRoom();
+        if (isEditing) {
+            needReloadListRoom = true;
+            return;
+        }
+        presenter.loadChatRooms(0);
     }
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == REQUEST_CONFIRM_MARK_ALL_MESSAGE_AS_READ) {
             // Call API mark all message as read
+            showLoading();
             presenter.markAllMessageAsRead();
         } else if (requestCode == REQUEST_CONFIRM_DELETE_MESSAGE) {
             // Call API delete message
+            showLoading();
+            presenter.deleteChatRoom(isAllChatRoomSelected() ? null : getChatRoomIds());
         }
     }
 
     private void updateUI() {
         boolean isFirstTimeChatting = ConfigManager.getInstance().getFirstTimeChattingFlag();
 
-        if (chatGroupAdapter.getItemCount() == 0 && !isFirstTimeChatting) {
-            layoutIntroduce.setVisibility(View.VISIBLE);
+        if (chatGroupAdapter.getItemCount() == 0) {
+            if (!isFirstTimeChatting) {
+                layoutIntroduce.setVisibility(View.VISIBLE);
 
-            SpannableString message = new SpannableString(getString(R.string.there_is_no_conversation_yet));
-            message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red)), 13, 15, 0);
-            txtMessage.setText(message, TextView.BufferType.SPANNABLE);
+                SpannableString message = new SpannableString(getString(R.string.there_is_no_conversation_yet));
+                message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red)), 13, 15, 0);
+                txtMessage.setText(message, TextView.BufferType.SPANNABLE);
 
-            initMessageByGender();
-        } else if (chatGroupAdapter.getItemCount() > 0 && !isFirstTimeChatting) {
-            saveFirstTimeChattingFlag();
+                initMessageByGender();
+            }
+            txtEdit.setVisibility(View.GONE);
+            txtReadAll.setVisibility(View.GONE);
+        } else if (chatGroupAdapter.getItemCount() > 0) {
+            layoutIntroduce.setVisibility(View.GONE);
+            txtEdit.setVisibility(View.VISIBLE);
+            txtReadAll.setVisibility(View.VISIBLE);
+            if (!isFirstTimeChatting) {
+                saveFirstTimeChattingFlag();
+            }
         }
     }
 
@@ -257,8 +304,9 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     }
 
     private void initRecyclerChatGroup() {
-        chatGroupAdapter = new ChatGroupAdapter(getActivity().getApplicationContext(), new ArrayList<RoomChatItem>());
+        chatGroupAdapter = new ChatGroupAdapter(getActivity().getApplicationContext(), new ArrayList<>());
         chatGroupAdapter.setOnItemClickListener(this);
+        recyclerChatGroup.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerChatGroup.setAdapter(chatGroupAdapter);
 
         addScrollToLoadMoreRecyclerView();
@@ -270,7 +318,6 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
-                Toast.makeText(getActivity().getApplicationContext(), "slide right", Toast.LENGTH_SHORT).show();
                 if (!isEditing) {
                     notifyChatRoomListWithMode();
                     initEditMode();
@@ -291,12 +338,19 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
                     firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
                     if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0
-                            && !isLoading && !isEditing && presenter.hasMoreData()) {
-                        isLoading = true;
-                        showLoading();
-                        presenter.loadMoreRoom();
+                            && !isLoading && !isEditing && !isEnding) {
+                        loadMoreChatRooms();
+
                     }
                 }
+            }
+
+            private void loadMoreChatRooms() {
+                int size = chatGroupAdapter.getData().size();
+                int lastRoomId = Integer.parseInt(chatGroupAdapter.getData().get(size - 1).getRoomId());
+                isLoading = true;
+                showLoading();
+                presenter.loadChatRooms(lastRoomId);
             }
         });
     }
@@ -305,8 +359,16 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         notifyChatRoomListWithMode();
         if (isEditing) {
             initNonEditMode();
+            reloadListRoomIfNeed();
         } else {
             initEditMode();
+        }
+    }
+
+    private void reloadListRoomIfNeed() {
+        if (needReloadListRoom) {
+            presenter.loadChatRooms(0);
+            needReloadListRoom = false;
         }
     }
 
@@ -320,11 +382,11 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     private void initNonEditMode() {
         layoutActions.setVisibility(View.GONE);
         txtEdit.setText(getString(R.string.edit));
+        setEnabledButtonDeleteChatRoom(false);
         cbSelectAll.setChecked(false);
         selectAllChatRoom(false);
         swipeRefreshLayout.setEnabled(true);
         isEditing = false;
-
     }
 
     private void notifyChatRoomListWithMode() {
@@ -349,5 +411,34 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
             }
         }
         return selected;
+    }
+
+    /**
+     * Disable delete button if there is no room chat selected
+     */
+    private void setEnabledButtonDeleteChatRoom() {
+        boolean isEnabled = false;
+        for (RoomChatItem item : chatGroupAdapter.getData()) {
+            if (item.isSelected()) {
+                isEnabled = true;
+            }
+        }
+        setEnabledButtonDeleteChatRoom(isEnabled);
+    }
+
+    private void setEnabledButtonDeleteChatRoom(boolean isEnabled) {
+        txtDeleteChatRoom.setEnabled(isEnabled);
+        txtDeleteChatRoom.setCompoundDrawablesWithIntrinsicBounds(
+                isEnabled ? R.drawable.ic_trash : R.drawable.ic_trash_gray, 0, 0, 0);
+    }
+
+    private List<Integer> getChatRoomIds() {
+        List<Integer> chatRoomIds = new ArrayList<>();
+        for (RoomChatItem item : chatGroupAdapter.getData()) {
+            if (item.isSelected()) {
+                chatRoomIds.add(Integer.valueOf(item.getRoomId()));
+            }
+        }
+        return chatRoomIds;
     }
 }

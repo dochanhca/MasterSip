@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -11,6 +12,7 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.DeleteChatRoomTask;
 import jp.newbees.mastersip.network.api.GetListRoomTask;
 import jp.newbees.mastersip.network.api.MarkAllMessageAsReadTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -20,11 +22,8 @@ import jp.newbees.mastersip.presenter.BasePresenter;
  */
 
 public class ChatGroupPresenter extends BasePresenter {
-    private static final String NO_MORE_DATA = "";
-    private static final String FIRST_PAGE = "";
-    private String nextPage;
-    private boolean isLoadMore = false;
 
+    private int lastRoomId;
     private ChatGroupView chatGroupView;
 
     /**
@@ -34,28 +33,14 @@ public class ChatGroupPresenter extends BasePresenter {
      */
     public ChatGroupPresenter(Context context, ChatGroupView chatGroupView) {
         super(context);
-        this.nextPage = null;
         this.chatGroupView = chatGroupView;
     }
 
-    /**
-     * Get list room
-     */
-    public void loadListRoom() {
-        loadData(false, FIRST_PAGE);
-    }
-
-    private void loadData(boolean isLoadMore, String page) {
-        this.isLoadMore = isLoadMore;
+    public void loadChatRooms(int lastRoomId) {
+        this.lastRoomId = lastRoomId;
         UserItem userItem = getCurrentUserItem();
-        GetListRoomTask getListRoomTask = new GetListRoomTask(getContext(), userItem, page);
+        GetListRoomTask getListRoomTask = new GetListRoomTask(context, userItem, lastRoomId);
         requestToServer(getListRoomTask);
-    }
-
-    public void loadMoreRoom() {
-        if (hasMoreData()) {
-            loadData(true, nextPage);
-        }
     }
 
     public void markAllMessageAsRead() {
@@ -63,8 +48,14 @@ public class ChatGroupPresenter extends BasePresenter {
         requestToServer(markAllMessageAsReadTask);
     }
 
-    public boolean hasMoreData() {
-        return !nextPage.equalsIgnoreCase(NO_MORE_DATA);
+    public void deleteChatRoom(@Nullable List<Integer> chatRoomIds) {
+        DeleteChatRoomTask deleteChatRoomTask;
+        if (chatRoomIds == null) {
+            deleteChatRoomTask = new DeleteChatRoomTask(context);
+        } else {
+            deleteChatRoomTask = new DeleteChatRoomTask(context, chatRoomIds);
+        }
+        requestToServer(deleteChatRoomTask);
     }
 
     @Override
@@ -73,14 +64,15 @@ public class ChatGroupPresenter extends BasePresenter {
             Map<String, Object> result = ((GetListRoomTask) task).getDataResponse();
             List<RoomChatItem> roomChatItems = (List<RoomChatItem>) result.get(GetListRoomTask.LIST_ROOM_CHAT);
             int numberOfRoomUnRead = (int) result.get(GetListRoomTask.NUMBER_OF_ROOM_UNREAD);
-            this.nextPage = (String) result.get(GetListRoomTask.NEXT_PAGE);
             this.handleRoomUnRead(numberOfRoomUnRead);
 
-            if (isLoadMore) {
+            if (lastRoomId != 0) {
                 chatGroupView.didLoadMoreChatRoom(roomChatItems);
             } else {
                 chatGroupView.didLoadChatRoom(roomChatItems);
             }
+        } else if (task instanceof DeleteChatRoomTask) {
+            chatGroupView.didDeleteChatRoom();
         } else if (task instanceof MarkAllMessageAsReadTask) {
             chatGroupView.didMarkAllMessageAsRead();
         }
@@ -101,6 +93,8 @@ public class ChatGroupPresenter extends BasePresenter {
             chatGroupView.didLoadChatRoomError(errorCode, errorMessage);
         } else if (task instanceof MarkAllMessageAsReadTask) {
             chatGroupView.didMarkAllMessageAsReadError(errorCode, errorMessage);
+        } else if (task instanceof DeleteChatRoomTask) {
+            chatGroupView.didDeleteChatRoomError(errorCode, errorMessage);
         }
     }
 
@@ -110,6 +104,10 @@ public class ChatGroupPresenter extends BasePresenter {
         void didLoadChatRoomError(int errorCode, String errorMessage);
 
         void didLoadMoreChatRoom(List<RoomChatItem> roomChatItems);
+
+        void didDeleteChatRoom();
+
+        void didDeleteChatRoomError(int errorCode, String errorMessage);
 
         void didMarkAllMessageAsRead();
 

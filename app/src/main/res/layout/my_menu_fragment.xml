@@ -156,10 +156,9 @@
                             android:textSize="@dimen/text_size_16"
                             android:textStyle="bold" />
 
-                        <jp.newbees.mastersip.customviews.HiraginoTextView
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/_3dp"
                             android:layout_toRightOf="@id/txt_point"
                             android:text="@string/pt"
                             android:textColor="@color/blue_dark" />

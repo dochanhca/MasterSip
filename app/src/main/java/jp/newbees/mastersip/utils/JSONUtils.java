@@ -403,13 +403,13 @@ public class JSONUtils {
 
         JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
         int sectionFirstPosition = 0;
-        for (int i = 0; i < jListMessages.length(); i++) {
+        for (int i = jListMessages.length() - 1; i >= 0; i--) {
             JSONObject jListMessage = jListMessages.getJSONObject(i);
 
             result.add(getHeaderChatItem(jListMessage, sectionFirstPosition, context));
 
             JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.MESSAGES);
-            for (int j = 0; j < jMessages.length(); j++) {
+            for (int j = jMessages.length() - 1; j >= 0; j--) {
                 JSONObject jMessage = jMessages.getJSONObject(j);
                 result.add(getBaseChatItemInHistory(jMessage, sectionFirstPosition, members));
             }
@@ -558,7 +558,7 @@ public class JSONUtils {
             userItem.setSipItem(sipItem);
             roomChatItem.setUserChat(userItem);
             roomChatItem.setLastMessage(jRoomChat.getString(Constant.JSON.LAST_MSG_DESCRIPTION));
-            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.LAST_MSG_TIMESTAMP));
+            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.CREATED_AT));
             roomChatItem.setNumberMessageUnRead(jRoomChat.getInt(Constant.JSON.UNREAD_NUMBER));
             result.add(roomChatItem);
         }

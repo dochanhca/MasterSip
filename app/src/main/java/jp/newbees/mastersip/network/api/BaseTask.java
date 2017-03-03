@@ -38,7 +38,6 @@ public abstract class BaseTask<T extends Object> {
     private static final String ANDROID = "android";
     protected static String TAG;
     private Request<T> request;
-    //    private RequestQueue requestQueue;
     private SharedPreferences sharedPreferences;
     private final String authorization;
     private final String registerToken;

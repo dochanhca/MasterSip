@@ -30,7 +30,11 @@ public final class Constant {
         public static final String EMAIL_NEW = "email_new";
         public static final String PASSWORD_NEW = "password_new";
         public static final String NEW_PASS = "new_password";
+        public static final String ALL = "all";
+        public static final String ARR_CHAT_ROOM_ID = "arr_chat_id";
         public static final String CHAT_SET = "chat_set";
+        public static final String LAST_ROOM_ID = "last_room_id";
+        public static final String CREATED_AT = "created_at";
 
         private JSON() {
             //Prevent init constructor
@@ -221,6 +225,7 @@ public final class Constant {
         public static final String CHANGE_PASS = "forgotpass/change-pass";
         public static final String CHANGE_EMAIL_BACKUP = "adduserpass/change-user-pass-new";
         public static final String MARK_MESSAGE_AS_READ = "message/mark_as_read";
+        public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

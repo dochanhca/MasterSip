@@ -48,14 +48,13 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
                     }
                     result = true;
                 }
-                else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
-                        onSwipeBottom();
-                    } else {
-                        onSwipeTop();
-                    }
-                }
-                result = true;
+//                else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+//                    if (diffY > 0) {
+//                        onSwipeBottom();
+//                    } else {
+//                        onSwipeTop();
+//                    }
+//                }
 
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -69,14 +68,6 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
     }
 
     public void onSwipeLeft() {
-        // Override to listen event
-    }
-
-    public void onSwipeTop() {
-        // Override to listen event
-    }
-
-    public void onSwipeBottom() {
         // Override to listen event
     }
 }

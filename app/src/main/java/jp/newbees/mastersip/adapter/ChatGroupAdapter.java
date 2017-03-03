@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Iterator;
 import java.util.List;
 
 import jp.newbees.mastersip.R;
@@ -39,12 +40,9 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_group, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
 
-        viewHolder.content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position = viewHolder.getAdapterPosition();
-                onItemClickListener.onRoomChatItemClick(data.get(position), position);
-            }
+        viewHolder.content.setOnClickListener(v -> {
+            int position = viewHolder.getAdapterPosition();
+            onItemClickListener.onRoomChatItemClick(data.get(position), position);
         });
 
         return viewHolder;
@@ -79,6 +77,17 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
 
     public List<RoomChatItem> getData() {
         return this.data;
+    }
+
+    public void removeSelectedItem() {
+        for (Iterator<RoomChatItem> item = data.iterator(); item.hasNext(); ) {
+            RoomChatItem roomchatItem = item.next();
+            if (roomchatItem.isSelected()) {
+                item.remove();
+            }
+        }
+
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

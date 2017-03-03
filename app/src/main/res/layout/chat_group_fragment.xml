@@ -122,11 +122,11 @@
             android:background="@color/blue_dark">
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
-                android:id="@+id/txt_delete"
+                android:id="@+id/txt_delete_chat_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:drawableLeft="@drawable/ic_trash"
+                android:drawableLeft="@drawable/ic_trash_gray"
                 android:drawablePadding="@dimen/normal_margin"
                 android:gravity="center"
                 android:padding="@dimen/normal_margin"
@@ -145,7 +145,6 @@
                 android:id="@+id/recycler_chat_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"></android.support.v7.widget.RecyclerView>
+                android:orientation="vertical"></android.support.v7.widget.RecyclerView>
         </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
