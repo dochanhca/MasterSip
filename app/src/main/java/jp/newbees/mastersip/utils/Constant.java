@@ -162,6 +162,8 @@ public final class Constant {
         public static final String ID_ADDON = "id_addon";
         public static final String TRANSECTION = "transection";
         public static final String CREATE_AT = "created_at";
+        public static final String REGISTRATION_ID = "registration_id";
+        public static final String OS = "os";
     }
 
     public static final class API {
@@ -233,6 +235,7 @@ public final class Constant {
         public static final String MARK_MESSAGE_AS_READ = "message/mark_as_read";
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
         public static final String SEND_PURCHASE_RESULT = "payment/os/2/addon";
+        public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -311,6 +314,7 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
 
         public static final int MAX_IMAGE_SIZE = 1024;
+        public static final int ANDROID = 1;
     }
 
     public class SOCKET {

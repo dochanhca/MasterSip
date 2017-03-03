@@ -60,6 +60,7 @@ public class TopPresenter extends BasePresenter {
         for (Permission permission : Permission.values()) {
             if (ContextCompat.checkSelfPermission(context, permission.getPermission()) != PackageManager.PERMISSION_GRANTED) {
                 requestPermission(permission.getPermission(), permission.getResult());
+                return;
             }
         }
     }
@@ -84,28 +85,6 @@ public class TopPresenter extends BasePresenter {
         }
     }
 
-    public enum Permission {
-        CAMERA(201, Manifest.permission.CAMERA), RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
-        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        private final int result;
-        private final String permission;
-
-        Permission(int result, String permission) {
-            this.result = result;
-            this.permission = permission;
-        }
-
-        public int getResult() {
-            return result;
-        }
-
-        public String getPermission() {
-            return permission;
-        }
-    }
-
-
     public void disposeIabHelper() {
         iabHelper.dispose();
         iabHelper = null;
@@ -123,24 +102,21 @@ public class TopPresenter extends BasePresenter {
         iabHelper = new IabHelper(getContext(), base64EncodedPublicKey);
         iabHelper.enableDebugLogging(true);
 
-        iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            @Override
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    Logger.e(IN_APP_BILLING_TAG, "Problem setting up in-app billing: ");
-                    Toast.makeText(context, "Problem setting up in-app billing: " + result, Toast.LENGTH_LONG).show();
-                    getActivity().disMissLoading();
-                    iabHelper = null;
-                    return;
-                }
-
-                if (iabHelper == null) {
-                    getActivity().disMissLoading();
-                    return;
-                }
-
-                iabHelper.queryInventoryAsync(mGotInventoryListener);
+        iabHelper.startSetup(result -> {
+            if (!result.isSuccess()) {
+                Logger.e(IN_APP_BILLING_TAG, "Problem setting up in-app billing: ");
+                Toast.makeText(context, "Problem setting up in-app billing: " + result, Toast.LENGTH_LONG).show();
+                getActivity().disMissLoading();
+                iabHelper = null;
+                return;
             }
+
+            if (iabHelper == null) {
+                getActivity().disMissLoading();
+                return;
+            }
+
+            iabHelper.queryInventoryAsync(mGotInventoryListener);
         });
     }
 
@@ -274,6 +250,27 @@ public class TopPresenter extends BasePresenter {
 
         PurchaseStatus(int value) {
             this.value = value;
+        }
+    }
+
+    public enum Permission {
+        CAMERA(201, Manifest.permission.CAMERA), RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
+        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        private final int result;
+        private final String permission;
+
+        Permission(int result, String permission) {
+            this.result = result;
+            this.permission = permission;
+        }
+
+        public int getResult() {
+            return result;
+        }
+
+        public String getPermission() {
+            return permission;
         }
     }
 

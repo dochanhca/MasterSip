@@ -3,6 +3,8 @@ package jp.newbees.mastersip.presenter.auth;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -10,6 +12,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.RegisterFCMTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -56,6 +59,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
             saveLoginState(true);
             onDidRegisterVoIPSuccess();
+            sendFCMTokenToServer();
         } else {
             stopLinphoneService();
             ConfigManager.getInstance().resetSettings();
@@ -63,6 +67,13 @@ public abstract class RegisterPresenterBase extends BasePresenter {
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void sendFCMTokenToServer() {
+        String tokenID = FirebaseInstanceId.getInstance().getToken();
+        String extensionId = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        RegisterFCMTask registerFCMTask = new RegisterFCMTask(context, extensionId, tokenID);
+        requestToServer(registerFCMTask);
     }
 
     private void stopLinphoneService() {
