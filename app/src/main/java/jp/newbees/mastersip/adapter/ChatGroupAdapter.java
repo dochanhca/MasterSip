@@ -40,9 +40,12 @@ public class ChatGroupAdapter extends RecyclerView.Adapter<ChatGroupAdapter.View
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_group, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
 
-        viewHolder.content.setOnClickListener(v -> {
-            int position = viewHolder.getAdapterPosition();
-            onItemClickListener.onRoomChatItemClick(data.get(position), position);
+        viewHolder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = viewHolder.getAdapterPosition();
+                onItemClickListener.onRoomChatItemClick(data.get(position), position);
+            }
         });
 
         return viewHolder;

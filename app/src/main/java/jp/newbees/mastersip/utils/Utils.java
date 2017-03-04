@@ -132,7 +132,8 @@ public class Utils {
         String authorization = ConfigManager.getInstance().getAuthId();
         String registerToken = ConfigManager.getInstance().getRegisterToken();
 
-        StringBuilder stringBuilder = new StringBuilder("http://52.197.138.1/thaihv_api/public/webview/payment?");
+        StringBuilder stringBuilder = new StringBuilder("http://" + Constant.API.BASE_URL
+                + "/sip_api/public/webview/payment?");
         stringBuilder.append("regist_token=");
         stringBuilder.append(registerToken);
         stringBuilder.append("&");

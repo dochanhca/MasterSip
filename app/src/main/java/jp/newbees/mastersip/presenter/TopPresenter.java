@@ -1,8 +1,12 @@
 package jp.newbees.mastersip.presenter;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -96,27 +100,34 @@ public class TopPresenter extends BasePresenter {
     }
 
     public void setupForPurchase() {
+        if (!deviceHasGoogleAccount()) {
+            openPlayStore();
+            return;
+        }
         getActivity().showLoading();
         numberOfItemNeedConsume = 0;
 
         iabHelper = new IabHelper(getContext(), base64EncodedPublicKey);
         iabHelper.enableDebugLogging(true);
 
-        iabHelper.startSetup(result -> {
-            if (!result.isSuccess()) {
-                Logger.e(IN_APP_BILLING_TAG, "Problem setting up in-app billing: ");
-                Toast.makeText(context, "Problem setting up in-app billing: " + result, Toast.LENGTH_LONG).show();
-                getActivity().disMissLoading();
-                iabHelper = null;
-                return;
-            }
+        iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            @Override
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    Logger.e(IN_APP_BILLING_TAG, "Problem setting up in-app billing: ");
+                    Toast.makeText(context, "Problem setting up in-app billing: " + result, Toast.LENGTH_LONG).show();
+                    TopPresenter.this.getActivity().disMissLoading();
+                    iabHelper = null;
+                    return;
+                }
 
-            if (iabHelper == null) {
-                getActivity().disMissLoading();
-                return;
-            }
+                if (iabHelper == null) {
+                    TopPresenter.this.getActivity().disMissLoading();
+                    return;
+                }
 
-            iabHelper.queryInventoryAsync(mGotInventoryListener);
+                iabHelper.queryInventoryAsync(mGotInventoryListener);
+            }
         });
     }
 
@@ -240,6 +251,21 @@ public class TopPresenter extends BasePresenter {
         return payload.equalsIgnoreCase(ConfigManager.getInstance().getCurrentUser().getUserId());
     }
 
+    private boolean deviceHasGoogleAccount() {
+        AccountManager accountManager = AccountManager.get(getActivity());
+        Account[] accArray = accountManager.getAccountsByType("com.google");
+        return accArray.length >= 1 ? true : false;
+    }
+
+    public void openPlayStore() {
+        final String appPackageName = getActivity().getPackageName();
+        try {
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
+    }
+
     public enum PurchaseStatus {
         SUCCESS(1), FAIL(0), PENDING(2), NOT_SUCCESS(3);
         int value;
@@ -255,7 +281,8 @@ public class TopPresenter extends BasePresenter {
 
     public enum Permission {
         CAMERA(201, Manifest.permission.CAMERA), RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
-        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+        GET_ACCOUNTS(204, Manifest.permission.GET_ACCOUNTS);
 
         private final int result;
         private final String permission;

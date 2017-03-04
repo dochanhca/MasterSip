@@ -182,7 +182,7 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
         onBackPressed();
-        showMessageDialog(String.format(getString(R.string.purchase_success), point+""));
+        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
     }
 
     @Override

@@ -40,6 +40,7 @@ public final class Constant {
         private JSON() {
             //Prevent init constructor
         }
+
         public static final String PAGINATE = "paginate";
         public static final String IMAGE_STATUS = "image_status";
         public static final String PAGE = "page";
@@ -47,12 +48,13 @@ public final class Constant {
         public static final String MY_INFO = "my_info";
         public static final String THUMBNAIL = "thumbnail";
 
-        public static final  String DEVICE_ID = "device_id";
-        public static final  String PASSWORD = "password";
-        public static final  String EMAIL = "email";
-        public static final  String CLIENT_AUTH_ID = "client_auth_id";
+        public static final String DEVICE_ID = "device_id";
+        public static final String PASSWORD = "password";
+        public static final String EMAIL = "email";
+        public static final String CLIENT_AUTH_ID = "client_auth_id";
 
-        public static final  String REGIST_TOKEN = "regist_token";
+        public static final String REGIST_TOKEN = "regist_token";
+        public static final String TOKEN_DEVICE = "token_device";
         public static final String BIRTHDAY = "birthday";
         public static final String GENDER = "gen";
         public static final String SOCIAL_ID = "social_id";
@@ -71,7 +73,7 @@ public final class Constant {
         public static final String JOB_ID = "job_id";
         public static final String TYPE_ID = "type_id";
         public static final String TYPE_BOY = "type_boy";
-        public static final String CHARM_POINT ="charm_point";
+        public static final String CHARM_POINT = "charm_point";
         public static final String FREE_TIME = "free_time";
         public static final String SLOGAN = "slogan";
         public static final String ABOVE_AGE = "above_age";
@@ -171,6 +173,7 @@ public final class Constant {
         private API() {
             //Prevent init constructor
         }
+
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -188,7 +191,7 @@ public final class Constant {
 
 
         private static final String DEVELOPMENT_IP = "52.199.112.26";
-//        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -243,6 +246,10 @@ public final class Constant {
 
         public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
         public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
+        public static final String BIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.BIT_CASH + "/status="
+                + "success";
+        public static final String CREDIT_CASH_PAYMENT_SUCCESS ="sip://" + Application.CREDIT_CARD + "/status="
+                + "success";
     }
 
     public final class Error {
@@ -267,7 +274,7 @@ public final class Constant {
         public static final int OUT_OF_MONEY = 1204;
         public static final int EXTENSION_OFFLINE = 1206;
         public static final int USER_NOT_EXIST = 1011;
-//
+        //
         public static final int SOCIAL_ID_IS_NOT_EXIST = 1100;
         public static final int EMAIL_OR_PASS_IS_WRONG = 1044;
         public static final int WRONG_CODE_RESET_PASS = 1039;
@@ -314,20 +321,24 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
 
         public static final int MAX_IMAGE_SIZE = 1024;
-        public static final int ANDROID = 1;
+        public static final int ANDROID = 2;
+        public static final String CREDIT_CARD = "CREDITCARD";
+        public static final String BIT_CASH = "BITCASH";
+
     }
 
     public class SOCKET {
         private SOCKET() {
             //Prevent init object
         }
+
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
     }
 
-    public static class InAppBilling{
+    public static class InAppBilling {
         public static final String SKU_TYPE_01 = "1";
         public static final String SKU_TYPE_02 = "2";
         public static final String SKU_TYPE_03 = "3";

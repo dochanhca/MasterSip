@@ -20,6 +20,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.PaymentSuccessEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -44,6 +48,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -228,11 +233,18 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
         isFragmentRunning = true;
         if (needRefreshData) {
             needRefreshData = false;
             presenter.requestMyMenuInfo();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick({
@@ -243,8 +255,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             R.id.layout_common_guide, R.id.layout_profile_detail, R.id.btn_logout, R.id.group_point})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_buy_point:
-                break;
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
@@ -282,7 +292,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 break;
             case R.id.layout_profile_detail:
                 break;
-            case R.id.group_point:
+            case R.id.btn_buy_point:
                 MyMenuContainerFragment.showChosePaymentTypeFragment(getActivity());
                 break;
             case R.id.btn_logout:
@@ -291,31 +301,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             default:
                 break;
         }
-    }
-
-    private void handleUploadPhotoForGallery() {
-        if (!uploadingPhoto) {
-            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_GALLERY;
-            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
-        }
-    }
-
-    private void handleUploadAvatar() {
-        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        if (userItem.hasAvatar() && !uploadingAvatar) {
-            if (userItem.getAvatarItem().isApproved()) {
-                currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
-                SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), true);
-            }
-        } else if (!userItem.hasAvatar() && !uploadingAvatar) {
-            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
-            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
-        }
-    }
-
-    private void handleLogout() {
-        showLoading();
-        presenter.requestLogout();
     }
 
     @Override
@@ -441,6 +426,45 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         galleryAdapter.notifyDataSetChanged();
     }
 
+    @Subscribe(sticky = true)
+    public void onPaymentSuccessEvent(PaymentSuccessEvent paymentSuccessEvent) {
+        Logger.e(TAG, "Payment Successfull: " + paymentSuccessEvent.getPoint() + "------------------");
+
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(paymentSuccessEvent.getPoint())
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
+
+        EventBus.getDefault().removeStickyEvent(paymentSuccessEvent);
+    }
+
+    private void handleUploadPhotoForGallery() {
+        if (!uploadingPhoto) {
+            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_GALLERY;
+            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
+        }
+    }
+
+    private void handleUploadAvatar() {
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        if (userItem.hasAvatar() && !uploadingAvatar) {
+            if (userItem.getAvatarItem().isApproved()) {
+                currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
+                SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), true);
+            }
+        } else if (!userItem.hasAvatar() && !uploadingAvatar) {
+            currentRequestPhoto = REQUEST_SELECT_PHOTO_FOR_AVATAR;
+            SelectImageDialog.showDialogSelectAvatar(this, currentRequestPhoto, getFragmentManager(), false);
+        }
+    }
+
+    private void handleLogout() {
+        showLoading();
+        presenter.requestLogout();
+    }
 
     private void updateAvatarView(ImageItem avatarItem) {
         if (avatarItem != null) {
@@ -450,7 +474,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             txtApproving.setVisibility(visibility);
             btnChangeAvatar.setVisibility(visibilityCamera);
             groupUploadAvatar.setVisibility(View.GONE);
-            Glide.with(imgAvatar.getContext())
+            Glide.with(getActivity().getApplicationContext())
                     .load(avatarItem.getThumbUrl())
                     .placeholder(defaultAvatar)
                     .fitCenter()

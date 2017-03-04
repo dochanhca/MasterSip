@@ -1,17 +1,25 @@
 package jp.newbees.mastersip.ui.payment;
 
-import android.app.AlertDialog;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.RequiresApi;
 import android.view.View;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.purchase.Purchase;
+import jp.newbees.mastersip.event.PaymentSuccessEvent;
+import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.ui.top.TopActivity;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by thangit14 on 2/21/17.
@@ -21,18 +29,15 @@ public class PaymentFragment extends BaseFragment {
 
     private static final String MY_URL = "MY_URL";
     private static final String TITLE = "TITLE";
+
     @BindView(R.id.webview)
     WebView webview;
 
-    static final int RC_REQUEST = 10001;
-
-//    private IabHelper mHelper;
-
-    private static final String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqnLWbhSgEG1u+0PZ3frkI7EeRge5iD8gOthik3llKyCbSpHPCY/9YjMIXrbe97XQZj7vp2MUeX4DHMB7sBNHT/T2rcpHvoezTZrUiUEPb4rTodEd9c1Ks1pcOEJ+cZpBRHOVRkG1Y+ZM4ftvvYnfsQE9xdaGAhWm+BJDoFmBP9YNwSyLI4WC07qp4s38a9hpB3XWXJG6p20oCyhVAyY/vazW53BpWlupyGpfI4C5Au8rwOGbJ/2scl0xAfKsxQxj2pNPU7yrs1XLDUjdPiS7swSuVp803Fu8v5o1CWRnQhEXi/XPjtEqSM/MRS04JP3PoV/YjrdgYboskqIRbRbZcwIDAQAB";
+    private TopPresenter topPresenter;
 
     public static PaymentFragment newInstance(String url, String title) {
         Bundle args = new Bundle();
-        args.putString(MY_URL,url);
+        args.putString(MY_URL, url);
         args.putString(TITLE, title);
         PaymentFragment fragment = new PaymentFragment();
         fragment.setArguments(args);
@@ -55,130 +60,70 @@ public class PaymentFragment extends BaseFragment {
 
         loadWebView(webview);
 
-//        setupForPurchase();
+        topPresenter = ((TopActivity) getActivity()).getPresenter();
+        topPresenter.setupForPurchase();
     }
-
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//
-//        Logger.e(TAG, "Destroying helper.");
-//        if (mHelper != null) {
-//            mHelper.dispose();
-//            mHelper = null;
-//        }
-//    }
-//
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (mHelper == null) return;
-//
-//        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        } else {
-//            Log.e(TAG, "onActivityResult handled by IABUtil.");
-//        }
-//    }
 
     private void loadWebView(WebView webview) {
-//        webview.getSettings().setJavaScriptEnabled(true);
-//        webview.setWebViewClient(new WebViewClient());
-//        webview.addJavascriptInterface(new WebAppInterface(getContext()),"Android");
-//        webview.loadUrl(getArguments().getString(MY_URL));
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.setWebViewClient(new PaymentWebViewClient());
+        webview.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
+        webview.loadUrl(getArguments().getString(MY_URL));
     }
 
-//    private void setupForPurchase() {
-//        mHelper = new IabHelper(getContext(), base64EncodedPublicKey);
-//        mHelper.enableDebugLogging(true);
-//
-//        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-//            @Override
-//            public void onIabSetupFinished(IabResult result) {
-//                if (!result.isSuccess()) {
-//                    complain("Problem setting up in-app billing: " + result);
-//                    return;
-//                }
-//
-//                if (mHelper == null) {
-//                    return;
-//                }
-//            }
-//        });
-//    }
-
-//    public class WebAppInterface {
-//        Context mContext;
-//
-//        WebAppInterface(Context c) {
-//            mContext = c;
-//        }
-//
-//        @JavascriptInterface
-//        public void purchaseItem(String id) {
-//            Toast.makeText(mContext, "purchase " + id, Toast.LENGTH_SHORT).show();
-//            performPurchaseItem(id);
-//        }
-//    }
-
-//    private void performPurchaseItem(String id) {
-//        String payload = ConfigManager.getInstance().getCurrentUser().getUserId();
-//
-//        mHelper.launchPurchaseFlow(getActivity(), id, RC_REQUEST, mPurchaseFinishedListener, payload);
-//    }
-//
-//    private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-//        @Override
-//        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-//            Log.e(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-//
-//            // if we were disposed of in the meantime, quit.
-//            if (mHelper == null) return;
-//
-//            if (result.isFailure()) {
-//                complain("Error purchasing: " + result);
-//                return;
-//            }
-//            if (!verifyDeveloperPayload(purchase)) {
-//                complain("Error purchasing. Authenticity verification failed.");
-//                return;
-//            }
-//
-//            Log.e(TAG, "Purchase successful.");
-//
-//            Log.e(TAG, "Starting consumption "+purchase.getSku());
-//            mHelper.consumeAsync(purchase, mConsumeFinishedListener);
-//        }
-//    };
-//
-//    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-//        public void onConsumeFinished(Purchase purchase, IabResult result) {
-//            if (mHelper == null) return;
-//
-//            if (result.isSuccess()) {
-//                Toast.makeText(getContext(), "success : " + purchase.getSku(), Toast.LENGTH_SHORT).show();
-//            } else {
-//                complain("Error while consuming: " + result);
-//            }
-//        }
-//    };
-
-    private boolean verifyDeveloperPayload(Purchase purchase) {
-        String payload = purchase.getDeveloperPayload();
-        return payload.equalsIgnoreCase(ConfigManager.getInstance().getCurrentUser().getUserId());
+    private void redirectToMyMenuFragment(String point) {
+        EventBus.getDefault().postSticky(new PaymentSuccessEvent(point));
+        getFragmentManager().popBackStackImmediate();
     }
 
+    public class WebAppInterface {
+        Context mContext;
 
-    private void complain(String message) {
-        Log.e(TAG, "**** Master Sip purchase error: " + message);
-        alert("Error: " + message);
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        @JavascriptInterface
+        public void purchaseItem(String id) {
+            topPresenter.performPurchaseItem(id);
+        }
     }
 
-    void alert(String message) {
-        AlertDialog.Builder bld = new AlertDialog.Builder(getContext());
-        bld.setMessage(message);
-        bld.setNeutralButton("OK", null);
-        bld.create().show();
-    }
+    public class PaymentWebViewClient extends WebViewClient {
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (isPaymentSucces(url)) {
+                checkPaymentSuccess(url);
+                return true;
+            }
+            return false;
+        }
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            if (isPaymentSucces(url)) {
+                checkPaymentSuccess(url);
+                return true;
+            }
+            return false;
+        }
+
+        public void checkPaymentSuccess(String url) {
+            String point = splitUrl(url);
+            redirectToMyMenuFragment(point);
+        }
+
+        private String splitUrl(String url) {
+            String[] parts = url.split("point=");
+            return parts[1];
+        }
+
+        public boolean isPaymentSucces(String url) {
+            return url.contains(Constant.API.BIT_CASH_PAYMENT_SUCCESS) ||
+                    url.contains(Constant.API.CREDIT_CASH_PAYMENT_SUCCESS);
+        }
+    }
 }

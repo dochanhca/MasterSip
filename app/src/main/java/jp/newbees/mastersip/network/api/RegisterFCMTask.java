@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -33,6 +34,7 @@ public class RegisterFCMTask extends BaseTask {
         jParam.put(Constant.JSON.EXTENSION_ID, extensionId);
         jParam.put(Constant.JSON.OS, Constant.Application.ANDROID);
         jParam.put(Constant.JSON.REGISTRATION_ID, registrationId);
+        jParam.put(Constant.JSON.TOKEN_DEVICE, ConfigManager.getInstance().getRegisterToken());
         return jParam;
     }
 
