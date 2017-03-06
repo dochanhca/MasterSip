@@ -294,6 +294,7 @@
     <string name="photo_gallery">写真ギャラリー</string>
     <string name="delete_photo">写真を削除</string>
     <string name="do_you_want_to_delete_this_photo">この写真を削除しますか？</string>
+    <string name="push_title">MasterSip</string>
     <string name="confirm_request_enable_voice_call">たくみさんは現在通話ができません。 チャットで誘ってみましょう！(無料)</string>
     <string name="confirm_request_enable_voice_call_positive">チャットする</string>
     <string name="message_request_enable_voice">%1$sさん、よかったらお喋りしませんか？</string>
@@ -369,5 +370,8 @@
     <string name="delete_selected_message">選択したメッセージを削除しますか？</string>
     <string name="remove_all">すべて解除</string>
     <string name="err_invalid_pass">現在パスワードが違います。</string>
-
+    <string name="cancel_purchase">購入がキャンセルされました。</string>
+    <string name="purchase_success">決済が完了したので、 %1$sptが付与されました。</string>
+    <string name="settlement_is_completed">決済が完了したので、</string>
+    <string name="have_been_granted">が付与されました。</string>
 </resources>

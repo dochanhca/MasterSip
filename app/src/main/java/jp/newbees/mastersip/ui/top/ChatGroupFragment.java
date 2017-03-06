@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -101,15 +102,23 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         showLoading();
         presenter.loadChatRooms(0);
         // Swipe to refresh data
-        swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadChatRooms(0));
-
-        cbSelectAll.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                selectAllChatRoom(isChecked);
-                setEnabledButtonDeleteChatRoom(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.loadChatRooms(0);
             }
-            cbSelectAll.setText(isChecked ? getString(R.string.select_all)
-                    : getString(R.string.remove_all));
+        });
+
+        cbSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    ChatGroupFragment.this.selectAllChatRoom(isChecked);
+                    ChatGroupFragment.this.setEnabledButtonDeleteChatRoom(true);
+                }
+                cbSelectAll.setText(isChecked ? ChatGroupFragment.this.getString(R.string.select_all)
+                        : ChatGroupFragment.this.getString(R.string.remove_all));
+            }
         });
     }
 
@@ -304,7 +313,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     }
 
     private void initRecyclerChatGroup() {
-        chatGroupAdapter = new ChatGroupAdapter(getActivity().getApplicationContext(), new ArrayList<>());
+        chatGroupAdapter = new ChatGroupAdapter(getActivity().getApplicationContext(), new ArrayList<RoomChatItem>());
         chatGroupAdapter.setOnItemClickListener(this);
         recyclerChatGroup.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerChatGroup.setAdapter(chatGroupAdapter);

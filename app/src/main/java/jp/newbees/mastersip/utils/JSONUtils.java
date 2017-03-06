@@ -27,6 +27,7 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.TopPresenter;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_GIFT;
@@ -645,6 +646,17 @@ public class JSONUtils {
         jsonObject.put(Constant.JSON.PASSWORD_NEW, item.getPass());
         jsonObject.put(Constant.JSON.PASSWORD_CONFIRMATION, item.getPass());
         jsonObject.put(Constant.JSON.EXTENSION, item.getExtension());
+        return jsonObject;
+    }
+
+    public static JSONObject genParamsToSendPurchaseResult(String skuID, String transection, TopPresenter.PurchaseStatus purchaseStatus, String createAt) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.JSON.ID_ADDON, skuID);
+        jsonObject.put(Constant.JSON.TRANSECTION, transection);
+        jsonObject.put(Constant.JSON.TYPE_ID, 18);
+        jsonObject.put(Constant.JSON.VERSION, 2);
+        jsonObject.put(Constant.JSON.STATUS, purchaseStatus.getValue());
+        jsonObject.put(Constant.JSON.CREATE_AT, createAt);
         return jsonObject;
     }
 }

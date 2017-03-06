@@ -33,12 +33,14 @@ public final class Constant {
         public static final String ALL = "all";
         public static final String ARR_CHAT_ROOM_ID = "arr_chat_id";
         public static final String CHAT_SET = "chat_set";
+        public static final String VERSION = "version";
         public static final String LAST_ROOM_ID = "last_room_id";
         public static final String CREATED_AT = "created_at";
 
         private JSON() {
             //Prevent init constructor
         }
+
         public static final String PAGINATE = "paginate";
         public static final String IMAGE_STATUS = "image_status";
         public static final String PAGE = "page";
@@ -46,12 +48,13 @@ public final class Constant {
         public static final String MY_INFO = "my_info";
         public static final String THUMBNAIL = "thumbnail";
 
-        public static final  String DEVICE_ID = "device_id";
-        public static final  String PASSWORD = "password";
-        public static final  String EMAIL = "email";
-        public static final  String CLIENT_AUTH_ID = "client_auth_id";
+        public static final String DEVICE_ID = "device_id";
+        public static final String PASSWORD = "password";
+        public static final String EMAIL = "email";
+        public static final String CLIENT_AUTH_ID = "client_auth_id";
 
-        public static final  String REGIST_TOKEN = "regist_token";
+        public static final String REGIST_TOKEN = "regist_token";
+        public static final String TOKEN_DEVICE = "token_device";
         public static final String BIRTHDAY = "birthday";
         public static final String GENDER = "gen";
         public static final String SOCIAL_ID = "social_id";
@@ -70,7 +73,7 @@ public final class Constant {
         public static final String JOB_ID = "job_id";
         public static final String TYPE_ID = "type_id";
         public static final String TYPE_BOY = "type_boy";
-        public static final String CHARM_POINT ="charm_point";
+        public static final String CHARM_POINT = "charm_point";
         public static final String FREE_TIME = "free_time";
         public static final String SLOGAN = "slogan";
         public static final String ABOVE_AGE = "above_age";
@@ -157,6 +160,12 @@ public final class Constant {
         public static final String IMAGE = "image";
 
         public static final String DEST_USER_ID = "dest_user_id";
+
+        public static final String ID_ADDON = "id_addon";
+        public static final String TRANSECTION = "transection";
+        public static final String CREATE_AT = "created_at";
+        public static final String REGISTRATION_ID = "registration_id";
+        public static final String OS = "os";
     }
 
     public static final class API {
@@ -164,6 +173,7 @@ public final class Constant {
         private API() {
             //Prevent init constructor
         }
+
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
@@ -181,7 +191,7 @@ public final class Constant {
 
 
         private static final String DEVELOPMENT_IP = "52.199.112.26";
-//        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -224,8 +234,11 @@ public final class Constant {
         public static final String FORGOT_PASS = "forgotpass/forgot-pass";
         public static final String CHANGE_PASS = "forgotpass/change-pass";
         public static final String CHANGE_EMAIL_BACKUP = "adduserpass/change-user-pass-new";
+        public static final String CHOSE_PAYMENT_TYPE = "http://52.197.14.30/thaihv_api/public/webview/payment?";
         public static final String MARK_MESSAGE_AS_READ = "message/mark_as_read";
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
+        public static final String SEND_PURCHASE_RESULT = "payment/os/2/addon";
+        public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -233,6 +246,10 @@ public final class Constant {
 
         public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
         public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
+        public static final String BIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.BIT_CASH + "/status="
+                + "success";
+        public static final String CREDIT_CASH_PAYMENT_SUCCESS ="sip://" + Application.CREDIT_CARD + "/status="
+                + "success";
     }
 
     public final class Error {
@@ -257,7 +274,7 @@ public final class Constant {
         public static final int OUT_OF_MONEY = 1204;
         public static final int EXTENSION_OFFLINE = 1206;
         public static final int USER_NOT_EXIST = 1011;
-//
+        //
         public static final int SOCIAL_ID_IS_NOT_EXIST = 1100;
         public static final int EMAIL_OR_PASS_IS_WRONG = 1044;
         public static final int WRONG_CODE_RESET_PASS = 1039;
@@ -276,6 +293,9 @@ public final class Constant {
         public static final int SC_INTERNAL_SERVER_ERROR = 500;
         public static final int WRONG_ORDER_BY_CODE = 3003;
         public static final int VOIP_ERROR = 5000;
+        public static final int IN_APP_PURCHASE_FAIL = 5001;
+        public static final int IN_APP_PURCHASE_NOT_SUCCESS = 5002;
+        public static final int IN_APP_PURCHASE_CANCEL = 5003;
     }
 
     public final class Application {
@@ -301,16 +321,33 @@ public final class Constant {
         public static final int LAST_REGISTER = 2;
 
         public static final int MAX_IMAGE_SIZE = 1024;
+        public static final int ANDROID = 2;
+        public static final String CREDIT_CARD = "CREDITCARD";
+        public static final String BIT_CASH = "BITCASH";
+
     }
 
     public class SOCKET {
         private SOCKET() {
             //Prevent init object
         }
+
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
     }
 
+    public static class InAppBilling {
+        public static final String SKU_TYPE_01 = "1";
+        public static final String SKU_TYPE_02 = "2";
+        public static final String SKU_TYPE_03 = "3";
+        public static final String SKU_TYPE_04 = "4";
+
+        public static final String[] SKUS = {SKU_TYPE_01, SKU_TYPE_02, SKU_TYPE_03, SKU_TYPE_04};
+        public static final int RC_REQUEST = 10001;
+
+        public static final String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqnLWbhSgEG1u+0PZ3frkI7EeRge5iD8gOthik3llKyCbSpHPCY/9YjMIXrbe97XQZj7vp2MUeX4DHMB7sBNHT/T2rcpHvoezTZrUiUEPb4rTodEd9c1Ks1pcOEJ+cZpBRHOVRkG1Y+ZM4ftvvYnfsQE9xdaGAhWm+BJDoFmBP9YNwSyLI4WC07qp4s38a9hpB3XWXJG6p20oCyhVAyY/vazW53BpWlupyGpfI4C5Au8rwOGbJ/2scl0xAfKsxQxj2pNPU7yrs1XLDUjdPiS7swSuVp803Fu8v5o1CWRnQhEXi/XPjtEqSM/MRS04JP3PoV/YjrdgYboskqIRbRbZcwIDAQAB";
+
+    }
 }

@@ -127,4 +127,19 @@ public class Utils {
         String content = fragment.getContext().getResources().getString(R.string.content_send_confirm_email_backup_error);
         TextDialog.openTextDialog(fragment, requestCode, fragment.getFragmentManager(), content, title, true);
     }
+
+    public static String getURLChosePaymentType() {
+        String authorization = ConfigManager.getInstance().getAuthId();
+        String registerToken = ConfigManager.getInstance().getRegisterToken();
+
+        StringBuilder stringBuilder = new StringBuilder("http://" + Constant.API.BASE_URL
+                + "/sip_api/public/webview/payment?");
+        stringBuilder.append("regist_token=");
+        stringBuilder.append(registerToken);
+        stringBuilder.append("&");
+        stringBuilder.append("client_auth_id=");
+        stringBuilder.append(authorization);
+        stringBuilder.append("&version_id=2&platform=android");
+        return stringBuilder.toString();
+    }
 }

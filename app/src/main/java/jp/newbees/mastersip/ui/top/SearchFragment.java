@@ -232,7 +232,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
         showLoading();
         presenter.filterUser(currentTypeSearch);
-        EventBus.getDefault().cancelEventDelivery(event);
+        EventBus.getDefault().removeStickyEvent(event);
     }
 
     private void changeMode() {
@@ -269,7 +269,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             adapterSearUserModeList.setOnItemClickListener(this);
         } else {
             adapterSearUserModeList.addAll(userItems);
-            adapterSearchUserModeFour.notifyDataSetChanged();
+            adapterSearUserModeList.notifyDataSetChanged();
         }
         recyclerUser.setLayoutManager(layoutManager);
         recyclerUser.setAdapter(adapterSearUserModeList);
@@ -282,7 +282,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             adapterSearchUserModeTwo.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeTwo.addAll(userItems);
-            adapterSearchUserModeFour.notifyDataSetChanged();
+            adapterSearchUserModeTwo.notifyDataSetChanged();
         }
         recyclerUser.setLayoutManager(layoutManager);
         mItemDecoration = new GridSpacingItemDecoration(currentFilterMode, getResources().getDimensionPixelSize(R.dimen.item_offset_mode_two), true);
@@ -370,7 +370,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     public void didFilterUser(HashMap<String, Object> data) {
-        List<UserItem> users = (ArrayList<UserItem>) data.get(FilterUserTask.LIST_USER);
+        List<UserItem> users = (List<UserItem>) data.get(FilterUserTask.LIST_USER);
         nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
 
         Logger.e("SearchFragment", "userItems " + users.size());

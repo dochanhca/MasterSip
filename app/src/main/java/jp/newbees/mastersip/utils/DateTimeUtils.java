@@ -72,6 +72,10 @@ public class DateTimeUtils {
         return SHORT_TIME_FORMAT.format(date);
     }
 
+    public static String getServerTime(Date date) {
+        return SERVER_DATE_FORMAT.format(date);
+    }
+
     public static int calculateAgeWithDOB(Date dob) {
         Date to = Calendar.getInstance().getTime();
         Calendar a = getCalendar(dob);
