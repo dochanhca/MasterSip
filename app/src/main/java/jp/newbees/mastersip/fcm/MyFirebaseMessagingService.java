@@ -12,7 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.ui.auth.LoginActivity;
+import jp.newbees.mastersip.ui.SplashActivity;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -20,31 +20,57 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
     private static final String TAG = "MyFirebaseMsgService";
 
+    /**
+     * Called when message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+     */
+    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        //Displaying data in log
-        //It is optional
-        if (remoteMessage.getData() != null) {
-            String message = remoteMessage.getData().get("message");
-            int idPush = Integer.parseInt(remoteMessage.getData().get("id"));
-            Logger.e(TAG, "From: " + remoteMessage.getFrom());
-            Logger.e(TAG, "Notification Message Body: " + message);
+        // [START_EXCLUDE]
+        // There are two types of messages data messages and notification messages. Data messages are handled
+        // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
+        // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
+        // is in the foreground. When the app is in the background an automatically generated notification is displayed.
+        // When the user taps on the notification they are returned to the app. Messages containing both notification
+        // and data payloads are treated as notification messages. The Firebase console always sends notification
+        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
+        // [END_EXCLUDE]
 
-            //Calling method to generate notification
-            sendNotification(message,idPush);
+        // TODO(developer): Handle FCM messages here.
+        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+        Logger.d(TAG, "From: " + remoteMessage.getFrom());
+
+        // Check if message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {
+            Logger.d(TAG, "Message data payload: " + remoteMessage.getData());
         }
+
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Logger.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getBody());
+        }
+
+        // Also if you intend on generating your own notifications as a result of a received FCM
+        // message, here is where that should be initiated. See sendNotification method below.
     }
 
-    //This method is only generating push notification
-    //It is same as we did in earlier posts
-    private void sendNotification(String messageBody, int pushId) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    /**
+     * Create and show a simple notification containing the received FCM message.
+     *
+     * @param messageBody FCM message body received.
+     */
+    private void sendNotification(String messageBody) {
+        int messageId = (int) System.currentTimeMillis();
+
+        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, pushId, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -59,6 +85,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(pushId, notificationBuilder.build());
+        notificationManager.notify(messageId, notificationBuilder.build());
     }
 }

@@ -13,10 +13,10 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/6/17.
  */
 
-public abstract class BaseSocketProcessor<T extends Object> implements Runnable{
+public abstract class BaseSocketProcessor<T extends Object> implements Runnable {
 
     private static final int STATE_SUCCESS = 1;
-    private  Handler handler;
+    private Handler handler;
     private PacketItem packetItem;
     private T result;
     protected String TAG = getClass().getSimpleName();
@@ -26,7 +26,6 @@ public abstract class BaseSocketProcessor<T extends Object> implements Runnable{
     }
 
     /**
-     *
      * @param packetItem
      */
     void setPacketItem(PacketItem packetItem) {
@@ -37,26 +36,28 @@ public abstract class BaseSocketProcessor<T extends Object> implements Runnable{
     public void run() {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
         try {
-            Logger.e(TAG,"Received : " + packetItem.getData());
+            Logger.e(TAG, "Received : " + packetItem.getData());
             this.result = doInBackgroundData(packetItem);
             Message completeMessage =
                     handler.obtainMessage(STATE_SUCCESS, BaseSocketProcessor.this);
             completeMessage.sendToTarget();
         } catch (JSONException e) {
             e.printStackTrace();
-            Logger.e(TAG,"Parse error JSON action " + packetItem.getAction());
+            Logger.e(TAG, "Parse error JSON action " + packetItem.getAction());
         }
     }
 
     /**
      * Callback when processed data
      * This method run on UIThread
+     *
      * @param data
      */
     protected abstract void didProcess(T data);
 
     /**
      * Process Data on Background Thread to prevent bottle-neck
+     *
      * @param packetItem
      */
     protected abstract T doInBackgroundData(PacketItem packetItem) throws JSONException;
