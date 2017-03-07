@@ -224,7 +224,6 @@ public class TopActivity extends CallCenterActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
         topPresenter.requestPermissions();
-        Logger.e(TAG, "onRequest PermissionResult");
     }
 
     @Override

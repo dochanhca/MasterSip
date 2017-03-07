@@ -99,12 +99,10 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
         private void hideFilterAndNavigationBar() {
             ((TopActivity)getActivity()).hideNavigation();
-//            recyclerUser.setPaddingRelative(0 ,0,0,0);
         }
 
         private void showFilterAndNavigationBar() {
             ((TopActivity)getActivity()).showNavigation();
-//            recyclerUser.setPaddingRelative(0 ,0,0,0);
         }
     };
 
