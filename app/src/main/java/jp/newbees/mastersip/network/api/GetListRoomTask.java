@@ -61,7 +61,7 @@ public class GetListRoomTask extends BaseTask<Map<String, Object>> {
     @Override
     protected Map<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        int numberOfRoomUnread = jData.getInt(Constant.JSON.COUNT_ROOM_UNREAD);
+        int numberOfRoomUnread = jData.getInt(Constant.JSON.TOTAL_UNREAD);
         JSONArray arrRoomChat = jData.getJSONArray(Constant.JSON.LIST_CHAT_ROOMS);
         List<RoomChatItem> roomChatItems = JSONUtils.parseListRoomChat(arrRoomChat);
         HashMap<String, Object> result = new HashMap<>();

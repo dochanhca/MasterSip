@@ -18,7 +18,6 @@ public final class Constant {
         public static final String INTERACTION_USER = "interaction_user";
         public static final String LAST_MSG_DESCRIPTION = "last_msg_description";
         public static final String LAST_MSG_TIMESTAMP = "last_msg_timestamp";
-        public static final String UNREAD_NUMBER = "unread_total";
         public static final String GIFT_ID = "gift_id";
         public static final String GIFT = "gift";
         public static final String CONTEXT = "context";
@@ -36,6 +35,8 @@ public final class Constant {
         public static final String VERSION = "version";
         public static final String LAST_ROOM_ID = "last_room_id";
         public static final String CREATED_AT = "created_at";
+        public static final String TOTAL_UNREAD = "total_unread";
+        public static final String ROOM_MESS_UNREAD = "room_message_unread";
 
         private JSON() {
             //Prevent init constructor
@@ -335,7 +336,7 @@ public final class Constant {
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
-        public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status_v2";
+        public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
     }
 
     public static class InAppBilling {

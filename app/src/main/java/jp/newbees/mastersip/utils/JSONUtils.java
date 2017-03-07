@@ -559,8 +559,8 @@ public class JSONUtils {
             userItem.setSipItem(sipItem);
             roomChatItem.setUserChat(userItem);
             roomChatItem.setLastMessage(jRoomChat.getString(Constant.JSON.LAST_MSG_DESCRIPTION));
-            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.CREATED_AT));
-            roomChatItem.setNumberMessageUnRead(jRoomChat.getInt(Constant.JSON.UNREAD_NUMBER));
+            roomChatItem.setLastMessageTimeStamp(jRoomChat.getString(Constant.JSON.LAST_MSG_TIMESTAMP));
+            roomChatItem.setNumberMessageUnRead(jRoomChat.getInt(Constant.JSON.ROOM_MESS_UNREAD));
             result.add(roomChatItem);
         }
         return result;
