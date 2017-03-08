@@ -48,7 +48,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private LinphoneCore linphoneCore;
 
     /**
-     *
      * @param notifier
      * @param context
      */
@@ -148,7 +147,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             setUserAgent();
             setFrontCamAsDefault();
             linphoneCore.setNetworkReachable(true); // Let's assume it's true
-        } catch (LinphoneCoreException|IOException e) {
+        } catch (LinphoneCoreException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -209,7 +208,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.getDefaultProxyConfig().enableRegister(false);
             linphoneCore.getDefaultProxyConfig().done();
 
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             Logger.e(TAG, "linphoneCore is " + linphoneCore);
         } finally {
             Logger.e(TAG, "Shutting down linphone...");
@@ -362,13 +361,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public final void call(String callee, boolean enableVideo) {
+    public final void call(String roomId, boolean enableVideo) {
         try {
-            String addressSip = genSipAddressByExtension(callee);
+            String addressSip = genSipAddressByExtension(roomId);
             LinphoneAddress lAddress = linphoneCore.interpretUrl(addressSip);
             LinphoneCallParams params = linphoneCore.createCallParams(null);
             params.setVideoEnabled(enableVideo);
             linphoneCore.inviteAddressWithParams(lAddress, params);
+            Logger.e(TAG, "make a call to: " + addressSip);
         } catch (LinphoneCoreException e) {
             e.printStackTrace();
         }

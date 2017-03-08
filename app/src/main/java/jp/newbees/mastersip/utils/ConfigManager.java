@@ -22,6 +22,7 @@ import jp.newbees.mastersip.BuildConfig;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.CheckCallTask;
 
 import static com.facebook.FacebookSdk.getCacheDir;
 import static jp.newbees.mastersip.utils.Constant.API.BASE_URL;
@@ -40,7 +41,7 @@ final public class ConfigManager {
     private int imageDrawableCalleeId = -1;
     private HashMap<String, UserItem> callees;
     private int currentCallType;
-    private HashMap<String, String> waitingCallId;
+    private String callId;
     private int imageDrawableCallerId = -1;
 
     private int unReadMessage;
@@ -81,7 +82,6 @@ final public class ConfigManager {
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         domain = BASE_URL;
         callees = new HashMap<>();
-        waitingCallId = new HashMap<>();
     }
 
     public RequestQueue getRequestQueue() {
@@ -202,7 +202,6 @@ final public class ConfigManager {
     public void resetSettings() {
         imageDrawableCalleeId = -1;
         imageDrawableCallerId = -1;
-        waitingCallId.clear();
         callees.clear();
         clearUser();
         LoginManager.getInstance().logOut();
@@ -232,20 +231,18 @@ final public class ConfigManager {
         return currentCallType;
     }
 
-    public void setCurrentCallee(UserItem callee) {
-        callees.put(callee.getSipItem().getExtension(), callee);
+    public void setCurrentCallee(UserItem callee, String callId) {
+        callees.put(callId, callee);
     }
 
-    public String getWaitingCallId() {
-        if (waitingCallId.containsKey(WAITING_ID)) {
-            return waitingCallId.remove(WAITING_ID);
-        }else {
-            return "";
-        }
+    public String getCallId() {
+        return sharedPreferences.getString(CheckCallTask.CALL_ID, "");
     }
 
-    public void setWaitingCallId(String waitingCallId) {
-        this.waitingCallId.put(WAITING_ID, waitingCallId);
+    public void setCallId(String callId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CheckCallTask.CALL_ID, callId);
+        editor.commit();
     }
 
     public void setCurrentCallType(int callType) {

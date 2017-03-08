@@ -25,7 +25,8 @@ public class CheckCallTask extends BaseTask {
     public static final String CALLEE = "CALLEE";
     public static final String CALLEE_ONLINE = "CALLEE_ONLINE";
     public static final String MESSAGE_ID = "MESSAGE_ID";
-    public static final String WAITING_CALL_ID = "WAITING_CALL_ID";
+    public static final String CALL_ID = "CALL_ID";
+    public static final String ROOM_FREE = "ROOM_FREE";
 
     private final String callerExtension;
     private final UserItem callee;

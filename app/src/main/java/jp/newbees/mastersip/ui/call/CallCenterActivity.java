@@ -56,4 +56,9 @@ public abstract class CallCenterActivity extends BaseActivity implements BaseCen
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    @Override
+    public void didConnectCallError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+    }
 }

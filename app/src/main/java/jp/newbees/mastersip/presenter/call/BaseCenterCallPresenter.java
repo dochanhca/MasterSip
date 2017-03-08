@@ -11,8 +11,8 @@ import java.util.Map;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
+import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -36,14 +36,16 @@ public class BaseCenterCallPresenter extends BasePresenter {
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             handleIncomingCallType(callType, caller);
-        }else if(task instanceof CheckCallTask) {
+        } else if (task instanceof ReconnectCallTask) {
 
         }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        if (task instanceof ReconnectCallTask) {
+            centerCallView.didConnectCallError(errorCode, errorMessage);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -52,13 +54,21 @@ public class BaseCenterCallPresenter extends BasePresenter {
             case ReceivingCallEvent.INCOMING_CALL:
                 onIncomingCall(receivingCallEvent.getCallerExtension());
                 break;
-            case ReceivingCallEvent.OUTGOING_CALL:
+            case ReceivingCallEvent.CONNECTED_CALL:
+                reconnectRoom();
                 onOutgoingCall(receivingCallEvent.getCallerExtension());
                 break;
             default:
                 break;
         }
     }
+
+    private void reconnectRoom() {
+        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
+                ConfigManager.getInstance().getCallId());
+        requestToServer(reconnectCallTask);
+    }
+
 
     private void handleIncomingCallType(int callType, UserItem caller) {
         switch (callType) {
@@ -112,5 +122,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
         void incomingVideoChatCall(UserItem caller);
 
         void outgoingVoiceCall(UserItem callee);
+
+        void didConnectCallError(int errorCode, String errorMessage);
     }
 }
