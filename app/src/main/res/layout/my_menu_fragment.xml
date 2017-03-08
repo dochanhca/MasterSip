@@ -604,6 +604,7 @@
                     android:layout_marginTop="@dimen/margin_15"
                     android:layout_marginBottom="@dimen/action_bar_h"
                     android:text="@string/logout"/>
+
             </LinearLayout>
 
         </RelativeLayout>

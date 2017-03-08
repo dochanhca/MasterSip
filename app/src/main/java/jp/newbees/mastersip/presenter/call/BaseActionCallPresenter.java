@@ -29,13 +29,12 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
         int callType = (int) result.get(CheckCallTask.CALL_TYPE);
         UserItem callee = (UserItem) result.get(CheckCallTask.CALLEE);
 
-        if (result.containsKey(CheckCallTask.WAITING_CALL_ID)) {
-            String waitingCallID = (String) result.get(CheckCallTask.WAITING_CALL_ID);
-            ConfigManager.getInstance().setWaitingCallId(waitingCallID);
-        }
+        String callId = (String) result.get(CheckCallTask.CALL_ID);
+        ConfigManager.getInstance().setCallId(callId);
 
+        String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
         if (callType == Constant.API.VOICE_CALL) {
-            makeVoiceCall(callee);
+            makeVoiceCall(roomId, callee);
         }
     }
 
@@ -44,10 +43,9 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
      *
      * @param callee
      */
-    private void makeVoiceCall(UserItem callee) {
-        ConfigManager.getInstance().setCurrentCallee(callee);
-        String extension = callee.getSipItem().getExtension();
-        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, extension));
+    private void makeVoiceCall(String callId, UserItem callee) {
+        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, callId));
     }
 
     /**
@@ -58,6 +56,7 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
     public final void checkVoiceCall(UserItem callee) {
         this.checkCall(callee, Constant.API.VOICE_CALL);
     }
+
     /**
      * Check callee before make a video call
      *

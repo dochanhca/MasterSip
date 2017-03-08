@@ -37,6 +37,8 @@ public final class Constant {
         public static final String CREATED_AT = "created_at";
         public static final String TOTAL_UNREAD = "total_unread";
         public static final String ROOM_MESS_UNREAD = "room_message_unread";
+        public static final String CALL_ID = "call_id";
+        public static final java.lang.String ROOM_FREE = "room_free";
 
         private JSON() {
             //Prevent init constructor
@@ -240,6 +242,8 @@ public final class Constant {
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
         public static final String SEND_PURCHASE_RESULT = "payment/os/2/addon";
         public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
+        public static final String RECONNECT_CALL = "calls/reconnect-call";
+        public static final String JOIN_TO_CALL = "calls/join-to-call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

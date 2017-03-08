@@ -62,7 +62,7 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
     public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.CONNECTED_CALL:
-                handleCallConnected();
+//                handleCallConnected();
                 break;
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();

@@ -17,14 +17,14 @@ import jp.newbees.mastersip.utils.Constant;
 
 public final class CancelCallTask extends BaseTask<Void> {
 
-    private final String waitingCallId;
+    private final String callID;
     private final int callType;
     private final String caller;
     private final String callee;
 
-    public CancelCallTask(Context context, String caller, String callee, int callType, String waitingCallId) {
+    public CancelCallTask(Context context, String caller, String callee, int callType, String callID) {
         super(context);
-        this.waitingCallId = waitingCallId;
+        this.callID = callID;
         this.callType = callType;
         this.caller = caller;
         this.callee = callee;
@@ -37,7 +37,7 @@ public final class CancelCallTask extends BaseTask<Void> {
         jParams.put(Constant.JSON.CALLER, caller);
         jParams.put(Constant.JSON.RECEIVER, callee);
         jParams.put(Constant.JSON.TYPE, callType);
-        jParams.put(Constant.JSON.WAIT_CALL_ID, waitingCallId);
+        jParams.put(Constant.JSON.CALL_ID, callID);
         return jParams;
     }
 
@@ -49,13 +49,11 @@ public final class CancelCallTask extends BaseTask<Void> {
 
     @Override
     protected int getMethod() {
-        return Request.Method.POST;
+        return Request.Method.GET;
     }
 
     @Override
     protected Void didResponse(JSONObject data) throws JSONException {
         return null;
     }
-
-
 }

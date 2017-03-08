@@ -40,7 +40,7 @@ import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CHAT_C
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
-import static jp.newbees.mastersip.network.api.CheckCallTask.WAITING_CALL_ID;
+import static jp.newbees.mastersip.utils.Constant.JSON.CALL_ID;
 
 /**
  * Created by vietbq on 12/20/16.
@@ -680,9 +680,12 @@ public class JSONUtils {
             result.put(Constant.JSON.MIN_POINT, minPoint);
         }
 
-        if (jData.has(Constant.JSON.CALL_WAIT_ID)) {
-            String callWaitId = jData.getString(Constant.JSON.CALL_WAIT_ID);
-            result.put(WAITING_CALL_ID, callWaitId);
+        String roomId = jData.optString(Constant.JSON.ROOM_FREE);
+        result.put(CheckCallTask.ROOM_FREE, roomId);
+
+        if (jData.has(CALL_ID)) {
+            String callWaitId = jData.getString(CALL_ID);
+            result.put(CheckCallTask.CALL_ID, callWaitId);
         }
 
 
