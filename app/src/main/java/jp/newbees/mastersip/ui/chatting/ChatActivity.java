@@ -54,8 +54,10 @@ import jp.newbees.mastersip.ui.call.CallCenterActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -69,7 +71,10 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick, ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener {
+public class ChatActivity extends CallCenterActivity implements
+        ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
+        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
+TextDialog.OnTextDialogClick {
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
 
@@ -296,6 +301,30 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
         public void didUnFollowUserError(String errorMessage, int errorCode) {
             disMissLoading();
             showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+        }
+
+        @Override
+        public void didCheckCallError(String errorMessage, int errorCode) {
+            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+                showDialogNotifyNotEnoughPoint();
+            } else {
+                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+            }
+        }
+
+        private void showDialogNotifyNotEnoughPoint() {
+            int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+            String title, content, positiveTitle;
+            if (gender == UserItem.MALE) {
+                 title = getString(R.string.point_are_missing);
+                 content = getString(R.string.mess_suggest_buy_point);
+                 positiveTitle = getString(R.string.add_point);
+            } else {
+                title = getString(R.string.partner_point_are_missing);
+                content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
+                positiveTitle = getString(R.string.to_attack);
+            }
+            TextDialog.openTextDialog(getSupportFragmentManager(), content, title, positiveTitle, false);
         }
     };
 
@@ -538,6 +567,15 @@ public class ChatActivity extends CallCenterActivity implements ConfirmVoiceCall
     @Override
     public void onFriendAvatarClick() {
         gotoProfileDetailActivity();
+    }
+
+    /**
+     * On Dialog notify not enough point positive clicked
+     * @param requestCode
+     */
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+
     }
 
     private void updateTopPaddingRecycle() {

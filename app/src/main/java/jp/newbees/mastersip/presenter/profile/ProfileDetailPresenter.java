@@ -13,7 +13,6 @@ import jp.newbees.mastersip.network.api.GetProfileDetailTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -48,7 +47,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
 
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
 
-
+        void didCheckCallError(String errorMessage, int errorCode);
     }
 
     public ProfileDetailPresenter(Context context, ProfileDetailItemView view) {
@@ -103,7 +102,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         } else if (task instanceof SendMessageRequestEnableVoiceCallTask) {
             view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         } else if (task instanceof CheckCallTask) {
-            Logger.e(TAG, "errorCode: " + errorCode + " - errorMessage" + errorMessage);
+            view.didCheckCallError(errorMessage, errorCode);
         }
     }
 

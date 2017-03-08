@@ -252,15 +252,31 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
+        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
+
         ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
-        if (errorCode == Constant.Error.NO_NETWORK) {
-            showMessageDialog(getString(R.string.network_error), getString(R.string.mess_check_network),
-                    "", false);
+        if (showCommonErrorDialog(errorCode)) {
+            return;
         } else if (!exceptionVolleyHelper.showCommonError()) {
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
         }
+    }
 
-        Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
+    public boolean showCommonErrorDialog(int errorCode) {
+        switch (errorCode) {
+            case Constant.Error.NO_NETWORK:
+                showMessageDialog(getString(R.string.network_error), getString(R.string.mess_check_network),
+                        "", false);
+                return true;
+            case Constant.Error.USER_BUSY:
+                showMessageDialog(getString(R.string.mess_user_busy));
+                return true;
+            case Constant.Error.MAX_CALL_ERROR:
+                showMessageDialog("", getString(R.string.mess_call_limited), getString(R.string.i_m_sorry_pls_try_again), false);
+                return true;
+            default:
+                return false;
+        }
     }
 
     protected boolean checkUserLogin() {

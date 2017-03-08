@@ -27,7 +27,6 @@ import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 1/11/17.
@@ -66,6 +65,8 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         void didUnFollowUser();
 
         void didUnFollowUserError(String errorMessage, int errorCode);
+
+        void didCheckCallError(String errorMessage, int errorCode);
     }
 
     public final void sendText(String content, UserItem sendee) {
@@ -112,7 +113,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
             chatPresenterListener.didLoadChatHistory(resultItem);
         } else if (task instanceof FollowUserTask) {
             chatPresenterListener.didFollowUser();
-
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUser();
         } else if (task instanceof CheckCallTask) {
@@ -133,7 +133,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUserError(errorMessage, errorCode);
         } else if (task instanceof CheckCallTask) {
-            Logger.e(TAG, errorMessage);
+            chatPresenterListener.didCheckCallError(errorMessage, errorCode);
         }
     }
 
@@ -164,6 +164,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     /**
      * follow and unfollow use
+     *
      * @param userItem
      */
     public void doFollowUser(UserItem userItem) {
@@ -191,7 +192,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
     }
 
     /**
-     *
      * @param currentUser
      * @param members
      * @return
@@ -202,7 +202,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     public RelationshipItem setUserHasRelationShipItem(UserItem currentUser, Map<String, UserItem> members, int follow) {
         RelationshipItem relationshipItem = members.get(currentUser.getUserId()).getRelationshipItem();
-               relationshipItem.setFollowed(follow);
+        relationshipItem.setFollowed(follow);
         return relationshipItem;
     }
 }

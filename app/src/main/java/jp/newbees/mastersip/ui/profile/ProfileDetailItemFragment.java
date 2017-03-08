@@ -47,6 +47,8 @@ import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -58,6 +60,9 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         TextDialog.OnTextDialogClick {
+
+    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
+
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
     @BindView(R.id.txt_name)
@@ -318,11 +323,19 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         disMissLoading();
     }
 
+    @Override
+    public void didCheckCallError(String errorMessage, int errorCode) {
+        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+            showDialogNotifyNotEnoughPoint();
+        } else {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
+    }
 
     @Override
     public void onUserImageClick(int position) {
         //do something
-        ImageDetailActivity.startActivity(getActivity(), galleryItem, position,ImageDetailActivity.OTHER_USER_PHOTOS);
+        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
     }
 
     @Override
@@ -415,12 +428,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     private void fillDataToView() {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
             layoutVideoCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
-            txtVideoCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_off,0, 0, 0);
+            txtVideoCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_video_call_off, 0, 0, 0);
         }
 
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
             layoutVoiceCall.setBackgroundColor(getActivity().getResources().getColor(R.color.color_gray_bg));
-            txtVoiceCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_voice_call_off,0, 0, 0);
+            txtVoiceCall.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_voice_call_off, 0, 0, 0);
         }
 
         progressWheel.spin();
@@ -502,6 +515,22 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
         return prettyTime.format(DateTimeUtils.convertStringToDate(lastLogin,
                 DateTimeUtils.SERVER_DATE_FORMAT));
+    }
+
+    private void showDialogNotifyNotEnoughPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        String title, content, positiveTitle;
+        if (gender == UserItem.MALE) {
+            title = getString(R.string.point_are_missing);
+            content = getString(R.string.mess_suggest_buy_point);
+            positiveTitle = getString(R.string.add_point);
+        } else {
+            title = getString(R.string.partner_point_are_missing);
+            content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
+            positiveTitle = getString(R.string.to_attack);
+        }
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
+                content, title, positiveTitle, false);
     }
 
     private void showGiftFragment() {
