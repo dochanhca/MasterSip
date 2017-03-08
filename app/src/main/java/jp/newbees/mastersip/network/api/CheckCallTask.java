@@ -14,6 +14,7 @@ import java.util.Map;
 
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 
 /**
  * Created by ducpv on 1/6/17.
@@ -23,7 +24,7 @@ public class CheckCallTask extends BaseTask {
     public static final String CALL_TYPE = "Call TYPE";
     public static final String CALLEE = "CALLEE";
     public static final String CALLEE_ONLINE = "CALLEE_ONLINE";
-    private static final String MESSAGE_ID = "MESSAGE_ID";
+    public static final String MESSAGE_ID = "MESSAGE_ID";
     public static final String WAITING_CALL_ID = "WAITING_CALL_ID";
 
     private final String callerExtension;
@@ -68,26 +69,8 @@ public class CheckCallTask extends BaseTask {
         result.put(CALL_TYPE, type);
         result.put(CALLEE, callee);
 
-        if (!jData.getString(Constant.JSON.MESSAGE_ID).isEmpty()) {
-            int messageId = Integer.parseInt(jData.getString(Constant.JSON.MESSAGE_ID));
-            result.put(MESSAGE_ID, messageId);
-        }
+        JSONUtils.parseCheckCall(result, jData);
 
-        if (jData.has(Constant.JSON.RECEIVER_STATUS)) {
-            result.put(CheckCallTask.CALLEE_ONLINE, false);
-        } else {
-            result.put(CheckCallTask.CALLEE_ONLINE, true);
-        }
-
-        if (jData.has(Constant.JSON.MIN_POINT)) {
-            int minPoint = jData.getInt(Constant.JSON.MIN_POINT);
-            result.put(Constant.JSON.MIN_POINT, minPoint);
-        }
-
-        if (jData.has(Constant.JSON.CALL_WAIT_ID)) {
-            String callWaitId = jData.getString(Constant.JSON.CALL_WAIT_ID);
-            result.put(WAITING_CALL_ID, callWaitId);
-        }
         return result;
     }
 }
