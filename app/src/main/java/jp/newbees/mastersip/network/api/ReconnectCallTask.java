@@ -15,7 +15,7 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by thangit14 on 3/8/17.
  */
 
-public class ReconnectCallTask extends BaseTask<Void>{
+public class ReconnectCallTask extends BaseTask<Void> {
 
     private String callId;
 

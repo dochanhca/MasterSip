@@ -30,7 +30,6 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
         this.view = view;
     }
 
-
     public void endCall(UserItem callee, int callType) {
         requestCancelCall(callee, callType);
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
