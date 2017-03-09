@@ -39,7 +39,8 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
     private void requestCancelCall(UserItem callee, int callType) {
         String caller = getCurrentUserItem().getSipItem().getExtension();
         String callID = ConfigManager.getInstance().getCallId();
-        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),caller,callee.getSipItem().getExtension(),callType,callID);
+        CancelCallTask cancelCallTask = new CancelCallTask(getContext(), caller,
+                callee.getSipItem().getExtension(), callType, callID);
         requestToServer(cancelCallTask);
     }
 

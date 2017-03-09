@@ -36,8 +36,6 @@ public class BaseCenterCallPresenter extends BasePresenter {
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             handleIncomingCallType(callType, caller);
-        } else if (task instanceof ReconnectCallTask) {
-
         }
     }
 
@@ -68,7 +66,6 @@ public class BaseCenterCallPresenter extends BasePresenter {
                 ConfigManager.getInstance().getCallId());
         requestToServer(reconnectCallTask);
     }
-
 
     private void handleIncomingCallType(int callType, UserItem caller) {
         switch (callType) {

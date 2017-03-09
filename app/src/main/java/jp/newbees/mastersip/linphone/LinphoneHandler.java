@@ -169,6 +169,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
         linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
+        LinphoneCore.Transports transports = new LinphoneCore.Transports();
+        transports.udp = 1;
 
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
@@ -189,11 +191,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
             LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
             String username = address.getUserName();
             String domain = address.getDomain();
+            address.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
+
             if (password != null) {
                 linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String) null, domain));
             }
 
-            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, domain, (String) null, true);
+            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, address.asStringUriOnly(), address.asStringUriOnly(), true);
             proxyCfg.setExpires(2000);
             linphoneCore.addProxyConfig(proxyCfg);
             linphoneCore.setDefaultProxyConfig(proxyCfg);
