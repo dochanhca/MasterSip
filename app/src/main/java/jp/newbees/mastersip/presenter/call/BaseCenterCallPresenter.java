@@ -35,7 +35,8 @@ public class BaseCenterCallPresenter extends BasePresenter {
             Map<String, Object> result = (Map<String, Object>) task.getDataResponse();
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
-            handleIncomingCallType(callType, caller);
+            String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
+            handleIncomingCallType(callType, caller, callID);
         }
     }
 
@@ -52,7 +53,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
             case ReceivingCallEvent.INCOMING_CALL:
                 onIncomingCall(receivingCallEvent.getCallerExtension());
                 break;
-            case ReceivingCallEvent.CONNECTED_CALL:
+            case ReceivingCallEvent.OUTGOING_CALL:
                 reconnectRoom();
                 onOutgoingCall(receivingCallEvent.getCallerExtension());
                 break;
@@ -67,16 +68,16 @@ public class BaseCenterCallPresenter extends BasePresenter {
         requestToServer(reconnectCallTask);
     }
 
-    private void handleIncomingCallType(int callType, UserItem caller) {
+    private void handleIncomingCallType(int callType, UserItem caller, String callID) {
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                centerCallView.incomingVoiceCall(caller);
+                centerCallView.incomingVoiceCall(caller, callID);
                 break;
             case Constant.API.VIDEO_CALL:
-                centerCallView.incomingVideoCall(caller);
+                centerCallView.incomingVideoCall(caller, callID);
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                centerCallView.incomingVideoChatCall(caller);
+                centerCallView.incomingVideoChatCall(caller, callID);
                 break;
             default:
                 break;
@@ -112,11 +113,11 @@ public class BaseCenterCallPresenter extends BasePresenter {
     }
 
     public interface CenterCallView {
-        void incomingVoiceCall(UserItem caller);
+        void incomingVoiceCall(UserItem caller, String callID);
 
-        void incomingVideoCall(UserItem caller);
+        void incomingVideoCall(UserItem caller, String callID);
 
-        void incomingVideoChatCall(UserItem caller);
+        void incomingVideoChatCall(UserItem caller, String callID);
 
         void outgoingVoiceCall(UserItem callee);
 

@@ -209,7 +209,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         initVariables();
     }
 
-    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift, R.id.btn_cancel_call,
+    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
             R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -230,11 +230,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case R.id.layout_video_call:
                 // Make a video call
                 break;
-            case R.id.btn_cancel_call:
-                /**
-                 * TEST
-                 */
-                profileDetailPresenter.endCall(userItem, Constant.API.VOICE_CALL);
             default:
                 break;
         }

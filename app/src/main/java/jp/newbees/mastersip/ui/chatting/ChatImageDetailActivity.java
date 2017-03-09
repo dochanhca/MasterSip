@@ -15,14 +15,14 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageChatItem;
-import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by ducpv on 2/9/17.
  */
 
-public class ChatImageDetailActivity extends CallCenterActivity {
+public class ChatImageDetailActivity extends CallCenterIncomingActivity {
 
     private static final String IMAGE_CHAT_ITEM = "IMAGE_CHAT_ITEM";
 

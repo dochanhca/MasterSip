@@ -2,14 +2,10 @@ package jp.newbees.mastersip.presenter.profile;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
-
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
@@ -17,7 +13,6 @@ import jp.newbees.mastersip.network.api.GetProfileDetailTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -28,18 +23,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
     private final ProfileDetailItemView view;
     private int nextId = -1;
     private boolean isLoadMore = false;
-
-    public void endCall(UserItem callee, int callType) {
-        requestCancelCall(callee, callType);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
-    }
-
-    private void requestCancelCall(UserItem callee, int callType) {
-        String caller = getCurrentUserItem().getSipItem().getExtension();
-        String callId = ConfigManager.getInstance().getCallId();
-        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),caller,callee.getSipItem().getExtension(),callType, callId);
-        requestToServer(cancelCallTask);
-    }
 
     public interface ProfileDetailItemView {
         void didGetProfileDetail(UserItem userItem);

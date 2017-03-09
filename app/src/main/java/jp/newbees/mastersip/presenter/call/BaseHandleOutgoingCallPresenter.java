@@ -64,9 +64,9 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
-//            case ReceivingCallEvent.CONNECTED_CALL:
-//                handleCallConnected();
-//                break;
+            case ReceivingCallEvent.OUTGOING_CONNECTED_CALL:
+                handleCallConnected();
+                break;
             case ReceivingCallEvent.RELEASE_CALL:
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();

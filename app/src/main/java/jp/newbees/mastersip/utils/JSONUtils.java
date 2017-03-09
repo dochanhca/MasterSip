@@ -333,7 +333,10 @@ public class JSONUtils {
     public static PacketItem parsePacketItem(String raw) throws JSONException {
         JSONObject jData = new JSONObject(raw);
         String action = jData.getString(Constant.JSON.ACTION);
-        String message = jData.getString(Constant.JSON.MESSAGE);
+        String message = "";
+        if (jData.has(Constant.JSON.MESSAGE)) {
+            message = jData.getString(Constant.JSON.MESSAGE);
+        }
         JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;

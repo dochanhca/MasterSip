@@ -50,7 +50,7 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
-import jp.newbees.mastersip.ui.call.CallCenterActivity;
+import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
@@ -71,7 +71,7 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends CallCenterActivity implements
+public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
 TextDialog.OnTextDialogClick {

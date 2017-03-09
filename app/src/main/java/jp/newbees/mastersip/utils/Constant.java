@@ -337,10 +337,18 @@ public final class Constant {
             //Prevent init object
         }
 
+        public static final String ACTION_CANCEL_CALL = "CANCEL_CALL";
+        public static final String ACTION_CHANGE_CALLING_STATUS = "CHANGE_CALLING_STATUS";
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
+
+        public static final int STATUS_CALLING_WAITING = 1;
+        public static final int STATUS_CALLING_CANCELED = 2;
+        public static final int STATUS_CALLING_CONNECTED = 3;
+        public static final int STATUS_CALLING_MISSING = 4;
+        public static final int STATUS_CALLING_END = 5;
     }
 
     public static class InAppBilling {
