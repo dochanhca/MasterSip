@@ -30,7 +30,6 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
         this.view = view;
     }
 
-
     public void endCall(UserItem callee, int callType) {
         requestCancelCall(callee, callType);
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
@@ -38,8 +37,9 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
 
     private void requestCancelCall(UserItem callee, int callType) {
         String caller = getCurrentUserItem().getSipItem().getExtension();
-        String waitingCallId = ConfigManager.getInstance().getWaitingCallId();
-        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),caller,callee.getSipItem().getExtension(),callType,waitingCallId);
+        String callID = ConfigManager.getInstance().getCallId();
+        CancelCallTask cancelCallTask = new CancelCallTask(getContext(), caller,
+                callee.getSipItem().getExtension(), callType, callID);
         requestToServer(cancelCallTask);
     }
 
@@ -63,7 +63,7 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
-            case ReceivingCallEvent.CONNECTED_CALL:
+            case ReceivingCallEvent.OUTGOING_CONNECTED_CALL:
                 handleCallConnected();
                 break;
             case ReceivingCallEvent.RELEASE_CALL:

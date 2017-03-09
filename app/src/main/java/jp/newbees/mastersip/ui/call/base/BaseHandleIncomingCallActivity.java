@@ -36,16 +36,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         presenter.unregisterEvents();
     }
 
-    public final void rejectCall() {
-        this.presenter.rejectCall();
+    public final void rejectCall(String caller, int callType, String calId) {
+        this.presenter.rejectCall(caller, callType, calId);
     }
 
-    public final void acceptCall() {
-        this.presenter.acceptCall();
+    public final void acceptCall(String calId) {
+        this.presenter.acceptCall(calId);
     }
 
-    public final void endCall() {
-        this.presenter.endCall();
+    public final void endCall(String caller, int callType, String calId) {
+        this.presenter.endCall(caller, callType, calId);
     }
 
     public final void enableSpeaker(boolean enable) {

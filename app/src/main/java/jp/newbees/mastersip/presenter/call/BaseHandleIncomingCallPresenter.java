@@ -13,7 +13,10 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
+import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -27,16 +30,26 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
         this.view = view;
     }
 
-    public final void acceptCall() {
+    public final void acceptCall(String calId) {
+        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
+        requestToServer(joinCallTask);
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
     }
 
-    public final void rejectCall() {
+    public final void rejectCall(String caller, int callType, String calId) {
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
+        performCancelCall(caller, callType, calId);
     }
 
-    public void endCall() {
+    private void performCancelCall(String caller, int callType, String calId) {
+        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        CancelCallTask cancelCallTask = new CancelCallTask(context, caller, callee, callType, calId);
+        requestToServer(cancelCallTask);
+    }
+
+    public void endCall(String caller, int callType, String calId) {
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+        performCancelCall(caller, callType, calId);
     }
 
     public final void enableSpeaker(boolean enable) {
@@ -49,7 +62,6 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-
     }
 
     @Override
@@ -61,9 +73,10 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
-            case ReceivingCallEvent.CONNECTED_CALL:
+            case ReceivingCallEvent.INCOMING_CONNECTED_CALL:
                 handleCallConnected();
                 break;
+            case ReceivingCallEvent.RELEASE_CALL:
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;

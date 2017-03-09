@@ -21,6 +21,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -57,6 +58,7 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     private Handler timerHandler = new Handler();
     private UserItem caller;
+    private String callId;
 
     @Override
     protected int layoutId() {
@@ -73,8 +75,8 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        caller = getIntent().getExtras().getParcelable(CallCenterActivity.CALLER);
-
+        caller = getIntent().getExtras().getParcelable(CallCenterIncomingActivity.CALLER);
+        callId = getIntent().getExtras().getString(CallCenterIncomingActivity.CALL_ID);
         txtUserName.setText(caller.getUsername());
 
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
@@ -114,16 +116,16 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_reject_call:
-                super.rejectCall();
+                super.rejectCall(caller.getSipItem().getExtension(), Constant.API.VOICE_CALL, callId);
                 break;
             case R.id.btn_accept_call:
-                super.acceptCall();
+                super.acceptCall(callId);
                 break;
             case R.id.btn_on_off_mic:
                 super.muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
-                super.endCall();
+                super.endCall(caller.getSipItem().getExtension(), Constant.API.VOICE_CALL, callId);
                 break;
             case R.id.btn_on_off_speaker:
                 super.enableSpeaker(btnOnOffSpeaker.isChecked());

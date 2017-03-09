@@ -142,23 +142,23 @@ public class LinphoneService extends Service {
         ConfigManager.getInstance().setCurrentCallType(callType);
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                handleVoiceCall(callEvent.getCallee());
+                handleVoiceCall(callEvent.getCallId());
                 break;
             case Constant.API.VIDEO_CALL:
-                handleVideoVideoCall(callEvent.getCallee());
+                handleVideoVideoCall(callEvent.getCallId());
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                handleVideoChatCall(callEvent.getCallee());
+                handleVideoChatCall(callEvent.getCallId());
                 break;
             default:
                 break;
         }
     }
 
-    private void handleVoiceCall(String callee) {
+    private void handleVoiceCall(String roomId) {
         linphoneHandler.enableSpeaker(false);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(callee, false);
+        linphoneHandler.call(roomId, false);
     }
 
     private void handleVideoVideoCall(String callee) {

@@ -28,6 +28,7 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
     private String receiverExtension;
 
     public static final String INCOMING_CALL_TYPE = "INCOMING_CALL_TYPE";
+    public static final String CALL_ID = "CALL ID";
     public static final String CALLER = "CALLER";
 
     public CheckIncomingCallTask(Context context, String callerExtension, String receiverExtension) {
@@ -61,11 +62,15 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
         Logger.e(TAG, "Data from check call " + data.toString());
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         JSONObject jCaller = jData.getJSONObject(Constant.JSON.CALLER);
+
         int inComingCallType = jData.getInt(Constant.JSON.TYPE);
         UserItem caller = getCaller(jCaller);
+        String callID = jData.getInt(Constant.JSON.CALL_ID) + "";
+
         Map<String, Object> result = new HashMap<>();
         result.put(INCOMING_CALL_TYPE, inComingCallType);
         result.put(CALLER, caller);
+        result.put(CALL_ID, callID);
         return result;
     }
 

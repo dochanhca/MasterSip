@@ -12,6 +12,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.network.sip.CancelCallProcessor;
+import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
 import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
@@ -71,6 +73,11 @@ public class PacketManager {
             case Constant.SOCKET.ACTION_COIN_CHANGED:
                 processor = new CoinChangedProcessor();
                 break;
+            case Constant.SOCKET.ACTION_CHANGE_CALLING_STATUS:
+                processor = new ChangeCallingStatusProcessor();
+                break;
+            case Constant.SOCKET.ACTION_CANCEL_CALL:
+                processor = new CancelCallProcessor();
             default:
                 break;
         }

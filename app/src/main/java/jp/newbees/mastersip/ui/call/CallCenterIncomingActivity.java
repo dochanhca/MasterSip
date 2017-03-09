@@ -11,9 +11,10 @@ import jp.newbees.mastersip.ui.BaseActivity;
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class CallCenterActivity extends BaseActivity implements BaseCenterCallPresenter.CenterCallView {
+public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterCallPresenter.CenterCallView {
 
     public static final String CALLER = "CALLER";
+    public static final String CALL_ID = "CALL_ID";
     private BaseCenterCallPresenter incomingCallPresenter;
 
     @Override
@@ -30,21 +31,22 @@ public abstract class CallCenterActivity extends BaseActivity implements BaseCen
     }
 
     @Override
-    public void incomingVoiceCall(UserItem caller) {
+    public void incomingVoiceCall(UserItem caller, String callID) {
         Intent intent = new Intent(getApplicationContext(), IncomingVoiceActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CALLER, caller);
+        bundle.putString(CALL_ID, callID);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
     @Override
-    public void incomingVideoCall(UserItem caller) {
+    public void incomingVideoCall(UserItem caller, String callID) {
         //TODO : Next sprint
     }
 
     @Override
-    public void incomingVideoChatCall(UserItem caller) {
+    public void incomingVideoChatCall(UserItem caller, String callID) {
         //TODO : Next sprint
     }
 
@@ -55,5 +57,10 @@ public abstract class CallCenterActivity extends BaseActivity implements BaseCen
         bundle.putParcelable(OutgoingVoiceActivity.CALLEE, callee);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void didConnectCallError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 }

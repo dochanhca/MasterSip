@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
@@ -27,6 +28,7 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.presenter.TopPresenter;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
@@ -38,6 +40,7 @@ import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CHAT_C
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
+import static jp.newbees.mastersip.utils.Constant.JSON.CALL_ID;
 
 /**
  * Created by vietbq on 12/20/16.
@@ -330,7 +333,10 @@ public class JSONUtils {
     public static PacketItem parsePacketItem(String raw) throws JSONException {
         JSONObject jData = new JSONObject(raw);
         String action = jData.getString(Constant.JSON.ACTION);
-        String message = jData.getString(Constant.JSON.MESSAGE);
+        String message = "";
+        if (jData.has(Constant.JSON.MESSAGE)) {
+            message = jData.getString(Constant.JSON.MESSAGE);
+        }
         JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
         PacketItem packetItem = new PacketItem(action, message, response.toString());
         return packetItem;
@@ -658,5 +664,33 @@ public class JSONUtils {
         jsonObject.put(Constant.JSON.STATUS, purchaseStatus.getValue());
         jsonObject.put(Constant.JSON.CREATE_AT, createAt);
         return jsonObject;
+    }
+
+    public static void parseCheckCall(Map<String, Object> result, JSONObject jData) throws JSONException {
+        if (!jData.getString(Constant.JSON.MESSAGE_ID).isEmpty()) {
+            int messageId = Integer.parseInt(jData.getString(Constant.JSON.MESSAGE_ID));
+            result.put(CheckCallTask.MESSAGE_ID, messageId);
+        }
+
+        if (jData.has(Constant.JSON.RECEIVER_STATUS)) {
+            result.put(CheckCallTask.CALLEE_ONLINE, false);
+        } else {
+            result.put(CheckCallTask.CALLEE_ONLINE, true);
+        }
+
+        if (jData.has(Constant.JSON.MIN_POINT)) {
+            int minPoint = jData.getInt(Constant.JSON.MIN_POINT);
+            result.put(Constant.JSON.MIN_POINT, minPoint);
+        }
+
+        String roomId = jData.optString(Constant.JSON.ROOM_FREE);
+        result.put(CheckCallTask.ROOM_FREE, roomId);
+
+        if (jData.has(CALL_ID)) {
+            String callWaitId = jData.getString(CALL_ID);
+            result.put(CheckCallTask.CALL_ID, callWaitId);
+        }
+
+
     }
 }

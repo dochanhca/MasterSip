@@ -20,8 +20,8 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.gift.GiftListPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**

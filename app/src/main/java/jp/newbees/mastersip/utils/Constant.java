@@ -37,6 +37,8 @@ public final class Constant {
         public static final String CREATED_AT = "created_at";
         public static final String TOTAL_UNREAD = "total_unread";
         public static final String ROOM_MESS_UNREAD = "room_message_unread";
+        public static final String CALL_ID = "call_id";
+        public static final java.lang.String ROOM_FREE = "room_free";
 
         private JSON() {
             //Prevent init constructor
@@ -240,6 +242,8 @@ public final class Constant {
         public static final String DELETE_CHAT_ROOM = "chatrooms/delete";
         public static final String SEND_PURCHASE_RESULT = "payment/os/2/addon";
         public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
+        public static final String RECONNECT_CALL = "calls/reconnect-call";
+        public static final String JOIN_TO_CALL = "calls/join-to-call";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -333,10 +337,18 @@ public final class Constant {
             //Prevent init object
         }
 
+        public static final String ACTION_CANCEL_CALL = "CANCEL_CALL";
+        public static final String ACTION_CHANGE_CALLING_STATUS = "CHANGE_CALLING_STATUS";
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
+
+        public static final int STATUS_CALLING_WAITING = 1;
+        public static final int STATUS_CALLING_CANCELED = 2;
+        public static final int STATUS_CALLING_CONNECTED = 3;
+        public static final int STATUS_CALLING_MISSING = 4;
+        public static final int STATUS_CALLING_END = 5;
     }
 
     public static class InAppBilling {
