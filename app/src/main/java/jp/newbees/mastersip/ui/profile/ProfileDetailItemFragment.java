@@ -42,9 +42,11 @@ import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
+import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -59,15 +61,19 @@ import jp.newbees.mastersip.utils.Utils;
 public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogPositiveClick {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     public static final String USER_ITEM = "USER_ITEM";
-    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
-    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
-    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
     private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
+    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
+    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
+    private static final int SELECT_VIDEO_CALL_DIALOG = 14;
+    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
+    private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 13;
+
+    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
+
 
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
@@ -239,10 +245,20 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 handleVoiceCallClick();
                 break;
             case R.id.layout_video_call:
-                // Make a video call
+                handleVideoCallClick();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void handleVideoCallClick() {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            String content = getResources().getString(R.string.confirm_request_enable_video_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, this, getFragmentManager());
         }
     }
 
@@ -369,6 +385,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
             showLoading();
             profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableVoiceCallTask.Type.VOICE);
+        } else if (requestCode == CONFIRM_REQUEST_ENABLE_VIDEO_CALL) {
+            //send request to enalbe video
         }
     }
 
@@ -384,6 +402,15 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onOkVoiceCallClick() {
         profileDetailPresenter.checkVoiceCall(userItem);
+    }
+
+    @Override
+    public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
+        if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
+            OutgoingVideoVideoActivity
+        } else {
+
+        }
     }
 
     private void updatePhotos(GalleryItem galleryItem) {
