@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/offset_comma"
         android:layout_toRightOf="@id/comma"
-        android:background="@drawable/bg_white">
+        android:background="@drawable/bg_white_large_radius">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_gift"

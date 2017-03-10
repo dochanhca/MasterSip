@@ -1,23 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:layout_weight="2"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
 
-    <TextView
-        android:id="@+id/text_video"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:text="Text video" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/xnormal_margin"
+        android:layout_marginRight="@dimen/xnormal_margin"
+        android:background="@drawable/bg_white"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/xnormal_margin">
 
-    <TextView
-        android:id="@+id/video_video"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:text="Video video" />
+        <ImageView
+            android:id="@+id/ic_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/normal_margin"
+            android:src="@drawable/ic_close_black" />
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/ic_call_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ic_close"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:src="@drawable/ic_call_camera" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_title_call_camera"
+            style="@style/origin_style_content_text_view"
+            android:layout_below="@id/ic_call_camera"
+            android:paddingTop="@dimen/normal_margin"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:text="A falsis, cotta brevis \ncedrium.Devastated tribbles, to the holodeck."
+            android:textColor="@color/text_color_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_title_call_camera"
+            android:layout_marginTop="@dimen/large_margin"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_chat_video"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/normal_margin"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/xnormal_margin"
+                    android:layout_marginRight="@dimen/xnormal_margin"
+                    android:background="@drawable/bg_call_video_chat"
+                    android:paddingBottom="@dimen/normal_margin"
+                    android:paddingLeft="@dimen/normal_margin"
+                    android:paddingRight="@dimen/normal_margin"
+                    android:paddingTop="@dimen/normal_margin">
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        style="@style/origin_style_content_text_view"
+                        android:text="@string/call_video_chat_1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_yellow_plus" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        style="@style/origin_style_content_text_view"
+                        android:text="@string/call_video_chat_2"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_12" />
+                </LinearLayout>
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_title_chat_video"
+                    style="@style/origin_style_content_text_view_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_select_call_tittle"
+                    android:background="@drawable/bg_blue_top_left_conner"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:text="@string/select_call_video_str_1"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_14" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_green_normal_bottom_left_conner"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/xnormal_margin"
+                    android:paddingLeft="@dimen/normal_margin"
+                    android:paddingRight="@dimen/normal_margin"
+                    android:paddingTop="@dimen/normal_margin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:id="@+id/rl_title_chat_video"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <jp.newbees.mastersip.customviews.HiraginoTextView
+                                style="@style/origin_style_content_text_view_tiny"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:text="@string/opponent"
+                                android:textColor="@color/text_color_blue_dark" />
+
+                            <jp.newbees.mastersip.customviews.HiraginoTextView
+                                style="@style/origin_style_content_text_view_tiny"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/my_self"
+                                android:textColor="@color/text_color_blue_dark" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/rl_title_chat_video"
+                            android:paddingTop="@dimen/small_margin">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/ic_call_love" />
+
+                            <ImageView
+                                android:id="@+id/img_chat_video_opponent"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_call_video" />
+
+                            <ImageView
+                                android:id="@+id/img_chat_video_my_self"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/ic_call_text" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/xnormal_margin"
+                        android:src="@drawable/ic_call_text_video" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                style="@style/divider_vertical"
+                android:layout_width="3dp"
+                android:background="@color/transparent" />
+
+            <LinearLayout
+                android:id="@+id/ll_video_video"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/xnormal_margin"
+                    android:layout_marginRight="@dimen/xnormal_margin"
+                    android:background="@drawable/bg_call_video_chat"
+                    android:paddingBottom="@dimen/normal_margin"
+                    android:paddingLeft="@dimen/normal_margin"
+                    android:paddingRight="@dimen/normal_margin"
+                    android:paddingTop="@dimen/normal_margin">
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        style="@style/origin_style_content_text_view"
+                        android:text="@string/call_video_video_1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_yellow_plus" />
+
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        style="@style/origin_style_content_text_view"
+                        android:text="@string/call_video_video_2"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_12" />
+                </LinearLayout>
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/origin_style_content_text_view_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_select_call_tittle"
+                    android:background="@drawable/bg_blue_top_right_conner"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:paddingLeft="@dimen/large_margin"
+                    android:paddingRight="@dimen/large_margin"
+                    android:text="@string/select_call_video_str_2"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_14" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_green_normal_bottom_right_conner"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/xnormal_margin"
+                    android:paddingLeft="@dimen/normal_margin"
+                    android:paddingRight="@dimen/normal_margin"
+                    android:paddingTop="@dimen/normal_margin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:id="@+id/rl_title_video_video"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <jp.newbees.mastersip.customviews.HiraginoTextView
+                                style="@style/origin_style_content_text_view_tiny"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:text="@string/opponent"
+                                android:textColor="@color/text_color_blue_dark" />
+
+                            <jp.newbees.mastersip.customviews.HiraginoTextView
+                                style="@style/origin_style_content_text_view_tiny"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_alignParentRight="true"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/my_self"
+                                android:textColor="@color/text_color_blue_dark" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/rl_title_video_video"
+                            android:layout_marginTop="@dimen/small_margin">
+
+                            <ImageView
+                                android:id="@+id/ic_call_heart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/ic_call_love" />
+
+                            <ImageView
+                                android:id="@+id/img_opponent"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_call_video" />
+
+                            <ImageView
+                                android:id="@+id/my_self"
+                                android:layout_width="@dimen/select_video_image_call_size"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/ic_call_video" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/xnormal_margin"
+                        android:src="@drawable/ic_call_video_video" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

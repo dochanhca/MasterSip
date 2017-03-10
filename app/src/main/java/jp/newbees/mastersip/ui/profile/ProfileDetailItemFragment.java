@@ -42,7 +42,6 @@ import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
@@ -407,7 +406,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
         if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            OutgoingVideoVideoActivity
+
         } else {
 
         }

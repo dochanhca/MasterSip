@@ -106,4 +106,8 @@
     <dimen name="_4dp">4dp</dimen>
     <dimen name="_18dp">18dp</dimen>
     <dimen name="_150dp">150dp</dimen>
+    <dimen name="xlarge_margin">25dp</dimen>
+    <dimen name="select_video_image_call_size">50dp</dimen>
+    <dimen name="height_select_call_tittle">55dp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
 </resources>

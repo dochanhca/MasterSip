@@ -244,6 +244,12 @@
         <item name="android:background">@color/divider</item>
     </style>
 
+    <style name="divider_vertical">
+        <item name="android:layout_width">@dimen/divider</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+
     <style name="style_text_view_with_button_my_menu">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -255,5 +261,10 @@
         <item name="android:paddingTop">@dimen/_15dp</item>
         <item name="android:paddingBottom">@dimen/_15dp</item>
         <item name="android:background">@drawable/bg_item_lv_common</item>
+    </style>
+
+    <style name="origin_style_content_text_view_large" parent="origin_style_content_text_view">
+        <item name="android:textSize">23sp</item>
+
     </style>
 </resources>

@@ -7,12 +7,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.customviews.HiraginoTextView;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -20,9 +26,17 @@ import jp.newbees.mastersip.R;
 
 public class SelectVideoCallDialog extends DialogFragment implements View.OnClickListener {
 
+    @BindView(R.id.ic_close)
+    ImageView icClose;
+    @BindView(R.id.txt_title_chat_video)
+    HiraginoTextView txtTitleChatVideo;
+    @BindView(R.id.img_chat_video_opponent)
+    ImageView imgChatVideoOpponent;
+    @BindView(R.id.img_chat_video_my_self)
+    ImageView imgChatVideoMySelf;
+    @BindView(R.id.txt_title_call_camera)
+    HiraginoTextView txtTitleCallCamera;
     private View mRoot;
-    private TextView txtVideoVideo;
-    private TextView txtTextVideo;
     private OnSelectVideoCallDialog listener;
 
     public interface OnSelectVideoCallDialog {
@@ -41,20 +55,29 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
         getDialog().setCanceledOnTouchOutside(false);
 
         mRoot = inflater.inflate(R.layout.dialog_select_video_call, null);
-        txtVideoVideo = (TextView) mRoot.findViewById(R.id.video_video);
-        txtTextVideo = (TextView) mRoot.findViewById(R.id.text_video);
-        txtTextVideo.setOnClickListener(this);
-        txtVideoVideo.setOnClickListener(this);
-
+        ButterKnife.bind(this, mRoot);
+        setTitle();
         return mRoot;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.video_video) {
-            listener.onSelectedVideoCall(VideoCall.VIDEO_VIDEO);
-        } else {
-            listener.onSelectedVideoCall(VideoCall.CHAT_VIDEO);
+    private void setTitle() {
+        txtTitleCallCamera.setText(Html.fromHtml(getResources().getString(R.string.title_select_call)));
+    }
+
+    @OnClick({R.id.ll_chat_video, R.id.ll_video_video ,R.id.ic_close})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ll_chat_video:
+                listener.onSelectedVideoCall(VideoCall.CHAT_VIDEO);
+                break;
+            case R.id.ll_video_video:
+                listener.onSelectedVideoCall(VideoCall.VIDEO_VIDEO);
+                break;
+            case R.id.ic_close:
+                this.dismiss();
+                break;
+            default:
+                break;
         }
     }
 
@@ -68,6 +91,16 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
                 throw new ClassCastException("Calling activity must implement DialogClickListener interface");
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+
+        super.onResume();
     }
 
     @Override
