@@ -62,8 +62,8 @@ public abstract class RegisterPresenterBase extends BasePresenter {
             sendFCMTokenToServer();
         } else {
             stopLinphoneService();
-            ConfigManager.getInstance().resetSettings();
-            saveLoginState(false);
+//            ConfigManager.getInstance().resetSettings();
+//            saveLoginState(false);
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);

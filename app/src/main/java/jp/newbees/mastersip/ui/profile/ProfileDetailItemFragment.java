@@ -18,9 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
@@ -35,7 +32,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -54,7 +51,6 @@ import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
-import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -216,13 +212,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+        profileDetailPresenter.registerEvent();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+        profileDetailPresenter.unRegisterEvent();
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
@@ -348,18 +344,34 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
-        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
-                .getSipItem().getExtension();
+    @Override
+    public void didCalleeRejectCall(String calleeExtension) {
         if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
             String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
             TextDialog.openTextDialog(this, REQUEST_NOTIFY_CALLEE_REJECT_CALL, getFragmentManager()
                     , message, "", positiveTitle, true);
         }
+    }
 
-        Logger.e(TAG, "receiving Call Event: " + busyCallEvent.getCallId());
+    @Override
+    public void didCallEndedLessThanOneMinuteForGirl() {
+        showDialogNotifyCallEnded();
+    }
+
+    @Override
+    public void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent) {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        if (gender == UserItem.FEMALE && coinChangedEvent.getTotal() > 0) {
+            StringBuilder message = new StringBuilder();
+            message.append(getString(R.string.call_ended_bonus_point))
+                    .append(coinChangedEvent.getTotal())
+                    .append(getString(R.string.pt))
+                    .append(getString(R.string.i_acquired_it));
+            showMessageDialog(message.toString());
+        } else {
+            showDialogNotifyCallEnded();
+        }
     }
 
     @Override
@@ -378,6 +390,15 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
             showLoading();
             profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableVoiceCallTask.Type.VOICE);
+        }
+    }
+
+    private void showDialogNotifyCallEnded() {
+        String callId = ConfigManager.getInstance().getCallId();
+        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(callId)
+                .getSipItem().getExtension();
+        if (userItem.getSipItem().getExtension().equals(calleeExtension)) {
+            showMessageDialog(getString(R.string.call_ended));
         }
     }
 

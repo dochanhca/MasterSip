@@ -9,6 +9,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.InputStream;
 import java.util.Map;
 
+import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
@@ -41,7 +43,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         this.chatPresenterListener = chatPresenterListener;
     }
 
-
     public interface ChatPresenterListener {
         void didSendChatToServer(BaseChatItem baseChatItem);
 
@@ -68,6 +69,12 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         void didUnFollowUserError(String errorMessage, int errorCode);
 
         void didCheckCallError(String errorMessage, int errorCode);
+
+        void didCalleeRejectCall();
+
+        void didCallEndedLessThanOneMinuteForGirl();
+
+        void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent);
     }
 
     public final void sendText(String content, UserItem sendee) {
@@ -138,8 +145,19 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         }
     }
 
-    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
-        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
+    @Override
+    protected void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
+        chatPresenterListener.didCalleeRejectCall();
+    }
+
+    @Override
+    protected void onHangUpForGirl() {
+        chatPresenterListener.didCallEndedLessThanOneMinuteForGirl();
+    }
+
+    @Override
+    protected void onCoinChangedAfterHangUp(CoinChangedEvent event) {
+        chatPresenterListener.didCoinChangedAfterHangUp(event);
     }
 
     /**
@@ -161,6 +179,10 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
     @Override
     public void onResponse(BaseChatItem response) {
         chatPresenterListener.didUploadImageToServer((ImageChatItem) response);
+    }
+
+    public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
+        return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
     }
 
     /**

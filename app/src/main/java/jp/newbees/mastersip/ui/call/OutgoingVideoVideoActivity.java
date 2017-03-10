@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -38,7 +37,7 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
     }
 
     @Override
-    public void onCoinChanged(CoinChangedEvent event) {
+    public void onCoinChanged(int coint) {
 
     }
 

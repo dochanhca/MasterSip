@@ -385,4 +385,7 @@
     <string name="i_m_sorry_pls_try_again">申し訳ありません。 \nしばらくたってからおかけ直しください。</string>
     <string name="mess_callee_reject_call">さんは 現在応答出来ないようです。 別の時間におかけください。</string>
     <string name="back_to_profile_detail">プロフィール詳細へ戻る</string>
+    <string name="call_ended">通話が終了しました。</string>
+    <string name="call_ended_bonus_point">通話が終了しました。今回の通話で〇pt獲得しました。</string>
+    <string name="i_acquired_it">獲得しました。</string>
 </resources>

@@ -15,7 +15,6 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
@@ -119,10 +118,10 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
     }
 
     @Override
-    public void onCoinChanged(CoinChangedEvent event) {
+    public void onCoinChanged(int coint) {
         StringBuilder point = new StringBuilder();
         point.append(" ")
-                .append(String.valueOf(event.getCoin()))
+                .append(String.valueOf(coint))
                 .append(getString(R.string.pt));
         txtPoint.setText(point);
     }

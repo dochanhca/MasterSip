@@ -6,23 +6,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.FlashedEvent;
-import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
-import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.JoinCallTask;
-import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/10/17.
  */
 
-public class BaseHandleIncomingCallPresenter extends BasePresenter {
+public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     private IncomingCallView view;
 
     public BaseHandleIncomingCallPresenter(Context context, IncomingCallView view) {
@@ -38,26 +33,14 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
 
     public final void rejectCall(String caller, int callType, String calId) {
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
-        performCancelCall(caller, callType, calId);
-    }
-
-    private void performCancelCall(String caller, int callType, String calId) {
         String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        CancelCallTask cancelCallTask = new CancelCallTask(context, caller, callee, callType, calId);
-        requestToServer(cancelCallTask);
+        performCancelCall(caller, callee, callType, calId);
     }
 
     public void endCall(String caller, int callType, String calId) {
         EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
-        performCancelCall(caller, callType, calId);
-    }
-
-    public final void enableSpeaker(boolean enable) {
-        EventBus.getDefault().post(new SpeakerEvent(enable));
-    }
-
-    public final void muteMicrophone(boolean mute) {
-        EventBus.getDefault().post(new MicrophoneEvent(mute));
+        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        performCancelCall(caller, callee, callType, calId);
     }
 
     @Override
@@ -93,11 +76,6 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
         view.onFlashedCall();
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onCoinChangedEvent(CoinChangedEvent event) {
-        view.onCoinChanged(event);
-    }
-
     private void handleCallEnd() {
         view.onCallEnd();
     }
@@ -106,16 +84,13 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
         view.onCallConnected();
     }
 
-    public void registerEvents() {
-        EventBus.getDefault().register(this);
-    }
-
-    public void unregisterEvents() {
-        EventBus.getDefault().unregister(this);
-    }
-
     public void checkFlashCall() {
         EventBus.getDefault().post(new FlashedEvent());
+    }
+
+    @Override
+    protected void onCoinChanged(int coin) {
+        view.onCoinChanged(coin);
     }
 
     public interface IncomingCallView {
@@ -123,7 +98,7 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
 
         void onCallEnd();
 
-        void onCoinChanged(CoinChangedEvent event);
+        void onCoinChanged(int coint);
 
         void onFlashedCall();
     }

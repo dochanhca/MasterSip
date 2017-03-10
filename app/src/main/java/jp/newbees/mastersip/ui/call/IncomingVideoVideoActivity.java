@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 
 /**
@@ -31,7 +30,7 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
     }
 
     @Override
-    public void onCoinChanged(CoinChangedEvent event) {
+    public void onCoinChanged(int coint) {
 
     }
 }

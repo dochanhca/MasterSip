@@ -28,17 +28,15 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
         presenter.registerEvents();
     }
 
-    protected final UserItem getCallee() {
-        if (callee == null) {
-            this.callee = getIntent().getExtras().getParcelable(CALLEE);
-        }
-        return callee;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Prevent user press back button when during a call
     }
 
     public final void endCall() {
@@ -61,9 +59,11 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
 
     }
 
-    @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
+    protected final UserItem getCallee() {
+        if (callee == null) {
+            this.callee = getIntent().getExtras().getParcelable(CALLEE);
+        }
+        return callee;
     }
 
     protected abstract int getCallType();

@@ -3,6 +3,8 @@ package jp.newbees.mastersip.presenter.profile;
 import android.content.Context;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -13,6 +15,7 @@ import jp.newbees.mastersip.network.api.GetProfileDetailTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -48,6 +51,12 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
 
         void didCheckCallError(String errorMessage, int errorCode);
+
+        void didCalleeRejectCall(String calleeExtension);
+
+        void didCallEndedLessThanOneMinuteForGirl();
+
+        void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent);
     }
 
     public ProfileDetailPresenter(Context context, ProfileDetailItemView view) {
@@ -70,7 +79,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             }
         } else if (task instanceof FollowUserTask) {
             view.didFollowUser();
-
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUser();
         } else if (task instanceof SendMessageRequestEnableVoiceCallTask) {
@@ -78,14 +86,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didSendMsgRequestEnableSettingCall(type);
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
-        }
-    }
-
-    private void getNextIdForLoadMore(GalleryItem galleryItem) {
-        if (!"".equals(galleryItem.getNextId())) {
-            nextId = Integer.parseInt(galleryItem.getNextId());
-        } else {
-            nextId = -1;
         }
     }
 
@@ -103,6 +103,31 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         } else if (task instanceof CheckCallTask) {
             view.didCheckCallError(errorMessage, errorCode);
+        }
+    }
+
+    @Override
+    protected void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
+        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
+                .getSipItem().getExtension();
+        view.didCalleeRejectCall(calleeExtension);
+    }
+
+    @Override
+    protected void onHangUpForGirl() {
+        view.didCallEndedLessThanOneMinuteForGirl();
+    }
+
+    @Override
+    protected void onCoinChangedAfterHangUp(CoinChangedEvent event) {
+        view.didCoinChangedAfterHangUp(event);
+    }
+
+    private void getNextIdForLoadMore(GalleryItem galleryItem) {
+        if (!"".equals(galleryItem.getNextId())) {
+            nextId = Integer.parseInt(galleryItem.getNextId());
+        } else {
+            nextId = -1;
         }
     }
 

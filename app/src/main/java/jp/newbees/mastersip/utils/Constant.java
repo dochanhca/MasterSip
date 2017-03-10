@@ -345,6 +345,7 @@ public final class Constant {
         public static final String ACTION_CHATTING = "chatting";
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
+        public static final String ACTION_HANG_UP_FOR_GIRL_BLOCK_ZORO = "Hangup_for_girl_block_zero";
 
         public static final int STATUS_CALLING_WAITING = 1;
         public static final int STATUS_CALLING_CANCELED = 2;
