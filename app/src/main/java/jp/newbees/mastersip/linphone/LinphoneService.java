@@ -33,7 +33,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class LinphoneService extends Service {
 
     private LinphoneHandler linphoneHandler;
-    private final String TAG = "LinphoneService";
+    private static final String TAG = "LinphoneService";
 
     @Override
     public void onCreate() {
@@ -142,13 +142,13 @@ public class LinphoneService extends Service {
         ConfigManager.getInstance().setCurrentCallType(callType);
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                handleVoiceCall(callEvent.getCallId());
+                handleVoiceCall(callEvent.getRoomId());
                 break;
             case Constant.API.VIDEO_CALL:
-                handleVideoVideoCall(callEvent.getCallId());
+                handleVideoVideoCall(callEvent.getRoomId());
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                handleVideoChatCall(callEvent.getCallId());
+                handleVideoChatCall(callEvent.getRoomId());
                 break;
             default:
                 break;

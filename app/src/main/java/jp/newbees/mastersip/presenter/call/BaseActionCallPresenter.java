@@ -34,18 +34,16 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
         if (callType == Constant.API.VOICE_CALL) {
-            makeVoiceCall(roomId, callee);
+            ConfigManager.getInstance().setCurrentCallee(callee, callId);
+            makeVoiceCall(roomId);
         }
     }
 
     /**
      * Make a voice call
-     *
-     * @param callee
      */
-    private void makeVoiceCall(String callId, UserItem callee) {
-        ConfigManager.getInstance().setCurrentCallee(callee, callId);
-        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, callId));
+    private void makeVoiceCall(String roomId) {
+        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, roomId));
     }
 
     /**
@@ -63,18 +61,18 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
      * @param userItem
      */
     public final void checkVideoCall(UserItem userItem) {
-        String callee = userItem.getSipItem().getExtension();
-        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CALL, callee));
+//        String callee = userItem.getSipItem().getExtension();
+//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CALL, callee));
     }
 
     /**
-     * Check callee before make a video chat call00.0.0.
+     * Check callee before make a video chat call.
      *
      * @param userItem
      */
     public final void checkVideoChatCall(UserItem userItem) {
-        String callee = userItem.getSipItem().getExtension();
-        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CHAT_CALL, callee));
+//        String callee = userItem.getSipItem().getExtension();
+//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CHAT_CALL, callee));
     }
 
     /**

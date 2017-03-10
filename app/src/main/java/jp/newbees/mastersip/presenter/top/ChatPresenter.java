@@ -41,6 +41,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         this.chatPresenterListener = chatPresenterListener;
     }
 
+
     public interface ChatPresenterListener {
         void didSendChatToServer(BaseChatItem baseChatItem);
 

@@ -16,7 +16,6 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/11/17.
@@ -45,11 +44,12 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        // handle response task
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        Logger.e(TAG, errorMessage);
+        // handle error task
     }
 
     public final void registerEvents() {
@@ -70,7 +70,6 @@ public class BaseHandleOutgoingCallPresenter extends BasePresenter {
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;
-
             default:
                 break;
         }

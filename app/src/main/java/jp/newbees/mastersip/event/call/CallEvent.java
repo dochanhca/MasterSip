@@ -7,18 +7,18 @@ package jp.newbees.mastersip.event.call;
 public class CallEvent {
 
     private int callType;
-    private String callId;
+    private String roomId;
 
-    public CallEvent(int callType, String callId) {
+    public CallEvent(int callType, String roomId) {
         this.callType = callType;
-        this.callId = callId;
+        this.roomId = roomId;
     }
 
     public int getCallType() {
         return callType;
     }
 
-    public String getCallId() {
-        return callId;
+    public String getRoomId() {
+        return roomId;
     }
 }

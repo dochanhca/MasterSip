@@ -179,7 +179,6 @@ public class ProfileDetailFragment extends BaseFragment implements ProfilePresen
             return;
         }
         imgPrevious.setVisibility(currentIndex == 0 ? View.INVISIBLE : View.VISIBLE);
-//        loadMoreUserIfHasData();
         imgNext.setVisibility((currentIndex == userItemList.size() - 1 && !canLoadMoreUser())
                 ? View.INVISIBLE : View.VISIBLE);
     }

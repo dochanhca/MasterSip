@@ -17,6 +17,7 @@ import java.util.List;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 import static jp.newbees.mastersip.utils.Constant.API.SEARCH_BY_NAME_URL;
 
@@ -46,7 +47,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
         try {
             name = URLEncoder.encode(name, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Logger.e(TAG, e.getMessage());
         }
         JSONObject jParams = new JSONObject();
         jParams.put(Constant.JSON.NEXT_PAGE, page);
@@ -57,8 +58,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     @NonNull
     @Override
     protected String getUrl() {
-        String url = String.format("%s/%s", SEARCH_BY_NAME_URL, userItem.getUserId());
-        return url;
+        return String.format("%s/%s", SEARCH_BY_NAME_URL, userItem.getUserId());
     }
 
     @Override

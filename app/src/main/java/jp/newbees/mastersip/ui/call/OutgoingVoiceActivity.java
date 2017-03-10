@@ -73,7 +73,6 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
                     .into(profileImage);
         }
         profileImage.setImageResource(imageID);
-
     }
 
     @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})

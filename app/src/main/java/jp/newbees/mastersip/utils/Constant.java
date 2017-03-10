@@ -333,10 +333,12 @@ public final class Constant {
     }
 
     public class SOCKET {
+
         private SOCKET() {
             //Prevent init object
         }
 
+        public static final String ACTION_BUSY_CALL = "BUSY_CALL";
         public static final String ACTION_CANCEL_CALL = "CANCEL_CALL";
         public static final String ACTION_CHANGE_CALLING_STATUS = "CHANGE_CALLING_STATUS";
         public static final String ACTION_ABOUT_RUN_OUT_OF_COINS = "about_to_run_out_of_coins";

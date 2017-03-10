@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
 import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
@@ -28,14 +29,14 @@ import jp.newbees.mastersip.utils.Logger;
 public class PacketManager {
     private static PacketManager instance;
     private final BlockingQueue<Runnable> processorQueue;
-    private static int NUMBER_OF_CORES =
+    private static final int NUMBER_OF_CORES =
             Runtime.getRuntime().availableProcessors();
     private static final int KEEP_ALIVE_TIME = 3;
     // Sets the Time Unit to seconds
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
     private final ThreadPoolExecutor processorThreadPool;
     private Handler handler;
-    private String TAG;
+    private static String TAG;
 
     private PacketManager() {
         TAG = this.getClass().getSimpleName();
@@ -78,6 +79,10 @@ public class PacketManager {
                 break;
             case Constant.SOCKET.ACTION_CANCEL_CALL:
                 processor = new CancelCallProcessor();
+                break;
+            case Constant.SOCKET.ACTION_BUSY_CALL:
+                processor = new BusyCallProcessor();
+                break;
             default:
                 break;
         }

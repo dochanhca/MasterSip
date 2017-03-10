@@ -15,19 +15,19 @@ public class ReceivingCallEvent {
     public static final int FLASHED_CALL = 99;
 
     private int callEvent;
-    private String callerExtension;
+    private String callId;
 
     public ReceivingCallEvent(int callEvent) {
         this.callEvent = callEvent;
     }
 
-    public ReceivingCallEvent(int callEvent, String callerExtension) {
+    public ReceivingCallEvent(int callEvent, String callId) {
         this.callEvent = callEvent;
-        this.callerExtension = callerExtension;
+        this.callId = callId;
     }
 
-    public String getCallerExtension() {
-        return callerExtension;
+    public String getCallId() {
+        return callId;
     }
 
     public int getCallEvent() {

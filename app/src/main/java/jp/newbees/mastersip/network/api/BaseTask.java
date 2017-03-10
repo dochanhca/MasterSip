@@ -37,7 +37,6 @@ public abstract class BaseTask<T extends Object> {
     private static final int REQUEST_OK = 0;
     private static final String ANDROID = "android";
     protected static String TAG;
-    private Request<T> request;
     private SharedPreferences sharedPreferences;
     private final String authorization;
     private final String registerToken;
@@ -56,7 +55,7 @@ public abstract class BaseTask<T extends Object> {
         if (Constant.Application.DEBUG) {
             Logger.e(TAG, url);
         }
-        request = new Request<T>(getMethod(), url, new Response.ErrorListener() {
+        Request<T> request = new Request<T>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 SipError sipError;
@@ -71,7 +70,7 @@ public abstract class BaseTask<T extends Object> {
 
             @Override
             public byte[] getBody() throws AuthFailureError {
-                JSONObject jParams = null;
+                JSONObject jParams;
                 try {
                     jParams = genParams();
                     if (null == jParams) {
@@ -87,8 +86,7 @@ public abstract class BaseTask<T extends Object> {
                 if (Constant.Application.SHOW_DATA_REQUEST) {
                     Logger.e(TAG, "Data request : " + jParams.toString());
                 }
-                byte[] body = jParams.toString().getBytes();
-                return body;
+                return jParams.toString().getBytes();
             }
 
             @Override
@@ -108,7 +106,7 @@ public abstract class BaseTask<T extends Object> {
             protected Response<T> parseNetworkResponse(NetworkResponse response) {
                 String data = new String(response.data);
                 Logger.e("API - " + TAG, data);
-                T result = null;
+                T result;
                 SipError sipError;
                 try {
                     sipError = validData(data);
@@ -178,11 +176,9 @@ public abstract class BaseTask<T extends Object> {
         int code = jsonObject.getInt(Constant.JSON.CODE);
         if (code != REQUEST_OK) {
             String message = jsonObject.getString(Constant.JSON.MESSAGE);
-            SipError sipError = new SipError(code, message);
-            return sipError;
-        } else {
-            return null;
+            return new SipError(code, message);
         }
+        return null;
     }
 
     private void getCommonParams(JSONObject jParams) throws JSONException {
@@ -210,14 +206,6 @@ public abstract class BaseTask<T extends Object> {
             jParams.put(Constant.JSON.CLIENT_AUTH_ID, userItem.getUserId());
             jParams.put(Constant.JSON.REGIST_TOKEN, this.registerToken);
             jParams.put(Constant.JSON.PLATFORM, ANDROID);
-        }
-    }
-
-    protected boolean hasValueForKey(JSONObject jsonObject, String key, int position) {
-        if (jsonObject.has(key) && !jsonObject.isNull(key)) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -255,11 +243,8 @@ public abstract class BaseTask<T extends Object> {
         return dataResponse;
     }
 
+    @FunctionalInterface
     public interface ErrorListener {
         void onError(int errorCode, String errorMessage);
-    }
-
-    protected String getRegisterToken() {
-        return registerToken;
     }
 }
