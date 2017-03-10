@@ -20,21 +20,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
-    }
-
-    private void sendRegistrationToServer(String refreshedToken) {
-//        TaskSendTokenToServer taskSendTokenToServer = new TaskSendTokenToServer(getApplicationContext(), refreshedToken);
-//        taskSendTokenToServer.request(new Response.Listener<Void>() {
-//            @Override
-//            public void onResponse(Void response) {
-//                SmartLog.logE(TAG, " send Refreshed Token to sever successful");
-//            }
-//        }, new TaskNetworkBase.ErrorListener() {
-//            @Override
-//            public void onErrorListener(int errorCode, String errorMessage) {
-//                SmartLog.logE(TAG, errorCode + " : " + errorMessage);
-//            }
-//        });
+        // sendRegistrationToServer(refreshedToken);
     }
 }

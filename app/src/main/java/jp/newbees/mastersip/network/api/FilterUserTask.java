@@ -18,6 +18,7 @@ import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 12/20/16.
@@ -58,7 +59,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
                 String result = java.net.URLDecoder.decode(jsonArray.toString(), "UTF-8");
                 jParams.put(Constant.JSON.PROVINCES, result);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                Logger.e(TAG, e.getMessage());
             }
         }
 

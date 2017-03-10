@@ -52,7 +52,6 @@ public class GetMyPhotosTask extends BaseTask<GalleryItem> {
     @Override
     protected GalleryItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        GalleryItem galleryItem = JSONUtils.parseGallery(jData);
-        return galleryItem;
+        return JSONUtils.parseGallery(jData);
     }
 }

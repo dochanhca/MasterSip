@@ -62,12 +62,13 @@ public class BaseHandleIncomingCallPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        // handle response task
     }
 
     @Override
 
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        // handle error task
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

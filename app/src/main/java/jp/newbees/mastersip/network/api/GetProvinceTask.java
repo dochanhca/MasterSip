@@ -53,7 +53,6 @@ public class GetProvinceTask extends BaseTask {
         int provinceId = jData.getInt(Constant.JSON.RECEIVE_PROVINCE_ID);
         String provinceName = jData.getString(Constant.JSON.PROVINCE_NAME_V2);
 
-        SelectionItem selectionItem = new SelectionItem(provinceId, provinceName);
-        return selectionItem;
+        return new SelectionItem(provinceId, provinceName);
     }
 }

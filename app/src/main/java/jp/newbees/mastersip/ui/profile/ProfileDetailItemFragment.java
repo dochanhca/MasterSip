@@ -18,6 +18,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -50,6 +54,7 @@ import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -61,7 +66,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         TextDialog.OnTextDialogClick {
 
+    public static final String USER_ITEM = "USER_ITEM";
+    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
+    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
+    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
+    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
+    private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
 
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
@@ -134,13 +145,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @BindView(R.id.txt_voice_call)
     TextView txtVoiceCall;
 
-    public static final String USER_ITEM = "USER_ITEM";
-    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
-    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
-
-    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
-
     private ProfileDetailPresenter profileDetailPresenter;
     private UserItem userItem;
     private GalleryItem galleryItem;
@@ -207,6 +211,18 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
         initRecyclerUserImage();
         initVariables();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
@@ -330,6 +346,20 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         } else {
             showToastExceptionVolleyError(errorCode, errorMessage);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
+        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
+                .getSipItem().getExtension();
+        if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
+            String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
+            String positiveTitle = getString(R.string.back_to_profile_detail);
+            TextDialog.openTextDialog(this, REQUEST_NOTIFY_CALLEE_REJECT_CALL, getFragmentManager()
+                    , message, "", positiveTitle, true);
+        }
+
+        Logger.e(TAG, "receiving Call Event: " + busyCallEvent.getCallId());
     }
 
     @Override

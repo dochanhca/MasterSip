@@ -101,8 +101,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
         if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
         }
-        String callerExtension = call.getChatRoom().getPeerAddress().getUserName();
-        ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callerExtension);
+        String callId = ConfigManager.getInstance().getCallId();
+        ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callId);
         EventBus.getDefault().post(receivingCallEvent);
     }
 
@@ -165,12 +165,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void initLinphoneCoreValues(String basePath) {
         linphoneCore.setContext(context);
         linphoneCore.setRing(null);
-        linphoneCore.setPlayLevel(2);
+        linphoneCore.setPlayLevel(1);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
         linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
-        LinphoneCore.Transports transports = new LinphoneCore.Transports();
-        transports.udp = 1;
 
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);

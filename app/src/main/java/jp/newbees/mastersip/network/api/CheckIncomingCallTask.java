@@ -24,16 +24,14 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
 
-    private String callerExtension;
     private String receiverExtension;
 
     public static final String INCOMING_CALL_TYPE = "INCOMING_CALL_TYPE";
     public static final String CALL_ID = "CALL ID";
     public static final String CALLER = "CALLER";
 
-    public CheckIncomingCallTask(Context context, String callerExtension, String receiverExtension) {
+    public CheckIncomingCallTask(Context context, String receiverExtension) {
         super(context);
-        this.callerExtension = callerExtension;
         this.receiverExtension = receiverExtension;
     }
 
@@ -41,7 +39,6 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.CALLER, callerExtension);
         jParams.put(Constant.JSON.RECEIVER, receiverExtension);
         return jParams;
     }
@@ -80,7 +77,7 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
         String handleName = jCaller.getString(Constant.JSON.HANDLE_NAME);
 
         SipItem sipItem = new SipItem(extensionId);
-        if (jCaller.isNull(Constant.JSON.URL_AVATAR) == false) {
+        if (!jCaller.isNull(Constant.JSON.URL_AVATAR)) {
             String urlAvatar = jCaller.getString(Constant.JSON.URL_AVATAR);
             ImageItem avatar = new ImageItem();
             avatar.setOriginUrl(urlAvatar);

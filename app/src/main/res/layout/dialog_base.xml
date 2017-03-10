@@ -42,6 +42,8 @@
             android:layout_marginBottom="@dimen/margin_20"
             android:layout_marginLeft="@dimen/margin_20"
             android:layout_marginRight="@dimen/margin_5"
+            android:paddingLeft="@dimen/_3dp"
+            android:paddingRight="@dimen/_3dp"
             android:layout_weight="1"
             android:background="@drawable/bg_btn_dialog_positive_selector"
             android:text="@string/OK"

@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_15"
-            android:text=" 0pts"
+            android:text=" 0pt"
             android:layout_marginRight="@dimen/margin_10"/>
     </LinearLayout>
 

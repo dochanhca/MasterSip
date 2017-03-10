@@ -51,11 +51,11 @@ public class BaseCenterCallPresenter extends BasePresenter {
     public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.INCOMING_CALL:
-                onIncomingCall(receivingCallEvent.getCallerExtension());
+                onIncomingCall();
                 break;
             case ReceivingCallEvent.OUTGOING_CALL:
                 reconnectRoom();
-                onOutgoingCall(receivingCallEvent.getCallerExtension());
+                onOutgoingCall(receivingCallEvent.getCallId());
                 break;
             default:
                 break;
@@ -84,22 +84,26 @@ public class BaseCenterCallPresenter extends BasePresenter {
         }
     }
 
-    private void onIncomingCall(String callerExtension) {
+    private void onIncomingCall() {
         String calleeExtension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        CheckIncomingCallTask checkCallTask = new CheckIncomingCallTask(context, callerExtension, calleeExtension);
+        CheckIncomingCallTask checkCallTask = new CheckIncomingCallTask(context, calleeExtension);
         requestToServer(checkCallTask);
     }
 
-    private void onOutgoingCall(String calleeExtension) {
-        UserItem callee = ConfigManager.getInstance().getCurrentCallee(calleeExtension);
+    private void onOutgoingCall(String callId) {
+        UserItem callee = ConfigManager.getInstance().getCurrentCallee(callId);
         int callType = ConfigManager.getInstance().getCurrentCallType();
         switch (callType) {
             case Constant.API.VOICE_CALL:
                 centerCallView.outgoingVoiceCall(callee);
                 break;
             case Constant.API.VIDEO_CALL:
+                // start video call screen
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
+                // start video chat screen
+                break;
+            default:
                 break;
         }
     }

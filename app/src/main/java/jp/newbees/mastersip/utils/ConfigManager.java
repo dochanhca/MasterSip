@@ -218,8 +218,8 @@ final public class ConfigManager {
         return false;
     }
 
-    public UserItem getCurrentCallee(String calleeExtension) {
-        UserItem callee = callees.get(calleeExtension);
+    public UserItem getCurrentCallee(String callId) {
+        UserItem callee = callees.get(callId);
         return callee;
     }
 
@@ -231,8 +231,8 @@ final public class ConfigManager {
         return currentCallType;
     }
 
-    public void setCurrentCallee(UserItem callee, String callId) {
-        callees.put(callId, callee);
+    public void setCurrentCallee(UserItem callee, String roomId) {
+        callees.put(roomId, callee);
     }
 
     public String getCallId() {
