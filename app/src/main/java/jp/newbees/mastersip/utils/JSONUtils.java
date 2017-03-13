@@ -659,7 +659,7 @@ public class JSONUtils {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.JSON.ID_ADDON, skuID);
         jsonObject.put(Constant.JSON.TRANSECTION, transection);
-        jsonObject.put(Constant.JSON.TYPE_ID, 18);
+        jsonObject.put(Constant.JSON.TYPE_ID, 9);
         jsonObject.put(Constant.JSON.VERSION, 2);
         jsonObject.put(Constant.JSON.STATUS, purchaseStatus.getValue());
         jsonObject.put(Constant.JSON.CREATE_AT, createAt);
