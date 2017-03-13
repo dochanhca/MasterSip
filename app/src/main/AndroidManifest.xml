@@ -178,7 +178,29 @@
         </activity>
 
         <activity
+            android:name=".ui.call.OutgoingVideoVideoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".ui.call.OutgoingVideoChatActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
             android:name=".ui.call.IncomingVoiceActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.call.IncomingVideoChatActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 

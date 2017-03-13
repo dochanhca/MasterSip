@@ -68,21 +68,19 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
     /**
      * Check callee before make a video call
      *
-     * @param userItem
+     * @param callee
      */
-    public final void checkVideoCall(UserItem userItem) {
-//        String callee = userItem.getSipItem().getExtension();
-//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CALL, callee));
+    public final void checkVideoCall(UserItem callee) {
+        this.checkCall(callee, Constant.API.VIDEO_CALL);
     }
 
     /**
-     * Check callee before make a video chat call.
+     * Check callee before make a video chat call00.0.0.
      *
-     * @param userItem
+     * @param callee
      */
-    public final void checkVideoChatCall(UserItem userItem) {
-//        String callee = userItem.getSipItem().getExtension();
-//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CHAT_CALL, callee));
+    public final void checkVideoChatCall(UserItem callee) {
+        this.checkCall(callee, Constant.API.VIDEO_CHAT_CALL);
     }
 
     /**

@@ -406,9 +406,9 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
         if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-
+            profileDetailPresenter.checkVideoCall(userItem);
         } else {
-
+            profileDetailPresenter.checkVideoChatCall(userItem);
         }
     }
 

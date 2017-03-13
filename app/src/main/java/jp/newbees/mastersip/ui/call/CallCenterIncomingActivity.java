@@ -62,11 +62,17 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
 
     @Override
     public void outgoingVoiceCall(UserItem callee) {
-        Intent intent = new Intent(getApplicationContext(), OutgoingVoiceActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OutgoingVoiceActivity.CALLEE, callee);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        OutgoingVoiceActivity.startActivity(this, callee);
+    }
+
+    @Override
+    public void outgoingVideoCall(UserItem callee) {
+        OutgoingVideoVideoActivity.startActivity(this,callee);
+    }
+
+    @Override
+    public void outgoingVideoChatCall(UserItem callee) {
+        OutgoingVideoChatActivity.startActivity(this,callee);
     }
 
     @Override

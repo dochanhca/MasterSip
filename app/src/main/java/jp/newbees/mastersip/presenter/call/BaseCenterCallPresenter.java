@@ -121,12 +121,10 @@ public class BaseCenterCallPresenter extends BasePresenter {
                 centerCallView.outgoingVoiceCall(callee);
                 break;
             case Constant.API.VIDEO_CALL:
-                // start video call screen
+                centerCallView.outgoingVideoCall(callee);
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                // start video chat screen
-                break;
-            default:
+                centerCallView.outgoingVideoChatCall(callee);
                 break;
         }
     }
@@ -147,6 +145,10 @@ public class BaseCenterCallPresenter extends BasePresenter {
         void incomingVideoChatCall(UserItem caller, String callID);
 
         void outgoingVoiceCall(UserItem callee);
+
+        void outgoingVideoCall(UserItem callee);
+
+        void outgoingVideoChatCall(UserItem callee);
 
         void didConnectCallError(int errorCode, String errorMessage);
 

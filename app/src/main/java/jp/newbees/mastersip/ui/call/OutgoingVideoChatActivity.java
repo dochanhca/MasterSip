@@ -1,7 +1,11 @@
 package jp.newbees.mastersip.ui.call;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -13,37 +17,20 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     protected int layoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void initViews(Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    protected void initVariables(Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onCallConnected() {
-
-    }
-
-    @Override
-    public void onCallEnd() {
-
-    }
-
-    @Override
-    public void onCoinChanged(int coint) {
-
+        return R.layout.activity_out_going_video_chat;
     }
 
 
     @Override
     protected int getCallType() {
-        return Constant.API.VIDEO_CHAT_CALL;
+        return Constant.API.VIDEO_CALL;
+    }
+
+    public static void startActivity(Context context, UserItem callee) {
+        Intent intent = new Intent(context, OutgoingVideoChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CALLEE, callee);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }
