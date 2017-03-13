@@ -27,23 +27,23 @@ import jp.newbees.mastersip.utils.ConfigManager;
 
 public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements BaseHandleOutgoingCallPresenter.OutgoingCallView {
     @BindView(R.id.profile_image)
-    CircleImageView profileImage;
+    protected CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
-    HiraginoTextView txtUserName;
+    protected HiraginoTextView txtUserName;
     @BindView(R.id.txt_timer)
-    HiraginoTextView txtTimer;
+    protected HiraginoTextView txtTimer;
     @BindView(R.id.img_loading)
-    ImageView imgLoading;
+    protected ImageView imgLoading;
     @BindView(R.id.btn_on_off_mic)
-    ToggleButton btnOnOffMic;
+    protected ToggleButton btnOnOffMic;
     @BindView(R.id.btn_on_off_speaker)
-    ToggleButton btnOnOffSpeaker;
+    protected ToggleButton btnOnOffSpeaker;
     @BindView(R.id.btn_cancel_call)
-    ImageView btnCancelCall;
+    protected ImageView btnCancelCall;
     @BindView(R.id.ll_point)
-    LinearLayout llPoint;
+    protected LinearLayout llPoint;
     @BindView(R.id.txt_point)
-    HiraginoTextView txtPoint;
+    protected HiraginoTextView txtPoint;
 
     protected static final String CALLEE = "CALLEE";
 
@@ -119,12 +119,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     }
 
     @Override
-    public void onCallConnected() {
-        countingCallDuration();
-        updateView();
-    }
-
-    @Override
     public void onCallEnd() {
         this.finish();
     }
@@ -135,18 +129,9 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     }
 
     // start when user during a call
-    private void countingCallDuration() {
+    protected void countingCallDuration() {
         CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
         timerHandler.postDelayed(countingTimeThread, 0);
-    }
-
-    // start when user during a call
-    private void updateView() {
-        // Only Counting point with female user
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
-            llPoint.setVisibility(View.VISIBLE);
-        }
-        imgLoading.setVisibility(View.GONE);
     }
 
     private void updateCoinChange(int coin) {

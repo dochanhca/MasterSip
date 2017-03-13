@@ -62,9 +62,9 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
-    public static final String USER_ITEM = "USER_ITEM";
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
     private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
+    public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
     private static final int SELECT_VIDEO_CALL_DIALOG = 14;

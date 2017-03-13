@@ -402,4 +402,5 @@
     <string name="i_acquired_it">獲得しました。</string>
     <string name="mess_run_out_of_coin">ポイントがなくなりましたので 通話は終了となりました。</string>
     <string name="purchase_points">ポイント購入</string>
+    <string name="titile_in_coming_video_call">ビデオ通話で着信中...</string>
 </resources>

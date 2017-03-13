@@ -44,12 +44,12 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
 
-        makeCall(roomId, callee, callType);
+        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+        makeCall(roomId, callType);
     }
 
-    private void makeCall(String callId, UserItem callee, int callType) {
-        ConfigManager.getInstance().setCurrentCallee(callee, callId);
-        EventBus.getDefault().post(new CallEvent(callType, callId));
+    private void makeCall(String roomId, int callType) {
+        EventBus.getDefault().post(new CallEvent(callType, roomId));
     }
 
 //    /**
