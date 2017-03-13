@@ -15,11 +15,16 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
 
-    @Override
-    protected int layoutId() {
-        return R.layout.activity_out_going_video_video;
-    }
+//    @Override
+//    protected int layoutId() {
+//        return R.layout.activity_out_going_video_video;
+//    }
 
+
+    @Override
+    protected String getTextTitle() {
+        return getResources().getString(R.string.title_outgoing_call_video);
+    }
 
     @Override
     protected int getCallType() {

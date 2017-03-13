@@ -16,6 +16,11 @@ import jp.newbees.mastersip.utils.Constant;
 public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
+    protected String getTextTitle() {
+        return "need update";
+    }
+
+    @Override
     protected int layoutId() {
         return R.layout.activity_out_going_video_chat;
     }

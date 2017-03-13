@@ -36,10 +36,10 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
 //    private Handler timerHandler = new Handler();
 
-    @Override
-    protected int layoutId() {
-        return R.layout.activity_out_going_voice;
-    }
+//    @Override
+//    protected int layoutId() {
+//        return R.layout.activity_out_going_voice;
+//    }
 
 //    @Override
 //    protected void initViews(Bundle savedInstanceState) {
@@ -110,6 +110,11 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 //    public void onCoinChanged(CoinChangedEvent event) {
 //        updateCoinChange(event);
 //    }
+
+    @Override
+    protected String getTextTitle() {
+        return getResources().getString(R.string.during_a_voice_call);
+    }
 
     @Override
     protected int getCallType() {

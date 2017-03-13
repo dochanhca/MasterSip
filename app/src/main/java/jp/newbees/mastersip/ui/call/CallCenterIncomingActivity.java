@@ -53,6 +53,7 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
     @Override
     public void incomingVideoCall(UserItem caller, String callID) {
         //TODO : Next sprint
+
     }
 
     @Override

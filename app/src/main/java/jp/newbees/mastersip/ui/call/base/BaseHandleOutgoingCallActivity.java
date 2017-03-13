@@ -76,7 +76,11 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
         Glide.with(this).load(R.drawable.pinpoint)
                 .asGif()
                 .into(imgLoading);
+
+        txtTimer.setText(getTextTitle());
     }
+
+    protected abstract String getTextTitle();
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
@@ -90,6 +94,11 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
         }
         profileImage.setImageResource(imageID);
 
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_out_going_voice;
     }
 
     @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})

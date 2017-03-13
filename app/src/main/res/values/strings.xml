@@ -394,6 +394,7 @@
     <string name="call_video_video_2">ビデオ</string>
     <string name="select_call_video_str_2">お互いの顔を 見て通話</string>
     <string name="title_select_call"><![CDATA[<font color=#666666>ビデオ通話は</font> <font color=#fb5050>2種類</font> <font color=#666666>から<br>選ぶことができます</font>]]></string>
+    <string name="title_outgoing_call_video">ビデオ通話で呼び出し中...</string>
     <string name="mess_callee_reject_call">さんは 現在応答出来ないようです。 別の時間におかけください。</string>
     <string name="back_to_profile_detail">プロフィール詳細へ戻る</string>
     <string name="call_ended">通話が終了しました。</string>
