@@ -18,7 +18,7 @@ import jp.newbees.mastersip.utils.Constant;
 /**
  * Created by thangit14 on 2/14/17.
  */
-public class CheckCodeFragment extends BaseFragment implements CheckCodePresenter.CheckCodeListener, TextDialog.OnTextDialogClick {
+public class CheckCodeFragment extends BaseFragment implements CheckCodePresenter.CheckCodeListener, TextDialog.OnTextDialogPositiveClick {
 
     private static final String EMAIL = "EMAIL";
 

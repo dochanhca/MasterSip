@@ -6,21 +6,20 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
+import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.base.BaseSocketProcessor;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
- * Created by vietbq on 1/12/17.
+ * Created by ducpv on 3/13/17.
  */
 
-public class CoinChangedProcessor extends BaseSocketProcessor {
+public class RunOutOfCoinProcessor extends BaseSocketProcessor {
+
     @Override
     protected void didProcess(Object data) {
-        int coint = ((HashMap<String, Integer>) data).get(Constant.JSON.COINT);
-        int total = ((HashMap<String, Integer>) data).get(Constant.JSON.TOTAL);
-        this.postEvent(new CoinChangedEvent(coint, total));
+        this.postEvent(new RunOutOfCoinEvent());
     }
 
     @Override

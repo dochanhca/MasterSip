@@ -56,8 +56,6 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
     ViewGroup layoutVoiceCallingAction;
 
     private Handler timerHandler = new Handler();
-    private UserItem caller;
-    private String callId;
 
     @Override
     protected int layoutId() {
@@ -74,13 +72,11 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        caller = getIntent().getExtras().getParcelable(CallCenterIncomingActivity.CALLER);
-        callId = getIntent().getExtras().getString(CallCenterIncomingActivity.CALL_ID);
-        txtUserName.setText(caller.getUsername());
+        txtUserName.setText(getCaller().getUsername());
 
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
-        if (caller.getAvatarItem() != null) {
-            Glide.with(this).load(caller.getAvatarItem().getOriginUrl())
+        if (getCaller().getAvatarItem() != null) {
+            Glide.with(this).load(getCaller().getAvatarItem().getOriginUrl())
                     .error(imageID).placeholder(imageID)
                     .centerCrop()
                     .into(profileImage);
@@ -115,16 +111,16 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_reject_call:
-                super.rejectCall(caller.getSipItem().getExtension(), Constant.API.VOICE_CALL, callId);
+                super.rejectCall(getCaller().getSipItem().getExtension(), Constant.API.VOICE_CALL, getCallId());
                 break;
             case R.id.btn_accept_call:
-                super.acceptCall(callId);
+                super.acceptCall(getCallId());
                 break;
             case R.id.btn_on_off_mic:
                 super.muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
-                super.endCall(caller.getSipItem().getExtension(), Constant.API.VOICE_CALL, callId);
+                super.endCall(getCaller().getSipItem().getExtension(), Constant.API.VOICE_CALL, getCallId());
                 break;
             case R.id.btn_on_off_speaker:
                 super.enableSpeaker(btnOnOffSpeaker.isChecked());
@@ -144,5 +140,10 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coint)).append(getString(R.string.pt));
         txtPoint.setText(point);
+    }
+
+    @Override
+    protected int getCallType() {
+        return Constant.API.VOICE_CALL;
     }
 }

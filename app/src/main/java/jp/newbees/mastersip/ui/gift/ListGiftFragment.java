@@ -30,7 +30,7 @@ import jp.newbees.mastersip.utils.ConfigManager;
 
 public class ListGiftFragment extends BaseFragment implements GiftListPresenter.GiftListView,
         AdapterGiftsList.OnGiftItemSelectListener,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final String OPEN_FROM = "OPEN FROM";

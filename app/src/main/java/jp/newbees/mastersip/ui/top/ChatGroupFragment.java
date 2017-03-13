@@ -41,7 +41,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class ChatGroupFragment extends BaseFragment implements ChatGroupPresenter.ChatGroupView,
-        ChatGroupAdapter.OnItemClickListener, TextDialog.OnTextDialogClick {
+        ChatGroupAdapter.OnItemClickListener, TextDialog.OnTextDialogPositiveClick {
 
     private static final int REQUEST_CONFIRM_MARK_ALL_MESSAGE_AS_READ = 2;
     private static final int REQUEST_CONFIRM_DELETE_MESSAGE = 3;

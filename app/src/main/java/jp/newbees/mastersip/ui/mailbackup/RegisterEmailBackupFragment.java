@@ -21,7 +21,7 @@ import jp.newbees.mastersip.utils.Utils;
  * Created by thangit14 on 2/14/17.
  */
 
-public class RegisterEmailBackupFragment extends BaseFragment implements RegisterEmailBackupPresenter.RegisterEmailBackupListener,TextDialog.OnTextDialogClick {
+public class RegisterEmailBackupFragment extends BaseFragment implements RegisterEmailBackupPresenter.RegisterEmailBackupListener,TextDialog.OnTextDialogPositiveClick {
 
     private static final int CONFIRM_CHECK_CODE_DIALOG = 1;
 

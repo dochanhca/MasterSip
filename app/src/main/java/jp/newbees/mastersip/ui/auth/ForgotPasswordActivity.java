@@ -20,7 +20,7 @@ import jp.newbees.mastersip.utils.Utils;
  */
 
 public class ForgotPasswordActivity extends BaseActivity implements ResetPassPresenter.ResetPassView,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     @BindView(R.id.edt_email)
     HiraginoEditText edtEmail;

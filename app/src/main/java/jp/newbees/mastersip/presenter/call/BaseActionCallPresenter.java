@@ -10,8 +10,6 @@ import java.util.HashMap;
 
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.event.call.CallEvent;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
-import jp.newbees.mastersip.event.call.HangUpForGirlEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
@@ -31,23 +29,9 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
     protected abstract void onCalleeRejectCall(BusyCallEvent busyCallEvent);
 
-    protected abstract void onHangUpForGirl();
-
-    protected abstract void onCoinChangedAfterHangUp(CoinChangedEvent event);
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
         onCalleeRejectCall(busyCallEvent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onHangUpForGirlEvent(HangUpForGirlEvent event) {
-        onHangUpForGirl();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCoinChangedEvent(CoinChangedEvent event) {
-        onCoinChangedAfterHangUp(event);
     }
 
     protected void handleResponseCheckCall(BaseTask task) {

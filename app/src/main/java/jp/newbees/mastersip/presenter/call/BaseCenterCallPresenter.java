@@ -8,7 +8,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
+import jp.newbees.mastersip.event.call.HangUpForGirlEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
@@ -60,6 +63,26 @@ public class BaseCenterCallPresenter extends BasePresenter {
             default:
                 break;
         }
+    }
+
+    /**
+     * Listen when call ended less than 1 minute
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHangUpForGirlEvent(HangUpForGirlEvent event) {
+        centerCallView.didCallHangUpForGirl();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCoinChangedEvent(CoinChangedEvent event) {
+        centerCallView.didCoinChangedAfterHangUp(event.getCoin());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
+        centerCallView.didRunOutOfCoin();
     }
 
     private void reconnectRoom() {
@@ -126,5 +149,11 @@ public class BaseCenterCallPresenter extends BasePresenter {
         void outgoingVoiceCall(UserItem callee);
 
         void didConnectCallError(int errorCode, String errorMessage);
+
+        void didCallHangUpForGirl();
+
+        void didCoinChangedAfterHangUp(int coin);
+
+        void didRunOutOfCoin();
     }
 }

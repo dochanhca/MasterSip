@@ -75,5 +75,7 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
         void onCallEnd();
 
         void onCoinChanged(int coint);
+
+        void onRunOutOfCoin();
     }
 }

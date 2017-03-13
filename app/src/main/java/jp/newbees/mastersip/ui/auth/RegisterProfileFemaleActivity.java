@@ -46,7 +46,7 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class RegisterProfileFemaleActivity extends RegisterBaseActivity implements View.OnClickListener,
         SelectImageDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
-        UpdateRegisterProfilePresenter.View, UploadImagePresenter.View, TextDialog.OnTextDialogClick {
+        UpdateRegisterProfilePresenter.View, UploadImagePresenter.View, TextDialog.OnTextDialogPositiveClick {
 
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;

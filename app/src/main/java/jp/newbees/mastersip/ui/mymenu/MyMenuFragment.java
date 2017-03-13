@@ -57,7 +57,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMenuView, GalleryAdapter.OnItemClickListener,
-        SelectImageDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogClick {
+        SelectImageDialog.OnSelectAvatarDiaLogClick, TextDialog.OnTextDialogPositiveClick {
 
     private static final int REQUEST_SELECT_PHOTO_FOR_AVATAR = 8888;
     private static final int REQUEST_SELECT_PHOTO_FOR_GALLERY = 8989;

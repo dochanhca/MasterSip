@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.event.call.CallEvent;
 import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
@@ -34,6 +35,7 @@ public class LinphoneService extends Service {
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
+    private volatile boolean hasLoginVoIPInProgress;
 
     @Override
     public void onCreate() {
@@ -48,8 +50,12 @@ public class LinphoneService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
-        SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
-        loginToVoIP(sipItem);
+        if (!ConfigManager.getInstance().getLoginVoIPState() && !hasLoginVoIPInProgress) {
+            SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
+            loginToVoIP(sipItem);
+        } else {
+            EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -59,6 +65,7 @@ public class LinphoneService extends Service {
             public void run() {
                 try {
                     Logger.e("LinephonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                    hasLoginVoIPInProgress = true;
                     linphoneHandler.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
                 } catch (LinphoneCoreException e) {
@@ -80,6 +87,16 @@ public class LinphoneService extends Service {
         EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
         Logger.e(TAG, "Stop Linphone Service");
+    }
+
+    /**
+     * Run when app be killed
+     * @param rootIntent
+     */
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        ConfigManager.getInstance().saveLoginVoIPState(false);
     }
 
     /**

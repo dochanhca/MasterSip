@@ -388,4 +388,6 @@
     <string name="call_ended">通話が終了しました。</string>
     <string name="call_ended_bonus_point">通話が終了しました。今回の通話で〇pt獲得しました。</string>
     <string name="i_acquired_it">獲得しました。</string>
+    <string name="mess_run_out_of_coin">ポイントがなくなりましたので 通話は終了となりました。</string>
+    <string name="purchase_points">ポイント購入</string>
 </resources>

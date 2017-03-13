@@ -41,7 +41,6 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -75,7 +74,7 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
@@ -321,26 +320,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             String positiveTitle = getString(R.string.back_to_profile_detail);
             TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_CALLEE_REJECT_CALL
                     , message, "", positiveTitle, true);
-        }
-
-        @Override
-        public void didCallEndedLessThanOneMinuteForGirl() {
-            showMessageDialog(getString(R.string.call_ended));
-        }
-
-        @Override
-        public void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent) {
-            int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-            if (gender == UserItem.FEMALE && coinChangedEvent.getTotal() > 0) {
-                StringBuilder message = new StringBuilder();
-                message.append(getString(R.string.call_ended_bonus_point))
-                        .append(coinChangedEvent.getTotal())
-                        .append(getString(R.string.pt))
-                        .append(getString(R.string.i_acquired_it));
-                showMessageDialog(message.toString());
-            } else {
-                showMessageDialog(getString(R.string.call_ended));
-            }
         }
 
         private void showDialogNotifyNotEnoughPoint() {

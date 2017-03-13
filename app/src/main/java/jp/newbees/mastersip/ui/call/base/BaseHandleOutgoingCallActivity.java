@@ -6,13 +6,17 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/11/17.
  */
 
-public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements BaseHandleOutgoingCallPresenter.OutgoingCallView {
+public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements
+        BaseHandleOutgoingCallPresenter.OutgoingCallView, NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick {
     public static final String CALLEE = "CALLEE";
+    private static final int REQUEST_NOTIFY_RUN_OUT_OF_COIN = 1;
 
     private BaseHandleOutgoingCallPresenter presenter;
     private UserItem callee;
@@ -38,6 +42,24 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     public void onBackPressed() {
 //        Prevent user press back button when during a call
     }
+
+    @Override
+    public void onRunOutOfCoin() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            NotifyRunOutOfCoinDialog.openNotifyRunOutOfCoinDialog(getSupportFragmentManager());
+        }
+    }
+
+    @Override
+    public void onPositiveButtonClick() {
+
+    }
+
+    @Override
+    public void onNegativeButtonClick() {
+//        this.endCall();
+    }
+
 
     public final void endCall() {
         this.presenter.endCall(callee, callType);

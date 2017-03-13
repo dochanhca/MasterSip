@@ -32,7 +32,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -60,7 +59,7 @@ import jp.newbees.mastersip.utils.Utils;
 public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -355,26 +354,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void didCallEndedLessThanOneMinuteForGirl() {
-        showDialogNotifyCallEnded();
-    }
-
-    @Override
-    public void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent) {
-        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-        if (gender == UserItem.FEMALE && coinChangedEvent.getTotal() > 0) {
-            StringBuilder message = new StringBuilder();
-            message.append(getString(R.string.call_ended_bonus_point))
-                    .append(coinChangedEvent.getTotal())
-                    .append(getString(R.string.pt))
-                    .append(getString(R.string.i_acquired_it));
-            showMessageDialog(message.toString());
-        } else {
-            showDialogNotifyCallEnded();
-        }
-    }
-
-    @Override
     public void onUserImageClick(int position) {
         //do something
         ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
@@ -390,15 +369,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
             showLoading();
             profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableVoiceCallTask.Type.VOICE);
-        }
-    }
-
-    private void showDialogNotifyCallEnded() {
-        String callId = ConfigManager.getInstance().getCallId();
-        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(callId)
-                .getSipItem().getExtension();
-        if (userItem.getSipItem().getExtension().equals(calleeExtension)) {
-            showMessageDialog(getString(R.string.call_ended));
         }
     }
 

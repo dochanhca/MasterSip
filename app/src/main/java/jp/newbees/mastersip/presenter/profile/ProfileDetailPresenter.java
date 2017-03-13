@@ -4,7 +4,6 @@ import android.content.Context;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -53,10 +52,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         void didCheckCallError(String errorMessage, int errorCode);
 
         void didCalleeRejectCall(String calleeExtension);
-
-        void didCallEndedLessThanOneMinuteForGirl();
-
-        void didCoinChangedAfterHangUp(CoinChangedEvent coinChangedEvent);
     }
 
     public ProfileDetailPresenter(Context context, ProfileDetailItemView view) {
@@ -111,16 +106,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
                 .getSipItem().getExtension();
         view.didCalleeRejectCall(calleeExtension);
-    }
-
-    @Override
-    protected void onHangUpForGirl() {
-        view.didCallEndedLessThanOneMinuteForGirl();
-    }
-
-    @Override
-    protected void onCoinChangedAfterHangUp(CoinChangedEvent event) {
-        view.didCoinChangedAfterHangUp(event);
     }
 
     private void getNextIdForLoadMore(GalleryItem galleryItem) {

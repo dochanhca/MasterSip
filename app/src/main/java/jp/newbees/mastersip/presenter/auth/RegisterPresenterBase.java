@@ -23,7 +23,6 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public abstract class RegisterPresenterBase extends BasePresenter {
-    private boolean hasRunVoIPService;
 
     public RegisterPresenterBase(Context context) {
         super(context);
@@ -40,15 +39,11 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     }
 
     public void loginVoIP() {
-        if (!hasRunVoIPService) {
-            hasRunVoIPService = true;
-            EventBus.getDefault().register(this);
-            Logger.e(TAG, "Start Linphone Service");
-            Intent intent = new Intent(context, LinphoneService.class);
-            context.startService(intent);
-        }
+        EventBus.getDefault().register(this);
+        Logger.e(TAG, "Start Linphone Service");
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.startService(intent);
     }
-
 
     /**
      * @param event listener Register VoIP response
@@ -62,8 +57,6 @@ public abstract class RegisterPresenterBase extends BasePresenter {
             sendFCMTokenToServer();
         } else {
             stopLinphoneService();
-//            ConfigManager.getInstance().resetSettings();
-//            saveLoginState(false);
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);
@@ -79,7 +72,6 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     private void stopLinphoneService() {
         Intent intent = new Intent(context, LinphoneService.class);
         context.stopService(intent);
-        hasRunVoIPService = false;
     }
 
     private void saveLoginState(boolean loginState) {
