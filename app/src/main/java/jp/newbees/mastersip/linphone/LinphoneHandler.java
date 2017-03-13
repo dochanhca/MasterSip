@@ -165,7 +165,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void initLinphoneCoreValues(String basePath) {
         linphoneCore.setContext(context);
         linphoneCore.setRing(null);
-        linphoneCore.setPlayLevel(1);
+        linphoneCore.setPlayLevel(0);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
         linphoneCore.setPlayFile(basePath + "/toy_mono.wav");

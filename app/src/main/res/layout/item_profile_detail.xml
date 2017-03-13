@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/parent_profile_details"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_gray_bg"
     android:orientation="vertical">
@@ -16,21 +16,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/btn_cancel_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Cancel" />
+
             <LinearLayout
                 android:id="@+id/layout_actions"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/header_search_height"
                 android:layout_below="@+id/layout_action_bar"
-                android:paddingTop="@dimen/_1dp"
                 android:background="@color/white"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/_1dp">
 
                 <RelativeLayout
                     android:id="@+id/layout_chat"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_marginRight="@dimen/_1dp"
+                    android:layout_weight="1"
                     android:background="@color/green"
                     android:orientation="horizontal">
 
@@ -52,8 +59,8 @@
                     android:id="@+id/layout_voice_call"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_marginRight="@dimen/_1dp"
+                    android:layout_weight="1"
                     android:background="@color/blue"
                     android:orientation="horizontal">
 
@@ -128,10 +135,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_btn_follow"
+                            android:drawablePadding="@dimen/_3dp"
                             android:drawableTop="@drawable/ic_follow_selector"
                             android:paddingLeft="@dimen/margin_20"
                             android:paddingTop="@dimen/_7dp"
-                            android:drawablePadding="@dimen/_3dp"
                             android:text="@string/follow"
                             android:textColor="@color/btn_follow_text_color" />
 

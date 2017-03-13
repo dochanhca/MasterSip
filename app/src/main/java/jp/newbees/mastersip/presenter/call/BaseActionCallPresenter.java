@@ -43,18 +43,34 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
         ConfigManager.getInstance().setCallId(callId);
 
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
-        if (callType == Constant.API.VOICE_CALL) {
-            ConfigManager.getInstance().setCurrentCallee(callee, callId);
-            makeVoiceCall(roomId);
-        }
+
+        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+        makeCall(roomId, callType);
     }
 
-    /**
-     * Make a voice call
-     */
-    private void makeVoiceCall(String roomId) {
-        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, roomId));
+    private void makeCall(String roomId, int callType) {
+        EventBus.getDefault().post(new CallEvent(callType, roomId));
     }
+
+//    /**
+//     * Make a voice call
+//     *
+//     * @param callee
+//     */
+//    private void makeVoiceCall(String callId, UserItem callee) {
+//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+//        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, callId));
+//    }
+//
+//    private void makeVideoCall(String callId, UserItem callee) {
+//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CALL, callId));
+//    }
+//
+//    private void makeVideoChatCall(String callId, UserItem callee) {
+//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CHAT_CALL, callId));
+//    }
 
     /**
      * Check callee before make a voice call

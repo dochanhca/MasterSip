@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.call;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
@@ -17,8 +16,6 @@ import jp.newbees.mastersip.utils.ConfigManager;
 public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterCallPresenter.CenterCallView,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick {
 
-    public static final String CALLER = "CALLER";
-    public static final String CALL_ID = "CALL_ID";
     private BaseCenterCallPresenter incomingCallPresenter;
 
     @Override
@@ -42,22 +39,17 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
 
     @Override
     public void incomingVoiceCall(UserItem caller, String callID) {
-        Intent intent = new Intent(getApplicationContext(), IncomingVoiceActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CALLER, caller);
-        bundle.putString(CALL_ID, callID);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        IncomingVoiceActivity.startActivity(this, caller, callID);
     }
 
     @Override
     public void incomingVideoCall(UserItem caller, String callID) {
-        //TODO : Next sprint
+        IncomingVideoVideoActivity.startActivity(this, caller, callID);
     }
 
     @Override
     public void incomingVideoChatCall(UserItem caller, String callID) {
-        //TODO : Next sprint
+        IncomingVideoChatActivity.startActivity(this, caller, callID);
     }
 
     @Override
