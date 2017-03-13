@@ -66,7 +66,8 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <service android:name=".linphone.LinphoneService" />
+        <service android:name=".linphone.LinphoneService"
+            android:stopWithTask="false" />
 
         <service android:name=".fcm.MyFirebaseMessagingService">
             <intent-filter>

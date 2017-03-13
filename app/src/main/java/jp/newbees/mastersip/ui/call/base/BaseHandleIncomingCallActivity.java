@@ -3,17 +3,24 @@ package jp.newbees.mastersip.ui.call.base;
 import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 
 /**
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleIncomingCallActivity extends BaseActivity implements BaseHandleIncomingCallPresenter.IncomingCallView {
+public abstract class BaseHandleIncomingCallActivity extends BaseActivity implements
+        BaseHandleIncomingCallPresenter.IncomingCallView {
 
     private BaseHandleIncomingCallPresenter presenter;
 
+    private UserItem caller;
+    private String callId;
+
+    protected abstract int getCallType();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,28 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         presenter.unregisterEvents();
     }
 
+//    @Override
+//    public void onRunOutOfCoin() {
+//        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+//            NotifyRunOutOfCoinDialog.openNotifyRunOutOfCoinDialog(getSupportFragmentManager());
+//        }
+//    }
+
+    @Override
+    public void onCallEnd() {
+        this.finish();
+    }
+
+    @Override
+    public void onFlashedCall() {
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Prevent user press back button when during a call
+    }
+
     public final void rejectCall(String caller, int callType, String calId) {
         this.presenter.rejectCall(caller, callType, calId);
     }
@@ -56,18 +85,17 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         this.presenter.muteMicrophone(mute);
     }
 
-    @Override
-    public void onCallEnd() {
-        this.finish();
+    protected final UserItem getCaller() {
+        if (caller == null) {
+            caller = getIntent().getExtras().getParcelable(CallCenterIncomingActivity.CALLER);
+        }
+        return caller;
     }
 
-    @Override
-    public void onFlashedCall() {
-        this.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
+    protected final String getCallId() {
+        if (callId == null) {
+            callId = getIntent().getExtras().getString(CallCenterIncomingActivity.CALL_ID);
+        }
+        return callId;
     }
 }

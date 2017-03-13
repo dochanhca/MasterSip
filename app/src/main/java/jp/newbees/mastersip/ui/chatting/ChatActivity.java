@@ -26,7 +26,6 @@ import com.tonicartos.superslim.LayoutManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.InputStream;
@@ -42,7 +41,6 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
-import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -76,7 +74,7 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
@@ -316,6 +314,14 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             }
         }
 
+        @Override
+        public void didCalleeRejectCall() {
+            String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
+            String positiveTitle = getString(R.string.back_to_profile_detail);
+            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_CALLEE_REJECT_CALL
+                    , message, "", positiveTitle, true);
+        }
+
         private void showDialogNotifyNotEnoughPoint() {
             int gender = ConfigManager.getInstance().getCurrentUser().getGender();
             String title, content, positiveTitle;
@@ -494,15 +500,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     @Subscribe()
     public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
         chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
-        String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
-        String positiveTitle = getString(R.string.back_to_profile_detail);
-        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_CALLEE_REJECT_CALL
-                , message, "", positiveTitle, true);
-        Logger.e(TAG, "receiving Call Event: " + busyCallEvent.getCallId());
     }
 
     @OnClick({R.id.action_phone, R.id.action_video, R.id.txt_send, R.id.img_left_bottom_action,

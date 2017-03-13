@@ -291,4 +291,14 @@ final public class ConfigManager {
     public boolean getFirstTimeChattingFlag() {
         return sharedPreferences.getBoolean(Constant.Application.CHATTING_FLAG, false);
     }
+
+    public void saveLoginVoIPState(boolean didLogin) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.LOGIN_VOIP_FLAG, didLogin);
+        editor.commit();
+    }
+
+    public boolean getLoginVoIPState() {
+        return sharedPreferences.getBoolean(Constant.Application.LOGIN_VOIP_FLAG, false);
+    }
 }

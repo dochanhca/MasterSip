@@ -23,6 +23,7 @@ public abstract class BaseFragment extends Fragment {
     public static final String SHOW_FRAGMENT_ACTION_BAR = "SHOW_FRAGMENT_ACTION_BAR";
     protected View mRoot;
 
+    private boolean isMessageDialogShowing = false;
     protected TextView txtActionBarTitle;
     protected String TAG;
     private MessageDialog messageDialog;
@@ -102,12 +103,14 @@ public abstract class BaseFragment extends Fragment {
 
     public final void showMessageDialog(String title, String content, String note,
                                            boolean isHideActionButton) {
-        if (null == messageDialog) {
-            messageDialog = new MessageDialog();
+
+        if (isMessageDialogShowing) {
+            return;
         }
 
-        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
-            return;
+        isMessageDialogShowing = true;
+        if (null == messageDialog) {
+            messageDialog = new MessageDialog();
         }
 
         Bundle bundle = new Bundle();
@@ -123,6 +126,7 @@ public abstract class BaseFragment extends Fragment {
     protected void disMissMessageDialog() {
         if (null != messageDialog) {
             messageDialog.dismiss();
+            isMessageDialogShowing = false;
         }
     }
 

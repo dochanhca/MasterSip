@@ -27,18 +27,18 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     private int requestCode;
 
     @FunctionalInterface
-    public interface OnTextDialogClick {
+    public interface OnTextDialogPositiveClick {
         void onTextDialogOkClick(int requestCode);
     }
 
-    private OnTextDialogClick onTextDialogClick;
+    private OnTextDialogPositiveClick onTextDialogPositiveClick;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (getTargetFragment() == null) {
             try {
-                this.onTextDialogClick = (OnTextDialogClick) context;
+                this.onTextDialogPositiveClick = (OnTextDialogPositiveClick) context;
             } catch (ClassCastException e) {
                 throw new ClassCastException(e.getMessage());
             }
@@ -50,7 +50,7 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         if (getTargetFragment() != null) {
             try {
-                this.onTextDialogClick = (OnTextDialogClick) getTargetFragment();
+                this.onTextDialogPositiveClick = (OnTextDialogPositiveClick) getTargetFragment();
             } catch (ClassCastException e) {
                 throw new ClassCastException(e.getMessage());
             }
@@ -90,7 +90,7 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == mButtonPositive) {
-            this.onTextDialogClick.onTextDialogOkClick(this.requestCode);
+            this.onTextDialogPositiveClick.onTextDialogOkClick(this.requestCode);
         }
         dismiss();
     }

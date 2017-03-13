@@ -18,9 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
@@ -35,7 +32,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -54,7 +50,6 @@ import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
-import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
 /**
@@ -64,7 +59,7 @@ import jp.newbees.mastersip.utils.Utils;
 public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -216,13 +211,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+        profileDetailPresenter.registerEvent();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+        profileDetailPresenter.unRegisterEvent();
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
@@ -348,18 +343,14 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
-        String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
-                .getSipItem().getExtension();
+    @Override
+    public void didCalleeRejectCall(String calleeExtension) {
         if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
             String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
             TextDialog.openTextDialog(this, REQUEST_NOTIFY_CALLEE_REJECT_CALL, getFragmentManager()
                     , message, "", positiveTitle, true);
         }
-
-        Logger.e(TAG, "receiving Call Event: " + busyCallEvent.getCallId());
     }
 
     @Override

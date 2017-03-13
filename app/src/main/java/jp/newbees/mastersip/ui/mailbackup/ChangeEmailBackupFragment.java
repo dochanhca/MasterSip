@@ -24,7 +24,7 @@ import jp.newbees.mastersip.utils.Utils;
 /**
  * Created by thangit14 on 2/14/17.
  */
-public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEmailBackupPresenter.ChangeEmailBackupListener, TextDialog.OnTextDialogClick {
+public class ChangeEmailBackupFragment extends BaseFragment implements ChangeEmailBackupPresenter.ChangeEmailBackupListener, TextDialog.OnTextDialogPositiveClick {
 
     private static final int CONFIRM_CHECK_CODE_DIALOG = 1;
 

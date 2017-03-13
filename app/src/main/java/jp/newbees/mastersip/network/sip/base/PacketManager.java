@@ -15,9 +15,11 @@ import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
+import jp.newbees.mastersip.network.sip.HangUpForGirlProcessor;
 import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
+import jp.newbees.mastersip.network.sip.RunOutOfCoinProcessor;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -83,6 +85,11 @@ public class PacketManager {
             case Constant.SOCKET.ACTION_BUSY_CALL:
                 processor = new BusyCallProcessor();
                 break;
+            case Constant.SOCKET.ACTION_HANG_UP_FOR_GIRL_BLOCK_ZERO:
+                processor = new HangUpForGirlProcessor();
+                break;
+            case Constant.SOCKET.ACTION_RUN_OUT_OF_COINS:
+                processor = new RunOutOfCoinProcessor();
             default:
                 break;
         }

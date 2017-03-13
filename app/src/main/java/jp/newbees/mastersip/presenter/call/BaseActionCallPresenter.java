@@ -3,9 +3,12 @@ package jp.newbees.mastersip.presenter.call;
 import android.content.Context;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
+import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.event.call.CallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -22,6 +25,13 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
     public BaseActionCallPresenter(Context context) {
         super(context);
+    }
+
+    protected abstract void onCalleeRejectCall(BusyCallEvent busyCallEvent);
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
+        onCalleeRejectCall(busyCallEvent);
     }
 
     protected void handleResponseCheckCall(BaseTask task) {
@@ -85,5 +95,13 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
         UserItem caller = getCurrentUserItem();
         CheckCallTask checkCallTask = new CheckCallTask(context, caller, callee, callType, Constant.API.CALL_FROM_OTHER);
         requestToServer(checkCallTask);
+    }
+
+    public final void registerEvent() {
+        EventBus.getDefault().register(this);
+    }
+
+    public final void unRegisterEvent() {
+        EventBus.getDefault().unregister(this);
     }
 }

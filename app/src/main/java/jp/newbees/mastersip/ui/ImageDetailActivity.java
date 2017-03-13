@@ -41,7 +41,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
  */
 
 public class ImageDetailActivity extends CallCenterIncomingActivity implements ImageDetailPresenter.PhotoDetailView,
-        TextDialog.OnTextDialogClick {
+        TextDialog.OnTextDialogPositiveClick {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
