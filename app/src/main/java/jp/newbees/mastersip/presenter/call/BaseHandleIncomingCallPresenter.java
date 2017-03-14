@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.VideoCallEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -43,6 +44,10 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         performCancelCall(caller, callee, callType, calId);
     }
 
+    public void startVideoCall() {
+        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.ENABLE_CAMERA));
+    }
+
     @Override
     protected void didResponseTask(BaseTask task) {
         // handle response task
@@ -67,6 +72,8 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
             case ReceivingCallEvent.FLASHED_CALL:
                 handleFlashedCall();
                 break;
+            case ReceivingCallEvent.STREAMING_CALL:
+                view.onStreamingConnected();
             default:
                 break;
         }
@@ -101,5 +108,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         void onCoinChanged(int coint);
 
         void onFlashedCall();
+
+        void onStreamingConnected();
     }
 }

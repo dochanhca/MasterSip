@@ -3,12 +3,12 @@ package jp.newbees.mastersip.ui.call;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -33,24 +33,16 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
     }
 
     @Override
-    public void onCallConnected() {
-        countingCallDuration();
-        enableSpeaker(btnOnOffSpeaker.isChecked());
-        showCallingView();
+    public void onStreamingConnected() {
+        startVideoCall();
+        showVideoCallFragment();
     }
 
-    /**
-     * start when user during a call
-     */
-    private void showCallingView() {
-        // Only Counting point with female user
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
-            llPoint.setVisibility(View.VISIBLE);
-        }
-
-        layoutVoiceCallingAction.setVisibility(View.VISIBLE);
-        layoutReceivingCallAction.setVisibility(View.GONE);
-        imgLoading.setVisibility(View.GONE);
+    private void showVideoCallFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = VideoCallFragment.newInstance();
+        transaction.replace(R.id.fragment_container, fragment,
+                VideoCallFragment.class.getName()).commit();
     }
 
     public static void startActivity(Context context, UserItem caller, String callID) {

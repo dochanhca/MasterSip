@@ -1,26 +1,13 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ToggleButton;
+import android.support.v4.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
-import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -32,41 +19,12 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     protected static final String CALLER = "CALLER";
     protected static final String CALL_ID = "CALL_ID";
 
-    @BindView(R.id.profile_image)
-    protected CircleImageView profileImage;
-    @BindView(R.id.txt_user_name)
-    protected HiraginoTextView txtUserName;
-    @BindView(R.id.txt_timer)
-    protected HiraginoTextView txtTimer;
-    @BindView(R.id.img_loading)
-    protected ImageView imgLoading;
-    @BindView(R.id.btn_reject_call)
-    protected ImageView btnRejectCall;
-    @BindView(R.id.btn_accept_call)
-    protected ImageView btnAcceptCall;
-    @BindView(R.id.btn_on_off_mic)
-    protected ToggleButton btnOnOffMic;
-    @BindView(R.id.btn_cancel_call)
-    protected ImageView btnCancelCall;
-    @BindView(R.id.btn_on_off_speaker)
-    protected ToggleButton btnOnOffSpeaker;
-    @BindView(R.id.ll_point)
-    protected LinearLayout llPoint;
-    @BindView(R.id.txt_point)
-    protected HiraginoTextView txtPoint;
-    @BindView(R.id.layout_receiving_call_action)
-    protected ViewGroup layoutReceivingCallAction;
-    @BindView(R.id.layout_voice_calling_action)
-    protected ViewGroup layoutVoiceCallingAction;
-
     private BaseHandleIncomingCallPresenter presenter;
 
-    private int callType;
-
-    private Handler timerHandler = new Handler();
     private UserItem caller;
     private String callId;
 
+    private IncomingWaitingFragment incomingWaitingFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +33,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
 
         this.presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
-        this.callType = getCallType();
     }
 
     @Override
@@ -97,12 +54,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ButterKnife.bind(this);
-        Glide.with(this).load(R.drawable.pinpoint)
-                .asGif()
-                .into(imgLoading);
-        txtTimer.setText(getTitleCall());
-        btnAcceptCall.setImageResource(getAcceptCallImage());
 
     }
 
@@ -114,53 +65,31 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     protected void initVariables(Bundle savedInstanceState) {
         caller = getIntent().getExtras().getParcelable(CALLER);
         callId = getIntent().getExtras().getString(CALL_ID);
-        txtUserName.setText(caller.getUsername());
 
-        int imageID = ConfigManager.getInstance().getImageCalleeDefault();
-        if (caller.getAvatarItem() != null) {
-            Glide.with(this).load(caller.getAvatarItem().getOriginUrl())
-                    .error(imageID).placeholder(imageID)
-                    .centerCrop()
-                    .into(profileImage);
-        }
-        profileImage.setImageResource(imageID);
-    }
-
-    /**
-     * start when user during a call
-     */
-    protected void countingCallDuration() {
-        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
-        timerHandler.postDelayed(countingTimeThread, 0);
-    }
-
-
-    @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_reject_call:
-                rejectCall(caller.getSipItem().getExtension(), callType, callId);
-                break;
-            case R.id.btn_accept_call:
-                acceptCall(callId);
-                break;
-            case R.id.btn_on_off_mic:
-                muteMicrophone(btnOnOffMic.isChecked());
-                break;
-            case R.id.btn_cancel_call:
-                endCall(caller.getSipItem().getExtension(), callType, callId);
-                break;
-            case R.id.btn_on_off_speaker:
-                enableSpeaker(btnOnOffSpeaker.isChecked());
-                break;
-        }
+        showIncomingWaitingFragment(caller, callId, getAcceptCallImage(), getTitleCall(), getCallType());
     }
 
     @Override
     public void onCoinChanged(int coin) {
-        StringBuilder point = new StringBuilder();
-        point.append(String.valueOf(coin)).append(getString(R.string.pt));
-        txtPoint.setText(point);
+        incomingWaitingFragment.onCoinChanged(coin);
+    }
+
+    private void showIncomingWaitingFragment(UserItem caller, String callId,
+                                             int acceptCallImage, String titleCall, int callType) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        incomingWaitingFragment = IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType);
+        transaction.add(R.id.fragment_container, incomingWaitingFragment,
+                IncomingWaitingFragment.class.getName()).commit();
+    }
+
+    protected void updateWhenVoiceCallConnected() {
+        countingCallDuration();
+        updateSpeaker();
+        incomingWaitingFragment.showCallingViewOnVoiceCall();
+    }
+
+    private void countingCallDuration() {
+        incomingWaitingFragment.countingCallDuration();
     }
 
     public final void rejectCall(String caller, int callType, String calId) {
@@ -175,8 +104,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         this.presenter.endCall(caller, callType, calId);
     }
 
+    protected final void updateSpeaker() {
+        enableSpeaker(incomingWaitingFragment.isEnableSpeaker());
+    }
+
     public final void enableSpeaker(boolean enable) {
         this.presenter.enableSpeaker(enable);
+    }
+
+    protected final void startVideoCall() {
+        presenter.startVideoCall();
     }
 
     public final void muteMicrophone(boolean mute) {
@@ -196,6 +133,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     @Override
     public void onBackPressed() {
 //        Prevent user press back button when during a call
+    }
+
+    @Override
+    public void onCallConnected() {
+        // override this if need listener callback
+    }
+
+    @Override
+    public void onStreamingConnected() {
+        // override this if need listener callback
     }
 
     protected abstract int getCallType();

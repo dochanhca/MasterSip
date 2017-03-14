@@ -250,7 +250,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 /**
                  * TEST
                  */
-                profileDetailPresenter.endCall(userItem, Constant.API.VOICE_CALL);
+                profileDetailPresenter.endCall(userItem, Constant.API.VIDEO_CALL);
             default:
                 break;
         }

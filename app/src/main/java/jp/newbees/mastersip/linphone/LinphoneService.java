@@ -18,8 +18,10 @@ import jp.newbees.mastersip.event.call.CallEvent;
 import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.event.call.RenderingVideoEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
+import jp.newbees.mastersip.event.call.VideoCallEvent;
 import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -64,7 +66,7 @@ public class LinphoneService extends Service {
             @Override
             public void run() {
                 try {
-                    Logger.e("LinephonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                    Logger.e("LinphonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                     hasLoginVoIPInProgress = true;
                     linphoneHandler.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
@@ -153,6 +155,37 @@ public class LinphoneService extends Service {
         linphoneHandler.muteMicrophone(microphoneEvent.isMute());
     }
 
+    /**
+     * use incoming call event
+     * @param videoCallEvent
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onVideoCallEvent(VideoCallEvent videoCallEvent) {
+        switch (videoCallEvent.getEvent()) {
+            case ENABLE_CAMERA:
+                linphoneHandler.enableVideo(true);
+                break;
+            case DISABLE_CAMERA:
+                linphoneHandler.enableVideo(false);
+                break;
+            case SWITCH_CAMERA:
+                linphoneHandler.switchCamera(videoCallEvent.getmCaptureView());
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public final void onRenderingVideoEvent(RenderingVideoEvent event) {
+        switch (event.getEvent()) {
+            case ON_VIDEO_RENDERING:
+                linphoneHandler.setVideoWindow(event.getAndroidVideoWindow());
+                break;
+            case ON_PREVIEW:
+                linphoneHandler.setPreviewWindow(event.getCaptureView());
+                break;
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public final void onCallEvent(CallEvent callEvent) {
         int callType = callEvent.getCallType();
@@ -178,16 +211,18 @@ public class LinphoneService extends Service {
         linphoneHandler.call(roomId, false);
     }
 
-    private void handleVideoVideoCall(String callee) {
+    private void handleVideoVideoCall(String roomId) {
         linphoneHandler.enableSpeaker(true);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(callee,true);
+        linphoneHandler.enableVideo(true);
+        linphoneHandler.call(roomId,true);
     }
 
-    private void handleVideoChatCall(String callee) {
+    private void handleVideoChatCall(String roomId) {
         linphoneHandler.enableSpeaker(true);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(callee,true);
+        linphoneHandler.enableVideo(true);
+        linphoneHandler.call(roomId,true);
     }
 
     /**

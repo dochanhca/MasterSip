@@ -326,7 +326,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         isShowNavigationBar = true;
         clearViewAnimation(navigationLayoutGroup, slide_up, View.VISIBLE);
-        navigationLayoutGroup.startAnimation(slide_up);
+        if (navigationLayoutGroup != null) {
+            navigationLayoutGroup.startAnimation(slide_up);
+        }
     }
 
     public void hideNavigation() {
