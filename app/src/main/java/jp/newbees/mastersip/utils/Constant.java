@@ -335,6 +335,7 @@ public final class Constant {
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
 
+        public static final int MIN_COIN_FOR_CALL = 10;
     }
 
     public class SOCKET {

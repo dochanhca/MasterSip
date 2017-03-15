@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
+import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -24,9 +25,16 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
     protected abstract void onCoinChanged(int coin);
 
+    protected abstract void onRunningOutOfCoin();
+
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        onCoinChanged(event.getCoin());
+        onCoinChanged(event.getTotal());
+    }
+
+    @Subscribe
+    public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
+        onRunningOutOfCoin();
     }
 
     protected void performCancelCall(String caller, String callee, int callType, String calId) {

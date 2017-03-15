@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_corner_layout"
+    android:orientation="vertical">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:gravity="center"
+        android:text="@string/the_call_end_in_3_minites_remaining"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/text_size_17"
+        android:textStyle="bold" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_50"
+        android:layout_marginRight="@dimen/margin_50"
+        android:layout_marginTop="@dimen/margin_5"
+        android:gravity="center"
+        android:text="@string/if_you_want_to_talking_pls_purchase_point"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/text_size_15" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_20"
+        android:background="@color/blue_dark"
+        android:gravity="center"
+        android:padding="@dimen/_5dp"
+        android:text="@string/purchase_points"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_13" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_purchase_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin"
+        android:gravity="center"
+        android:text="@string/it_will_purchased_by_google"
+        android:padding="@dimen/_2dp"
+        android:textColor="@color/red"
+        android:textSize="@dimen/text_size_13" />
+
+    <jp.newbees.mastersip.customviews.HiraginoButton
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/common_margin"
+        android:text="@string/cancel"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_dark_button_big"/>
+
+</LinearLayout>

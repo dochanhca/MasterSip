@@ -20,6 +20,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -67,6 +68,11 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     private UserItem caller;
     private String callId;
 
+    protected abstract int getAcceptCallImage();
+
+    protected abstract String getTitleCall();
+
+    protected abstract int getCallType();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,10 +112,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
 
     }
 
-    protected abstract int getAcceptCallImage();
-
-    protected abstract String getTitleCall();
-
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         caller = getIntent().getExtras().getParcelable(CALLER);
@@ -125,15 +127,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         }
         profileImage.setImageResource(imageID);
     }
-
-    /**
-     * start when user during a call
-     */
-    protected void countingCallDuration() {
-        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
-        timerHandler.postDelayed(countingTimeThread, 0);
-    }
-
 
     @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
@@ -163,6 +156,27 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         txtPoint.setText(point);
     }
 
+    @Override
+    public void onRunningOutOfCoin() {
+//        Toast.makeText(getApplicationContext(), "Running out of coin", Toast.LENGTH_LONG).show();
+        PaymentDialog.openPaymentDialog(getSupportFragmentManager());
+    }
+
+    @Override
+    public void onCallEnd() {
+        this.finish();
+    }
+
+    @Override
+    public void onFlashedCall() {
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Prevent user press back button when during a call
+    }
+
     public final void rejectCall(String caller, int callType, String calId) {
         this.presenter.rejectCall(caller, callType, calId);
     }
@@ -183,21 +197,11 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         this.presenter.muteMicrophone(mute);
     }
 
-    @Override
-    public void onCallEnd() {
-        this.finish();
+    /**
+     * start when user during a call
+     */
+    protected void countingCallDuration() {
+        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
+        timerHandler.postDelayed(countingTimeThread, 0);
     }
-
-    @Override
-    public void onFlashedCall() {
-        this.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
-    }
-
-    protected abstract int getCallType();
-
 }

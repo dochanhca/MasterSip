@@ -19,6 +19,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -126,6 +127,12 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     @Override
     public void onCoinChanged(int coin) {
         updateCoinChange(coin);
+    }
+
+    @Override
+    public void onRunningOutOfCoin() {
+//        Toast.makeText(getApplicationContext(), "Running out of coin", Toast.LENGTH_LONG).show();
+        PaymentDialog.openPaymentDialog(getSupportFragmentManager());
     }
 
     // start when user during a call

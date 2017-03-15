@@ -9,6 +9,7 @@ import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -91,13 +92,16 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
     }
 
     @Override
-    public void didCoinChangedAfterHangUp(int totalCoinChanged) {
+    public void didCoinChangedAfterHangUp(int totalCoinChanged, int currentCoin) {
         if (isMessageDialogShowing) {
             return;
         }
         int gender = ConfigManager.getInstance().getCurrentUser().getGender();
         if (gender == UserItem.FEMALE && totalCoinChanged > 0) {
             showNotifyCoinEarnedForGirl(totalCoinChanged);
+        } else if (gender == UserItem.MALE && currentCoin < Constant.Application.MIN_COIN_FOR_CALL) {
+            NotifyRunOutOfCoinDialog.openNotifyRunOutOfCoinDialog(getSupportFragmentManager());
+            isMessageDialogShowing = true;
         } else {
             showMessageDialog(getString(R.string.call_ended));
         }

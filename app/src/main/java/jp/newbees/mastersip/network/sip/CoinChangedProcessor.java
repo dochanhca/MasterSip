@@ -18,9 +18,9 @@ import jp.newbees.mastersip.utils.Constant;
 public class CoinChangedProcessor extends BaseSocketProcessor {
     @Override
     protected void didProcess(Object data) {
-        int coint = ((HashMap<String, Integer>) data).get(Constant.JSON.COINT);
+        int coin = ((HashMap<String, Integer>) data).get(Constant.JSON.COINT);
         int total = ((HashMap<String, Integer>) data).get(Constant.JSON.TOTAL);
-        this.postEvent(new CoinChangedEvent(coint, total));
+        this.postEvent(new CoinChangedEvent(coin, total));
     }
 
     @Override

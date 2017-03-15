@@ -78,7 +78,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
 
     @Subscribe()
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        centerCallView.didCoinChangedAfterHangUp(event.getCoin());
+        centerCallView.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
     }
 
     @Subscribe()
@@ -160,7 +160,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
 
         void didCallHangUpForGirl();
 
-        void didCoinChangedAfterHangUp(int coin);
+        void didCoinChangedAfterHangUp(int totalCoinChanged, int currentCoin);
 
         void didRunOutOfCoin();
 
