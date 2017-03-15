@@ -48,5 +48,4 @@ public class ViewHolderTextMessageReply extends BaseChatReplyViewHolder<BaseChat
             imgAvatar.setImageResource(defaultImageId);
         }
     }
-
 }

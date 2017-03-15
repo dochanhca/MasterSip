@@ -8,6 +8,10 @@ import android.os.Parcelable;
  */
 
 public class GiftChatItem extends BaseChatItem implements Parcelable {
+
+    private String content;
+    private GiftItem giftItem;
+
     protected GiftChatItem(Parcel in) {
         giftItem = in.readParcelable(GiftItem.class.getClassLoader());
         content = in.readString();
@@ -44,13 +48,9 @@ public class GiftChatItem extends BaseChatItem implements Parcelable {
         return giftItem;
     }
 
-    private GiftItem giftItem;
-
     public String getContent() {
         return content;
     }
-
-    private String content;
 
     public GiftChatItem() {
     }

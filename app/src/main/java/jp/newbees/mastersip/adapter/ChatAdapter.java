@@ -25,6 +25,10 @@ import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageReply;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderVideoCallMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderVideoCallMessageReply;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderVoiceCallMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderVoiceCallMessageReply;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -90,6 +94,23 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolder = new ViewHolderGiftMessage(view, context);
                 }
                 break;
+            case BaseChatItem.ChatType.CHAT_VOICE_CALL:
+                if (isReplyMessage) {
+                    view = layoutInflater.inflate(R.layout.reply_chat_voice_call_item, parent, false);
+                    viewHolder = new ViewHolderVoiceCallMessageReply(view, context, onItemClickListener);
+                } else {
+                    view = layoutInflater.inflate(R.layout.my_chat_voice_call_item, parent, false);
+                    viewHolder = new ViewHolderVoiceCallMessage(view, context);
+                }
+                break;
+            case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
+                if (isReplyMessage) {
+                    view = layoutInflater.inflate(R.layout.reply_chat_video_call_item, parent, false);
+                    viewHolder = new ViewHolderVideoCallMessageReply(view, context, onItemClickListener);
+                } else {
+                    view = layoutInflater.inflate(R.layout.my_chat_video_call_item, parent, false);
+                    viewHolder = new ViewHolderVideoCallMessage(view, context);
+                }
             default:
                 break;
         }

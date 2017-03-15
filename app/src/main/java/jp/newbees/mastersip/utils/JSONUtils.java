@@ -28,6 +28,8 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.model.VideoCallChatItem;
+import jp.newbees.mastersip.model.VoiceCallChatItem;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.presenter.TopPresenter;
 
@@ -482,6 +484,12 @@ public class JSONUtils {
             case BaseChatItem.ChatType.CHAT_GIFT:
                 baseChatItem = parseGiftChatItem(jMessage);
                 break;
+            case BaseChatItem.ChatType.CHAT_VOICE_CALL:
+                baseChatItem = parseVoiceCallChatItem(jMessage);
+                break;
+            case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
+                baseChatItem = parseVideoCallChatItem(jMessage);
+                break;
             default:
                 baseChatItem = new BaseChatItem();
         }
@@ -495,6 +503,18 @@ public class JSONUtils {
         String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
         baseChatItem.setOwner(members.get(sendId));
         return baseChatItem;
+    }
+
+    private static BaseChatItem parseVideoCallChatItem(JSONObject jMessage) {
+        return new VideoCallChatItem();
+    }
+
+    private static BaseChatItem parseVoiceCallChatItem(JSONObject jMessage) throws JSONException {
+        VoiceCallChatItem voiceCallChatItem = new VoiceCallChatItem();
+        JSONObject jCall = jMessage.getJSONObject(Constant.JSON.CALL);
+        voiceCallChatItem.setKindCall(jCall.getInt(Constant.JSON.KIND_CALL));
+        voiceCallChatItem.setDuration(jCall.getString(Constant.JSON.DURATION));
+        return voiceCallChatItem;
     }
 
     private static BaseChatItem parseGiftChatItem(JSONObject jMessage) throws JSONException {

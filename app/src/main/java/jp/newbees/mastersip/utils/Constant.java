@@ -38,7 +38,11 @@ public final class Constant {
         public static final String TOTAL_UNREAD = "total_unread";
         public static final String ROOM_MESS_UNREAD = "room_message_unread";
         public static final String CALL_ID = "call_id";
-        public static final java.lang.String ROOM_FREE = "room_free";
+        public static final String ROOM_FREE = "room_free";
+        public static final String CALL = "call";
+        public static final String KIND_CALL = "kind_call";
+        public static final String DURATION = "duration";
+
 
         private JSON() {
             //Prevent init constructor
