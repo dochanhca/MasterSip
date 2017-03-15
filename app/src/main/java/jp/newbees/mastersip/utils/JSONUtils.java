@@ -337,8 +337,11 @@ public class JSONUtils {
         if (jData.has(Constant.JSON.MESSAGE)) {
             message = jData.getString(Constant.JSON.MESSAGE);
         }
-        JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
-        PacketItem packetItem = new PacketItem(action, message, response.toString());
+        String response = "";
+        if (!action.equals(Constant.SOCKET.ACTION_ADMIN_HANG_UP)) {
+            response = jData.getJSONObject(Constant.JSON.RESPONSE).toString();
+        }
+        PacketItem packetItem = new PacketItem(action, message, response);
         return packetItem;
     }
 
