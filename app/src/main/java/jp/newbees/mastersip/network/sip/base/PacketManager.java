@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.network.sip.AdminHangUpProcessor;
 import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
@@ -90,6 +91,10 @@ public class PacketManager {
                 break;
             case Constant.SOCKET.ACTION_RUN_OUT_OF_COINS:
                 processor = new RunOutOfCoinProcessor();
+                break;
+            case Constant.SOCKET.ACTION_ADMIN_HANG_UP:
+                processor = new AdminHangUpProcessor();
+                break;
             default:
                 break;
         }

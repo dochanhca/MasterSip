@@ -86,6 +86,7 @@ public class LinphoneService extends Service {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
+        ConfigManager.getInstance().saveLoginVoIPState(false);
         Logger.e(TAG, "Stop Linphone Service");
     }
 

@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
+import jp.newbees.mastersip.event.call.AdminHangUpEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.HangUpForGirlEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
@@ -70,19 +71,24 @@ public class BaseCenterCallPresenter extends BasePresenter {
      *
      * @param event
      */
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe()
     public void onHangUpForGirlEvent(HangUpForGirlEvent event) {
         centerCallView.didCallHangUpForGirl();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe()
     public void onCoinChangedEvent(CoinChangedEvent event) {
         centerCallView.didCoinChangedAfterHangUp(event.getCoin());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe()
     public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
         centerCallView.didRunOutOfCoin();
+    }
+
+    @Subscribe()
+    public void onAdminHangUpEvent(AdminHangUpEvent event) {
+        centerCallView.didAdminHangUpCall();
     }
 
     private void reconnectRoom() {
@@ -157,5 +163,7 @@ public class BaseCenterCallPresenter extends BasePresenter {
         void didCoinChangedAfterHangUp(int coin);
 
         void didRunOutOfCoin();
+
+        void didAdminHangUpCall();
     }
 }

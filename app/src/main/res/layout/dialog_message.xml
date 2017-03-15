@@ -34,6 +34,7 @@
             android:paddingBottom="@dimen/margin_2"
             android:textColor="@color/text_color_gray"
             android:textSize="@dimen/text_size_15"
+            android:lineSpacingMultiplier="1.2"
             android:visibility="visible" />
 
 
