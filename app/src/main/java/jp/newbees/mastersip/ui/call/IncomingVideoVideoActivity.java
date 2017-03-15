@@ -3,8 +3,6 @@ package jp.newbees.mastersip.ui.call;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
@@ -36,13 +34,6 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
     public void onStreamingConnected() {
         startVideoCall();
         showVideoCallFragment();
-    }
-
-    private void showVideoCallFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = VideoCallFragment.newInstance();
-        transaction.replace(R.id.fragment_container, fragment,
-                VideoCallFragment.class.getName()).commit();
     }
 
     public static void startActivity(Context context, UserItem caller, String callID) {

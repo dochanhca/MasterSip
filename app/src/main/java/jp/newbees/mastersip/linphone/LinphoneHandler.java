@@ -369,7 +369,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
         params.setVideoEnabled(true);
         params.setAudioBandwidth(0);
-        switchCamera();
+        userFrontCamera();
 
         // Abort if not enough bandwidth...
         if (!params.getVideoEnabled()) {
@@ -397,6 +397,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
             }
         } catch (ArithmeticException ae) {
             Logger.e(TAG,"Cannot switch camera : no camera");
+        }
+    }
+
+    public void userFrontCamera() {
+        if (AndroidCameraConfiguration.hasFrontCamera()) {
+            linphoneCore.setVideoDevice(1);
+        } else {
+            Logger.e(TAG,"Cannot use front camera : no camera");
         }
     }
 

@@ -8,9 +8,11 @@ import android.view.SurfaceView;
 
 public class VideoCallEvent {
     private SurfaceView mCaptureView;
-    public enum VideoEvent{
-        SWITCH_CAMERA, ENABLE_CAMERA, DISABLE_CAMERA
+
+    public enum VideoEvent {
+        USE_FRONT_CAMERA, SWITCH_CAMERA, ENABLE_CAMERA, DISABLE_CAMERA
     }
+
     private VideoEvent event;
 
     public VideoCallEvent(VideoEvent event) {

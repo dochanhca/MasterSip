@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
+import jp.newbees.mastersip.event.call.VideoCallEvent;
 import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
@@ -40,6 +41,14 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
     public final void muteMicrophone(boolean mute) {
         EventBus.getDefault().post(new MicrophoneEvent(mute));
+    }
+
+    public final void switchCamera() {
+        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.SWITCH_CAMERA));
+    }
+
+    public final void userFrontCamera() {
+        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.SWITCH_CAMERA));
     }
 
     public void registerEvents() {

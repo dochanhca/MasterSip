@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
@@ -8,6 +9,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
+import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -82,13 +84,19 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
                 IncomingWaitingFragment.class.getName()).commit();
     }
 
-    protected void updateWhenVoiceCallConnected() {
-        countingCallDuration();
-        updateSpeaker();
-        incomingWaitingFragment.showCallingViewOnVoiceCall();
+    protected void showVideoCallFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = VideoCallFragment.newInstance();
+        transaction.replace(R.id.fragment_container, fragment,
+                VideoCallFragment.class.getName()).commit();
     }
 
-    private void countingCallDuration() {
+    protected void showCallingViewOnVoiceCall() {
+        incomingWaitingFragment.showCallingViewOnVoiceCall();
+
+    }
+
+    protected void countingCallDuration() {
         incomingWaitingFragment.countingCallDuration();
     }
 

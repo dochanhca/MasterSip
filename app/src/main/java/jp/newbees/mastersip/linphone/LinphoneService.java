@@ -171,6 +171,8 @@ public class LinphoneService extends Service {
             case SWITCH_CAMERA:
                 linphoneHandler.switchCamera(videoCallEvent.getmCaptureView());
                 break;
+            case USE_FRONT_CAMERA:
+                linphoneHandler.userFrontCamera();
         }
     }
 
@@ -212,16 +214,14 @@ public class LinphoneService extends Service {
     }
 
     private void handleVideoVideoCall(String roomId) {
-        linphoneHandler.enableSpeaker(true);
+        linphoneHandler.enableSpeaker(false);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.enableVideo(true);
         linphoneHandler.call(roomId,true);
     }
 
     private void handleVideoChatCall(String roomId) {
         linphoneHandler.enableSpeaker(true);
         linphoneHandler.muteMicrophone(false);
-        linphoneHandler.enableVideo(true);
         linphoneHandler.call(roomId,true);
     }
 

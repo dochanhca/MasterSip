@@ -1,67 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <include
-        android:id="@+id/layout_profile"
-        layout="@layout/layout_voice_profile" />
-
-    <jp.newbees.mastersip.customviews.HiraginoTextView
-        android:id="@+id/txt_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_profile"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:text="@string/during_a_voice_call"
-        android:textColor="@color/text_color_gray_light"
-        android:textSize="@dimen/text_size_15" />
-
-    <ImageView
-        android:id="@+id/img_loading"
-        android:layout_width="@dimen/loading_image_w"
-        android:layout_height="@dimen/loading_image_h"
-        android:layout_below="@id/txt_timer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_15"
-        android:src="@drawable/pinpoint"
-        android:visibility="visible" />
-
-    <LinearLayout
-        android:id="@+id/ll_point"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:padding="@dimen/margin_10"
-        android:background="@drawable/bg_point_call"
-        android:layout_below="@+id/txt_timer"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone">
-
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/margin_2"
-            android:text="@string/current_point"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/text_size_15"
-            android:layout_marginLeft="@dimen/margin_10"/>
-
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:id="@+id/txt_point"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/margin_2"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/text_size_15"
-            android:text=" 0pt"
-            android:layout_marginRight="@dimen/margin_10"/>
-    </LinearLayout>
-
-    <include layout="@layout/layout_voice_calling_action" />
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 </RelativeLayout>

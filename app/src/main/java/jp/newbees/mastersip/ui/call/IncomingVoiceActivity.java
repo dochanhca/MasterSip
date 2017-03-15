@@ -32,7 +32,9 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     public void onCallConnected() {
-        updateWhenVoiceCallConnected();
+        countingCallDuration();
+        updateSpeaker();
+        showCallingViewOnVoiceCall();
     }
 
     public static void startActivity(Context context, UserItem caller, String callID) {
