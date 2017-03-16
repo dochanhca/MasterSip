@@ -53,8 +53,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected NavigationLayoutChild navigationHeart;
     protected NavigationLayoutChild navigationMenu;
 
-    private Animation slide_down;
-    private Animation slide_up;
+    private Animation slideDown;
+    private Animation slideUp;
+
+    private OnBackPressed onBackPressed;
+
+    public interface OnBackPressed {
+        void onBackPressed();
+    }
+
+    public void setOnBackPressed(OnBackPressed onBackPressed) {
+        this.onBackPressed = onBackPressed;
+    }
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -128,16 +138,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-    }
-
-    public interface OnBackPressed {
-        void onBackPressed();
-    }
-
-    private OnBackPressed onBackPressed;
-
-    public void setOnBackPressed(OnBackPressed onBackPressed) {
-        this.onBackPressed = onBackPressed;
     }
 
     @Override
@@ -321,21 +321,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showNavigation() {
-        if (slide_up == null) {
-            slide_up = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
+        if (slideUp == null) {
+            slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
         }
         isShowNavigationBar = true;
-        clearViewAnimation(navigationLayoutGroup, slide_up, View.VISIBLE);
-        navigationLayoutGroup.startAnimation(slide_up);
+        clearViewAnimation(navigationLayoutGroup, slideUp, View.VISIBLE);
+        navigationLayoutGroup.startAnimation(slideUp);
     }
 
     public void hideNavigation() {
-        if (slide_down == null) {
-            slide_down = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
+        if (slideDown == null) {
+            slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
         }
         isShowNavigationBar = false;
-        clearViewAnimation(navigationLayoutGroup, slide_down, View.GONE);
-        navigationLayoutGroup.startAnimation(slide_down);
+        clearViewAnimation(navigationLayoutGroup, slideDown, View.GONE);
+        navigationLayoutGroup.startAnimation(slideDown);
     }
 
     public boolean isShowNavigationBar() {

@@ -52,26 +52,6 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
         EventBus.getDefault().post(new CallEvent(callType, roomId));
     }
 
-//    /**
-//     * Make a voice call
-//     *
-//     * @param callee
-//     */
-//    private void makeVoiceCall(String callId, UserItem callee) {
-//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
-//        EventBus.getDefault().post(new CallEvent(Constant.API.VOICE_CALL, callId));
-//    }
-//
-//    private void makeVideoCall(String callId, UserItem callee) {
-//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
-//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CALL, callId));
-//    }
-//
-//    private void makeVideoChatCall(String callId, UserItem callee) {
-//        ConfigManager.getInstance().setCurrentCallee(callee, callId);
-//        EventBus.getDefault().post(new CallEvent(Constant.API.VIDEO_CHAT_CALL, callId));
-//    }
-
     /**
      * Check callee before make a voice call
      *

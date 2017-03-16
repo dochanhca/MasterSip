@@ -295,7 +295,7 @@
     <string name="delete_photo">写真を削除</string>
     <string name="do_you_want_to_delete_this_photo">この写真を削除しますか？</string>
     <string name="push_title">MasterSip</string>
-    <string name="confirm_request_enable_voice_call">たくみさんは現在通話ができません。 チャットで誘ってみましょう！(無料)</string>
+    <string name="confirm_request_enable_voice_call">は現在通話ができません。 チャットで誘ってみましょう！(無料)</string>
     <string name="confirm_request_enable_voice_call_positive">チャットする</string>
     <string name="message_request_enable_voice">%1$sさん、よかったらお喋りしませんか？</string>
     <string name="message_request_enable_video">%1$sさん、よかったらビデオでお喋りしませんか？</string>
@@ -383,8 +383,9 @@
     <string name="mess_user_busy">さんは他のお相手と通話を開始してしまいました。 \nしばらくたってからおかけ直しください。</string>
     <string name="mess_call_limited">現在通話が混み合っています</string>
     <string name="i_m_sorry_pls_try_again">申し訳ありません。 \nしばらくたってからおかけ直しください。</string>
-    <string name="confirm_request_enable_video_call">Send request enalbe video call?</string>
-    <string name="confirm_request_enable_video_call_positive">send request</string>
+    <string name="confirm_request_enable_video_call">は現在通話ができません。
+チャットで誘ってみましょう！(無料)</string>
+    <string name="confirm_request_enable_video_call_positive">チャットする</string>
     <string name="call_video_chat_1">ビデオ</string>
     <string name="call_video_chat_2">チャット</string>
     <string name="select_call_video_str_1">照れ屋さんに最適！</string>
@@ -404,4 +405,5 @@
     <string name="purchase_points">ポイント購入</string>
     <string name="titile_in_coming_video_call">ビデオ通話で着信中...</string>
     <string name="mess_admin_hang_up_ca">お相手との通話内容に問題がありましたので 通話を終了させていただきました。</string>
+    <string name="mr">さん</string>
 </resources>

@@ -29,7 +29,6 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
 
-//        jParams.put(Constant.JSON.REGIST_TOKEN, getRegisterToken());
         jParams.put(Constant.JSON.BIRTHDAY, userItem.getDateOfBirth());
         jParams.put(Constant.JSON.EMAIL, "");
         jParams.put(Constant.JSON.PASSWORD, userItem.getSipItem().getSecret());

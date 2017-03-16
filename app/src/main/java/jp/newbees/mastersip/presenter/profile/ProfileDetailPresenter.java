@@ -15,7 +15,7 @@ import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
 import jp.newbees.mastersip.network.api.GetProfileDetailTask;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -61,7 +61,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
 
         void didUnFollowUserError(String errorMessage, int errorCode);
 
-        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableVoiceCallTask.Type type);
+        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
 
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
 
@@ -92,8 +92,8 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUser();
-        } else if (task instanceof SendMessageRequestEnableVoiceCallTask) {
-            SendMessageRequestEnableVoiceCallTask.Type type = ((SendMessageRequestEnableVoiceCallTask) task).getDataResponse();
+        } else if (task instanceof SendMessageRequestEnableCallTask) {
+            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
             view.didSendMsgRequestEnableSettingCall(type);
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
@@ -110,7 +110,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
             view.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUserError(errorMessage, errorCode);
-        } else if (task instanceof SendMessageRequestEnableVoiceCallTask) {
+        } else if (task instanceof SendMessageRequestEnableCallTask) {
             view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         } else if (task instanceof CheckCallTask) {
             view.didCheckCallError(errorMessage, errorCode);
@@ -169,12 +169,12 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         requestToServer(unFollowUserTask);
     }
 
-    public void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableVoiceCallTask.Type type) {
-        SendMessageRequestEnableVoiceCallTask task = new SendMessageRequestEnableVoiceCallTask(context, userItem, type);
+    public void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
+        SendMessageRequestEnableCallTask task = new SendMessageRequestEnableCallTask(context, userItem, type);
         requestToServer(task);
     }
 
-    public String getMessageSendRequestSuccess(UserItem userItem,SendMessageRequestEnableVoiceCallTask.Type type) {
+    public String getMessageSendRequestSuccess(UserItem userItem,SendMessageRequestEnableCallTask.Type type) {
         String message = "";
         switch (type) {
             case VOICE:

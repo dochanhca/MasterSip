@@ -1,9 +1,5 @@
 package jp.newbees.mastersip.network.api;
 
-/**
- * Created by vietbq on 12/14/16.
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -37,18 +33,10 @@ import java.util.Set;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
-/**
- * Created by thanglh on 13/11/2014.
- */
 public abstract class BaseUploadTask<T extends Object> {
 
-    public static final int TYPE_IMAGE = 1;
-    public static final int TYPE_FILE = 2;
-
     private static final int NETWORK_TIME_OUT = 30000;
-    private Request<T> mRequest;
     private Context mContext;
-    private RequestQueue mRequestQueue;
     private SharedPreferences sharedPreferences;
     private T dataResponse;
 
@@ -56,7 +44,7 @@ public abstract class BaseUploadTask<T extends Object> {
     private final String registerToken;
 
     private MultipartEntityBuilder mEntityBuilder;
-    private int REQUEST_OK = 0;
+    private static final int REQUEST_OK = 0;
 
     protected static String TAG;
 
@@ -75,7 +63,7 @@ public abstract class BaseUploadTask<T extends Object> {
 
         buildMultipartEntity();
 
-        mRequest = new Request<T>(getMethod(), url, new Response.ErrorListener() {
+        Request<T> request = new Request<T>(getMethod(), url, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 /**
@@ -113,8 +101,7 @@ public abstract class BaseUploadTask<T extends Object> {
 
             @Override
             public String getBodyContentType() {
-                String contentTypeHeader = mEntityBuilder.build().getContentType().getValue();
-                return contentTypeHeader;
+                return mEntityBuilder.build().getContentType().getValue();
             }
 
             @Override
@@ -143,9 +130,9 @@ public abstract class BaseUploadTask<T extends Object> {
                 listener.onResponse(data);
             }
         };
-        mRequestQueue = Volley.newRequestQueue(mContext);
-        mRequest.setRetryPolicy(new DefaultRetryPolicy(NETWORK_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        mRequestQueue.add(mRequest);
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        request.setRetryPolicy(new DefaultRetryPolicy(NETWORK_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
     }
 
     private SipError validData(String data) throws JSONException {
@@ -153,8 +140,7 @@ public abstract class BaseUploadTask<T extends Object> {
         int code = jsonObject.getInt(Constant.JSON.CODE);
         if (code != REQUEST_OK) {
             String message = jsonObject.getString(Constant.JSON.MESSAGE);
-            SipError sipError = new SipError(code, message);
-            return sipError;
+            return new SipError(code, message);
         } else {
             return null;
         }
@@ -201,10 +187,6 @@ public abstract class BaseUploadTask<T extends Object> {
     }
 
     protected abstract String getNameEntity();
-
-//    protected abstract int getType();
-//
-//    protected abstract File getFile();
 
     protected abstract T didResponse(JSONObject data) throws JSONException;
 

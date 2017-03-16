@@ -48,6 +48,31 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
         SelectImageDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
         UploadImagePresenter.View, UpdateRegisterProfilePresenter.View, TextDialog.OnTextDialogPositiveClick {
 
+    @BindView(R.id.img_select_avatar)
+    ImageView imgSelectAvatar;
+    @BindView(R.id.img_avatar)
+    ImageView imgAvatar;
+    @BindView(R.id.edt_nickname)
+    HiraginoEditText edtNickname;
+    @BindView(R.id.layout_nickname)
+    RelativeLayout layoutNickname;
+    @BindView(R.id.txt_area)
+    HiraginoTextView txtArea;
+    @BindView(R.id.layout_area)
+    RelativeLayout layoutArea;
+    @BindView(R.id.txt_profession)
+    HiraginoTextView txtProfession;
+    @BindView(R.id.layout_profession)
+    RelativeLayout layoutProfession;
+    @BindView(R.id.layout_status)
+    RelativeLayout layoutStatus;
+    @BindView(R.id.txt_status_content)
+    HiraginoTextView txtStatusContent;
+    @BindView(R.id.btn_complete_register)
+    RippleView btnCompleteRegister;
+    @BindView(R.id.img_divider_status)
+    ImageView imgDividerStatus;
+
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
 
@@ -129,6 +154,8 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
             case R.id.btn_complete_register:
                 uploadAvatarToServerIfExist();
                 break;
+            default:
+                break;
         }
     }
 
@@ -159,11 +186,11 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
                 break;
             case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
-                    if (provinceItem.getTitle().length() > 0) {
-                        txtArea.setText(provinceItem.getTitle());
-                    }
+                    handlePickedLocation(data);
                 }
+                break;
+            default:
+                break;
         }
     }
 
@@ -177,6 +204,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     /**
      * On Confirm Delete Image Click Ok listener
+     *
      * @param requestCode
      */
     @Override
@@ -245,11 +273,16 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
     private void handleDataInput(Intent data) {
         String content = data.getStringExtra(InputActivity.INPUT_DATA);
-
         txtStatusContent.setText(content);
 
         showTextViewIfHasContent(content);
+    }
 
+    private void handlePickedLocation(Intent data) {
+        provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
+        if (provinceItem.getTitle().length() > 0) {
+            txtArea.setText(provinceItem.getTitle());
+        }
     }
 
     private void showTextViewIfHasContent(String content) {
@@ -359,29 +392,4 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
 
         return isDataValid;
     }
-
-    @BindView(R.id.img_select_avatar)
-    ImageView imgSelectAvatar;
-    @BindView(R.id.img_avatar)
-    ImageView imgAvatar;
-    @BindView(R.id.edt_nickname)
-    HiraginoEditText edtNickname;
-    @BindView(R.id.layout_nickname)
-    RelativeLayout layoutNickname;
-    @BindView(R.id.txt_area)
-    HiraginoTextView txtArea;
-    @BindView(R.id.layout_area)
-    RelativeLayout layoutArea;
-    @BindView(R.id.txt_profession)
-    HiraginoTextView txtProfession;
-    @BindView(R.id.layout_profession)
-    RelativeLayout layoutProfession;
-    @BindView(R.id.layout_status)
-    RelativeLayout layoutStatus;
-    @BindView(R.id.txt_status_content)
-    HiraginoTextView txtStatusContent;
-    @BindView(R.id.btn_complete_register)
-    RippleView btnCompleteRegister;
-    @BindView(R.id.img_divider_status)
-    ImageView imgDividerStatus;
 }
