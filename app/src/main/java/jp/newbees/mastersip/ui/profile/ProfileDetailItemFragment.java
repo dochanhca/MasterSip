@@ -296,6 +296,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void didGetListPhotos(GalleryItem galleryItem) {
         this.galleryItem = galleryItem;
+        userPhotoAdapter.clearData();
         userPhotoAdapter.addAll(galleryItem.getPhotos());
         swipeRefreshLayout.setRefreshing(false);
     }
