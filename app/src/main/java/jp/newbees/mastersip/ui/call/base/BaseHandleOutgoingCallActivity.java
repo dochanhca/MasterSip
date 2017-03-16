@@ -1,37 +1,37 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.OutgoingWaitingFragment;
-import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 /**
  * Created by vietbq on 1/11/17.
  */
 
-public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements BaseHandleOutgoingCallPresenter.OutgoingCallView {
+public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActivity implements BaseHandleCallPresenter.CallView {
     protected static final String CALLEE = "CALLEE";
 
     private BaseHandleOutgoingCallPresenter presenter;
     private UserItem callee;
     private int callType;
 
-    OutgoingWaitingFragment outgoingWaitingFragment;
+    private OutgoingWaitingFragment outgoingWaitingFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-        this.callType = getCallType();
-        this.presenter = new BaseHandleOutgoingCallPresenter(getApplicationContext(), this);
+        callType = getCallType();
+        presenter = new BaseHandleOutgoingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
+        setPresenter(presenter);
+
     }
 
     @Override
@@ -40,6 +40,11 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     }
 
     protected abstract String getTextTitle();
+
+    @Override
+    public UserItem getCurrentUser() {
+        return callee;
+    }
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
@@ -62,10 +67,8 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
         outgoingWaitingFragment.onCoinChange(coin);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.unregisterEvents();
+    public UserItem getCallee() {
+        return callee;
     }
 
     private void showOutgoingWaitingFragment(UserItem callee, String titleCall, int callType) {
@@ -75,41 +78,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
                 OutgoingWaitingFragment.class.getName()).commit();
     }
 
-    protected void showVideoCallFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = VideoCallFragment.newInstance();
-        transaction.replace(R.id.fragment_container, fragment,
-                VideoCallFragment.class.getName()).commit();
-    }
-
-    protected void switchCamera() {
-        presenter.switchCamera();
-    }
-
-    protected void userFrontCamera() {
-        presenter.switchCamera();
-    }
-
-    public final void endCall() {
-        this.presenter.endCall(callee, callType);
-    }
-
-    public final void enableSpeaker(boolean enable) {
-        this.presenter.enableSpeaker(enable);
-    }
-
-    public final void muteMicrophone(boolean mute) {
-        this.presenter.muteMicrophone(mute);
-    }
-
-    public final void changeCamera() {
-
-    }
-
-    public final void enableCamera(boolean enableCamera) {
-
-    }
-
     protected void countingCallDuration() {
         outgoingWaitingFragment.countingCallDuration();
     }
@@ -117,11 +85,4 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     protected void updateViewWhenVoiceConnected() {
         outgoingWaitingFragment.updateViewWhenVoiceConnected();
     }
-
-    @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
-    }
-
-    protected abstract int getCallType();
 }

@@ -110,4 +110,7 @@
     <dimen name="select_video_image_call_size">50dp</dimen>
     <dimen name="height_select_call_tittle">55dp</dimen>
     <dimen name="text_size_14">14sp</dimen>
+    <dimen name="width_preview_video">90dp</dimen>
+    <dimen name="height_preview_video">109dp</dimen>
+    <dimen name="video_call_action_size">70dp</dimen>
 </resources>

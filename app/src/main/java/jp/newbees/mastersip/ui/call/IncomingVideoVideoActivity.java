@@ -26,7 +26,7 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
     }
 
     @Override
-    protected int getCallType() {
+    public int getCallType() {
         return Constant.API.VIDEO_CALL;
     }
 

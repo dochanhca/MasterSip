@@ -1,21 +1,18 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
-import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 /**
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleIncomingCallActivity extends BaseActivity implements
+public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity implements
         BaseHandleIncomingCallPresenter.IncomingCallView {
 
     protected static final String CALLER = "CALLER";
@@ -33,20 +30,15 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-        this.presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
+        presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
+        setPresenter(presenter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         presenter.checkFlashCall();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.unregisterEvents();
     }
 
     @Override
@@ -57,6 +49,11 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     @Override
     protected void initViews(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    public UserItem getCurrentUser() {
+        return caller;
     }
 
     protected abstract int getAcceptCallImage();
@@ -73,7 +70,11 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
 
     @Override
     public void onCoinChanged(int coin) {
-        incomingWaitingFragment.onCoinChanged(coin);
+        if (incomingWaitingFragment == null) {
+            getVideoCallFragment().onCoinChanged(coin);
+        } else {
+            incomingWaitingFragment.onCoinChanged(coin);
+        }
     }
 
     private void showIncomingWaitingFragment(UserItem caller, String callId,
@@ -84,11 +85,10 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
                 IncomingWaitingFragment.class.getName()).commit();
     }
 
+    @Override
     protected void showVideoCallFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = VideoCallFragment.newInstance();
-        transaction.replace(R.id.fragment_container, fragment,
-                VideoCallFragment.class.getName()).commit();
+        super.showVideoCallFragment();
+        incomingWaitingFragment = null;
     }
 
     protected void showCallingViewOnVoiceCall() {
@@ -100,32 +100,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         incomingWaitingFragment.countingCallDuration();
     }
 
-    public final void rejectCall(String caller, int callType, String calId) {
-        this.presenter.rejectCall(caller, callType, calId);
-    }
-
-    public final void acceptCall(String calId) {
-        this.presenter.acceptCall(calId);
-    }
-
-    public final void endCall(String caller, int callType, String calId) {
-        this.presenter.endCall(caller, callType, calId);
-    }
-
     protected final void updateSpeaker() {
         enableSpeaker(incomingWaitingFragment.isEnableSpeaker());
-    }
-
-    public final void enableSpeaker(boolean enable) {
-        this.presenter.enableSpeaker(enable);
     }
 
     protected final void startVideoCall() {
         presenter.startVideoCall();
     }
 
-    public final void muteMicrophone(boolean mute) {
-        this.presenter.muteMicrophone(mute);
+    public UserItem getCaller() {
+        return caller;
     }
 
     @Override
@@ -139,11 +123,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     }
 
     @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
-    }
-
-    @Override
     public void onCallConnected() {
         // override this if need listener callback
     }
@@ -152,7 +131,5 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     public void onStreamingConnected() {
         // override this if need listener callback
     }
-
-    protected abstract int getCallType();
 
 }

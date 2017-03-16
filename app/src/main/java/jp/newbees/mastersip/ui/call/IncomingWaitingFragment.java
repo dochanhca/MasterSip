@@ -171,6 +171,8 @@ public class IncomingWaitingFragment extends BaseFragment {
     }
 
     public void onCoinChanged(int coin) {
+        if (isDetached()) return;
+
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coin)).append(getString(R.string.pt));
         txtPoint.setText(point);

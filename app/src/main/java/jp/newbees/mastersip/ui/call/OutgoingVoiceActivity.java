@@ -21,7 +21,7 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
     }
 
     @Override
-    protected int getCallType() {
+    public int getCallType() {
         return Constant.API.VOICE_CALL;
     }
 

@@ -21,7 +21,7 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
     }
 
     @Override
-    protected int getCallType() {
+    public int getCallType() {
         return Constant.API.VIDEO_CALL;
     }
 
@@ -36,6 +36,6 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
     @Override
     public void onCallConnected() {
         showVideoCallFragment();
-        userFrontCamera();
+        useFrontCamera();
     }
 }

@@ -8,10 +8,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
+import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.event.call.VideoCallEvent;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.CancelCallTask;
+import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 3/10/17.
@@ -19,15 +23,17 @@ import jp.newbees.mastersip.presenter.BasePresenter;
 
 public abstract class BaseHandleCallPresenter extends BasePresenter {
 
-    public BaseHandleCallPresenter(Context context) {
-        super(context);
-    }
+    private CallView view;
 
-    protected abstract void onCoinChanged(int coin);
+    public BaseHandleCallPresenter(Context context, CallView callView) {
+        super(context);
+        this.view = callView;
+    }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        onCoinChanged(event.getCoin());
+        view.onCoinChanged(event.getCoin());
+
     }
 
     protected void performCancelCall(String caller, String callee, int callType, String calId) {
@@ -47,8 +53,46 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.SWITCH_CAMERA));
     }
 
-    public final void userFrontCamera() {
-        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.SWITCH_CAMERA));
+    public final void useFrontCamera() {
+        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.USE_FRONT_CAMERA));
+    }
+
+    public final void enableCamera(boolean enable) {
+        EventBus.getDefault().post(new VideoCallEvent(enable ?
+                VideoCallEvent.VideoEvent.ENABLE_CAMERA : VideoCallEvent.VideoEvent.DISABLE_CAMERA));
+    }
+
+    public final void acceptCall(String calId) {
+        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
+        requestToServer(joinCallTask);
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
+    }
+
+    public final void rejectCall(String caller, int callType, String calId) {
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
+        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        performCancelCall(caller, callee, callType, calId);
+    }
+
+    public void endCall(String caller, int callType, String calId) {
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        performCancelCall(caller, callee, callType, calId);
+    }
+
+    public void endCall(UserItem callee, int callType) {
+        String caller = getCurrentUserItem().getSipItem().getExtension();
+        String callID = ConfigManager.getInstance().getCallId();
+        performCancelCall(caller, callee.getSipItem().getExtension(), callType, callID);
+        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+    }
+
+    protected void handleCallEnd() {
+        view.onCallEnd();
+    }
+
+    protected void handleCallConnected() {
+        view.onCallConnected();
     }
 
     public void registerEvents() {
@@ -57,5 +101,13 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
     public void unregisterEvents() {
         EventBus.getDefault().unregister(this);
+    }
+
+    public interface CallView {
+        void onCallConnected();
+
+        void onCallEnd();
+
+        void onCoinChanged(int coint);
     }
 }
