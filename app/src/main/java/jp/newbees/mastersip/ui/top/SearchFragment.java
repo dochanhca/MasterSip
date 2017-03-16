@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,8 +76,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     @BindView(R.id.filter)
     ViewGroup filter;
 
-    public final String TAG = getClass().getSimpleName();
-
     private int currentTypeSearch = Constant.API.AVAILABLE_CALL;
 
     private FilterUserPresenter presenter;
@@ -102,6 +101,27 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     private Animation slideUp;
 
     private boolean isShowFilterAndNavigationBar = true;
+
+    private RadioGroup.OnCheckedChangeListener mOnSegmentedFilterChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.btn_filter_call_waiting:
+                    currentTypeSearch = Constant.API.AVAILABLE_CALL;
+                    break;
+                case R.id.btn_filter_new:
+                    currentTypeSearch = Constant.API.NEW_USER;
+                    break;
+                case R.id.btn_filter_all:
+                    currentTypeSearch = Constant.API.ALL_USER;
+                    break;
+                default:
+                    break;
+            }
+            showLoading();
+            presenter.filterUser(currentTypeSearch);
+        }
+    };
 
     /**
      * create newInstance of Fragment
@@ -357,7 +377,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didFilterUser(HashMap<String, Object> data) {
+    public void didFilterUser(Map<String, Object> data) {
         List<UserItem> users = (List<UserItem>) data.get(FilterUserTask.LIST_USER);
         nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
 
@@ -378,7 +398,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
     }
 
     @Override
-    public void didLoadMoreUser(HashMap<String, Object> data) {
+    public void didLoadMoreUser(Map<String, Object> data) {
         List<UserItem> users = (List<UserItem>) data.get(FilterUserTask.LIST_USER);
         userItems.addAll(users);
         nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
@@ -402,25 +422,6 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
                 break;
         }
     }
-
-    private RadioGroup.OnCheckedChangeListener mOnSegmentedFilterChangeListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            switch (checkedId) {
-                case R.id.btn_filter_call_waiting:
-                    currentTypeSearch = Constant.API.AVAILABLE_CALL;
-                    break;
-                case R.id.btn_filter_new:
-                    currentTypeSearch = Constant.API.NEW_USER;
-                    break;
-                case R.id.btn_filter_all:
-                    currentTypeSearch = Constant.API.ALL_USER;
-                    break;
-            }
-            showLoading();
-            presenter.filterUser(currentTypeSearch);
-        }
-    };
 
     private void showFilterAndNavigationBar() {
         clearViewAnimation(filter, slideUp, View.VISIBLE);

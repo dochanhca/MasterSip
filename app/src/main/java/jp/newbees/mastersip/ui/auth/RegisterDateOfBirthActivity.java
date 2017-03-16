@@ -34,8 +34,8 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
 public class RegisterDateOfBirthActivity extends BaseActivity implements View.OnClickListener, RegisterPresenter.RegisterView {
 
     public static final String USER_ITEM = "USER_ITEM";
-    private final static int MALE = 0;
-    private final static int FEMALE = 1;
+    private static final int MALE = 0;
+    private static final int FEMALE = 1;
     private Button btnTerm;
     private Button btnPolicy;
     private ImageView imgAccepPolicy;
@@ -50,14 +50,23 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private int myAge = 0;
     private Date defaultDate;
     private Date currentDate;
-    private Calendar calendar;
 
     private int gender = 0;
 
     private RegisterPresenter registerPresenter;
 
-    private boolean isRegistered;
     private UserItem userItem;
+
+    private SlideDateTimeListener onDateSelected = new SlideDateTimeListener() {
+        @Override
+        public void onDateTimeSet(Date date) {
+            mDOB = DateTimeUtils.JAPAN_DATE_FORMAT.format(date);
+            dateSendToServer = DateTimeUtils.ENGLISH_DATE_FORMAT.format(date);
+            txtDOB.setText(mDOB);
+
+            myAge = DateTimeUtils.subtractDateToYear(date, currentDate);
+        }
+    };
 
     @Override
     protected int layoutId() {
@@ -92,7 +101,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
         genders = getResources().getStringArray(R.array.array_gender);
         registerPresenter = new RegisterPresenter(this.getApplicationContext(), this);
 
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         currentDate = calendar.getTime();
         calendar.add(Calendar.YEAR, -(Constant.Application.MIN_AGE + 1)); // to get previous year add -MIN_AGE + 1
         defaultDate = calendar.getTime();
@@ -104,8 +113,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private void updateGenderForFacebookUser() {
         if (userItem != null) {
             layoutGender.setClickable(false);
-            String gender = userItem.getGender() == UserItem.MALE ? genders[MALE] : genders[FEMALE];
-            txtGender.setText(gender);
+            String genderTemp = userItem.getGender() == UserItem.MALE ? genders[MALE] : genders[FEMALE];
+            txtGender.setText(genderTemp);
         }
     }
 
@@ -218,7 +227,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     }
 
     private void openDialogDatePicker() {
-        if (!mDOB.equalsIgnoreCase("")) {
+        if (!"".equalsIgnoreCase(mDOB)) {
             try {
                 defaultDate = DateTimeUtils.JAPAN_DATE_FORMAT.parse(mDOB);
             } catch (ParseException e) {
@@ -234,36 +243,25 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
                 .show();
     }
 
-    private SlideDateTimeListener onDateSelected = new SlideDateTimeListener() {
-        @Override
-        public void onDateTimeSet(Date date) {
-            mDOB = DateTimeUtils.JAPAN_DATE_FORMAT.format(date);
-            dateSendToServer = DateTimeUtils.ENGLISH_DATE_FORMAT.format(date);
-            txtDOB.setText(mDOB);
-
-            myAge = DateTimeUtils.subtractDateToYear(date, currentDate);
-        }
-    };
-
     /**
      * User registered
      * if gender = Male redirect to Register Profile Screen
      * else redirect to Tip Page Screen
      */
     private void handleRegisterException() {
-        isRegistered = getIntent().getBooleanExtra(StartActivity.IS_REGISTERED, false);
+        boolean isRegistered = getIntent().getBooleanExtra(StartActivity.IS_REGISTERED, false);
         if (!isRegistered) {
             return;
         }
 
-        UserItem userItem = getUserItem();
+        UserItem userItemTemp = getUserItem();
 
-        if (userItem.getGender() == UserItem.FEMALE) {
+        if (userItemTemp.getGender() == UserItem.FEMALE) {
             Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
             startActivity(intent);
         } else {
             // set DoB
-            fillData(userItem);
+            fillData(userItemTemp);
         }
     }
 

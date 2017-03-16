@@ -14,6 +14,20 @@ import jp.newbees.mastersip.presenter.BaseUploadPresenter;
  */
 
 public class UploadImagePresenter extends BaseUploadPresenter {
+    private final Context context;
+    private final View view;
+
+    public interface View {
+
+        void onUploadImageSuccess(ImageItem imageItem);
+
+        void onUploadImageFailure(int errorCode, String errorMessage);
+    }
+
+    public UploadImagePresenter(Context context, View view) {
+        this.context = context;
+        this.view = view;
+    }
 
     @Override
     protected void didResponseTask(BaseUploadTask task) {
@@ -26,21 +40,6 @@ public class UploadImagePresenter extends BaseUploadPresenter {
     @Override
     protected void didErrorRequestTask(BaseUploadTask task, int errorCode, String errorMessage) {
         view.onUploadImageFailure(errorCode, errorMessage);
-    }
-
-    public interface View {
-
-        void onUploadImageSuccess(ImageItem imageItem);
-
-        void onUploadImageFailure(int errorCode, String errorMessage);
-    }
-
-    private final Context context;
-    private final View view;
-
-    public UploadImagePresenter(Context context, View view) {
-        this.context = context;
-        this.view = view;
     }
 
     public final void upLoadImage(String userId, int typeUpload, InputStream inputStream) {

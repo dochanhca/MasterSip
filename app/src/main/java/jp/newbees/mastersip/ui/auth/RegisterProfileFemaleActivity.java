@@ -48,6 +48,49 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         SelectImageDialog.OnSelectAvatarDiaLogClick, SelectionDialog.OnSelectionDialogClick,
         UpdateRegisterProfilePresenter.View, UploadImagePresenter.View, TextDialog.OnTextDialogPositiveClick {
 
+    @BindView(R.id.img_select_avatar)
+    ImageView imgSelectAvatar;
+    @BindView(R.id.img_avatar)
+    ImageView imgAvatar;
+    @BindView(R.id.edt_nickname)
+    HiraginoEditText edtNickname;
+    @BindView(R.id.txt_area)
+    HiraginoTextView txtArea;
+    @BindView(R.id.layout_area)
+    RelativeLayout layoutArea;
+    @BindView(R.id.txt_profession)
+    HiraginoTextView txtProfession;
+    @BindView(R.id.layout_profession)
+    RelativeLayout layoutProfession;
+    @BindView(R.id.txt_type)
+    HiraginoTextView txtType;
+    @BindView(R.id.layout_type)
+    RelativeLayout layoutType;
+    @BindView(R.id.layout_type_of_men)
+    RelativeLayout layoutTypeOfMen;
+    @BindView(R.id.txt_type_of_men_content)
+    HiraginoTextView txtTypeOfMenContent;
+    @BindView(R.id.layout_charm_point)
+    RelativeLayout layoutCharmPoint;
+    @BindView(R.id.txt_charm_point_content)
+    HiraginoTextView txtCharmPointContent;
+    @BindView(R.id.txt_available_time)
+    HiraginoTextView txtAvaiableTime;
+    @BindView(R.id.layout_available_time)
+    RelativeLayout layoutAvailableTime;
+    @BindView(R.id.layout_status)
+    RelativeLayout layoutStatus;
+    @BindView(R.id.txt_status_content)
+    HiraginoTextView txtStatusContent;
+    @BindView(R.id.btn_complete_register)
+    RippleView btnCompleteRegister;
+    @BindView(R.id.img_divider_type_of_men)
+    ImageView imgDividerTypeOfMen;
+    @BindView(R.id.img_divider_charm_point)
+    ImageView imgDividerCharmPoint;
+    @BindView(R.id.img_divider_status)
+    ImageView imgDividerStatus;
+
     private static final long TIME_DELAY = 2000;
     private Uri pickedImage;
 
@@ -170,6 +213,8 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
             case R.id.btn_complete_register:
                 uploadAvatarToServerIfExist();
                 break;
+            default:
+                break;
         }
     }
 
@@ -224,11 +269,11 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
                 break;
             case PickLocationActivity.PICK_LOCATION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
-                    if (provinceItem.getTitle().length() >0) {
-                        txtArea.setText(provinceItem.getTitle());
-                    }
+                    handleLocationPicked(data);
                 }
+                break;
+            default:
+                break;
         }
     }
 
@@ -417,6 +462,13 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         }
     }
 
+    private void handleLocationPicked(Intent data) {
+        provinceItem = data.getParcelableExtra(PickLocationActivity.PROVINCE_ITEM);
+        if (provinceItem.getTitle().length() >0) {
+            txtArea.setText(provinceItem.getTitle());
+        }
+    }
+
     private void showTextViewIfHasData(String content, ImageView dividerLine,
                                        HiraginoTextView textView) {
         if (content.length() > 0) {
@@ -469,48 +521,4 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         imgAvatar.setVisibility(View.GONE);
         imgSelectAvatar.setVisibility(View.VISIBLE);
     }
-
-    @BindView(R.id.img_select_avatar)
-    ImageView imgSelectAvatar;
-    @BindView(R.id.img_avatar)
-    ImageView imgAvatar;
-    @BindView(R.id.edt_nickname)
-    HiraginoEditText edtNickname;
-    @BindView(R.id.txt_area)
-    HiraginoTextView txtArea;
-    @BindView(R.id.layout_area)
-    RelativeLayout layoutArea;
-    @BindView(R.id.txt_profession)
-    HiraginoTextView txtProfession;
-    @BindView(R.id.layout_profession)
-    RelativeLayout layoutProfession;
-    @BindView(R.id.txt_type)
-    HiraginoTextView txtType;
-    @BindView(R.id.layout_type)
-    RelativeLayout layoutType;
-    @BindView(R.id.layout_type_of_men)
-    RelativeLayout layoutTypeOfMen;
-    @BindView(R.id.txt_type_of_men_content)
-    HiraginoTextView txtTypeOfMenContent;
-    @BindView(R.id.layout_charm_point)
-    RelativeLayout layoutCharmPoint;
-    @BindView(R.id.txt_charm_point_content)
-    HiraginoTextView txtCharmPointContent;
-    @BindView(R.id.txt_available_time)
-    HiraginoTextView txtAvaiableTime;
-    @BindView(R.id.layout_available_time)
-    RelativeLayout layoutAvailableTime;
-    @BindView(R.id.layout_status)
-    RelativeLayout layoutStatus;
-    @BindView(R.id.txt_status_content)
-    HiraginoTextView txtStatusContent;
-    @BindView(R.id.btn_complete_register)
-    RippleView btnCompleteRegister;
-    @BindView(R.id.img_divider_type_of_men)
-    ImageView imgDividerTypeOfMen;
-    @BindView(R.id.img_divider_charm_point)
-    ImageView imgDividerCharmPoint;
-    @BindView(R.id.img_divider_status)
-    ImageView imgDividerStatus;
-
 }
