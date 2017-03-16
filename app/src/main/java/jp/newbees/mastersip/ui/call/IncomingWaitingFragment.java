@@ -60,14 +60,13 @@ public class IncomingWaitingFragment extends BaseFragment {
     @BindView(R.id.layout_voice_calling_action)
     protected ViewGroup layoutVoiceCallingAction;
 
-    private int callType;
-
     private Handler timerHandler = new Handler();
+
     private UserItem caller;
     private String callId;
-
+    private int callType;
     private int acceptCallImage;
-    private String titileCall;
+    private String titleCall;
 
     public static IncomingWaitingFragment newInstance(UserItem caller, String callId,
                                                       int acceptCallImage, String titleCall, int callType) {
@@ -94,7 +93,6 @@ public class IncomingWaitingFragment extends BaseFragment {
         ButterKnife.bind(this, mRoot);
 
         getArgs();
-
         updateView();
     }
 
@@ -135,7 +133,7 @@ public class IncomingWaitingFragment extends BaseFragment {
         Glide.with(this).load(R.drawable.pinpoint)
                 .asGif()
                 .into(imgLoading);
-        txtTimer.setText(titileCall);
+        txtTimer.setText(titleCall);
         btnAcceptCall.setImageResource(acceptCallImage);
     }
 
@@ -144,7 +142,7 @@ public class IncomingWaitingFragment extends BaseFragment {
         caller = args.getParcelable(CALLER);
         callId = args.getString(CALL_ID);
         acceptCallImage = args.getInt(ACCEPT_CALL_IMAGE);
-        titileCall = args.getString(TITLE_CALL);
+        titleCall = args.getString(TITLE_CALL);
         callType = args.getInt(CALL_TYPE);
     }
 

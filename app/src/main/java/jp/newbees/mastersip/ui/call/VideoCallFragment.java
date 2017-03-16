@@ -2,6 +2,8 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -16,11 +18,13 @@ import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.call.RenderingVideoEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
 
@@ -28,7 +32,7 @@ import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
  * Created by thangit14 on 3/14/17.
  */
 
-public class VideoCallFragment extends BaseFragment {
+public class VideoCallFragment extends BaseFragment implements View.OnTouchListener {
     private static final String USER_ITEM = "USER ITEM";
     private static final String CALL_TYPE = "CALL TYPE";
     @BindView(R.id.videoSurface)
@@ -81,68 +85,8 @@ public class VideoCallFragment extends BaseFragment {
         userItem = getArguments().getParcelable(USER_ITEM);
         callType = getArguments().getInt(CALL_TYPE);
 
-        updateView();
-
+        setupView();
         fixZOrder(mVideoView, mCaptureView);
-    }
-
-    private void updateView() {
-        bindVideoViewToLinphone();
-        mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        txtName.setText(userItem.getUsername());
-        countingCallDuration();
-    }
-
-    private void bindVideoViewToLinphone() {
-        androidVideoWindow = new AndroidVideoWindowImpl(mVideoView, mCaptureView, new AndroidVideoWindowImpl.VideoWindowListener() {
-
-            @Override
-            public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
-                mVideoView = surfaceView;
-                setVideoWindow(androidVideoWindow);
-            }
-
-            @Override
-            public void onVideoRenderingSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
-
-            }
-
-            @Override
-            public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
-                mCaptureView = surfaceView;
-                EventBus.getDefault().post(RenderingVideoEvent.getEventForVideoPreview(mCaptureView));
-            }
-
-            @Override
-            public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
-
-            }
-        });
-    }
-
-    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_mic, R.id.btn_on_off_speaker,
-            R.id.btn_on_off_camera, R.id.img_switch_camera})
-    public void onClick(View view) {
-        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
-
-        switch (view.getId()) {
-            case R.id.btn_cancel_call:
-                activity.endCall();
-                break;
-            case R.id.btn_on_off_mic:
-                activity.muteMicrophone(btnOnOffMic.isChecked());
-                break;
-            case R.id.btn_on_off_speaker:
-                activity.enableSpeaker(!btnOnOffSpeaker.isChecked());
-                break;
-            case R.id.btn_on_off_camera:
-                activity.enableCamera(btnOnOffCamera.isChecked());
-                break;
-            case R.id.img_switch_camera:
-                activity.switchCamera();
-                break;
-        }
     }
 
     @Override
@@ -180,6 +124,93 @@ public class VideoCallFragment extends BaseFragment {
         super.onDestroy();
     }
 
+    private void setupView() {
+        bindVideoViewToLinphone();
+        mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        txtName.setText(userItem.getUsername());
+        countingCallDuration();
+    }
+
+    private void bindVideoViewToLinphone() {
+        androidVideoWindow = new AndroidVideoWindowImpl(mVideoView, mCaptureView, new AndroidVideoWindowImpl.VideoWindowListener() {
+
+            @Override
+            public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                mVideoView = surfaceView;
+                setVideoWindow(androidVideoWindow);
+            }
+
+            @Override
+            public void onVideoRenderingSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
+
+            }
+
+            @Override
+            public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                mCaptureView = surfaceView;
+                bindingCaptureView(mCaptureView);
+            }
+
+            @Override
+            public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
+
+            }
+        });
+    }
+
+    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_mic, R.id.btn_on_off_speaker,
+            R.id.btn_on_off_camera, R.id.img_switch_camera})
+    public void onClick(View view) {
+        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
+
+        switch (view.getId()) {
+            case R.id.btn_cancel_call:
+                activity.endCall();
+                break;
+            case R.id.btn_on_off_mic:
+                activity.muteMicrophone(btnOnOffMic.isChecked());
+                break;
+            case R.id.btn_on_off_speaker:
+                activity.enableSpeaker(!btnOnOffSpeaker.isChecked());
+                break;
+            case R.id.btn_on_off_camera:
+                activity.enableCamera(!btnOnOffCamera.isChecked());
+                updateVideoView();
+                break;
+            case R.id.img_switch_camera:
+                activity.switchCamera();
+                break;
+        }
+    }
+
+    @OnTouch({R.id.videoSurface, R.id.videoCaptureSurface})
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (v.getId()) {
+            case R.id.videoSurface:
+            case R.id.videoCaptureSurface:
+                showView();
+                myCountingTimerThread.reset();
+                break;
+        }
+        return true;
+    }
+
+    private void updateVideoView() {
+        if (btnOnOffCamera.isChecked()) {
+            mCaptureView.setVisibility(View.GONE);
+            bindingCaptureView(null);
+        } else {
+            bindingCaptureView(mCaptureView);
+            mCaptureView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void bindingCaptureView(SurfaceView mCaptureView) {
+        EventBus.getDefault().post(RenderingVideoEvent.getEventForVideoPreview(mCaptureView));
+    }
+
+
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
         EventBus.getDefault().post(RenderingVideoEvent.getEventForVideoRendering(androidVideoWindow));
     }
@@ -193,6 +224,29 @@ public class VideoCallFragment extends BaseFragment {
     private void countingCallDuration() {
         CountingTimeThread countingTimeThread = new CountingTimeThread(txtTime, timerHandler);
         timerHandler.postDelayed(countingTimeThread, 0);
+    }
+
+    private Handler countingHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            hideView();
+        }
+    };
+
+    private void hideView() {
+        layoutVideoCallAction.setVisibility(View.GONE);
+    }
+
+    private void showView() {
+        layoutVideoCallAction.setVisibility(View.VISIBLE);
+    }
+
+    MyCountingTimerThread myCountingTimerThread;
+
+    private void startCounting() {
+        myCountingTimerThread = new MyCountingTimerThread(countingHandler);
+        Thread countingThread = new Thread(myCountingTimerThread);
+        countingThread.start();
     }
 
     public void onCoinChanged(int coin) {
