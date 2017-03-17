@@ -18,12 +18,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -308,6 +310,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         disMissLoading();
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
         startActivity(intent);
+        try {
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         getActivity().finish();
     }
 
