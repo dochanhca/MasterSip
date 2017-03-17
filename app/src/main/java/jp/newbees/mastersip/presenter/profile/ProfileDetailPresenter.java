@@ -4,9 +4,8 @@ import android.content.Context;
 
 import org.greenrobot.eventbus.EventBus;
 
-import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -167,28 +166,5 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
     public void unFollowUser(String destUserId) {
         UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, destUserId);
         requestToServer(unFollowUserTask);
-    }
-
-    public void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
-        SendMessageRequestEnableCallTask task = new SendMessageRequestEnableCallTask(context, userItem, type);
-        requestToServer(task);
-    }
-
-    public String getMessageSendRequestSuccess(UserItem userItem,SendMessageRequestEnableCallTask.Type type) {
-        String message = "";
-        switch (type) {
-            case VOICE:
-                message = String.format(context.getString(R.string.message_request_enable_voice_success), userItem.getUsername());
-                break;
-            case VIDEO:
-                message = String.format(context.getString(R.string.message_request_enable_video_success), userItem.getUsername());
-                break;
-            case VIDEO_CHAT:
-                message = String.format(context.getString(R.string.message_request_enable_video_chat_success), userItem.getUsername());
-                break;
-            default:
-                break;
-        }
-        return message;
     }
 }

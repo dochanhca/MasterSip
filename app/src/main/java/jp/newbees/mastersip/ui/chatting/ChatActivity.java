@@ -49,11 +49,13 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
@@ -74,11 +76,15 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogPositiveClick {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
     public static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
+    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
+    private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
+    private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
+    private static final int SELECT_VIDEO_CALL_DIALOG = 13;
 
     public static final int NAV_PROFILE = 0;
     public static final int NAV_GALLERY = 1;
@@ -322,6 +328,20 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                     , message, "", positiveTitle, true);
         }
 
+        @Override
+        public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+            disMissLoading();
+            TextDialog.openTextDialog(getSupportFragmentManager(), -1,
+                    presenter.getMessageSendRequestSuccess(userItem, type), "", "", true);
+            chatAdapter.clearData();
+            presenter.loadChatHistory(userItem, 0);
+        }
+
+        @Override
+        public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+            disMissLoading();
+        }
+
         private void showDialogNotifyNotEnoughPoint() {
             int gender = ConfigManager.getInstance().getCurrentUser().getGender();
             String title, content, positiveTitle;
@@ -451,13 +471,11 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private void initActionCalls(UserItem userItem) {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
             actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-            actionVideo.setEnabled(false);
             imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
         }
 
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
             actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-            actionPhone.setEnabled(false);
             imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
         }
     }
@@ -507,9 +525,10 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_phone:
-                ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(getSupportFragmentManager());
+                handleVoiceCallClick();
                 break;
             case R.id.action_video:
+                handleVideoCallClick();
                 break;
             case R.id.txt_send:
                 doSendMessage();
@@ -586,8 +605,58 @@ public class ChatActivity extends CallCenterIncomingActivity implements
      */
     @Override
     public void onTextDialogOkClick(int requestCode) {
-        if (requestCode == REQUEST_NOTIFY_CALLEE_REJECT_CALL) {
-            gotoProfileDetailActivity();
+        switch (requestCode) {
+            case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
+                //send request to enable voice call
+                showLoading();
+                presenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
+                break;
+            case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
+                //send request to enable video call
+                showLoading();
+                presenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+                break;
+            case CONFIRM_MAKE_VIDEO_CALL:
+                SelectVideoCallDialog.openDialog(getSupportFragmentManager());
+                break;
+            case REQUEST_NOTIFY_CALLEE_REJECT_CALL:
+                gotoProfileDetailActivity();
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
+        if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
+            presenter.checkVideoCall(userItem);
+        } else {
+            presenter.checkVideoChatCall(userItem);
+        }
+    }
+
+    private void handleVoiceCallClick() {
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getResources().getString(R.string.confirm_request_enable_voice_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
+            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VOICE_CALL,
+                    content, "", positive, false);
+        } else {
+            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(getSupportFragmentManager());
+        }
+    }
+
+    private void handleVideoCallClick() {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getString(R.string.confirm_request_enable_video_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
+            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VIDEO_CALL,
+                    content, "", positive, false);
+        } else {
+            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_MAKE_VIDEO_CALL,
+                    getString(R.string.are_you_sure_make_a_video_call), "", "", false);
         }
     }
 

@@ -62,6 +62,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
+    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
+
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
     private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
     public static final String USER_ITEM = "USER_ITEM";
@@ -70,9 +72,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     private static final int SELECT_VIDEO_CALL_DIALOG = 14;
     private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 13;
-
-    private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
-
+    private static final int CONFIRM_MAKE_VIDEO_CALL = 15;
 
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
@@ -263,7 +263,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
             TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
         } else {
-            SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, this, getFragmentManager());
+            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
+                    getString(R.string.are_you_sure_make_a_video_call), "");
         }
     }
 
@@ -389,14 +390,22 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
-        if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
-            //send request to enable voice call
-            showLoading();
-            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
-        } else if (requestCode == CONFIRM_REQUEST_ENABLE_VIDEO_CALL) {
-            //send request to enable video call
-            showLoading();
-            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+        switch (requestCode) {
+            case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
+                //send request to enable voice call
+                showLoading();
+                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
+                break;
+            case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
+                //send request to enable video call
+                showLoading();
+                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+                break;
+            case CONFIRM_MAKE_VIDEO_CALL:
+                SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
+                break;
+            default:
+                break;
         }
     }
 

@@ -36,6 +36,7 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
     ImageView imgChatVideoMySelf;
     @BindView(R.id.txt_title_call_camera)
     HiraginoTextView txtTitleCallCamera;
+
     private View mRoot;
     private OnSelectVideoCallDialog listener;
 
@@ -115,10 +116,15 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
         }
     }
 
-    public static void openDialog(Fragment fragment, int requestCode, OnSelectVideoCallDialog onSelectVideoCallDialog,
+    public static void openDialog(Fragment fragment, int requestCode,
                                   FragmentManager fragmentManager) {
         SelectVideoCallDialog dialog = new SelectVideoCallDialog();
         dialog.setTargetFragment(fragment, requestCode);
+        dialog.show(fragmentManager, "SelectVideoCallDialog");
+    }
+
+    public static void openDialog(FragmentManager fragmentManager) {
+        SelectVideoCallDialog dialog = new SelectVideoCallDialog();
         dialog.show(fragmentManager, "SelectVideoCallDialog");
     }
 }
