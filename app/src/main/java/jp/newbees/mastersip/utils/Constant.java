@@ -1,10 +1,14 @@
 package jp.newbees.mastersip.utils;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by vietbq on 12/6/16.
  */
 
 public final class Constant {
+
+    public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat("####,###,###");
 
     public static final class JSON {
         public static final String IMG_ID = "img_id";
@@ -42,6 +46,8 @@ public final class Constant {
         public static final String CALL = "call";
         public static final String KIND_CALL = "kind_call";
         public static final String DURATION = "duration";
+        public static final String PACKAGE_LIST = "package_list";
+        public static final String CASH = "cash";
 
 
         private JSON() {
@@ -248,6 +254,7 @@ public final class Constant {
         public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
         public static final String RECONNECT_CALL = "calls/reconnect-call";
         public static final String JOIN_TO_CALL = "calls/join-to-call";
+        public static final String PAYMENT_PACKAGE_LIST = "payment/list_package";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -335,6 +342,7 @@ public final class Constant {
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
 
+        public static final int MIN_COIN_FOR_CALL = 10;
     }
 
     public class SOCKET {

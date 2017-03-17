@@ -92,6 +92,9 @@ public class PacketManager {
             case Constant.SOCKET.ACTION_RUN_OUT_OF_COINS:
                 processor = new RunOutOfCoinProcessor();
                 break;
+            case Constant.SOCKET.ACTION_ABOUT_RUN_OUT_OF_COINS:
+                processor = new RunOutOfCoinProcessor();
+                break;
             case Constant.SOCKET.ACTION_ADMIN_HANG_UP:
                 processor = new AdminHangUpProcessor();
                 break;

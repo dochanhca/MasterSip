@@ -405,5 +405,8 @@
     <string name="purchase_points">ポイント購入</string>
     <string name="titile_in_coming_video_call">ビデオ通話で着信中...</string>
     <string name="mess_admin_hang_up_ca">お相手との通話内容に問題がありましたので 通話を終了させていただきました。</string>
+    <string name="the_call_end_in_3_minites_remaining">残り3分程度で通話が終了します</string>
+    <string name="if_you_want_to_talking_pls_purchase_point">続けて通話したい方は ポイントの購入をお願いします。</string>
+    <string name="it_will_purchased_by_google">※Googleでの購入になります</string>
     <string name="mr">さん</string>
 </resources>

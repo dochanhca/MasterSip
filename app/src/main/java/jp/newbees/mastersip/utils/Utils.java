@@ -139,7 +139,7 @@ public class Utils {
         stringBuilder.append("&");
         stringBuilder.append("client_auth_id=");
         stringBuilder.append(authorization);
-        stringBuilder.append("&version_id=2&platform=android");
+        stringBuilder.append("&version_id=2&platform=1");
         return stringBuilder.toString();
     }
 }

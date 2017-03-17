@@ -1,7 +1,9 @@
 package jp.newbees.mastersip.ui.call.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,17 +17,24 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
+import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 1/11/17.
  */
 
-public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements BaseHandleOutgoingCallPresenter.OutgoingCallView {
+public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implements
+        BaseHandleOutgoingCallPresenter.OutgoingCallView, TopPresenter.TopPresenterListener,
+        PaymentDialog.OnPaymentDialogClickListener {
     @BindView(R.id.profile_image)
     protected CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
@@ -48,10 +57,14 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     protected static final String CALLEE = "CALLEE";
 
     private BaseHandleOutgoingCallPresenter presenter;
+    private TopPresenter topPresenter;
     private UserItem callee;
     private int callType;
 
     private Handler timerHandler = new Handler();
+
+    protected abstract int getCallType();
+    protected abstract String getTextTitle();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,8 +92,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
 
         txtTimer.setText(getTextTitle());
     }
-
-    protected abstract String getTextTitle();
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
@@ -119,6 +130,20 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (getIabHelper() == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        if (!getIabHelper().handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.e("PaymentDialog:", "onActivityResult handled by IABUtil.");
+        }
+    }
+
+    @Override
     public void onCallEnd() {
         this.finish();
     }
@@ -126,6 +151,61 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
     @Override
     public void onCoinChanged(int coin) {
         updateCoinChange(coin);
+    }
+
+    @Override
+    public void onRunningOutOfCoin() {
+        topPresenter = new TopPresenter(this, this);
+        PaymentDialog.openPaymentDialog(getSupportFragmentManager());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unregisterEvents();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Prevent user press back button when during a call
+    }
+
+    @Override
+    public void onPaymentItemClick(PaymentAdOnItem item) {
+        topPresenter.performPurchaseItem(item.getId());
+    }
+
+    @Override
+    public void onInAppBillingSuccess(String sku, String token) {
+        showLoading();
+        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+    }
+
+    @Override
+    public void onPurchaseError(int errorCode, String errorMessage, String sku, String token) {
+        TopPresenter.PurchaseStatus status;
+        if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
+            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
+            topPresenter.sendPurchaseResultToServer(status, sku, token);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
+            status = TopPresenter.PurchaseStatus.FAIL;
+            topPresenter.sendPurchaseResultToServer(status, sku, token);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
+            disMissLoading();
+            showMessageDialog(getString(R.string.cancel_purchase));
+        }
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerSuccess(int point) {
+        disMissLoading();
+        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerError(int errorCode, String errorMessage) {
+        // Send Payment Result to server error
+        disMissLoading();
     }
 
     // start when user during a call
@@ -140,12 +220,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
                 .append(String.valueOf(coin))
                 .append(getString(R.string.pt));
         txtPoint.setText(point);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.unregisterEvents();
     }
 
     public final void endCall() {
@@ -168,10 +242,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseActivity implem
 
     }
 
-    @Override
-    public void onBackPressed() {
-//        Prevent user press back button when during a call
+    private IabHelper getIabHelper() {
+        return topPresenter.getIabHelper();
     }
-
-    protected abstract int getCallType();
 }

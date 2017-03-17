@@ -136,9 +136,9 @@ public class TopPresenter extends BasePresenter {
     };
 
     public interface TopPresenterListener {
-        void onInAppBillingSuccess(String sku, String transection);
+        void onInAppBillingSuccess(String sku, String token);
 
-        void onPurchaseError(int errorCode, String errorMessage, String sku, String transection);
+        void onPurchaseError(int errorCode, String errorMessage, String sku, String token);
 
         void onSendPurchaseResultToServerSuccess(int point);
 

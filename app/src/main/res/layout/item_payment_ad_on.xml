@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/root_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/edt_input_height"
+        android:background="@drawable/bg_item_lv_common">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/common_margin"
+            android:paddingBottom="@dimen/_2dp"
+            android:text="100pt"
+            android:textColor="@color/blue_dark"
+            android:textSize="@dimen/text_size_17"
+            android:textStyle="bold" />
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/_5dp"
+            android:layout_marginRight="@dimen/common_margin"
+            android:layout_marginTop="@dimen/_5dp"
+            android:background="@drawable/bg_btn_buy_point"
+            android:padding="@dimen/_5dp"
+            android:text="1000 Yen"
+            android:textColor="@color/blue_dark"
+            android:textSize="@dimen/text_size_15" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1dp"
+        android:background="@color/color_gray_bg" />
+</LinearLayout>

@@ -61,6 +61,11 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
         view.onCoinChanged(coin);
     }
 
+    @Override
+    protected void onRunningOutOfCoin() {
+        view.onRunningOutOfCoin();
+    }
+
     private void handleCallEnd() {
         view.onCallEnd();
     }
@@ -75,5 +80,7 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
         void onCallEnd();
 
         void onCoinChanged(int coint);
+
+        void onRunningOutOfCoin();
     }
 }

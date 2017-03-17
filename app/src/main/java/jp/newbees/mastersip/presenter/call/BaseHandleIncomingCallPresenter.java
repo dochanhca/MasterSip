@@ -93,6 +93,11 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         view.onCoinChanged(coin);
     }
 
+    @Override
+    protected void onRunningOutOfCoin() {
+        view.onRunningOutOfCoin();
+    }
+
     public interface IncomingCallView {
         void onCallConnected();
 
@@ -101,5 +106,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         void onCoinChanged(int coint);
 
         void onFlashedCall();
+
+        void onRunningOutOfCoin();
     }
 }
