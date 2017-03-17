@@ -21,6 +21,7 @@ import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
@@ -715,5 +716,22 @@ public class JSONUtils {
         }
 
 
+    }
+
+    public static List<PaymentAdOnItem> parsePaymentPackageList(JSONObject jData) throws JSONException {
+        List<PaymentAdOnItem> paymentAdOnItems = new ArrayList<>();
+        JSONArray jPackages = jData.getJSONArray(Constant.JSON.PACKAGE_LIST);
+        for (int i = 0; i < jPackages.length(); i++) {
+            JSONObject jPackage = jPackages.getJSONObject(i);
+
+            PaymentAdOnItem paymentAdOnItem = new PaymentAdOnItem();
+            paymentAdOnItem.setId(jPackage.getString(Constant.JSON.ID_ADDON));
+            paymentAdOnItem.setCash(jPackage.getInt(Constant.JSON.CASH));
+            paymentAdOnItem.setPoint(jPackage.getInt(Constant.JSON.POINT));
+            paymentAdOnItem.setStatus(jPackage.getInt(Constant.JSON.STATUS));
+
+            paymentAdOnItems.add(paymentAdOnItem);
+        }
+        return paymentAdOnItems;
     }
 }

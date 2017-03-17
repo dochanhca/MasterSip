@@ -1,7 +1,9 @@
 package jp.newbees.mastersip.ui.call.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,19 +18,24 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
+import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 1/10/17.
  */
 
 public abstract class BaseHandleIncomingCallActivity extends BaseActivity implements
-        BaseHandleIncomingCallPresenter.IncomingCallView {
+        BaseHandleIncomingCallPresenter.IncomingCallView, TopPresenter.TopPresenterListener,
+        PaymentDialog.OnPaymentDialogClickListener {
 
     protected static final String CALLER = "CALLER";
     protected static final String CALL_ID = "CALL_ID";
@@ -61,6 +68,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     protected ViewGroup layoutVoiceCallingAction;
 
     private BaseHandleIncomingCallPresenter presenter;
+    private TopPresenter topPresenter;
 
     private int callType;
 
@@ -150,6 +158,20 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (getIabHelper() == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        if (!getIabHelper().handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.e("PaymentDialog:", "onActivityResult handled by IABUtil.");
+        }
+    }
+
+    @Override
     public void onCoinChanged(int coin) {
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coin)).append(getString(R.string.pt));
@@ -158,7 +180,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
 
     @Override
     public void onRunningOutOfCoin() {
-//        Toast.makeText(getApplicationContext(), "Running out of coin", Toast.LENGTH_LONG).show();
+        topPresenter = new TopPresenter(this, this);
         PaymentDialog.openPaymentDialog(getSupportFragmentManager());
     }
 
@@ -175,6 +197,44 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
     @Override
     public void onBackPressed() {
 //        Prevent user press back button when during a call
+    }
+
+    @Override
+    public void onPaymentItemClick(PaymentAdOnItem item) {
+        topPresenter.performPurchaseItem(item.getId());
+    }
+
+    @Override
+    public void onInAppBillingSuccess(String sku, String token) {
+        showLoading();
+        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+    }
+
+    @Override
+    public void onPurchaseError(int errorCode, String errorMessage, String sku, String token) {
+        TopPresenter.PurchaseStatus status;
+        if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
+            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
+            topPresenter.sendPurchaseResultToServer(status, sku, token);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
+            status = TopPresenter.PurchaseStatus.FAIL;
+            topPresenter.sendPurchaseResultToServer(status, sku, token);
+        } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
+            disMissLoading();
+            showMessageDialog(getString(R.string.cancel_purchase));
+        }
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerSuccess(int point) {
+        disMissLoading();
+        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+    }
+
+    @Override
+    public void onSendPurchaseResultToServerError(int errorCode, String errorMessage) {
+        // Send Payment Result to server error
+        disMissLoading();
     }
 
     public final void rejectCall(String caller, int callType, String calId) {
@@ -204,4 +264,9 @@ public abstract class BaseHandleIncomingCallActivity extends BaseActivity implem
         CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
         timerHandler.postDelayed(countingTimeThread, 0);
     }
+
+    private IabHelper getIabHelper() {
+        return topPresenter.getIabHelper();
+    }
+
 }

@@ -148,7 +148,8 @@ public abstract class BaseTask<T extends Object> {
 
         if (!registerToken.isEmpty() && !authorization.isEmpty()) {
             urlBuilder.append("?").append(Constant.JSON.REGIST_TOKEN).append("=").append(registerToken)
-                    .append("&").append(Constant.JSON.CLIENT_AUTH_ID).append("=").append(authorization);
+                    .append("&").append(Constant.JSON.CLIENT_AUTH_ID).append("=").append(authorization)
+                    .append("&").append(Constant.JSON.PLATFORM).append("=").append(ANDROID);
         }
         return urlBuilder.toString();
     }
