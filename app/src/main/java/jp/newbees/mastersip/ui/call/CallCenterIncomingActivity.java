@@ -4,38 +4,39 @@ import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.call.BaseCenterCallPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/10/17.
+ * Use for all activity listen incoming call
  */
 
-public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterCallPresenter.CenterCallView,
+public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterIncomingCallPresenter.CenterCallView,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick {
 
-    private BaseCenterCallPresenter incomingCallPresenter;
+    private BaseCenterIncomingCallPresenter incomingCallPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        incomingCallPresenter = new BaseCenterCallPresenter(getApplicationContext(), this);
+        incomingCallPresenter = new BaseCenterIncomingCallPresenter(getApplicationContext(), this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         incomingCallPresenter.registerCallEvent();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         incomingCallPresenter.unRegisterCallEvent();
     }
+
 
     @Override
     public void incomingVoiceCall(UserItem caller, String callID) {

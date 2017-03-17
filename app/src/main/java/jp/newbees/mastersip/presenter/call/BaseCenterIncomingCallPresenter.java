@@ -24,10 +24,10 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by vietbq on 1/10/17.
  */
 
-public class BaseCenterCallPresenter extends BasePresenter {
+public class BaseCenterIncomingCallPresenter extends BasePresenter {
     private CenterCallView centerCallView;
 
-    public BaseCenterCallPresenter(Context context, CenterCallView centerCallView) {
+    public BaseCenterIncomingCallPresenter(Context context, CenterCallView centerCallView) {
         super(context);
         this.centerCallView = centerCallView;
     }

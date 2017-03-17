@@ -7,6 +7,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
+import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -24,6 +25,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     private String callId;
 
     private IncomingWaitingFragment incomingWaitingFragment;
+    private VideoCallFragment videoCallFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +72,12 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCoinChanged(int coin) {
-        if (incomingWaitingFragment == null) {
-            getVideoCallFragment().onCoinChanged(coin);
-        } else {
-            incomingWaitingFragment.onCoinChanged(coin);
+        if (caller.getGender() == UserItem.FEMALE) {
+            if (incomingWaitingFragment == null) {
+                videoCallFragment.onCoinChanged(coin);
+            } else {
+                incomingWaitingFragment.onCoinChanged(coin);
+            }
         }
     }
 
@@ -85,10 +89,13 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
                 IncomingWaitingFragment.class.getName()).commit();
     }
 
-    @Override
     protected void showVideoCallFragment() {
-        super.showVideoCallFragment();
         incomingWaitingFragment = null;
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType());
+        transaction.replace(R.id.fragment_container, videoCallFragment,
+                VideoCallFragment.class.getName()).commit();
     }
 
     protected void showCallingViewOnVoiceCall() {

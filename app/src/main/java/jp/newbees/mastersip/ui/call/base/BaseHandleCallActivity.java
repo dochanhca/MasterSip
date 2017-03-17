@@ -1,12 +1,8 @@
 package jp.newbees.mastersip.ui.call.base;
 
-import android.support.v4.app.FragmentTransaction;
-
-import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 /**
  * Created by thangit14 on 3/16/17.
@@ -14,7 +10,6 @@ import jp.newbees.mastersip.ui.call.VideoCallFragment;
 
 public abstract class BaseHandleCallActivity extends BaseActivity {
     private BaseHandleCallPresenter presenter;
-    private VideoCallFragment videoCallFragment;
 
     public void setPresenter(BaseHandleCallPresenter presenter) {
         this.presenter = presenter;
@@ -77,16 +72,5 @@ public abstract class BaseHandleCallActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
 //        Prevent user press back button when during a call
-    }
-
-    protected void showVideoCallFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType());
-        transaction.replace(R.id.fragment_container, videoCallFragment,
-                VideoCallFragment.class.getName()).commit();
-    }
-
-    public VideoCallFragment getVideoCallFragment() {
-        return videoCallFragment;
     }
 }

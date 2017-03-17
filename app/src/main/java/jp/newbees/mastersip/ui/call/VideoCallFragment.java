@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,7 +23,6 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.call.RenderingVideoEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
-import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
 
@@ -64,6 +62,15 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private int callType;
     private Handler timerHandler = new Handler();
 
+    //    MyCountingTimerThread myCountingTimerThread;
+
+//    private Handler countingHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            hideView();
+//        }
+//    };
+
     public static VideoCallFragment newInstance(UserItem currentUser, int callType) {
         Bundle args = new Bundle();
         args.putParcelable(USER_ITEM, currentUser);
@@ -87,6 +94,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
         setupView();
         fixZOrder(mVideoView, mCaptureView);
+//        startCounting();
     }
 
     @Override
@@ -127,6 +135,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private void setupView() {
         bindVideoViewToLinphone();
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        if (userItem.getGender() == UserItem.FEMALE) {
+            llPoint.setVisibility(View.GONE);
+        }
 
         txtName.setText(userItem.getUsername());
         countingCallDuration();
@@ -190,7 +201,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             case R.id.videoSurface:
             case R.id.videoCaptureSurface:
                 showView();
-                myCountingTimerThread.reset();
+//                myCountingTimerThread.reset();
                 break;
         }
         return true;
@@ -226,28 +237,21 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         timerHandler.postDelayed(countingTimeThread, 0);
     }
 
-    private Handler countingHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            hideView();
-        }
-    };
-
     private void hideView() {
         layoutVideoCallAction.setVisibility(View.GONE);
+        llPoint.setVisibility(View.GONE);
     }
 
     private void showView() {
+        llPoint.setVisibility(userItem.getGender() == UserItem.FEMALE ? View.GONE : View.VISIBLE);
         layoutVideoCallAction.setVisibility(View.VISIBLE);
     }
 
-    MyCountingTimerThread myCountingTimerThread;
-
-    private void startCounting() {
-        myCountingTimerThread = new MyCountingTimerThread(countingHandler);
-        Thread countingThread = new Thread(myCountingTimerThread);
-        countingThread.start();
-    }
+//    private void startCounting() {
+//        myCountingTimerThread = new MyCountingTimerThread(countingHandler);
+//        Thread countingThread = new Thread(myCountingTimerThread);
+//        countingThread.start();
+//    }
 
     public void onCoinChanged(int coin) {
         if (isDetached()) return;
