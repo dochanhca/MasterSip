@@ -27,6 +27,9 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     private IncomingWaitingFragment incomingWaitingFragment;
     private VideoCallFragment videoCallFragment;
 
+    protected abstract int getAcceptCallImage();
+    protected abstract String getTitleCall();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +57,16 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     @Override
-    public UserItem getCurrentUser() {
-        return caller;
-    }
-
-    protected abstract int getAcceptCallImage();
-
-    protected abstract String getTitleCall();
-
-    @Override
     protected void initVariables(Bundle savedInstanceState) {
         caller = getIntent().getExtras().getParcelable(CALLER);
         callId = getIntent().getExtras().getString(CALL_ID);
 
         showIncomingWaitingFragment(caller, callId, getAcceptCallImage(), getTitleCall(), getCallType());
+    }
+
+    @Override
+    public UserItem getCurrentUser() {
+        return caller;
     }
 
     @Override
@@ -118,6 +117,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     public UserItem getCaller() {
         return caller;
     }
+
 
     @Override
     public void onCallEnd() {

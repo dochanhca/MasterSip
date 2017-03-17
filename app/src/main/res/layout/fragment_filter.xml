@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_gray_bg"
-    android:paddingBottom="@dimen/action_bar_h"
     android:orientation="vertical"
     android:clickable="true">
 
@@ -11,11 +10,14 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/action_bar_h">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin"
+        android:layout_marginTop="@dimen/common_margin"
+        android:layout_marginLeft="@dimen/common_margin"
+        android:layout_marginRight="@dimen/common_margin"
         android:orientation="vertical">
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
@@ -170,7 +172,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_15"
+            android:layout_marginBottom="@dimen/action_bar_h"
             android:background="@drawable/bg_corner_layout">
 
             <jp.newbees.mastersip.customviews.HiraginoButton

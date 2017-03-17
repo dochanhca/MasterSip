@@ -37,7 +37,7 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableVoiceCallTask;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
@@ -225,7 +225,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         profileDetailPresenter.unRegisterEvent();
     }
 
-    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,R.id.btn_cancel_call,
+    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift, R.id.btn_cancel_call,
             R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -250,7 +250,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 /**
                  * TEST
                  */
-                profileDetailPresenter.endCall(userItem, Constant.API.VIDEO_CALL);
+                profileDetailPresenter.endCall(userItem, Constant.API.VOICE_CALL);
             default:
                 break;
         }
@@ -258,7 +258,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     private void handleVideoCallClick() {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            String content = getResources().getString(R.string.confirm_request_enable_video_call);
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getString(R.string.confirm_request_enable_video_call);
             String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
             TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
         } else {
@@ -268,7 +269,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     private void handleVoiceCallClick() {
         if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            String content = getResources().getString(R.string.confirm_request_enable_voice_call);
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getResources().getString(R.string.confirm_request_enable_voice_call);
             String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
             TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
         } else {
@@ -294,6 +296,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void didGetListPhotos(GalleryItem galleryItem) {
         this.galleryItem = galleryItem;
+        userPhotoAdapter.clearData();
         userPhotoAdapter.addAll(galleryItem.getPhotos());
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -343,7 +346,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableVoiceCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         disMissLoading();
         TextDialog.openTextDialog(this, -1, getFragmentManager(),
                 profileDetailPresenter.getMessageSendRequestSuccess(userItem, type), "", true);
@@ -387,10 +390,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == CONFIRM_REQUEST_ENABLE_VOICE_CALL) {
+            //send request to enable voice call
             showLoading();
-            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableVoiceCallTask.Type.VOICE);
+            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
         } else if (requestCode == CONFIRM_REQUEST_ENABLE_VIDEO_CALL) {
-            //send request to enalbe video
+            //send request to enable video call
+            showLoading();
+            profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
         }
     }
 

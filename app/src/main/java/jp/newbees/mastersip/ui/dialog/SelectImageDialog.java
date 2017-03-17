@@ -210,7 +210,6 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
         selectionDialog.show(fragmentManager, "SelectImageDialog");
     }
 
-
     private void openCameraFromActivity(Intent takePicture) {
         getActivity().startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
     }
@@ -218,7 +217,6 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
     private void openCameraFromFragment(Intent takePicture) {
         getTargetFragment().startActivityForResult(takePicture, PICK_AVATAR_CAMERA);
     }
-
 
     private void openCamera() {
         String path = Environment.getExternalStorageDirectory() + AVATAR_NAME;

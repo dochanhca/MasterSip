@@ -519,6 +519,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Logger.e(TAG, "onActivity Result ");
         switch (requestCode) {
             case SelectImageDialog.PICK_AVATAR_CAMERA:
                 if (resultCode == RESULT_OK) {

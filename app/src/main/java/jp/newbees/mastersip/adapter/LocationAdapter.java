@@ -25,6 +25,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private LayoutInflater inflater;
     private List<LocationItem> locationItems;
 
+    private OnLocationAdapterClick onLocationAdapterClick;
     /**
      * Interface  when click item on Location list
      */
@@ -43,16 +44,14 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onSelectItemClick(int position, boolean isChecked);
     }
 
-    private OnLocationAdapterClick onLocationAdapterClick;
-
-    public void setOnLocationAdapterClick(OnLocationAdapterClick onLocationAdapterClick) {
-        this.onLocationAdapterClick = onLocationAdapterClick;
-    }
-
     public LocationAdapter(Context context, List<LocationItem> locationItems) {
         this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.locationItems = locationItems;
+    }
+
+    public void setOnLocationAdapterClick(OnLocationAdapterClick onLocationAdapterClick) {
+        this.onLocationAdapterClick = onLocationAdapterClick;
     }
 
     @Override

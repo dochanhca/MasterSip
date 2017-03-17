@@ -1,10 +1,14 @@
 package jp.newbees.mastersip.utils;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by vietbq on 12/6/16.
  */
 
 public final class Constant {
+
+    public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat("####,###,###");
 
     public static final class JSON {
         public static final String IMG_ID = "img_id";
@@ -38,7 +42,14 @@ public final class Constant {
         public static final String TOTAL_UNREAD = "total_unread";
         public static final String ROOM_MESS_UNREAD = "room_message_unread";
         public static final String CALL_ID = "call_id";
-        public static final java.lang.String ROOM_FREE = "room_free";
+        public static final String ROOM_FREE = "room_free";
+        public static final String CALL = "call";
+        public static final String KIND_CALL = "kind_call";
+        public static final String DURATION = "duration";
+        public static final String PACKAGE_LIST = "package_list";
+        public static final String CASH = "cash";
+        public static final String DEVICE_TOKEN = "device_token";
+
 
         private JSON() {
             //Prevent init constructor
@@ -244,6 +255,7 @@ public final class Constant {
         public static final String REGISTER_PUSH_NOTIFY = "notify/register-push-notifications";
         public static final String RECONNECT_CALL = "calls/reconnect-call";
         public static final String JOIN_TO_CALL = "calls/join-to-call";
+        public static final String PAYMENT_PACKAGE_LIST = "payment/list_package";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -331,6 +343,7 @@ public final class Constant {
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
 
+        public static final int MIN_COIN_FOR_CALL = 10;
     }
 
     public class SOCKET {
@@ -348,6 +361,7 @@ public final class Constant {
         public static final String ACTION_COIN_CHANGED = "coin_changed";
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
         public static final String ACTION_HANG_UP_FOR_GIRL_BLOCK_ZERO = "Hangup_for_girl_block_zero";
+        public static final String ACTION_ADMIN_HANG_UP = "ADMIN_HANG_UP";
 
         public static final int STATUS_CALLING_WAITING = 1;
         public static final int STATUS_CALLING_CANCELED = 2;

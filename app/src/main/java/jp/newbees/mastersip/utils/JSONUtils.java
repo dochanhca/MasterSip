@@ -21,6 +21,7 @@ import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
+import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
@@ -28,6 +29,8 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.model.VideoCallChatItem;
+import jp.newbees.mastersip.model.VoiceCallChatItem;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.presenter.TopPresenter;
 
@@ -337,8 +340,11 @@ public class JSONUtils {
         if (jData.has(Constant.JSON.MESSAGE)) {
             message = jData.getString(Constant.JSON.MESSAGE);
         }
-        JSONObject response = jData.getJSONObject(Constant.JSON.RESPONSE);
-        PacketItem packetItem = new PacketItem(action, message, response.toString());
+        String response = "";
+        if (!action.equals(Constant.SOCKET.ACTION_ADMIN_HANG_UP)) {
+            response = jData.getJSONObject(Constant.JSON.RESPONSE).toString();
+        }
+        PacketItem packetItem = new PacketItem(action, message, response);
         return packetItem;
     }
 
@@ -479,6 +485,12 @@ public class JSONUtils {
             case BaseChatItem.ChatType.CHAT_GIFT:
                 baseChatItem = parseGiftChatItem(jMessage);
                 break;
+            case BaseChatItem.ChatType.CHAT_VOICE_CALL:
+                baseChatItem = parseVoiceCallChatItem(jMessage);
+                break;
+            case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
+                baseChatItem = parseVideoCallChatItem(jMessage);
+                break;
             default:
                 baseChatItem = new BaseChatItem();
         }
@@ -492,6 +504,18 @@ public class JSONUtils {
         String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
         baseChatItem.setOwner(members.get(sendId));
         return baseChatItem;
+    }
+
+    private static BaseChatItem parseVideoCallChatItem(JSONObject jMessage) {
+        return new VideoCallChatItem();
+    }
+
+    private static BaseChatItem parseVoiceCallChatItem(JSONObject jMessage) throws JSONException {
+        VoiceCallChatItem voiceCallChatItem = new VoiceCallChatItem();
+        JSONObject jCall = jMessage.getJSONObject(Constant.JSON.CALL);
+        voiceCallChatItem.setKindCall(jCall.getInt(Constant.JSON.KIND_CALL));
+        voiceCallChatItem.setDuration(jCall.getString(Constant.JSON.DURATION));
+        return voiceCallChatItem;
     }
 
     private static BaseChatItem parseGiftChatItem(JSONObject jMessage) throws JSONException {
@@ -692,5 +716,22 @@ public class JSONUtils {
         }
 
 
+    }
+
+    public static List<PaymentAdOnItem> parsePaymentPackageList(JSONObject jData) throws JSONException {
+        List<PaymentAdOnItem> paymentAdOnItems = new ArrayList<>();
+        JSONArray jPackages = jData.getJSONArray(Constant.JSON.PACKAGE_LIST);
+        for (int i = 0; i < jPackages.length(); i++) {
+            JSONObject jPackage = jPackages.getJSONObject(i);
+
+            PaymentAdOnItem paymentAdOnItem = new PaymentAdOnItem();
+            paymentAdOnItem.setId(jPackage.getString(Constant.JSON.ID_ADDON));
+            paymentAdOnItem.setCash(jPackage.getInt(Constant.JSON.CASH));
+            paymentAdOnItem.setPoint(jPackage.getInt(Constant.JSON.POINT));
+            paymentAdOnItem.setStatus(jPackage.getInt(Constant.JSON.STATUS));
+
+            paymentAdOnItems.add(paymentAdOnItem);
+        }
+        return paymentAdOnItems;
     }
 }

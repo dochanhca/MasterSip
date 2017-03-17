@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
 import jp.newbees.mastersip.ui.call.OutgoingWaitingFragment;
 import jp.newbees.mastersip.ui.call.VideoCallFragment;
@@ -14,7 +13,7 @@ import jp.newbees.mastersip.ui.call.VideoCallFragment;
  * Created by vietbq on 1/11/17.
  */
 
-public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActivity implements BaseHandleCallPresenter.CallView {
+public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActivity {
     protected static final String CALLEE = "CALLEE";
 
     private BaseHandleOutgoingCallPresenter presenter;

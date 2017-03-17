@@ -34,16 +34,111 @@ public class TopPresenter extends BasePresenter {
 
     private static final String IN_APP_BILLING_TAG = "In app billing";
 
-    public IabHelper iabHelper;
+    private IabHelper iabHelper;
     private volatile int numberOfItemNeedConsume = 0;
     private boolean needPurchaseWithServer = false;
 
     private TopPresenterListener listener;
 
-    public interface TopPresenterListener {
-        void onInAppBillingSuccess(String sku, String transection);
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            Logger.e(IN_APP_BILLING_TAG, "Query inventory finished.");
 
-        void onPurchaseError(int errorCode, String errorMessage, String sku, String transection);
+            if (iabHelper == null) {
+                getActivity().disMissLoading();
+                return;
+            }
+
+            if (result.isFailure()) {
+                Logger.e(IN_APP_BILLING_TAG, "Failed to query inventory: " + result);
+                getActivity().disMissLoading();
+                return;
+            }
+
+            Logger.e(IN_APP_BILLING_TAG, "Query inventory was successful.");
+
+            for (String SKU : SKUS) {
+                Purchase purchase = inventory.getPurchase(SKU);
+                if (purchase != null && verifyDeveloperPayload(purchase)) {
+                    Logger.e(IN_APP_BILLING_TAG, "We have " + purchase.getSku() + ". Consuming it.");
+                    numberOfItemNeedConsume++;
+                    iabHelper.consumeAsync(inventory.getPurchase(SKU), mConsumeFinishedListener);
+                }
+            }
+
+            if (numberOfItemNeedConsume != 0) {
+                return;
+            }
+            getActivity().disMissLoading();
+
+        }
+    };
+
+    private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        @Override
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            Logger.e(IN_APP_BILLING_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+            if (iabHelper == null) {
+                getActivity().disMissLoading();
+                return;
+            }
+
+            if (result.isFailure()) {
+                listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_CANCEL,
+                        "Error purchasing: " + result, "", "");
+                getActivity().disMissLoading();
+                return;
+            }
+            if (!verifyDeveloperPayload(purchase)) {
+                listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_CANCEL,
+                        "Error purchasing. Authenticity verification failed.", "", "");
+                getActivity().disMissLoading();
+                return;
+            }
+
+            Logger.e(IN_APP_BILLING_TAG, "Purchase successful.");
+            Logger.e(IN_APP_BILLING_TAG, "Starting consumption " + purchase.getSku());
+            numberOfItemNeedConsume++;
+            iabHelper.consumeAsync(purchase, mConsumeFinishedListener);
+        }
+    };
+
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
+        public void onConsumeFinished(Purchase purchase, IabResult result) {
+
+            numberOfItemNeedConsume--;
+            if (iabHelper == null) {
+                getActivity().disMissLoading();
+                return;
+            }
+
+            if (result.isSuccess()) {
+                Logger.e(IN_APP_BILLING_TAG, "success : " + purchase.getSku());
+
+                if (needPurchaseWithServer) {
+                    listener.onInAppBillingSuccess(purchase.getSku(), purchase.getToken());
+                } else {
+                    if (numberOfItemNeedConsume == 0) {
+                        getActivity().disMissLoading();
+                    }
+                }
+            } else {
+                if (needPurchaseWithServer) {
+                    listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS, "Error while consuming: " + result,
+                            purchase.getSku(), purchase.getToken());
+                } else {
+                    Logger.e(IN_APP_BILLING_TAG, "Error while consuming: " + result);
+                }
+            }
+            needPurchaseWithServer = false;
+        }
+    };
+
+    public interface TopPresenterListener {
+        void onInAppBillingSuccess(String sku, String token);
+
+        void onPurchaseError(int errorCode, String errorMessage, String sku, String token);
 
         void onSendPurchaseResultToServerSuccess(int point);
 
@@ -131,41 +226,6 @@ public class TopPresenter extends BasePresenter {
         });
     }
 
-
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            Logger.e(IN_APP_BILLING_TAG, "Query inventory finished.");
-
-            if (iabHelper == null) {
-                getActivity().disMissLoading();
-                return;
-            }
-
-            if (result.isFailure()) {
-                Logger.e(IN_APP_BILLING_TAG, "Failed to query inventory: " + result);
-                getActivity().disMissLoading();
-                return;
-            }
-
-            Logger.e(IN_APP_BILLING_TAG, "Query inventory was successful.");
-
-            for (String SKU : SKUS) {
-                Purchase purchase = inventory.getPurchase(SKU);
-                if (purchase != null && verifyDeveloperPayload(purchase)) {
-                    Logger.e(IN_APP_BILLING_TAG, "We have " + purchase.getSku() + ". Consuming it.");
-                    numberOfItemNeedConsume++;
-                    iabHelper.consumeAsync(inventory.getPurchase(SKU), mConsumeFinishedListener);
-                }
-            }
-
-            if (numberOfItemNeedConsume != 0) {
-                return;
-            }
-            getActivity().disMissLoading();
-
-        }
-    };
-
     public void performPurchaseItem(String id) {
         if (iabHelper == null) {
             setupForPurchase();
@@ -177,67 +237,6 @@ public class TopPresenter extends BasePresenter {
 
         iabHelper.launchPurchaseFlow((Activity) getContext(), id, RC_REQUEST, mPurchaseFinishedListener, payload);
     }
-
-    private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        @Override
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Logger.e(IN_APP_BILLING_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-
-            if (iabHelper == null) {
-                getActivity().disMissLoading();
-                return;
-            }
-
-            if (result.isFailure()) {
-                listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_CANCEL,
-                        "Error purchasing: " + result, "", "");
-                getActivity().disMissLoading();
-                return;
-            }
-            if (!verifyDeveloperPayload(purchase)) {
-                listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_CANCEL,
-                        "Error purchasing. Authenticity verification failed.", "", "");
-                getActivity().disMissLoading();
-                return;
-            }
-
-            Logger.e(IN_APP_BILLING_TAG, "Purchase successful.");
-            Logger.e(IN_APP_BILLING_TAG, "Starting consumption " + purchase.getSku());
-            numberOfItemNeedConsume++;
-            iabHelper.consumeAsync(purchase, mConsumeFinishedListener);
-        }
-    };
-
-    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-        public void onConsumeFinished(Purchase purchase, IabResult result) {
-
-            numberOfItemNeedConsume--;
-            if (iabHelper == null) {
-                getActivity().disMissLoading();
-                return;
-            }
-
-            if (result.isSuccess()) {
-                Logger.e(IN_APP_BILLING_TAG, "success : " + purchase.getSku());
-
-                if (needPurchaseWithServer) {
-                    listener.onInAppBillingSuccess(purchase.getSku(), purchase.getToken());
-                } else {
-                    if (numberOfItemNeedConsume == 0) {
-                        getActivity().disMissLoading();
-                    }
-                }
-            } else {
-                if (needPurchaseWithServer) {
-                    listener.onPurchaseError(Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS, "Error while consuming: " + result,
-                            purchase.getSku(), purchase.getToken());
-                } else {
-                    Logger.e(IN_APP_BILLING_TAG, "Error while consuming: " + result);
-                }
-            }
-            needPurchaseWithServer = false;
-        }
-    };
 
     public void sendPurchaseResultToServer(PurchaseStatus purchaseStatus, String sku, String token) {
         getActivity().showLoading();
@@ -270,12 +269,12 @@ public class TopPresenter extends BasePresenter {
         SUCCESS(1), FAIL(0), PENDING(2), NOT_SUCCESS(3);
         int value;
 
-        public int getValue() {
-            return value;
-        }
-
         PurchaseStatus(int value) {
             this.value = value;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 
@@ -285,11 +284,11 @@ public class TopPresenter extends BasePresenter {
         GET_ACCOUNTS(204, Manifest.permission.GET_ACCOUNTS);
 
         private final int result;
-        private final String permission;
+        private final String permissionName;
 
-        Permission(int result, String permission) {
+        Permission(int result, String permissionName) {
             this.result = result;
-            this.permission = permission;
+            this.permissionName = permissionName;
         }
 
         public int getResult() {
@@ -297,8 +296,7 @@ public class TopPresenter extends BasePresenter {
         }
 
         public String getPermission() {
-            return permission;
+            return permissionName;
         }
     }
-
 }

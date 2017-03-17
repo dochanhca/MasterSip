@@ -55,7 +55,7 @@ public class LinphoneService extends Service {
         if (!ConfigManager.getInstance().getLoginVoIPState() && !hasLoginVoIPInProgress) {
             SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
             loginToVoIP(sipItem);
-        } else {
+        } else if (ConfigManager.getInstance().getLoginVoIPState()) {
             EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
         }
         return super.onStartCommand(intent, flags, startId);
@@ -88,6 +88,7 @@ public class LinphoneService extends Service {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         linphoneHandler.stopMainLoop();
+        ConfigManager.getInstance().saveLoginVoIPState(false);
         Logger.e(TAG, "Stop Linphone Service");
     }
 

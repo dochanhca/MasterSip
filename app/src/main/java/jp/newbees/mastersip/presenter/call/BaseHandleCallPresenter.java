@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.MicrophoneEvent;
 import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.event.call.SpeakerEvent;
 import jp.newbees.mastersip.event.call.VideoCallEvent;
 import jp.newbees.mastersip.model.UserItem;
@@ -30,10 +31,14 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         this.view = callView;
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        view.onCoinChanged(event.getCoin());
+        view.onCoinChanged(event.getTotal());
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
+        view.onRunningOutOfCoin();
     }
 
     protected void performCancelCall(String caller, String callee, int callType, String calId) {
@@ -108,6 +113,8 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
         void onCallEnd();
 
-        void onCoinChanged(int coint);
+        void onCoinChanged(int coin);
+
+        void onRunningOutOfCoin();
     }
 }

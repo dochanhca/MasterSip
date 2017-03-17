@@ -107,7 +107,10 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (getIabHelper() == null) return;
+        if (getIabHelper() == null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
 
         if (!getIabHelper().handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);

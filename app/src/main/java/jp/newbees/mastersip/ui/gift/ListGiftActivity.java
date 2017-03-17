@@ -24,7 +24,6 @@ public class ListGiftActivity extends WrapperWithBottomNavigationActivity {
         showFragmentContent(fragment);
         String titleGiftsList = getString(R.string.gifts_list);
         initHeader(titleGiftsList);
-//        hideActionBar();
     }
 
     public static void startActivity(Context context, UserItem userItem) {

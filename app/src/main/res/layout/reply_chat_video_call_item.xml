@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/xnormal_margin"
+    android:paddingLeft="@dimen/normal_margin">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_reply_avatar"
+        android:layout_width="@dimen/avatar_reply_chat_size"
+        android:layout_height="@dimen/avatar_reply_chat_size"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/comma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_reply_avatar"
+        android:src="@drawable/img_comma_reply_chat_item" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_content"
+        style="@style/origin_style_content_text_view_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/offset_comma"
+        android:layout_toRightOf="@id/comma"
+        android:background="@drawable/bg_white_large_radius"
+        android:maxWidth="@dimen/max_chat_item_width"
+        android:padding="@dimen/normal_margin"
+        android:text="Video Call!."
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/text_size_13" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_tiny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/txt_content"
+        android:layout_toRightOf="@id/txt_content"
+        android:paddingLeft="@dimen/small_margin"
+        android:text="12:34"
+        android:textColor="@color/dark_gray" />
+</RelativeLayout>

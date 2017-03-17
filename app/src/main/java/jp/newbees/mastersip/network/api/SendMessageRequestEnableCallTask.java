@@ -18,16 +18,17 @@ import static jp.newbees.mastersip.utils.Constant.API.REQUEST_ENABLE_VOICE_CALL;
 /**
  * Created by thangit14 on 2/10/17.
  */
-public class SendMessageRequestEnableVoiceCallTask extends BaseTask<SendMessageRequestEnableVoiceCallTask.Type>{
-    public enum Type{
-        VOICE,VIDEO,VIDEO_CHAT
+public class SendMessageRequestEnableCallTask extends BaseTask<SendMessageRequestEnableCallTask.Type> {
+
+    public enum Type {
+        VOICE, VIDEO, VIDEO_CHAT
     }
 
     private Type type;
     private UserItem userItem;
     private Context context;
 
-    public SendMessageRequestEnableVoiceCallTask(Context context, UserItem userItem, Type type) {
+    public SendMessageRequestEnableCallTask(Context context, UserItem userItem, Type type) {
         super(context);
         this.context = context;
         this.userItem = userItem;

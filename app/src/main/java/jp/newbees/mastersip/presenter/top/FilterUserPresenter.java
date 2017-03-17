@@ -2,7 +2,7 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -21,11 +21,11 @@ public class FilterUserPresenter extends BasePresenter {
     private SearchView view;
 
     public interface SearchView {
-        void didFilterUser(HashMap<String, Object> data);
+        void didFilterUser(Map<String, Object> data);
 
         void didFilterUserError(int errorCode, String errorMessage);
 
-        void didLoadMoreUser(HashMap<String, Object> data);
+        void didLoadMoreUser(Map<String, Object> data);
     }
 
     public FilterUserPresenter(Context context, SearchView searchView) {
@@ -58,7 +58,7 @@ public class FilterUserPresenter extends BasePresenter {
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof FilterUserTask) {
-            HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
+            Map<String, Object> data = ((FilterUserTask) task).getDataResponse();
             nextPage = (String) data.get(FilterUserTask.NEXT_PAGE);
             if (isLoadMore) {
                 view.didLoadMoreUser(data);

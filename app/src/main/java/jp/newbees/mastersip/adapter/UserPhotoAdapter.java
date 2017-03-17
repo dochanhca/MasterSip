@@ -67,6 +67,9 @@ public class UserPhotoAdapter extends RecyclerView.Adapter<UserPhotoAdapter.View
         this.photos = photos;
     }
 
+    public void clearData(){
+        this.photos.clear();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
