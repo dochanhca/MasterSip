@@ -48,6 +48,7 @@ public final class Constant {
         public static final String DURATION = "duration";
         public static final String PACKAGE_LIST = "package_list";
         public static final String CASH = "cash";
+        public static final String DEVICE_TOKEN = "device_token";
 
 
         private JSON() {

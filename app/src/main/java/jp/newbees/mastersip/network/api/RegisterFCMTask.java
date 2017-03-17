@@ -9,7 +9,6 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -18,12 +17,10 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class RegisterFCMTask extends BaseTask {
 
-    private String extensionId;
     private String registrationId;
 
-    public RegisterFCMTask(Context context, String extensionId, String registrationId) {
+    public RegisterFCMTask(Context context, String registrationId) {
         super(context);
-        this.extensionId = extensionId;
         this.registrationId = registrationId;
     }
 
@@ -31,10 +28,7 @@ public class RegisterFCMTask extends BaseTask {
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParam = new JSONObject();
-        jParam.put(Constant.JSON.EXTENSION_ID, extensionId);
-        jParam.put(Constant.JSON.OS, Constant.Application.ANDROID);
-        jParam.put(Constant.JSON.REGISTRATION_ID, registrationId);
-        jParam.put(Constant.JSON.TOKEN_DEVICE, ConfigManager.getInstance().getRegisterToken());
+        jParam.put(Constant.JSON.DEVICE_TOKEN, registrationId);
         return jParam;
     }
 

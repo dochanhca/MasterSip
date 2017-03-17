@@ -64,8 +64,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
 
     private void sendFCMTokenToServer() {
         String tokenID = FirebaseInstanceId.getInstance().getToken();
-        String extensionId = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        RegisterFCMTask registerFCMTask = new RegisterFCMTask(context, extensionId, tokenID);
+        RegisterFCMTask registerFCMTask = new RegisterFCMTask(context, tokenID);
         requestToServer(registerFCMTask);
     }
 
