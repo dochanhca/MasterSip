@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <org.linphone.mediastream.video.display.GL2JNIView
+        android:id="@+id/videoSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <SurfaceView
+        android:id="@+id/videoCaptureSurface"
+        android:layout_width="@dimen/width_preview_video"
+        android:layout_height="@dimen/height_preview_video"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/xnormal_margin"
+        android:layout_marginTop="@dimen/xnormal_margin" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_name"
+        style="@style/origin_style_content_text_view_large"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:text="ThangLH"
+        android:textColor="@color/white" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_small"
+        android:layout_below="@id/txt_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:text="00:02"
+        android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/img_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:src="@drawable/ic_switch_camera" />
+
+    <include
+        android:id="@+id/layout_video_call_action"
+        layout="@layout/layout_video_call_action" />
+
+    <LinearLayout
+        android:id="@+id/ll_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/layout_video_call_action"
+        android:layout_marginBottom="@dimen/xnormal_margin"
+        android:background="@drawable/bg_point_video_call"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10"
+        android:visibility="visible">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:text="@string/current_point"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10"
+            android:text=" 0pt"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15" />
+    </LinearLayout>
+
+</RelativeLayout>

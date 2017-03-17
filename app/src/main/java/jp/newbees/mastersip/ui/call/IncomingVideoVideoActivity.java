@@ -3,12 +3,10 @@ package jp.newbees.mastersip.ui.call;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -28,29 +26,14 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
     }
 
     @Override
-    protected int getCallType() {
+    public int getCallType() {
         return Constant.API.VIDEO_CALL;
     }
 
     @Override
-    public void onCallConnected() {
-        countingCallDuration();
-        enableSpeaker(btnOnOffSpeaker.isChecked());
-        showCallingView();
-    }
-
-    /**
-     * start when user during a call
-     */
-    private void showCallingView() {
-        // Only Counting point with female user
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
-            llPoint.setVisibility(View.VISIBLE);
-        }
-
-        layoutVoiceCallingAction.setVisibility(View.VISIBLE);
-        layoutReceivingCallAction.setVisibility(View.GONE);
-        imgLoading.setVisibility(View.GONE);
+    public void onStreamingConnected() {
+        startVideoCall();
+        showVideoCallFragment();
     }
 
     public static void startActivity(Context context, UserItem caller, String callID) {

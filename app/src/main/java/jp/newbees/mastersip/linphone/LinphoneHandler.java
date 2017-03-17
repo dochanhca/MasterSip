@@ -2,6 +2,7 @@ package jp.newbees.mastersip.linphone;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.view.SurfaceView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.linphone.core.LinphoneAddress;
@@ -24,6 +25,7 @@ import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
+import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
 import java.io.File;
@@ -348,19 +350,77 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     /**
-     * @param video
+     * @param enable
      */
-    public final void enableVideo(boolean video) {
-        try {
-            LinphoneCall linphoneCall = linphoneCore.getCurrentCall();
-            LinphoneCallParams params = linphoneCore.createCallParams(linphoneCall);
-            params.setVideoEnabled(video);
-            linphoneCore.acceptCallUpdate(linphoneCall, params);
-        } catch (LinphoneCoreException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+    public final void enableVideo(boolean enable) {
+        LinphoneCall call = linphoneCore.getCurrentCall();
+        call.enableCamera(enable);
+        reinviteWithVideo();
+    }
+
+    private boolean reinviteWithVideo() {
+        LinphoneCall lCall = linphoneCore.getCurrentCall();
+        if (lCall == null) {
+            return false;
         }
+        LinphoneCallParams params = lCall.getCurrentParamsCopy();
+
+        if (params.getVideoEnabled()) return false;
+
+        params.setVideoEnabled(true);
+        params.setAudioBandwidth(0);
+        userFrontCamera();
+
+        // Abort if not enough bandwidth...
+        if (!params.getVideoEnabled()) {
+            return false;
+        }
+
+        // Not yet in video call: try to re-invite with video
+        linphoneCore.updateCall(lCall, params);
+        return true;
+    }
+
+    /**
+     * switch camera and update call and preview window
+     * @param captureView
+     */
+    public void switchCamera(SurfaceView captureView) {
+        try {
+            switchCamera();
+            updateCall();
+
+            // previous call will cause graph reconstruction -> regive preview
+            // window
+            if (captureView != null) {
+                linphoneCore.setPreviewWindow(captureView);
+            }
+        } catch (ArithmeticException ae) {
+            Logger.e(TAG,"Cannot switch camera : no camera");
+        }
+    }
+
+    public void userFrontCamera() {
+        if (AndroidCameraConfiguration.hasFrontCamera()) {
+            linphoneCore.setVideoDevice(1);
+        } else {
+            Logger.e(TAG,"Cannot use front camera : no camera");
+        }
+    }
+
+    private void switchCamera() {
+        int videoDeviceId = linphoneCore.getVideoDevice();
+        videoDeviceId = (videoDeviceId + 1) % AndroidCameraConfiguration.retrieveCameras().length;
+        linphoneCore.setVideoDevice(videoDeviceId);
+    }
+
+    private void updateCall() {
+        LinphoneCall call = linphoneCore.getCurrentCall();
+        if (call == null) {
+            Logger.e(TAG,"Trying to updateCall while not in call: doing nothing");
+            return;
+        }
+        linphoneCore.updateCall(call, null);
     }
 
     public final void call(String roomId, boolean enableVideo) {
@@ -378,5 +438,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public boolean isCalling() {
         return linphoneCore.isIncall();
+    }
+
+    public void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
+        linphoneCore.setVideoWindow(androidVideoWindow);
+    }
+
+    public void setPreviewWindow(SurfaceView captureView) {
+        linphoneCore.setPreviewWindow(captureView);
     }
 }

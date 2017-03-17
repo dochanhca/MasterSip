@@ -2,33 +2,20 @@ package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/11/17.
  */
 
 public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
-    private OutgoingCallView view;
 
-    public BaseHandleOutgoingCallPresenter(Context context, OutgoingCallView view) {
-        super(context);
-        this.view = view;
-    }
-
-    public void endCall(UserItem callee, int callType) {
-        String caller = getCurrentUserItem().getSipItem().getExtension();
-        String callID = ConfigManager.getInstance().getCallId();
-        performCancelCall(caller, callee.getSipItem().getExtension(), callType, callID);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+    public BaseHandleOutgoingCallPresenter(Context context, CallView view) {
+        super(context, view);
     }
 
     @Override
@@ -54,33 +41,5 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
             default:
                 break;
         }
-    }
-
-    @Override
-    protected void onCoinChanged(int coin) {
-        view.onCoinChanged(coin);
-    }
-
-    @Override
-    protected void onRunningOutOfCoin() {
-        view.onRunningOutOfCoin();
-    }
-
-    private void handleCallEnd() {
-        view.onCallEnd();
-    }
-
-    private void handleCallConnected() {
-        view.onCallConnected();
-    }
-
-    public interface OutgoingCallView {
-        void onCallConnected();
-
-        void onCallEnd();
-
-        void onCoinChanged(int coint);
-
-        void onRunningOutOfCoin();
     }
 }

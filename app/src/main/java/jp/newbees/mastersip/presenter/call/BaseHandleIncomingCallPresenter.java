@@ -8,10 +8,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.FlashedEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.event.call.VideoCallEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.JoinCallTask;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -21,26 +19,12 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     private IncomingCallView view;
 
     public BaseHandleIncomingCallPresenter(Context context, IncomingCallView view) {
-        super(context);
+        super(context, view);
         this.view = view;
     }
 
-    public final void acceptCall(String calId) {
-        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
-        requestToServer(joinCallTask);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
-    }
-
-    public final void rejectCall(String caller, int callType, String calId) {
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
-        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        performCancelCall(caller, callee, callType, calId);
-    }
-
-    public void endCall(String caller, int callType, String calId) {
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
-        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        performCancelCall(caller, callee, callType, calId);
+    public void startVideoCall() {
+        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.ENABLE_CAMERA));
     }
 
     @Override
@@ -67,6 +51,8 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
             case ReceivingCallEvent.FLASHED_CALL:
                 handleFlashedCall();
                 break;
+            case ReceivingCallEvent.STREAMING_CALL:
+                view.onStreamingConnected();
             default:
                 break;
         }
@@ -76,37 +62,14 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         view.onFlashedCall();
     }
 
-    private void handleCallEnd() {
-        view.onCallEnd();
-    }
-
-    private void handleCallConnected() {
-        view.onCallConnected();
-    }
-
     public void checkFlashCall() {
         EventBus.getDefault().post(new FlashedEvent());
     }
 
-    @Override
-    protected void onCoinChanged(int coin) {
-        view.onCoinChanged(coin);
-    }
-
-    @Override
-    protected void onRunningOutOfCoin() {
-        view.onRunningOutOfCoin();
-    }
-
-    public interface IncomingCallView {
-        void onCallConnected();
-
-        void onCallEnd();
-
-        void onCoinChanged(int coint);
+    public interface IncomingCallView extends CallView{
 
         void onFlashedCall();
 
-        void onRunningOutOfCoin();
+        void onStreamingConnected();
     }
 }

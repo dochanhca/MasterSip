@@ -326,7 +326,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         isShowNavigationBar = true;
         clearViewAnimation(navigationLayoutGroup, slideUp, View.VISIBLE);
-        navigationLayoutGroup.startAnimation(slideUp);
+        if (navigationLayoutGroup != null) {
+            navigationLayoutGroup.startAnimation(slideUp);
+        }
     }
 
     public void hideNavigation() {
@@ -335,7 +337,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         isShowNavigationBar = false;
         clearViewAnimation(navigationLayoutGroup, slideDown, View.GONE);
-        navigationLayoutGroup.startAnimation(slideDown);
+        if (navigationLayoutGroup != null) {
+            navigationLayoutGroup.startAnimation(slideDown);
+        }
     }
 
     public boolean isShowNavigationBar() {

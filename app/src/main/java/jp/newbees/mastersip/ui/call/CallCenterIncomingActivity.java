@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.call.BaseCenterCallPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterIncomingCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -14,21 +14,21 @@ import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/10/17.
+ * Use for all activity listen incoming call
  */
 
-public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterCallPresenter.CenterCallView,
+public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterIncomingCallPresenter.CenterCallView,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, TextDialog.OnTextDialogPositiveClick {
 
+    private BaseCenterIncomingCallPresenter incomingCallPresenter;
     private static final int REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL = 99;
 
-    private BaseCenterCallPresenter incomingCallPresenter;
     private boolean isMessageDialogShowing = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        incomingCallPresenter = new BaseCenterCallPresenter(getApplicationContext(), this);
-
+        incomingCallPresenter = new BaseCenterIncomingCallPresenter(getApplicationContext(), this);
     }
 
     @Override
@@ -43,10 +43,6 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
         incomingCallPresenter.unRegisterCallEvent();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public void incomingVoiceCall(UserItem caller, String callID) {
