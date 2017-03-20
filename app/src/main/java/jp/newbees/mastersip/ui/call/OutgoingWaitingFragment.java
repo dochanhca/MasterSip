@@ -20,6 +20,7 @@ import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by thangit14 on 3/15/17.
@@ -51,12 +52,13 @@ public class OutgoingWaitingFragment extends BaseFragment {
 
     private UserItem callee;
     private String titleCall;
+    private int callType;
 
     private Handler timerHandler = new Handler();
 
     public static OutgoingWaitingFragment newInstance(UserItem callee,
                                                       String titleCall, int callType) {
-        
+
         Bundle args = new Bundle();
         args.putParcelable(CALLEE, callee);
         args.putInt(CALL_TYPE, callType);
@@ -66,6 +68,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_outgoing_waiting;
@@ -84,6 +87,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
         Bundle bundle = getArguments();
         callee = bundle.getParcelable(CALLEE);
         titleCall = bundle.getString(TITLE_CALL);
+        callType = bundle.getInt(CALL_TYPE);
     }
 
     private void updateView() {
@@ -102,6 +106,12 @@ public class OutgoingWaitingFragment extends BaseFragment {
                     .into(profileImage);
         }
         profileImage.setImageResource(imageID);
+        if (callType != Constant.API.VOICE_CALL) {
+            btnOnOffSpeaker.setChecked(true);
+            enableSpeaker(true);
+        } else {
+            enableSpeaker(false);
+        }
     }
 
     @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
@@ -121,6 +131,19 @@ public class OutgoingWaitingFragment extends BaseFragment {
             default:
                 break;
         }
+    }
+
+    public void enableSpeaker(boolean enable) {
+        BaseHandleOutgoingCallActivity activity = ((BaseHandleOutgoingCallActivity) getActivity());
+        activity.enableSpeaker(enable);
+    }
+
+    public boolean isSpeakerEnable() {
+        return !btnOnOffSpeaker.isChecked();
+    }
+
+    public boolean muteMic() {
+        return btnOnOffMic.isChecked();
     }
 
     public void onCoinChange(int coin) {

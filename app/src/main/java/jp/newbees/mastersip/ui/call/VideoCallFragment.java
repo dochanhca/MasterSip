@@ -38,6 +38,8 @@ import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
 public class VideoCallFragment extends BaseFragment implements View.OnTouchListener {
     private static final String USER_ITEM = "USER ITEM";
     private static final String CALL_TYPE = "CALL TYPE";
+    private static final String SPEAKER = "SPEAKER";
+    private static final String MIC = "MIC";
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
@@ -85,10 +87,13 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     };
     private boolean isShowingView = true;
 
-    public static VideoCallFragment newInstance(UserItem currentUser, int callType) {
+    public static VideoCallFragment newInstance(UserItem currentUser, int callType,
+                                                boolean enableSpeaker, boolean enableMic) {
         Bundle args = new Bundle();
         args.putParcelable(USER_ITEM, currentUser);
         args.putInt(CALL_TYPE, callType);
+        args.putBoolean(SPEAKER, enableSpeaker);
+        args.putBoolean(MIC, enableMic);
         VideoCallFragment fragment = new VideoCallFragment();
         fragment.setArguments(args);
         return fragment;
@@ -115,7 +120,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         setupView();
         fixZOrder(mVideoView, mCaptureView);
         startCounting();
-        enableSpeaker();
     }
 
     @Override
@@ -164,6 +168,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
         txtName.setText(userItem.getUsername());
         countingCallDuration();
+
+        boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
+        boolean muteMic = getArguments().getBoolean(MIC);
+
+        btnOnOffSpeaker.setChecked(enableSpeaker);
+        btnOnOffMic.setChecked(muteMic);
     }
 
     private void bindVideoViewToLinphone() {
