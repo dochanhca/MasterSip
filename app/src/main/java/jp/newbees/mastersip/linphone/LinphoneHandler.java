@@ -25,6 +25,7 @@ import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
+import org.linphone.core.VideoSize;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
@@ -354,6 +355,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
      */
     public final void enableVideo(boolean enable) {
         LinphoneCall call = linphoneCore.getCurrentCall();
+        linphoneCore.setPreferredVideoSize(new VideoSize(1024, 1024));
         call.enableCamera(enable);
         reinviteWithVideo();
     }
@@ -383,6 +385,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     /**
      * switch camera and update call and preview window
+     *
      * @param captureView
      */
     public void switchCamera(SurfaceView captureView) {
@@ -396,7 +399,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 linphoneCore.setPreviewWindow(captureView);
             }
         } catch (ArithmeticException ae) {
-            Logger.e(TAG,"Cannot switch camera : no camera");
+            Logger.e(TAG, "Cannot switch camera : no camera");
         }
     }
 
@@ -404,7 +407,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         if (AndroidCameraConfiguration.hasFrontCamera()) {
             linphoneCore.setVideoDevice(1);
         } else {
-            Logger.e(TAG,"Cannot use front camera : no camera");
+            Logger.e(TAG, "Cannot use front camera : no camera");
         }
     }
 
@@ -417,7 +420,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void updateCall() {
         LinphoneCall call = linphoneCore.getCurrentCall();
         if (call == null) {
-            Logger.e(TAG,"Trying to updateCall while not in call: doing nothing");
+            Logger.e(TAG, "Trying to updateCall while not in call: doing nothing");
             return;
         }
         linphoneCore.updateCall(call, null);
