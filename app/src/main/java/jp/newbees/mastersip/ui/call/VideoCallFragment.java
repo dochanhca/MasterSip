@@ -107,7 +107,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
         moveUpTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_up_txt_time);
         moveDownTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_time);
-        moveUpTxtPoint = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_point);
+        moveUpTxtPoint = AnimationUtils.loadAnimation(getContext(), R.anim.move_up_txt_point);
         moveDownTxtPoint = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_point);
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
@@ -196,7 +196,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             R.id.btn_on_off_camera, R.id.img_switch_camera})
     public void onClick(View view) {
         BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
-
+        resetCounting();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
                 activity.endCall();
@@ -222,13 +222,17 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         switch (v.getId()) {
             case R.id.videoSurface:
             case R.id.videoCaptureSurface:
-                showView();
-                if (myCountingTimerThread != null) {
-                    myCountingTimerThread.reset();
-                }
+                resetCounting();
                 break;
         }
         return true;
+    }
+
+    private void resetCounting() {
+        showView();
+        if (myCountingTimerThread != null) {
+            myCountingTimerThread.reset();
+        }
     }
 
     private void updateVideoView() {
@@ -272,7 +276,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         imgSwitchCamera.startAnimation(fadeOut);
         txtTime.startAnimation(moveUpTxtTime);
         if (llPoint.getVisibility() == View.VISIBLE) {
-            txtPoint.startAnimation(moveDownTxtPoint);
+            llPoint.startAnimation(moveDownTxtPoint);
         }
 
         layoutVideoCallAction.setClickable(false);
@@ -298,7 +302,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         imgSwitchCamera.startAnimation(fadeIn);
         txtTime.startAnimation(moveDownTxtTime);
         if (llPoint.getVisibility() == View.VISIBLE) {
-            txtPoint.startAnimation(moveUpTxtPoint);
+            llPoint.startAnimation(moveUpTxtPoint);
         }
     }
 

@@ -355,7 +355,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
      */
     public final void enableVideo(boolean enable) {
         LinphoneCall call = linphoneCore.getCurrentCall();
-        linphoneCore.setPreferredVideoSize(new VideoSize(1024, 1024));
+        linphoneCore.setPreferredVideoSize(new VideoSize(1080, 1920));
         call.enableCamera(enable);
         reinviteWithVideo();
     }
