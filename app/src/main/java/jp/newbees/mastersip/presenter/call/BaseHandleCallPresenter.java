@@ -33,7 +33,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        view.onCoinChanged(event.getTotal());
+        view.onCoinChanged(event.getCoin());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

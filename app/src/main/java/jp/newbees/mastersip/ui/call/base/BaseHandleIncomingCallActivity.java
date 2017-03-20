@@ -71,7 +71,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCoinChanged(int coin) {
-        if (caller.getGender() == UserItem.FEMALE) {
+        if (caller.getGender() == UserItem.MALE) {
             if (incomingWaitingFragment == null) {
                 videoCallFragment.onCoinChanged(coin);
             } else {

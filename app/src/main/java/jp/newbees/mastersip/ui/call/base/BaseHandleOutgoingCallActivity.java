@@ -18,7 +18,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     private BaseHandleOutgoingCallPresenter presenter;
     private UserItem callee;
-    private int callType;
 
     private OutgoingWaitingFragment outgoingWaitingFragment;
     private VideoCallFragment videoCallFragment;
@@ -28,7 +27,6 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-        callType = getCallType();
         presenter = new BaseHandleOutgoingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
         setPresenter(presenter);
@@ -65,7 +63,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCoinChanged(int coin) {
-        if (callee.getGender() == UserItem.FEMALE) {
+        if (callee.getGender() == UserItem.MALE) {
             if (outgoingWaitingFragment == null) {
                 videoCallFragment.onCoinChanged(coin);
             } else {

@@ -15,6 +15,7 @@ import java.util.Map;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -85,6 +86,9 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
         }
         caller.setSipItem(sipItem);
         caller.setUsername(handleName);
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE ?
+                UserItem.FEMALE : UserItem.MALE;
+        caller.setGender(gender);
         return caller;
     }
 }

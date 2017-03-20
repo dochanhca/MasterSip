@@ -59,17 +59,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem userItem;
-    private int callType;
     private Handler timerHandler = new Handler();
-
-    //    MyCountingTimerThread myCountingTimerThread;
-
-//    private Handler countingHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            hideView();
-//        }
-//    };
 
     public static VideoCallFragment newInstance(UserItem currentUser, int callType) {
         Bundle args = new Bundle();
@@ -90,11 +80,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         ButterKnife.bind(this, mRoot);
 
         userItem = getArguments().getParcelable(USER_ITEM);
-        callType = getArguments().getInt(CALL_TYPE);
 
         setupView();
         fixZOrder(mVideoView, mCaptureView);
-//        startCounting();
     }
 
     @Override
@@ -135,9 +123,8 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private void setupView() {
         bindVideoViewToLinphone();
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        if (userItem.getGender() == UserItem.FEMALE) {
-            llPoint.setVisibility(View.GONE);
-        }
+
+        llPoint.setVisibility(userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(userItem.getUsername());
         countingCallDuration();
@@ -201,7 +188,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             case R.id.videoSurface:
             case R.id.videoCaptureSurface:
                 showView();
-//                myCountingTimerThread.reset();
                 break;
         }
         return true;
@@ -237,27 +223,16 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         timerHandler.postDelayed(countingTimeThread, 0);
     }
 
-    private void hideView() {
-        layoutVideoCallAction.setVisibility(View.GONE);
-        llPoint.setVisibility(View.GONE);
-    }
-
     private void showView() {
         llPoint.setVisibility(userItem.getGender() == UserItem.FEMALE ? View.GONE : View.VISIBLE);
         layoutVideoCallAction.setVisibility(View.VISIBLE);
     }
-
-//    private void startCounting() {
-//        myCountingTimerThread = new MyCountingTimerThread(countingHandler);
-//        Thread countingThread = new Thread(myCountingTimerThread);
-//        countingThread.start();
-//    }
 
     public void onCoinChanged(int coin) {
         if (isDetached()) return;
 
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coin)).append(getString(R.string.pt));
-        txtPoint.setText(point);
+        txtPoint.setText(point.toString());
     }
 }

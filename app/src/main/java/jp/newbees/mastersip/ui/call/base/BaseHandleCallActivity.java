@@ -49,10 +49,6 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.endCall(caller, callType, calId);
     }
 
-    public final void endCall(UserItem callee, int callType) {
-        this.presenter.endCall(callee, callType);
-    }
-
     public final void endCall() {
         presenter.endCall(getCurrentUser(), getCallType());
     }

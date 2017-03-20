@@ -28,7 +28,6 @@ import jp.newbees.mastersip.utils.ConfigManager;
 public class OutgoingWaitingFragment extends BaseFragment {
     private static final String CALLEE = "CALLEE";
     private static final String CALL_TYPE = "CALL_TYPE";
-//    private static final String CALL_ID = "CALL_ID";
     private static final String TITLE_CALL = "TITLE_CALL";
 
     @BindView(R.id.profile_image)
@@ -51,9 +50,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
     protected HiraginoTextView txtPoint;
 
     private UserItem callee;
-    private String callId;
     private String titleCall;
-    private int callType;
 
     private Handler timerHandler = new Handler();
 
@@ -63,7 +60,6 @@ public class OutgoingWaitingFragment extends BaseFragment {
         Bundle args = new Bundle();
         args.putParcelable(CALLEE, callee);
         args.putInt(CALL_TYPE, callType);
-//        args.putString(CALL_ID, callID);
         args.putString(TITLE_CALL, titleCall);
 
         OutgoingWaitingFragment fragment = new OutgoingWaitingFragment();
@@ -87,9 +83,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private void getArgs() {
         Bundle bundle = getArguments();
         callee = bundle.getParcelable(CALLEE);
-//        callId = bundle.getString(CALL_ID);
         titleCall = bundle.getString(TITLE_CALL);
-        callType = bundle.getInt(CALL_TYPE);
     }
 
     private void updateView() {
@@ -134,7 +128,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
         point.append(" ")
                 .append(String.valueOf(coin))
                 .append(getString(R.string.pt));
-        txtPoint.setText(point);
+        txtPoint.setText(point.toString());
     }
 
     // start when user during a call
