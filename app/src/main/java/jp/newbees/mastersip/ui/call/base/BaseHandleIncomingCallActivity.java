@@ -92,7 +92,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         incomingWaitingFragment = null;
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType(), true, true);
+        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType(), false, false);
         transaction.replace(R.id.fragment_container, videoCallFragment,
                 VideoCallFragment.class.getName()).commit();
     }
