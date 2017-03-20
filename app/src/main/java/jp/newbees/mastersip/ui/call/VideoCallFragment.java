@@ -8,6 +8,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
@@ -49,6 +52,8 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     HiraginoTextView txtName;
     @BindView(R.id.txt_time)
     HiraginoTextView txtTime;
+    @BindView(R.id.img_switch_camera)
+    ImageView imgSwitchCamera;
     @BindView(R.id.video_frame)
     RelativeLayout videoFrame;
     @BindView(R.id.txt_point)
@@ -65,12 +70,20 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
     private MyCountingTimerThread myCountingTimerThread;
 
+    private Animation moveUpTxtTime;
+    private Animation moveDownTxtTime;
+    private Animation moveUpTxtPoint;
+    private Animation moveDownTxtPoint;
+    private Animation fadeIn;
+    private Animation fadeOut;
+
     private Handler countingHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             hideView();
         }
     };
+    private boolean isShowingView = true;
 
     public static VideoCallFragment newInstance(UserItem currentUser, int callType) {
         Bundle args = new Bundle();
@@ -91,6 +104,13 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         ButterKnife.bind(this, mRoot);
 
         userItem = getArguments().getParcelable(USER_ITEM);
+
+        moveUpTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_up_txt_time);
+        moveDownTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_time);
+        moveUpTxtPoint = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_point);
+        moveDownTxtPoint = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_point);
+        fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
 
         setupView();
         fixZOrder(mVideoView, mCaptureView);
@@ -242,13 +262,44 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     }
 
     private void hideView() {
-        layoutVideoCallAction.setVisibility(View.GONE);
-        llPoint.setVisibility(View.GONE);
+        if (!isShowingView) {
+            return;
+        }
+        isShowingView = false;
+        layoutVideoCallAction.startAnimation(fadeOut);
+        llPoint.startAnimation(fadeOut);
+        txtName.startAnimation(fadeOut);
+        imgSwitchCamera.startAnimation(fadeOut);
+        txtTime.startAnimation(moveUpTxtTime);
+        if (llPoint.getVisibility() == View.VISIBLE) {
+            txtPoint.startAnimation(moveDownTxtPoint);
+        }
+
+        layoutVideoCallAction.setClickable(false);
+        llPoint.setClickable(false);
+        txtName.setClickable(false);
+        imgSwitchCamera.setClickable(false);
     }
 
     private void showView() {
-        llPoint.setVisibility(userItem.getGender() == UserItem.FEMALE ? View.GONE : View.VISIBLE);
-        layoutVideoCallAction.setVisibility(View.VISIBLE);
+        if (isShowingView) {
+            return;
+        }
+        isShowingView = true;
+
+        layoutVideoCallAction.setClickable(true);
+        llPoint.setClickable(true);
+        txtName.setClickable(true);
+        imgSwitchCamera.setClickable(true);
+
+        layoutVideoCallAction.startAnimation(fadeIn);
+        llPoint.startAnimation(fadeIn);
+        txtName.startAnimation(fadeIn);
+        imgSwitchCamera.startAnimation(fadeIn);
+        txtTime.startAnimation(moveDownTxtTime);
+        if (llPoint.getVisibility() == View.VISIBLE) {
+            txtPoint.startAnimation(moveUpTxtPoint);
+        }
     }
 
     private void startCounting() {
