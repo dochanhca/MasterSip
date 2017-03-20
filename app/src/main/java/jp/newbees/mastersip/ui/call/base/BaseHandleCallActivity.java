@@ -110,6 +110,9 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     private IabHelper getIabHelper() {
+        if (topPresenter == null) {
+            return null;
+        }
         return topPresenter.getIabHelper();
     }
 
