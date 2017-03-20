@@ -85,6 +85,9 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
+        if (getIabHelper() != null) {
+            topPresenter.disposeIabHelper();
+        }
     }
 
     @Override
@@ -113,6 +116,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     @Override
     public void onRunningOutOfCoin() {
         topPresenter = new TopPresenter(this, this);
+        topPresenter.setupForPurchase();
         PaymentDialog.openPaymentDialog(getSupportFragmentManager());
     }
 

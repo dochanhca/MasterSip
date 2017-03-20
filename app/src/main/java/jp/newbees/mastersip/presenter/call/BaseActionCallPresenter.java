@@ -8,11 +8,13 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.event.call.CallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -97,5 +99,28 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
     public final void unRegisterEvent() {
         EventBus.getDefault().unregister(this);
+    }
+
+    public void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
+        SendMessageRequestEnableCallTask task = new SendMessageRequestEnableCallTask(context, userItem, type);
+        requestToServer(task);
+    }
+
+    public String getMessageSendRequestSuccess(UserItem userItem,SendMessageRequestEnableCallTask.Type type) {
+        String message = "";
+        switch (type) {
+            case VOICE:
+                message = String.format(context.getString(R.string.message_request_enable_voice_success), userItem.getUsername());
+                break;
+            case VIDEO:
+                message = String.format(context.getString(R.string.message_request_enable_video_success), userItem.getUsername());
+                break;
+            case VIDEO_CHAT:
+                message = String.format(context.getString(R.string.message_request_enable_video_chat_success), userItem.getUsername());
+                break;
+            default:
+                break;
+        }
+        return message;
     }
 }
