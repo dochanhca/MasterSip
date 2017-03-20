@@ -115,6 +115,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         setupView();
         fixZOrder(mVideoView, mCaptureView);
         startCounting();
+        enableSpeaker();
     }
 
     @Override
@@ -226,6 +227,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
                 break;
         }
         return true;
+    }
+
+    private void enableSpeaker() {
+        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
+        activity.enableSpeaker(true);
+
     }
 
     private void resetCounting() {
