@@ -253,7 +253,7 @@ public class JSONUtils {
                 chatItem = parseTextChatItem(jData, sender);
                 break;
             case CHAT_IMAGE:
-                chatItem = parseImageChatItem(jData, sender);
+                chatItem = parseImageChatItem(jData);
                 break;
             case CHAT_GIFT:
                 break;
@@ -269,7 +269,7 @@ public class JSONUtils {
         return chatItem;
     }
 
-    private static BaseChatItem parseImageChatItem(JSONObject jData, UserItem me) throws JSONException {
+    private static BaseChatItem parseImageChatItem(JSONObject jData) throws JSONException {
         JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
         String extensionSender = jSender.getString(Constant.JSON.EXTENSION);
 
@@ -295,14 +295,19 @@ public class JSONUtils {
         imageChatItem.setFullDate(jData.getString(Constant.JSON.DATE));
         imageChatItem.setShortDate(DateTimeUtils.getShortTime(imageChatItem.getFullDate()));
 
+        imageChatItem.setImageItem(parseChatImage(jData));
+
+        return imageChatItem;
+    }
+
+    private static ImageItem parseChatImage(JSONObject jData) throws JSONException {
         JSONObject jImage = jData.getJSONObject(Constant.JSON.IMAGE);
         ImageItem imageItem = new ImageItem();
         imageItem.setOriginUrl(jImage.getString(Constant.JSON.PATH));
         imageItem.setThumbUrl(jImage.getString(Constant.JSON.THUMB));
-
-        imageChatItem.setImageItem(imageItem);
-
-        return imageChatItem;
+        imageItem.setWidth(jImage.getInt(Constant.JSON.WIDTH));
+        imageItem.setHeight(jImage.getInt(Constant.JSON.HEIGHT));
+        return imageItem;
     }
 
     private static final DeletedChatItem parseDeletedChatItem(JSONObject jData, UserItem sender) throws JSONException {
@@ -503,10 +508,7 @@ public class JSONUtils {
                 break;
             case BaseChatItem.ChatType.CHAT_IMAGE:
                 baseChatItem = new ImageChatItem();
-                JSONObject jImage = jMessage.getJSONObject(Constant.JSON.IMAGE);
-                ImageItem imageItem = new ImageItem(jImage.getString(Constant.JSON.PATH),
-                        jImage.getString(Constant.JSON.THUMBNAIL));
-                ((ImageChatItem) baseChatItem).setImageItem(imageItem);
+                ((ImageChatItem) baseChatItem).setImageItem(parseChatImage(jMessage));
                 break;
             case BaseChatItem.ChatType.CHAT_GIFT:
                 baseChatItem = parseGiftChatItem(jMessage, context, members);

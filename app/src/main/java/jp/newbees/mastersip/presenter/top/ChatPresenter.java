@@ -34,7 +34,8 @@ import jp.newbees.mastersip.utils.ConfigManager;
  * Created by thangit14 on 1/11/17.
  */
 
-public class ChatPresenter extends BaseActionCallPresenter implements BaseUploadTask.ErrorListener, Response.Listener<BaseChatItem> {
+public class ChatPresenter extends BaseActionCallPresenter implements BaseUploadTask.ErrorListener,
+        Response.Listener<BaseChatItem> {
 
     private ChatPresenterListener chatPresenterListener;
 
