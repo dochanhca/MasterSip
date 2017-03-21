@@ -79,6 +79,32 @@ public class JSONUtils {
         return userItem;
     }
 
+    public static List<UserItem> parseUsersForFilterByName(JSONObject data) throws JSONException {
+        JSONArray jArray = data.getJSONArray(Constant.JSON.USERS);
+        ArrayList<UserItem> result = new ArrayList<>();
+        for (int i = 0, n = jArray.length(); i < n; i++) {
+            JSONObject jUser = jArray.getJSONObject(i);
+            UserItem userItem = new UserItem();
+            parseBasicUserInfo(userItem, jUser);
+
+            if (jUser.has(Constant.JSON.SETTING)) {
+                JSONObject jSetting = jUser.getJSONObject(Constant.JSON.SETTING);
+                SettingItem settingItem = new SettingItem();
+
+                settingItem.setChat(jSetting.getInt(Constant.JSON.CHAT_SET));
+                settingItem.setVoiceCall(jSetting.getInt(Constant.JSON.VOICE_CALL_SET));
+                settingItem.setVideoCall(jSetting.getInt(Constant.JSON.VIDEO_CALL_SET));
+                userItem.setSettings(settingItem);
+            }
+
+            ImageItem avatar = new ImageItem();
+            avatar.setOriginUrl(jUser.getString(Constant.JSON.AVATAR));
+            userItem.setAvatarItem(avatar);
+            result.add(userItem);
+        }
+        return result;
+    }
+
     public static List<UserItem> parseUsers(JSONObject data) throws JSONException {
         JSONArray jArray = data.getJSONArray(Constant.JSON.USERS);
         ArrayList<UserItem> result = new ArrayList<>();
@@ -98,7 +124,6 @@ public class JSONUtils {
             }
 
             ImageItem avatar = new ImageItem();
-            avatar.setImageId(getInt(jUser, Constant.JSON.AVATAR_ID));
             avatar.setOriginUrl(jUser.getString(Constant.JSON.AVATAR));
             userItem.setAvatarItem(avatar);
             result.add(userItem);
