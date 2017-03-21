@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
@@ -425,7 +426,7 @@ public class JSONUtils {
             JSONArray jMessages = jListMessage.getJSONArray(Constant.JSON.MESSAGES);
             for (int j = jMessages.length() - 1; j >= 0; j--) {
                 JSONObject jMessage = jMessages.getJSONObject(j);
-                result.add(getBaseChatItemInHistory(jMessage, sectionFirstPosition, members));
+                result.add(getBaseChatItemInHistory(jMessage, sectionFirstPosition, members, context));
             }
             sectionFirstPosition = result.size();
         }
@@ -465,10 +466,9 @@ public class JSONUtils {
     }
 
     private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition,
-                                                         HashMap<String, UserItem> members) throws JSONException {
+                                                         HashMap<String, UserItem> members, Context context) throws JSONException {
 
         BaseChatItem baseChatItem;
-        UserItem owner = ConfigManager.getInstance().getCurrentUser();
         int type = jMessage.getInt(Constant.JSON.TYPE);
         switch (type) {
             case BaseChatItem.ChatType.CHAT_TEXT:
@@ -484,7 +484,7 @@ public class JSONUtils {
                 ((ImageChatItem) baseChatItem).setImageItem(imageItem);
                 break;
             case BaseChatItem.ChatType.CHAT_GIFT:
-                baseChatItem = parseGiftChatItem(jMessage);
+                baseChatItem = parseGiftChatItem(jMessage, context, members);
                 break;
             case BaseChatItem.ChatType.CHAT_VOICE_CALL:
                 baseChatItem = parseVoiceCallChatItem(jMessage);
@@ -501,7 +501,6 @@ public class JSONUtils {
         baseChatItem.setMessageId(jMessage.getInt(Constant.JSON.MESSAGE_ID));
         baseChatItem.setMessageState(jMessage.getInt(Constant.JSON.STATUS));
         baseChatItem.setSectionFirstPosition(sectionFirstPosition);
-
         String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
         baseChatItem.setOwner(members.get(sendId));
         return baseChatItem;
@@ -519,10 +518,13 @@ public class JSONUtils {
         return voiceCallChatItem;
     }
 
-    private static BaseChatItem parseGiftChatItem(JSONObject jMessage) throws JSONException {
+    private static BaseChatItem parseGiftChatItem(JSONObject jMessage, Context context, HashMap<String, UserItem> members) throws JSONException {
         GiftChatItem giftChatItem = new GiftChatItem();
+        String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
+        giftChatItem.setOwner(members.get(sendId));
+
         JSONObject jGift = jMessage.getJSONObject(Constant.JSON.GIFT);
-        String context = jGift.getString(Constant.JSON.CONTEXT);
+        String content = jGift.getString(Constant.JSON.CONTEXT);
 
         GiftItem giftItem = new GiftItem();
         int giftId = jGift.getInt(Constant.JSON.ID);
@@ -536,7 +538,21 @@ public class JSONUtils {
         giftItem.setPrice(point);
         giftItem.setGiftImage(imageItem);
 
-        giftChatItem.setContent(context);
+        if (giftChatItem.isOwner()) {
+            giftChatItem.setContent(content);
+        } else {
+            JSONObject jSenderUser = jGift.getJSONObject(Constant.JSON.INTERACTION_USER);
+            String senderName = jSenderUser.getString(Constant.JSON.HANDLE_NAME);
+
+            StringBuilder giftContent = new StringBuilder();
+            giftContent.append(senderName)
+                    .append(context.getString(R.string.from))
+                    .append("「").append(giftName).append("」")
+                    .append(context.getString(R.string.gift))
+                    .append(" (").append(point).append(context.getString(R.string.pt)).append(") ")
+                    .append(context.getString(R.string.has_arrived));
+            giftChatItem.setContent(giftContent.toString());
+        }
         giftChatItem.setGiftItem(giftItem);
         return giftChatItem;
     }

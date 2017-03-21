@@ -201,7 +201,7 @@
                     android:paddingTop="@dimen/_3dp"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_gift_in_chat"
-                    app:text="@string/gift"
+                    app:text="@string/give_a_gift"
                     app:textColorNormal="@color/white" />
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
