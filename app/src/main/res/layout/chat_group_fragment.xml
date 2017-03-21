@@ -66,8 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="@string/there_is_no_conversation_yet"
-            android:textSize="@dimen/text_size_13" />
+            android:text="@string/there_is_no_conversation_yet" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_message_2"

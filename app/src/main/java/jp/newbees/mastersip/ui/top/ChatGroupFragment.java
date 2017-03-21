@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -67,6 +68,8 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     TextView txtDeleteChatRoom;
     @BindView(R.id.txt_read_all)
     TextView txtReadAll;
+    @BindView(R.id.btn_go)
+    Button btnGo;
 
     private ChatGroupPresenter presenter;
     private ChatGroupAdapter chatGroupAdapter;
@@ -297,12 +300,16 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
                     , 3, 7, 0);
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
                     , 8, 13, 0);
+
+            btnGo.setText(getString(R.string.i_will_go_looking_for_a_girl));
         } else {
             message = new SpannableString(getString(R.string.mess_chat_room_for_girl));
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
                     , 15, 19, 0);
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
                     , 20, 22, 0);
+
+            btnGo.setText(getString(R.string.i_will_go_looking_for_a_man));
         }
 
         txtMessage2.setText(message, TextView.BufferType.SPANNABLE);
