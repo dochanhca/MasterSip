@@ -7,26 +7,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
-import org.linphone.core.LinphoneCoreException;
-
-import jp.newbees.mastersip.event.RegisterVoIPEvent;
-import jp.newbees.mastersip.event.call.CallEvent;
-import jp.newbees.mastersip.event.call.FlashedEvent;
-import jp.newbees.mastersip.event.call.MicrophoneEvent;
-import jp.newbees.mastersip.event.call.ReceivingCallEvent;
-import jp.newbees.mastersip.event.call.RenderingVideoEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
-import jp.newbees.mastersip.event.call.SpeakerEvent;
-import jp.newbees.mastersip.event.call.VideoCallEvent;
-import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -37,42 +19,30 @@ public class LinphoneService extends Service {
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
-    private volatile boolean hasLoginVoIPInProgress;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG, "onCreate");
-        EventBus.getDefault().register(this);
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
-        linphoneHandler = new LinphoneHandler(notifier, this.getApplicationContext());
+        linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
-        if (!ConfigManager.getInstance().getLoginVoIPState() && !hasLoginVoIPInProgress) {
-            SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
-            loginToVoIP(sipItem);
-        } else if (ConfigManager.getInstance().getLoginVoIPState()) {
-            EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
-        }
-        return super.onStartCommand(intent, flags, startId);
+        SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
+        loginToVoIP(sipItem);
+        return START_NOT_STICKY;
     }
 
     private void loginToVoIP(final SipItem sipItem) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Logger.e("LinphonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
-                    hasLoginVoIPInProgress = true;
-                    linphoneHandler.loginVoIPServer(
-                            sipItem.getExtension(), sipItem.getSecret());
-                } catch (LinphoneCoreException e) {
-                    Logger.e(TAG, e.getMessage());
-                }
+                Logger.e("LinphonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                linphoneHandler.loginVoIPServer(sipItem);
             }
         }).start();
     }
@@ -86,181 +56,19 @@ public class LinphoneService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
-        linphoneHandler.stopMainLoop();
-        ConfigManager.getInstance().saveLoginVoIPState(false);
+        linphoneHandler.destroy();
         Logger.e(TAG, "Stop Linphone Service");
     }
 
     /**
      * Run when app be killed
+     *
      * @param rootIntent
      */
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        Logger.e(TAG, "onTaskRemoved");
+        stopSelf();
         super.onTaskRemoved(rootIntent);
-        ConfigManager.getInstance().saveLoginVoIPState(false);
     }
-
-    /**
-     * This method invoked by EventBus when user accept or reject a call
-     *
-     * @param acceptCallEvent
-     */
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onSendingCallEvent(SendingCallEvent acceptCallEvent) {
-        switch (acceptCallEvent.getEvent()) {
-            case SendingCallEvent.ACCEPT_CALL:
-                handleAcceptCall();
-                break;
-            case SendingCallEvent.REJECT_CALL:
-                handleRejectCall();
-                break;
-            case SendingCallEvent.END_CALL:
-                handleEndCall();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public final void onCheckFlashedCall(FlashedEvent flashedEvent) {
-        boolean calling = linphoneHandler.isCalling();
-        if (!calling) {
-            handleFlashedCall();
-        }
-    }
-
-    private void handleFlashedCall() {
-        EventBus.getDefault().post(new ReceivingCallEvent(ReceivingCallEvent.FLASHED_CALL));
-    }
-
-    /**
-     * This method invoked by EventBus when enable or disable Speaker
-     *
-     * @param speakerEvent
-     */
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onSpeakerEvent(SpeakerEvent speakerEvent) {
-        linphoneHandler.enableSpeaker(speakerEvent.isEnable());
-    }
-
-    /**
-     * This method invoked by EventBus when enable or disable Mic
-     *
-     * @param microphoneEvent
-     */
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onMicrophoneEvent(MicrophoneEvent microphoneEvent) {
-        linphoneHandler.muteMicrophone(microphoneEvent.isMute());
-    }
-
-    /**
-     * use incoming call event
-     * @param videoCallEvent
-     */
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onVideoCallEvent(VideoCallEvent videoCallEvent) {
-        switch (videoCallEvent.getEvent()) {
-            case ENABLE_CAMERA:
-                linphoneHandler.enableVideo(true);
-                break;
-            case DISABLE_CAMERA:
-                linphoneHandler.enableVideo(false);
-                break;
-            case SWITCH_CAMERA:
-                linphoneHandler.switchCamera(videoCallEvent.getmCaptureView());
-                break;
-            case USE_FRONT_CAMERA:
-                linphoneHandler.userFrontCamera();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onRenderingVideoEvent(RenderingVideoEvent event) {
-        switch (event.getEvent()) {
-            case ON_VIDEO_RENDERING:
-                linphoneHandler.setVideoWindow(event.getAndroidVideoWindow());
-                break;
-            case ON_PREVIEW:
-                linphoneHandler.setPreviewWindow(event.getCaptureView());
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onCallEvent(CallEvent callEvent) {
-        int callType = callEvent.getCallType();
-        ConfigManager.getInstance().setCurrentCallType(callType);
-        switch (callType) {
-            case Constant.API.VOICE_CALL:
-                handleVoiceCall(callEvent.getRoomId());
-                break;
-            case Constant.API.VIDEO_CALL:
-                handleVideoVideoCall(callEvent.getRoomId());
-                break;
-            case Constant.API.VIDEO_CHAT_CALL:
-                handleVideoChatCall(callEvent.getRoomId());
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void handleVoiceCall(String roomId) {
-        linphoneHandler.enableSpeaker(false);
-        linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(roomId, false);
-    }
-
-    private void handleVideoVideoCall(String roomId) {
-        linphoneHandler.enableSpeaker(false);
-        linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(roomId,true);
-    }
-
-    private void handleVideoChatCall(String roomId) {
-        linphoneHandler.enableSpeaker(true);
-        linphoneHandler.muteMicrophone(false);
-        linphoneHandler.call(roomId,true);
-    }
-
-    /**
-     * End current call
-     */
-    private void handleEndCall() {
-        linphoneHandler.endCall();
-    }
-
-    /**
-     * Reject a incoming call
-     */
-    private void handleRejectCall() {
-        linphoneHandler.rejectCall();
-    }
-
-    /**
-     * Accept a incoming call
-     */
-    private void handleAcceptCall() {
-        try {
-            linphoneHandler.acceptCall();
-        } catch (LinphoneCoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public final void onSendingReadMessageEvent(SendingReadMessageEvent sendingReadMessageEvent) {
-        try {
-            String fromExtension = sendingReadMessageEvent.getCurrentUser().getSipItem().getExtension();
-            String toExtension = sendingReadMessageEvent.getReplyUser().getSipItem().getExtension();
-            String raw = JSONUtils.genRawToChangeMessageState(sendingReadMessageEvent.getBaseChatItem(), fromExtension);
-            linphoneHandler.sendPacket(raw, toExtension);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

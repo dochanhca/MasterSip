@@ -2,10 +2,8 @@ package jp.newbees.mastersip.presenter.profile;
 
 import android.content.Context;
 
-import org.greenrobot.eventbus.EventBus;
-
 import jp.newbees.mastersip.event.call.BusyCallEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -31,7 +29,7 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
 
     public void endCall(UserItem callee, int callType) {
         requestCancelCall(callee, callType);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+        LinphoneHandler.getInstance().endCall();
     }
 
     private void requestCancelCall(UserItem callee, int callType) {

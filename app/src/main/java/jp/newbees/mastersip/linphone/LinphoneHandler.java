@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.view.SurfaceView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
 import org.linphone.core.LinphoneAddress;
 import org.linphone.core.LinphoneAuthInfo;
 import org.linphone.core.LinphoneCall;
@@ -32,11 +33,16 @@ import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Timer;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.model.BaseChatItem;
+import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -44,24 +50,37 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class LinphoneHandler implements LinphoneCoreListener {
-    private final String TAG = getClass().getSimpleName();
+    private static final String TAG = "LinphoneHandler";
     private Context context;
     private boolean running;
     private LinphoneNotifier notifier;
     private LinphoneCore linphoneCore;
 
+    private static LinphoneHandler instance;
+
+    private Timer mTimer;
+
     /**
      * @param notifier
      * @param context
      */
-    public LinphoneHandler(LinphoneNotifier notifier, Context context) {
+    private LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
         this.context = context;
     }
 
+    public synchronized static final LinphoneHandler createAndStart(LinphoneNotifier notifier, Context context) {
+        if (instance != null) {
+            throw new RuntimeException("Linphone Handler is already initialized");
+        }
+        instance = new LinphoneHandler(notifier, context);
+
+        return instance;
+    }
+
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
         this.write(cfg.getIdentity() + " : " + state.toString());
-        Logger.e("" + this + getClass().getSimpleName(), state.toString());
+        Logger.e(TAG, state.toString());
         RegisterVoIPManager.getInstance().registrationStateChanged(state, notifier);
     }
 
@@ -177,6 +196,46 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setCpuCount(availableCores);
     }
 
+
+    public static synchronized final LinphoneCore getLinphoneCore() {
+        return getInstance().linphoneCore;
+    }
+
+    public static synchronized final LinphoneHandler getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        throw new RuntimeException("Linphone Manager should be created before accessed");
+    }
+
+    public synchronized void loginVoIPServer(final SipItem sipItem) {
+        try {
+            loginVoIPServer(
+                    sipItem.getExtension(), sipItem.getSecret());
+        } catch (LinphoneCoreException e) {
+            Logger.e(TAG, e.getMessage());
+        }
+    }
+
+    public static synchronized final void restart(SipItem sipItem) {
+        destroy();
+        getInstance().loginVoIPServer(sipItem);
+    }
+
+    public static synchronized void destroy() {
+        if (getInstance() == null) {
+            return;
+        }
+        try {
+            getInstance().running = false;
+            getInstance().mTimer.cancel();
+            getInstance().linphoneCore.destroy();
+        } catch (RuntimeException e) {
+            Logger.e(TAG, e.getMessage());
+        }
+    }
+
+
     /**
      * Login to VoIP Server (such as Aterisk, FreeSWITCH ...)
      *
@@ -184,7 +243,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
      * @param password  abcxzy
      * @throws LinphoneCoreException
      */
-    public void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
+    private synchronized void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
         String sipAddress = this.genSipAddressByExtension(extension);
         LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
         createLinphoneCore();
@@ -251,10 +310,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public void stopMainLoop() {
-        this.running = false;
-    }
-
     private void write(String s) {
         this.notifier.notify(s);
     }
@@ -319,6 +374,41 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     }
 
+    public final void makeCall(int callType, String roomId) {
+        ConfigManager.getInstance().setCurrentCallType(callType);
+        switch (callType) {
+            case Constant.API.VOICE_CALL:
+                handleVoiceCall(roomId);
+                break;
+            case Constant.API.VIDEO_CALL:
+                handleVideoVideoCall(roomId);
+                break;
+            case Constant.API.VIDEO_CHAT_CALL:
+                handleVideoChatCall(roomId);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleVoiceCall(String roomId) {
+        enableSpeaker(false);
+        muteMicrophone(false);
+        call(roomId, false);
+    }
+
+    private void handleVideoVideoCall(String roomId) {
+        enableSpeaker(false);
+        muteMicrophone(false);
+        call(roomId, true);
+    }
+
+    private void handleVideoChatCall(String roomId) {
+        enableSpeaker(true);
+        muteMicrophone(false);
+        call(roomId, true);
+    }
+    
     public final void acceptCall() throws LinphoneCoreException {
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         linphoneCore.acceptCall(currentCall);
@@ -435,6 +525,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.inviteAddressWithParams(lAddress, params);
             Logger.e(TAG, "make a call to: " + addressSip);
         } catch (LinphoneCoreException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final void sendReadMessageEvent(String fromExtension, String toExtension, BaseChatItem baseChatItem) {
+        try {
+            String raw = JSONUtils.genRawToChangeMessageState(baseChatItem, fromExtension);
+            sendPacket(raw, toExtension);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

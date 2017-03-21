@@ -1,17 +1,16 @@
 package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
+import android.view.SurfaceView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
-import jp.newbees.mastersip.event.call.MicrophoneEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
-import jp.newbees.mastersip.event.call.SpeakerEvent;
-import jp.newbees.mastersip.event.call.VideoCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.JoinCallTask;
@@ -47,49 +46,48 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
     }
 
     public final void enableSpeaker(boolean enable) {
-        EventBus.getDefault().post(new SpeakerEvent(enable));
+        LinphoneHandler.getInstance().enableSpeaker(enable);
     }
 
     public final void muteMicrophone(boolean mute) {
-        EventBus.getDefault().post(new MicrophoneEvent(mute));
+        LinphoneHandler.getInstance().muteMicrophone(mute);
     }
 
-    public final void switchCamera() {
-        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.SWITCH_CAMERA));
+    public final void switchCamera(SurfaceView mCaptureView) {
+        LinphoneHandler.getInstance().switchCamera(mCaptureView);
     }
 
     public final void useFrontCamera() {
-        EventBus.getDefault().post(new VideoCallEvent(VideoCallEvent.VideoEvent.USE_FRONT_CAMERA));
+        LinphoneHandler.getInstance().userFrontCamera();
     }
 
     public final void enableCamera(boolean enable) {
-        EventBus.getDefault().post(new VideoCallEvent(enable ?
-                VideoCallEvent.VideoEvent.ENABLE_CAMERA : VideoCallEvent.VideoEvent.DISABLE_CAMERA));
+        LinphoneHandler.getInstance().enableVideo(enable);
     }
 
-    public final void acceptCall(String calId) {
+    public final void acceptCall(String calId) throws LinphoneCoreException {
         JoinCallTask joinCallTask = new JoinCallTask(context, calId);
         requestToServer(joinCallTask);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.ACCEPT_CALL));
+        LinphoneHandler.getInstance().acceptCall();
     }
 
     public final void rejectCall(String caller, int callType, String calId) {
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
+        LinphoneHandler.getInstance().rejectCall();
         String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
         performCancelCall(caller, callee, callType, calId);
     }
 
     public void endCall(String caller, int callType, String calId) {
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
+        LinphoneHandler.getInstance().endCall();
         String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
         performCancelCall(caller, callee, callType, calId);
     }
 
     public void endCall(UserItem callee, int callType) {
+        LinphoneHandler.getInstance().endCall();
         String caller = getCurrentUserItem().getSipItem().getExtension();
         String callID = ConfigManager.getInstance().getCallId();
         performCancelCall(caller, callee.getSipItem().getExtension(), callType, callID);
-        EventBus.getDefault().post(new SendingCallEvent(SendingCallEvent.END_CALL));
     }
 
     protected void handleCallEnd() {

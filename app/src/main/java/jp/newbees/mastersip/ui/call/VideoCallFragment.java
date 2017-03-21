@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
-import org.greenrobot.eventbus.EventBus;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 
 import butterknife.BindView;
@@ -24,7 +23,7 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.call.RenderingVideoEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
@@ -223,7 +222,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
                 updateVideoView();
                 break;
             case R.id.img_switch_camera:
-                activity.switchCamera();
+                activity.switchCamera(mCaptureView);
                 break;
         }
     }
@@ -263,12 +262,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     }
 
     private void bindingCaptureView(SurfaceView mCaptureView) {
-        EventBus.getDefault().post(RenderingVideoEvent.getEventForVideoPreview(mCaptureView));
+        LinphoneHandler.getInstance().setPreviewWindow(mCaptureView);
     }
 
 
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        EventBus.getDefault().post(RenderingVideoEvent.getEventForVideoRendering(androidVideoWindow));
+        LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
     }
 
     private void fixZOrder(SurfaceView video, SurfaceView preview) {

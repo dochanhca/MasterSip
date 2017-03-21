@@ -4,13 +4,11 @@ import android.content.Context;
 
 import com.android.volley.Response;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.InputStream;
 import java.util.Map;
 
 import jp.newbees.mastersip.event.call.BusyCallEvent;
-import jp.newbees.mastersip.eventbus.SendingReadMessageEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -158,7 +156,8 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     public void sendingReadMessageUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
         UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        EventBus.getDefault().post(new SendingReadMessageEvent(baseChatItem, currentUser, sender));
+        LinphoneHandler.getInstance().sendReadMessageEvent(currentUser.getSipItem().getExtension(),
+                sender.getSipItem().getExtension(), baseChatItem);
     }
 
     public void loadChatHistory(UserItem friendUser, int lastMessageId) {
