@@ -204,8 +204,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
+//        private static final String DEVELOPMENT_IP = "52.199.112.26";
+                private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -321,7 +321,7 @@ public final class Constant {
             //Prevent init object
         }
 
-        public static final boolean DEBUG = false;
+        public static final boolean DEBUG = true;
         public static final boolean SHOW_DATA_REQUEST = true;
         public static final String PREFERENCE_NAME = "MasterSip";
         public static final String AUTHORIZATION = "AUTHORIZATION";

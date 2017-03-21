@@ -82,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_20"
+            android:textSize="@dimen/text_size_15"
             android:background="@drawable/bg_button_primary_big"
             android:text="@string/i_will_go_looking_for_a_girl" />
     </LinearLayout>
