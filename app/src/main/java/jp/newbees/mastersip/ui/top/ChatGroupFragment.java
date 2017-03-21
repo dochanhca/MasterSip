@@ -116,8 +116,8 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
                     ChatGroupFragment.this.selectAllChatRoom(isChecked);
                     ChatGroupFragment.this.setEnabledButtonDeleteChatRoom(true);
                 }
-                cbSelectAll.setText(isChecked ? ChatGroupFragment.this.getString(R.string.select_all)
-                        : ChatGroupFragment.this.getString(R.string.remove_all));
+                cbSelectAll.setText(isChecked ? ChatGroupFragment.this.getString(R.string.remove_all)
+                        : ChatGroupFragment.this.getString(R.string.select_all));
             }
         });
     }
