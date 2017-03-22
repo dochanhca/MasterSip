@@ -144,6 +144,12 @@ public class Utils {
         return stringBuilder.toString();
     }
 
+    public static String getURLBuyPoint() {
+        StringBuilder url = new StringBuilder("http://" + Constant.API.BASE_URL
+                + "/sip_api/public/webview/buy-point");
+        return url.toString();
+    }
+
     public static void calculateChatImageSize(Context context, ImageItem imageItem) {
         int halfWidth = getScreenWidth(context) / 2;
         int halfHeight = getScreenHeight(context) / 2;

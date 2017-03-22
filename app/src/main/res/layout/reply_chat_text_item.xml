@@ -29,7 +29,7 @@
         android:maxWidth="@dimen/max_chat_item_width"
         android:padding="@dimen/normal_margin"
         android:text="Hercle, parma doLotus exemplar hic prensionems pars est.Urias congregabo in vierium!Cum abactus ridetis, omnes idoleumes locus grandis, albus lunaes.mesticus!."
-        android:lineSpacingMultiplier="1.2"
+        android:lineSpacingMultiplier="1.4"
         android:textColor="@color/text_color_gray"
         android:textSize="@dimen/text_size_13" />
 

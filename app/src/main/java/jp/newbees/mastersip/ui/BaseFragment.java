@@ -102,7 +102,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public final void showMessageDialog(String title, String content, String note,
-                                           boolean isHideActionButton) {
+                                        boolean isHideActionButton) {
 
         if (isMessageDialogShowing) {
             return;
@@ -174,6 +174,6 @@ public abstract class BaseFragment extends Fragment {
      * set listener from button back in android hardware
      */
     protected void setOnBackPressed(BaseActivity.OnBackPressed listener) {
-        ((BaseActivity)getActivity()).setOnBackPressed(listener);
+        ((BaseActivity) getActivity()).setOnBackPressed(listener);
     }
 }

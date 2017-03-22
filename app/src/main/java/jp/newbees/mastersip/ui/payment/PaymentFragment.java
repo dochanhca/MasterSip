@@ -9,6 +9,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,21 +19,27 @@ import butterknife.ButterKnife;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by thangit14 on 2/21/17.
  */
 
-public class PaymentFragment extends BaseFragment {
+public class PaymentFragment extends BaseFragment implements BaseActivity.OnBackPressed {
 
     private static final String MY_URL = "MY_URL";
     private static final String TITLE = "TITLE";
 
     @BindView(R.id.webview)
     WebView webview;
+    @BindView(R.id.txt_action_bar_title)
+    TextView txtActionBarTitle;
+    @BindView(R.id.img_back)
+    ImageView imgBack;
 
     private TopPresenter topPresenter;
 
@@ -44,10 +52,6 @@ public class PaymentFragment extends BaseFragment {
         return fragment;
     }
 
-    public WebView getWebview() {
-        return webview;
-    }
-
     @Override
     protected int layoutId() {
         return R.layout.fragment_webview;
@@ -56,12 +60,28 @@ public class PaymentFragment extends BaseFragment {
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-        setFragmentTitle(getArguments().getString(TITLE));
+        setOnBackPressed(this);
+        txtActionBarTitle.setText(getArguments().getString(TITLE));
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         loadWebView(webview);
 
         topPresenter = ((TopActivity) getActivity()).getPresenter();
         topPresenter.setupForPurchase();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webview.getUrl().contains(Utils.getURLBuyPoint())) {
+            webview.goBack();
+        } else {
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
     private void loadWebView(WebView webview) {
@@ -93,7 +113,7 @@ public class PaymentFragment extends BaseFragment {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (isPaymentSucces(url)) {
+            if (isPaymentSuccess(url)) {
                 checkPaymentSuccess(url);
                 return true;
             }
@@ -104,7 +124,7 @@ public class PaymentFragment extends BaseFragment {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = request.getUrl().toString();
-            if (isPaymentSucces(url)) {
+            if (isPaymentSuccess(url)) {
                 checkPaymentSuccess(url);
                 return true;
             }
@@ -121,7 +141,7 @@ public class PaymentFragment extends BaseFragment {
             return parts[1];
         }
 
-        public boolean isPaymentSucces(String url) {
+        public boolean isPaymentSuccess(String url) {
             return url.contains(Constant.API.BIT_CASH_PAYMENT_SUCCESS) ||
                     url.contains(Constant.API.CREDIT_CASH_PAYMENT_SUCCESS);
         }
