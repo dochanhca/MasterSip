@@ -147,6 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (onBackPressed != null) {
             onBackPressed.onBackPressed();
+            return;
         }
         super.onBackPressed();
     }

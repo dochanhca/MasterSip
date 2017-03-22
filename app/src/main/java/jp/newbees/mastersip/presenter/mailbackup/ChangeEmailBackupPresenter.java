@@ -65,7 +65,7 @@ public class ChangeEmailBackupPresenter extends BasePresenter {
     public void backToMyMenuFragment(FragmentManager fragmentManager) {
         if (fragmentManager != null) {
             int count = fragmentManager.getBackStackEntryCount();
-            for (int i = 0; i < count - 1; i++) {
+            for (int i = 0; i <= count - 1; i++) {
                 fragmentManager.popBackStackImmediate();
             }
         }
