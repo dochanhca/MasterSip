@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 
 /**
@@ -141,5 +142,20 @@ public class Utils {
         stringBuilder.append(authorization);
         stringBuilder.append("&version_id=2&platform=1");
         return stringBuilder.toString();
+    }
+
+    public static String getURLBuyPoint() {
+        StringBuilder url = new StringBuilder("http://" + Constant.API.BASE_URL
+                + "/sip_api/public/webview/buy-point");
+        return url.toString();
+    }
+
+    public static void calculateChatImageSize(Context context, ImageItem imageItem) {
+        int halfWidth = getScreenWidth(context) / 2;
+        int halfHeight = getScreenHeight(context) / 2;
+        while (imageItem.getWidth() > halfWidth || imageItem.getHeight() > halfHeight) {
+            imageItem.setWidth(imageItem.getWidth() * 2 / 3);
+            imageItem.setHeight(imageItem.getHeight() * 2 / 3);
+        }
     }
 }

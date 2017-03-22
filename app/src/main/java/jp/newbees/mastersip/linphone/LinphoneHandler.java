@@ -109,6 +109,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public void globalState(LinphoneCore lc, LinphoneCore.GlobalState state, String message) {
         //NOTE 2
+        Logger.e(TAG, message + " - " + state.toString());
     }
 
     public void newSubscriptionRequest(LinphoneCore lc, LinphoneFriend lf, String url) {

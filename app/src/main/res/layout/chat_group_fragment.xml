@@ -66,8 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="@string/there_is_no_conversation_yet"
-            android:textSize="@dimen/text_size_13" />
+            android:text="@string/there_is_no_conversation_yet" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_message_2"
@@ -83,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_20"
+            android:textSize="@dimen/text_size_15"
             android:background="@drawable/bg_button_primary_big"
             android:text="@string/i_will_go_looking_for_a_girl" />
     </LinearLayout>

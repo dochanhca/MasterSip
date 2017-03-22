@@ -25,9 +25,9 @@ public class ChattingProcessor extends BaseSocketProcessor<NewChatMessageEvent> 
 
     @Override
     protected NewChatMessageEvent doInBackgroundData(PacketItem packetItem) throws JSONException {
-        UserItem sender = ConfigManager.getInstance().getCurrentUser();
+        UserItem me = ConfigManager.getInstance().getCurrentUser();
         JSONObject jData = new JSONObject(packetItem.getData());
-        BaseChatItem baseChatItem = JSONUtils.parseChatItem(jData,sender);
+        BaseChatItem baseChatItem = JSONUtils.parseChatItem(jData, me);
         return new NewChatMessageEvent(baseChatItem);
     }
 

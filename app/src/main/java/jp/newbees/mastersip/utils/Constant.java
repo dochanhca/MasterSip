@@ -49,6 +49,9 @@ public final class Constant {
         public static final String PACKAGE_LIST = "package_list";
         public static final String CASH = "cash";
         public static final String DEVICE_TOKEN = "device_token";
+        public static final String WIDTH = "width";
+        public static final String HEIGHT = "height";
+        public static final String EXTENSION_FROM = "extension_from";
 
 
         private JSON() {
@@ -205,7 +208,7 @@ public final class Constant {
 
 
         private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        //                private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -265,7 +268,7 @@ public final class Constant {
         public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
         public static final String BIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.BIT_CASH + "/status="
                 + "success";
-        public static final String CREDIT_CASH_PAYMENT_SUCCESS ="sip://" + Application.CREDIT_CARD + "/status="
+        public static final String CREDIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.CREDIT_CARD + "/status="
                 + "success";
     }
 

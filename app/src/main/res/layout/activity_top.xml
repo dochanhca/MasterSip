@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<include-->
-        <!--android:id="@+id/action_bar"-->
-        <!--layout="@layout/layout_action_bar" />-->
-
     <jp.newbees.mastersip.customviews.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"

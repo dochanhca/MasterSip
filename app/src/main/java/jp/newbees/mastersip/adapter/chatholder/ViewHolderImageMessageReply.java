@@ -2,6 +2,7 @@ package jp.newbees.mastersip.adapter.chatholder;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
+import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -47,17 +49,20 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
         ImageChatItem imageChatItem = (ImageChatItem) item;
         txtTime.setText(imageChatItem.getShortDate());
 
-        int w = Utils.getScreenWidth(getContext());
-        int h = Utils.getScreenHeight(getContext());
-        int defaultChatImage = ConfigManager.getInstance().getImageCalleeDefault();
-        Glide.with(getContext()).load(imageChatItem.getImageItem().getThumbUrl())
-                .override(w / 2, h / 2)
-                .placeholder(defaultChatImage)
-                .error(defaultChatImage)
-                .fitCenter()
+        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
+        ImageItem imageItem = imageChatItem.getImageItem();
+        Utils.calculateChatImageSize(getContext(), imageItem);
+        setImageSize(imageItem.getWidth(), imageItem.getHeight());
+
+        Glide.with(getContext()).load(imageChatItem.getImageItem().getOriginUrl())
+                .override(imageItem.getWidth(), imageItem.getHeight())
+                .placeholder(defaultImageId)
+                .error(defaultImageId)
                 .thumbnail(0.1f)
+                .centerCrop()
                 .dontAnimate()
                 .into(imgChat);
+
 
         int defaultAvatar = ConfigManager.getInstance().getImageCalleeDefault();
         if (imageChatItem.getOwner().getAvatarItem() != null) {
@@ -68,6 +73,13 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
         } else {
             imgAvatar.setImageResource(defaultAvatar);
         }
+    }
+
+    private void setImageSize(int width, int height) {
+        ViewGroup.LayoutParams layoutParams = imgChat.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        imgChat.setLayoutParams(layoutParams);
     }
 
 }
