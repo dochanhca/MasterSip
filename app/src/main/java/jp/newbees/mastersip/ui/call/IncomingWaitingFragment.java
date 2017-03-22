@@ -6,9 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+
+import org.linphone.core.LinphoneCoreException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +24,7 @@ import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 3/13/17.
@@ -98,23 +102,29 @@ public class IncomingWaitingFragment extends BaseFragment {
 
     @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
-        BaseHandleIncomingCallActivity activity = ((BaseHandleIncomingCallActivity) getActivity());
-        switch (view.getId()) {
-            case R.id.btn_reject_call:
-                activity.rejectCall(caller.getSipItem().getExtension(), callType, callId);
-                break;
-            case R.id.btn_accept_call:
-                activity.acceptCall(callId);
-                break;
-            case R.id.btn_on_off_mic:
-                activity.muteMicrophone(btnOnOffMic.isChecked());
-                break;
-            case R.id.btn_cancel_call:
-                activity.endCall(caller.getSipItem().getExtension(), callType, callId);
-                break;
-            case R.id.btn_on_off_speaker:
-                activity.enableSpeaker(btnOnOffSpeaker.isChecked());
-                break;
+        try {
+            BaseHandleIncomingCallActivity activity = ((BaseHandleIncomingCallActivity) getActivity());
+            switch (view.getId()) {
+                case R.id.btn_reject_call:
+                    activity.rejectCall(caller.getSipItem().getExtension(), callType, callId);
+                    break;
+                case R.id.btn_accept_call:
+                    activity.acceptCall(callId);
+
+                    break;
+                case R.id.btn_on_off_mic:
+                    activity.muteMicrophone(btnOnOffMic.isChecked());
+                    break;
+                case R.id.btn_cancel_call:
+                    activity.endCall(caller.getSipItem().getExtension(), callType, callId);
+                    break;
+                case R.id.btn_on_off_speaker:
+                    activity.enableSpeaker(btnOnOffSpeaker.isChecked());
+                    break;
+            }
+        } catch (LinphoneCoreException e) {
+            Logger.e(TAG, e.getMessage());
+            Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
 

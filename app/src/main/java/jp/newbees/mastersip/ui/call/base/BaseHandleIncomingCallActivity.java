@@ -41,12 +41,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.checkFlashCall();
-    }
-
-    @Override
     protected int layoutId() {
         return R.layout.activity_in_coming_voice;
     }
@@ -121,11 +115,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCallEnd() {
-        this.finish();
-    }
-
-    @Override
-    public void onFlashedCall() {
         this.finish();
     }
 

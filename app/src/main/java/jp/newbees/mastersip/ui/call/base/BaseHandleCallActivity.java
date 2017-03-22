@@ -2,6 +2,9 @@ package jp.newbees.mastersip.ui.call.base;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.SurfaceView;
+
+import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.PaymentAdOnItem;
@@ -41,7 +44,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.rejectCall(caller, callType, calId);
     }
 
-    public final void acceptCall(String calId) {
+    public final void acceptCall(String calId) throws LinphoneCoreException {
         this.presenter.acceptCall(calId);
     }
 
@@ -61,8 +64,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.muteMicrophone(mute);
     }
 
-    public void switchCamera() {
-        presenter.switchCamera();
+    public void switchCamera(SurfaceView mCaptureView) {
+        presenter.switchCamera(mCaptureView);
     }
 
     protected void useFrontCamera() {

@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
-import jp.newbees.mastersip.event.call.SendingCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.base.BaseSocketProcessor;
 import jp.newbees.mastersip.utils.Constant;
@@ -20,7 +20,7 @@ public class CancelCallProcessor extends BaseSocketProcessor {
         //send event to UI
         this.postEvent(new ReceivingCallEvent(ReceivingCallEvent.RELEASE_CALL));
         //send event to service
-        this.postEvent(new SendingCallEvent(SendingCallEvent.REJECT_CALL));
+        LinphoneHandler.getInstance().rejectCall();
     }
 
     @Override

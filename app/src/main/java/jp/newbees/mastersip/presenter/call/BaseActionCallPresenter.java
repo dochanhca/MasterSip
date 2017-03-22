@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
-import jp.newbees.mastersip.event.call.CallEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
@@ -51,7 +51,7 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
     }
 
     private void makeCall(String roomId, int callType) {
-        EventBus.getDefault().post(new CallEvent(callType, roomId));
+        LinphoneHandler.getInstance().makeCall(callType, roomId);
     }
 
     /**
