@@ -171,7 +171,7 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
             case VIEW_ALL_PHOTO:
                 if (resultCode == RESULT_OK) {
                     int position = data.getIntExtra(POSITION, 0);
-                    viewPagerGallery.setCurrentItem(position);
+                    viewPagerGallery.setCurrentItem(position, false);
                 }
                 break;
         }
