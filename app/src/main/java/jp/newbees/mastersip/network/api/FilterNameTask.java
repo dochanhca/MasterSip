@@ -70,7 +70,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
-        List<UserItem> userItems = JSONUtils.parseUsersForFilterByName(jData);
+        List<UserItem> userItems = JSONUtils.parseUsers(jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER, userItems);

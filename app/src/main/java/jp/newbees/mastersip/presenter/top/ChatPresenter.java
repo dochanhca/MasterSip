@@ -29,6 +29,7 @@ import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 1/11/17.
@@ -122,6 +123,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
     @Override
     protected void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
         chatPresenterListener.didCalleeRejectCall();
+        Logger.e(TAG, "Callee reject call");
     }
 
     /**

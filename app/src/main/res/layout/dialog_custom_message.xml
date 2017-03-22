@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_simple"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_20"
+        android:layout_marginLeft="@dimen/margin_15"
+        android:layout_marginRight="@dimen/margin_15"
+        android:orientation="vertical">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_20"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_dialog_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/margin_20"
+            android:paddingBottom="@dimen/margin_2"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_15"
+            android:lineSpacingMultiplier="1.4"
+            android:visibility="visible" />
+
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_dialog_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_20"
+            android:gravity="center"
+            android:textColor="@color/text_color_gray"
+            android:textSize="@dimen/text_size_12"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <jp.newbees.mastersip.customviews.HiraginoButton
+        android:id="@+id/btn_positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/margin_25"
+        android:layout_marginLeft="@dimen/margin_25"
+        android:layout_marginRight="@dimen/margin_25"
+        android:background="@drawable/bg_gray_button_large_radius"
+        android:gravity="center"
+        android:minHeight="@dimen/btn_height_default"
+        android:paddingLeft="@dimen/margin_20"
+        android:paddingRight="@dimen/margin_20"
+        android:text="positive button"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/_15sp" />
+
+</LinearLayout>

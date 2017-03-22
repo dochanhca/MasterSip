@@ -54,6 +54,7 @@ import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.dialog.CustomMessageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -76,7 +77,8 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
+        CustomMessageDialog.OnCusTomMessageDialogClickListener {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
@@ -254,6 +256,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             if (needScrollToTheEnd) {
                 recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             }
+            userItem = members.get(userItem.getUserId());
             initActionCalls(members.get(userItem.getUserId()));
             updateStateLastMessage();
             swipeRefreshLayout.setRefreshing(false);
@@ -322,10 +325,9 @@ public class ChatActivity extends CallCenterIncomingActivity implements
 
         @Override
         public void didCalleeRejectCall() {
-            String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
+            String message = userItem.getUsername() + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_CALLEE_REJECT_CALL
-                    , message, "", positiveTitle, true);
+            CustomMessageDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
         }
 
         @Override
@@ -487,6 +489,18 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.registerEvent();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unRegisterEvent();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         isResume = false;
@@ -505,7 +519,8 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     @Subscribe()
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
-        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)) {
+        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
+                || chatItem.isOwner()) {
             donotHideSoftKeyboard = true;
             chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
@@ -619,11 +634,14 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(getSupportFragmentManager());
                 break;
-            case REQUEST_NOTIFY_CALLEE_REJECT_CALL:
-                gotoProfileDetailActivity();
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onCustomMessageDialogPositiveClick() {
+        gotoProfileDetailActivity();
     }
 
     @Override

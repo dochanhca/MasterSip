@@ -51,6 +51,7 @@ public final class Constant {
         public static final String DEVICE_TOKEN = "device_token";
         public static final String WIDTH = "width";
         public static final String HEIGHT = "height";
+        public static final String EXTENSION_FROM = "extension_from";
 
 
         private JSON() {
@@ -206,8 +207,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-//        private static final String DEVELOPMENT_IP = "52.199.112.26";
-                private static final String DEVELOPMENT_IP = "52.197.138.1";
+        private static final String DEVELOPMENT_IP = "52.199.112.26";
+//                private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
