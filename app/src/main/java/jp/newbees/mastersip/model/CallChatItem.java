@@ -7,30 +7,30 @@ import android.os.Parcelable;
  * Created by ducpv on 3/15/17.
  */
 
-public class VoiceCallChatItem extends BaseChatItem implements Parcelable {
+public class CallChatItem extends BaseChatItem implements Parcelable {
 
     private int kindCall;
     private String duration;
 
-    public VoiceCallChatItem() {
+    public CallChatItem() {
 
     }
 
-    protected VoiceCallChatItem(Parcel in) {
+    protected CallChatItem(Parcel in) {
         super(in);
         kindCall = in.readInt();
         duration = in.readString();
     }
 
-    public static final Creator<VoiceCallChatItem> CREATOR = new Creator<VoiceCallChatItem>() {
+    public static final Creator<CallChatItem> CREATOR = new Creator<CallChatItem>() {
         @Override
-        public VoiceCallChatItem createFromParcel(Parcel in) {
-            return new VoiceCallChatItem(in);
+        public CallChatItem createFromParcel(Parcel in) {
+            return new CallChatItem(in);
         }
 
         @Override
-        public VoiceCallChatItem[] newArray(int size) {
-            return new VoiceCallChatItem[size];
+        public CallChatItem[] newArray(int size) {
+            return new CallChatItem[size];
         }
     };
 

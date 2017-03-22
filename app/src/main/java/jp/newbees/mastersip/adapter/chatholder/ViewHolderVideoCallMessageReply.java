@@ -6,13 +6,13 @@ import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
-import jp.newbees.mastersip.model.VideoCallChatItem;
+import jp.newbees.mastersip.model.CallChatItem;
 
 /**
  * Created by ducpv on 3/15/17.
  */
 
-public class ViewHolderVideoCallMessageReply extends BaseChatReplyViewHolder<VideoCallChatItem> {
+public class ViewHolderVideoCallMessageReply extends BaseChatReplyViewHolder<CallChatItem> {
     private TextView txtTime;
 
     public ViewHolderVideoCallMessageReply(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
@@ -25,7 +25,7 @@ public class ViewHolderVideoCallMessageReply extends BaseChatReplyViewHolder<Vid
     }
 
     @Override
-    public void bindView(VideoCallChatItem videoCallChatItem) {
+    public void bindView(CallChatItem videoCallChatItem) {
         txtTime.setText(videoCallChatItem.getShortDate());
     }
 

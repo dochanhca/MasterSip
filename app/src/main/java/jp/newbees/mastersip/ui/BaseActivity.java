@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -52,6 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected NavigationLayoutChild navigationLeg;
     protected NavigationLayoutChild navigationHeart;
     protected NavigationLayoutChild navigationMenu;
+    protected ViewGroup navigationBar;
 
     private Animation slideDown;
     private Animation slideUp;
@@ -80,11 +82,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(layoutId());
 
         if (this instanceof BottomNavigation) {
-            navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.navigation_bar);
+            navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.nav_group);
             navigationMessage = (NavigationLayoutChild) findViewById(R.id.nav_message);
             navigationLeg = (NavigationLayoutChild) findViewById(R.id.nav_leg);
             navigationHeart = (NavigationLayoutChild) findViewById(R.id.nav_heart);
             navigationMenu = (NavigationLayoutChild) findViewById(R.id.nav_menu);
+            navigationBar = (ViewGroup) findViewById(R.id.navigation_bar);
         }
 
         initViews(savedInstanceState);
@@ -325,9 +328,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
         }
         isShowNavigationBar = true;
-        clearViewAnimation(navigationLayoutGroup, slideUp, View.VISIBLE);
-        if (navigationLayoutGroup != null) {
-            navigationLayoutGroup.startAnimation(slideUp);
+        clearViewAnimation(navigationBar, slideUp, View.VISIBLE);
+        if (navigationBar != null) {
+            navigationBar.startAnimation(slideUp);
         }
     }
 
@@ -336,9 +339,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
         }
         isShowNavigationBar = false;
-        clearViewAnimation(navigationLayoutGroup, slideDown, View.GONE);
-        if (navigationLayoutGroup != null) {
-            navigationLayoutGroup.startAnimation(slideDown);
+        clearViewAnimation(navigationBar, slideDown, View.GONE);
+        if (navigationBar != null) {
+            navigationBar.startAnimation(slideDown);
         }
     }
 

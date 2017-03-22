@@ -240,7 +240,7 @@
     <string name="are_you_sure_make_a_voice_call">音声通話を発信しますか。</string>
     <string name="profile">プロフィール</string>
     <string name="follow">フォローする</string>
-    <string name="gift">ギフトを贈る</string>
+    <string name="give_a_gift">ギフトを贈る</string>
     <string name="list_photo">写真のみ表示</string>
     <string name="photos">枚の写真</string>
     <string name="txt_already_read">既読</string>
@@ -396,7 +396,7 @@
     <string name="select_call_video_str_2">お互いの顔を 見て通話</string>
     <string name="title_select_call"><![CDATA[<font color=#666666>ビデオ通話は</font> <font color=#fb5050>2種類</font> <font color=#666666>から<br>選ぶことができます</font>]]></string>
     <string name="title_outgoing_call_video">ビデオ通話で呼び出し中...</string>
-    <string name="mess_callee_reject_call">さんは 現在応答出来ないようです。 別の時間におかけください。</string>
+    <string name="mess_callee_reject_call">さんは \n現在応答出来ないようです。\n別の時間におかけください。</string>
     <string name="back_to_profile_detail">プロフィール詳細へ戻る</string>
     <string name="call_ended">通話が終了しました。</string>
     <string name="call_ended_bonus_point">通話が終了しました。今回の通話で</string>
@@ -410,4 +410,8 @@
     <string name="it_will_purchased_by_google">※Googleでの購入になります</string>
     <string name="mr">さん</string>
     <string name="are_you_sure_make_a_video_call">ビデオを発信しますか。</string>
+    <string name="i_will_go_looking_for_a_man">男性を探しに行く</string>
+    <string name="from">さんから</string>
+    <string name="gift">ギフト</string>
+    <string name="has_arrived">が届きました。</string>
 </resources>

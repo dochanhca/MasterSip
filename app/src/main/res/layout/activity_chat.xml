@@ -49,7 +49,8 @@
                     android:background="@drawable/bg_blue_dark"
                     android:gravity="center"
                     android:text="@string/send"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15"/>
 
                 <LinearLayout
                     android:layout_width="0px"
@@ -200,7 +201,7 @@
                     android:paddingTop="@dimen/_3dp"
                     android:orientation="vertical"
                     app:iconNormal="@drawable/ic_gift_in_chat"
-                    app:text="@string/gift"
+                    app:text="@string/give_a_gift"
                     app:textColorNormal="@color/white" />
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild

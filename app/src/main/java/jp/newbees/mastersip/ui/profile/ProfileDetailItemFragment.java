@@ -45,6 +45,7 @@ import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.dialog.CustomMessageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
@@ -60,7 +61,8 @@ import jp.newbees.mastersip.utils.Utils;
 public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
+CustomMessageDialog.OnCusTomMessageDialogClickListener {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
 
@@ -372,8 +374,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
             String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
-            TextDialog.openTextDialog(this, REQUEST_NOTIFY_CALLEE_REJECT_CALL, getFragmentManager()
-                    , message, "", positiveTitle, true);
+            CustomMessageDialog.showDialog(this, getFragmentManager(),
+                    REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);
         }
     }
 
@@ -430,6 +432,11 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         } else {
             profileDetailPresenter.checkVideoChatCall(userItem);
         }
+    }
+
+    @Override
+    public void onCustomMessageDialogPositiveClick() {
+        //listen callback event
     }
 
     private void updatePhotos(GalleryItem galleryItem) {
