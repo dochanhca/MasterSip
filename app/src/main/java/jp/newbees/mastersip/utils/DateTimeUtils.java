@@ -122,4 +122,12 @@ public class DateTimeUtils {
         }
         return null;
     }
+
+    public static String getTimerCallString(int time) {
+        int mins = time / 60;
+        int secs = time % 60;
+
+        return String.format("%02d", mins) + ":"
+                + String.format("%02d", secs);
+    }
 }

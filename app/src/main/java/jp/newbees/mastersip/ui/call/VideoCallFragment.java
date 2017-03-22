@@ -25,10 +25,10 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.thread.CountingTimeThread;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 
 /**
  * Created by thangit14 on 3/14/17.
@@ -39,6 +39,13 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private static final String CALL_TYPE = "CALL TYPE";
     private static final String SPEAKER = "SPEAKER";
     private static final String MIC = "MIC";
+
+    private static final int BREAK_TIME_TO_HIDE_ACTION = 5;
+    private static final int BREAK_TIME_OF_COUNTING_CALL_DURATION = 1;
+
+    private static final String ID_TIMER_HIDE_ACTION = "ID_TIMER_HIDE_ACTION";
+    private static final String ID_COUNTING_CALL_DURATION = "ID_COUNTING_CALL_DURATION";
+
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
@@ -67,9 +74,10 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem userItem;
-    private Handler timerHandler = new Handler();
+//    private Handler timerHandler = new Handler();
 
-    private MyCountingTimerThread myCountingTimerThread;
+    private MyCountingTimerThread myCountingThreadToHideAction;
+    private MyCountingTimerThread myCountingTimer;
 
     private Animation moveUpTxtTime;
     private Animation moveDownTxtTime;
@@ -78,12 +86,18 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private Animation fadeIn;
     private Animation fadeOut;
 
-    private Handler countingHandler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            hideView();
+            if (msg.obj.toString().equalsIgnoreCase(ID_TIMER_HIDE_ACTION)) {
+                hideView();
+                myCountingThreadToHideAction.reset();
+            } else if (msg.obj.toString().equalsIgnoreCase(ID_COUNTING_CALL_DURATION)) {
+                txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+            }
         }
     };
+
     private boolean isShowingView = true;
 
     public static VideoCallFragment newInstance(UserItem currentUser, int callType,
@@ -118,7 +132,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
         setupView();
         fixZOrder(mVideoView, mCaptureView);
-        startCounting();
+        startCountingToHideAction();
     }
 
     @Override
@@ -153,8 +167,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             androidVideoWindow.release();
             androidVideoWindow = null;
         }
-        if (myCountingTimerThread != null) {
-            myCountingTimerThread.turnOffCounting();
+        if (myCountingThreadToHideAction != null) {
+            myCountingThreadToHideAction.turnOffCounting();
+        }
+
+        if (myCountingTimer != null) {
+            myCountingTimer.turnOffCounting();
         }
         super.onDestroy();
     }
@@ -166,7 +184,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         llPoint.setVisibility(userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(userItem.getUsername());
-        countingCallDuration();
+        startCountingCallDuration();
 
         boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
         boolean muteMic = getArguments().getBoolean(MIC);
@@ -206,7 +224,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             R.id.btn_on_off_camera, R.id.img_switch_camera})
     public void onClick(View view) {
         BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
-        resetCounting();
+        resetCountingToHideAction();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
                 activity.endCall();
@@ -232,7 +250,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         switch (v.getId()) {
             case R.id.videoSurface:
             case R.id.videoCaptureSurface:
-                resetCounting();
+                resetCountingToHideAction();
                 break;
         }
         return true;
@@ -244,10 +262,10 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
     }
 
-    private void resetCounting() {
+    private void resetCountingToHideAction() {
         showView();
-        if (myCountingTimerThread != null) {
-            myCountingTimerThread.reset();
+        if (myCountingThreadToHideAction != null) {
+            myCountingThreadToHideAction.reset();
         }
     }
 
@@ -274,11 +292,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         video.setZOrderOnTop(false);
         preview.setZOrderOnTop(true);
         preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
-    }
-
-    private void countingCallDuration() {
-        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTime, timerHandler);
-        timerHandler.postDelayed(countingTimeThread, 0);
     }
 
     private void hideView() {
@@ -322,10 +335,14 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         }
     }
 
-    private void startCounting() {
-        myCountingTimerThread = new MyCountingTimerThread(countingHandler);
-        Thread countingThread = new Thread(myCountingTimerThread);
-        countingThread.start();
+    private void startCountingToHideAction() {
+        myCountingThreadToHideAction = new MyCountingTimerThread(handler, ID_TIMER_HIDE_ACTION, BREAK_TIME_TO_HIDE_ACTION);
+        new Thread(myCountingThreadToHideAction).start();
+    }
+
+    private void startCountingCallDuration() {
+        myCountingTimer = new MyCountingTimerThread(handler, ID_COUNTING_CALL_DURATION, BREAK_TIME_OF_COUNTING_CALL_DURATION);
+        new Thread(myCountingTimer).start();
     }
 
     public void onCoinChanged(int coin) {

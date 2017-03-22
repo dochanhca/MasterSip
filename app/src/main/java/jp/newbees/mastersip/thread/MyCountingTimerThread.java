@@ -4,35 +4,52 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
+import jp.newbees.mastersip.utils.Logger;
+
 /**
  * Created by thangit14 on 3/16/17.
- * use for invisible target after BREAK_TIME
+ * use for invisible target after breakTime
  */
 
 public class MyCountingTimerThread implements Runnable {
-    public static final int BREAK_TIME = 5;
+    private int breakTime;
+    private String id;
     private Handler handler;
 
     private long startTime;
-    private long updateTime;
+    private int updateTime;
 
-    private boolean isRunning;
+    private volatile boolean isRunning;
 
-    public MyCountingTimerThread(Handler handler) {
+    public MyCountingTimerThread(Handler handler, String id, int breakTime) {
+        Logger.e("MyCountingTimerThread","create");
         this.handler = handler;
         startTime = SystemClock.uptimeMillis();
         isRunning = true;
+        updateTime = 0;
+        this.breakTime = breakTime;
+        this.id = id;
+    }
+
+    public MyCountingTimerThread(Handler handler) {
+        this(handler, "No ID", 1);
+    }
+
+    public MyCountingTimerThread(Handler handler, int breakTime) {
+        this(handler, "No ID", breakTime);
     }
 
     @Override
     public void run() {
+        Logger.e("MyCountingTimerThread","run...");
         while (isRunning) {
-            updateTime = (SystemClock.uptimeMillis() - startTime) / 1000;
-            if (updateTime >= BREAK_TIME) {
-                sendMessage();
-                reset();
+            updateTime = (int) ((SystemClock.uptimeMillis() - startTime) / 1000);
+            Logger.e("MyCountingTimerThread","counting... update time =  "+updateTime);
+            if (updateTime >= breakTime) {
+                sendMessage(updateTime);
             }
             try {
+                Logger.e("MyCountingTimerThread","sleep");
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -41,8 +58,10 @@ public class MyCountingTimerThread implements Runnable {
 
     }
 
-    private void sendMessage() {
+    private void sendMessage(int updateTime) {
         Message message = Message.obtain();
+        message.obj = id;
+        message.what =  updateTime;
         handler.sendMessage(message);
     }
 
@@ -52,6 +71,7 @@ public class MyCountingTimerThread implements Runnable {
     }
 
     public void turnOffCounting() {
+        Logger.e("MyCountingTimerThread","turn off");
         isRunning = false;
     }
 }

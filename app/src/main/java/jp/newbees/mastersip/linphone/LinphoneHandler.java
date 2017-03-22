@@ -230,6 +230,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             getInstance().running = false;
             getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
+            instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
         }

@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,10 +21,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -64,7 +66,12 @@ public class IncomingWaitingFragment extends BaseFragment {
     @BindView(R.id.layout_voice_calling_action)
     protected ViewGroup layoutVoiceCallingAction;
 
-    private Handler timerHandler = new Handler();
+    private Handler timerHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
+        }
+    };
 
     private UserItem caller;
     private String callId;
@@ -174,8 +181,8 @@ public class IncomingWaitingFragment extends BaseFragment {
      * start when user during a call
      */
     public void countingCallDuration() {
-        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
-        timerHandler.postDelayed(countingTimeThread, 0);
+        MyCountingTimerThread timerThread = new MyCountingTimerThread(timerHandler);
+        new Thread(timerThread).start();
     }
 
     public void onCoinChanged(int coin) {

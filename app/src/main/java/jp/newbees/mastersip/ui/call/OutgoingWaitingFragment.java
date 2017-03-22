@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,11 +17,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.thread.CountingTimeThread;
+import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 
 /**
  * Created by thangit14 on 3/15/17.
@@ -30,6 +32,8 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private static final String CALLEE = "CALLEE";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String TITLE_CALL = "TITLE_CALL";
+
+    private static final int MAX_WAITING_TIME = 60;
 
     @BindView(R.id.profile_image)
     protected CircleImageView profileImage;
@@ -54,7 +58,21 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private String titleCall;
     private int callType;
 
-    private Handler timerHandler = new Handler();
+    private Handler countingCallDurationHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
+        }
+    };
+
+    private Handler waitingTimeHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            getActivity().finish();
+        }
+    };
+    private MyCountingTimerThread countWaitingTimeThread;
+    private MyCountingTimerThread countingCallDurationThread;
 
     public static OutgoingWaitingFragment newInstance(UserItem callee,
                                                       String titleCall, int callType) {
@@ -77,10 +95,20 @@ public class OutgoingWaitingFragment extends BaseFragment {
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-
         getArgs();
-
         updateView();
+        countWaitingTime();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (countWaitingTimeThread != null) {
+            countWaitingTimeThread.turnOffCounting();
+        }
+        if (countingCallDurationThread != null) {
+            countingCallDurationThread.turnOffCounting();
+        }
+        super.onDestroy();
     }
 
     private void getArgs() {
@@ -154,10 +182,19 @@ public class OutgoingWaitingFragment extends BaseFragment {
         txtPoint.setText(point.toString());
     }
 
+    private void countWaitingTime() {
+        countWaitingTimeThread = new MyCountingTimerThread(waitingTimeHandler, MAX_WAITING_TIME);
+        new Thread(countWaitingTimeThread).start();
+    }
+
     // start when user during a call
     public void countingCallDuration() {
-        CountingTimeThread countingTimeThread = new CountingTimeThread(txtTimer, timerHandler);
-        timerHandler.postDelayed(countingTimeThread, 0);
+        if (countWaitingTimeThread != null) {
+            countWaitingTimeThread.turnOffCounting();
+            countWaitingTimeThread = null;
+        }
+        countingCallDurationThread = new MyCountingTimerThread(countingCallDurationHandler);
+        new Thread(countingCallDurationThread).start();
     }
 
     public void updateViewWhenVoiceConnected() {
