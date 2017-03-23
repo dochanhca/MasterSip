@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 
-import jp.newbees.mastersip.utils.Logger;
-
 /**
  * Created by thangit14 on 3/16/17.
  * use for invisible target after breakTime
@@ -22,7 +20,6 @@ public class MyCountingTimerThread implements Runnable {
     private volatile boolean isRunning;
 
     public MyCountingTimerThread(Handler handler, String id, int breakTime) {
-        Logger.e("MyCountingTimerThread","create");
         this.handler = handler;
         startTime = SystemClock.uptimeMillis();
         isRunning = true;
@@ -41,15 +38,12 @@ public class MyCountingTimerThread implements Runnable {
 
     @Override
     public void run() {
-        Logger.e("MyCountingTimerThread","run...");
         while (isRunning) {
             updateTime = (int) ((SystemClock.uptimeMillis() - startTime) / 1000);
-            Logger.e("MyCountingTimerThread","counting... update time =  "+updateTime);
             if (updateTime >= breakTime) {
                 sendMessage(updateTime);
             }
             try {
-                Logger.e("MyCountingTimerThread","sleep");
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -71,7 +65,6 @@ public class MyCountingTimerThread implements Runnable {
     }
 
     public void turnOffCounting() {
-        Logger.e("MyCountingTimerThread","turn off");
         isRunning = false;
     }
 }
