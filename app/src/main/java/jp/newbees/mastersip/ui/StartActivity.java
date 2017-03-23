@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,6 +17,8 @@ import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import jp.newbees.mastersip.R;
@@ -69,6 +75,8 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     protected void initVariables(Bundle savedInstanceState) {
         tutorialPagerAdapter = new TutorialPagerAdapter(getApplicationContext(), getDrawableIds());
         pagerTutorial.setAdapter(tutorialPagerAdapter);
+
+        printKeyHash();
     }
 
     @Override
@@ -187,5 +195,22 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
     public static void startActivity(Activity activity) {
         Intent intent = new Intent(activity, StartActivity.class);
         activity.startActivity(intent);
+    }
+
+    private void printKeyHash() {
+        // Add code to print out the key hash
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("jp.newbees.mastersip",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Logger.e("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e("KeyHash:", e.toString());
+        } catch (NoSuchAlgorithmException e) {
+            Logger.e("KeyHash:", e.toString());
+        }
     }
 }

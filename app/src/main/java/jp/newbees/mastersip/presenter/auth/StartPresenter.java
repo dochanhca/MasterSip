@@ -24,6 +24,7 @@ import jp.newbees.mastersip.network.api.RegisterTask;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.FacebookUtils;
+import jp.newbees.mastersip.utils.JapaneseCharacter;
 import jp.newbees.mastersip.utils.Logger;
 
 import static jp.newbees.mastersip.utils.Constant.Application.MIN_AGE;
@@ -117,12 +118,20 @@ public class StartPresenter extends RegisterPresenterBase {
                 userItem.setDateOfBirth(null);
             }
             String gender = userInfo.getString("gender");
-            userItem.setUsername(name);
+            userItem.setUsername(handleFbName(name));
             userItem.setGender(gender.equalsIgnoreCase("female") ? UserItem.FEMALE : UserItem.MALE);
             this.getAvatarFacebook(userItem, accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private String handleFbName(String name) {
+        if (name == null || name.trim().length() == 0 ||
+                !JapaneseCharacter.isRomajiName(name.trim())) {
+            return "";
+        }
+        return JapaneseCharacter.getInitialName(name.trim());
     }
 
     private void getAvatarFacebook(final UserItem userItem, String accessToken) {
