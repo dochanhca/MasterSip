@@ -17,7 +17,7 @@ public class BaseChatItem implements Parcelable {
     private String displayDate;
     private int chatType;
     private int cellIndex;
-    private String cellIdentifier; //For cell;
+    private String cellIdentifier;
     private int messageState;
     private int roomType;
     private String shortDate;
@@ -30,6 +30,18 @@ public class BaseChatItem implements Parcelable {
 
     private UserItem sender;
     private UserItem sendee;
+
+    public static final Creator<BaseChatItem> CREATOR = new Creator<BaseChatItem>() {
+        @Override
+        public BaseChatItem createFromParcel(Parcel in) {
+            return new BaseChatItem(in);
+        }
+
+        @Override
+        public BaseChatItem[] newArray(int size) {
+            return new BaseChatItem[size];
+        }
+    };
 
     /**
      * Default constructor
@@ -66,18 +78,6 @@ public class BaseChatItem implements Parcelable {
         sendee = in.readParcelable(UserItem.class.getClassLoader());
     }
 
-    public static final Creator<BaseChatItem> CREATOR = new Creator<BaseChatItem>() {
-        @Override
-        public BaseChatItem createFromParcel(Parcel in) {
-            return new BaseChatItem(in);
-        }
-
-        @Override
-        public BaseChatItem[] newArray(int size) {
-            return new BaseChatItem[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
@@ -112,10 +112,7 @@ public class BaseChatItem implements Parcelable {
         public static final int CHAT_VIDEO_CALL = 6;
         public static final int CHAT_VIDEO_CHAT_CALL = 7;
         public static final int CHAT_GIFT = 9;
-        public final static int HEADER = 11;
-
-        protected ChatType(Parcel in) {
-        }
+        public static final int HEADER = 11;
 
         public static final Creator<ChatType> CREATOR = new Creator<ChatType>() {
             @Override
@@ -128,6 +125,9 @@ public class BaseChatItem implements Parcelable {
                 return new ChatType[size];
             }
         };
+
+        protected ChatType(Parcel in) {
+        }
 
         @Override
         public int describeContents() {
@@ -146,9 +146,6 @@ public class BaseChatItem implements Parcelable {
         public static final int ANSWER_CALL = 6;
         public static final int END_CALL = 7;
 
-        protected CallType(Parcel in) {
-        }
-
         public static final Creator<CallType> CREATOR = new Creator<CallType>() {
             @Override
             public CallType createFromParcel(Parcel in) {
@@ -160,6 +157,9 @@ public class BaseChatItem implements Parcelable {
                 return new CallType[size];
             }
         };
+
+        protected CallType(Parcel in) {
+        }
 
         @Override
         public int describeContents() {
@@ -175,9 +175,6 @@ public class BaseChatItem implements Parcelable {
         public static final int ROOM_CHAT_CHAT = 1;
         public static final int ROOM_VIDEO_CHAT = 2;
 
-        protected RoomType(Parcel in) {
-        }
-
         public static final Creator<RoomType> CREATOR = new Creator<RoomType>() {
             @Override
             public RoomType createFromParcel(Parcel in) {
@@ -190,6 +187,9 @@ public class BaseChatItem implements Parcelable {
             }
         };
 
+        protected RoomType(Parcel in) {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -200,16 +200,12 @@ public class BaseChatItem implements Parcelable {
         }
     }
 
-
     public static final class MessageState implements Parcelable {
         public static final int STT_NONE = 0;
         public static final int STT_SENT = 1;
         public static final int STT_READ = 2;
         public static final int STT_DELIVERY = 3;
         public static final int STT_ERROR = 4;
-
-        protected MessageState(Parcel in) {
-        }
 
         public static final Creator<MessageState> CREATOR = new Creator<MessageState>() {
             @Override
@@ -222,6 +218,9 @@ public class BaseChatItem implements Parcelable {
                 return new MessageState[size];
             }
         };
+
+        protected MessageState(Parcel in) {
+        }
 
         @Override
         public int describeContents() {

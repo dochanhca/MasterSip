@@ -6,14 +6,6 @@ package jp.newbees.mastersip.event.call;
 
 public class RunOutOfCoinEvent {
 
-    private int coin;
-    private int total;
-
     public RunOutOfCoinEvent() {
-    }
-
-    public RunOutOfCoinEvent(int coin, int total) {
-        this.coin = coin;
-        this.total = total;
     }
 }

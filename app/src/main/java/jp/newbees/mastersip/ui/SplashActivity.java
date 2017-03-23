@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
@@ -18,6 +19,7 @@ import static jp.newbees.mastersip.ui.StartActivity.IS_REGISTERED;
 public class SplashActivity extends RegisterBaseActivity implements SplashPresenter.SplashView {
 
     private SplashPresenter splashPresenter;
+    private static final long TIME_DELAY = 1000;
 
     @Override
     protected int layoutId() {
@@ -26,7 +28,7 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        //TODO
+        //Init views
     }
 
     @Override
@@ -37,6 +39,16 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
     @Override
     protected void onResume() {
         super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               handleLoginUser();
+            }
+        }, TIME_DELAY);
+
+    }
+
+    private void handleLoginUser() {
         if (checkUserLogin()) {
             splashPresenter.loginVoIP();
         } else {

@@ -69,13 +69,17 @@ public class LinphoneHandler implements LinphoneCoreListener {
         this.context = context;
     }
 
-    public synchronized static final LinphoneHandler createAndStart(LinphoneNotifier notifier, Context context) {
+    public static final synchronized LinphoneHandler createAndStart(LinphoneNotifier notifier, Context context) {
         if (instance != null) {
             throw new RuntimeException("Linphone Handler is already initialized");
         }
         instance = new LinphoneHandler(notifier, context);
 
         return instance;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
@@ -194,18 +198,20 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
         linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
-
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
     }
 
 
-    public static synchronized final LinphoneCore getLinphoneCore() {
+    public static final synchronized LinphoneCore getLinphoneCore() {
         return getInstance().linphoneCore;
     }
 
-    public static synchronized final LinphoneHandler getInstance() {
-        return instance;
+    public static final synchronized LinphoneHandler getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        throw new RuntimeException("Linphone Manager should be created before accessed");
     }
 
     public synchronized void loginVoIPServer(final SipItem sipItem) {
@@ -217,7 +223,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public static synchronized final void restart(SipItem sipItem) {
+    public static final synchronized void restart(SipItem sipItem) {
         destroy();
         getInstance().loginVoIPServer(sipItem);
     }
@@ -230,7 +236,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
             getInstance().running = false;
             getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
-            instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
         } finally {
@@ -312,7 +317,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         PacketManager.getInstance().processData(raw);
     }
 
-    public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State new_call_state) {
+    public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State newCallState) {
     }
 
     public void infoReceived(LinphoneCore lc, LinphoneCall call, LinphoneInfoMessage info) {
@@ -441,17 +446,19 @@ public class LinphoneHandler implements LinphoneCoreListener {
         userFrontCamera();
         LinphoneCall call = linphoneCore.getCurrentCall();
         call.enableCamera(enable);
-        reinviteWithVideo();
+        reInviteWithVideo();
     }
 
-    private boolean reinviteWithVideo() {
+    private boolean reInviteWithVideo() {
         LinphoneCall lCall = linphoneCore.getCurrentCall();
         if (lCall == null) {
             return false;
         }
         LinphoneCallParams params = lCall.getCurrentParamsCopy();
 
-        if (params.getVideoEnabled()) return false;
+        if (params.getVideoEnabled()) {
+            return false;
+        }
 
         params.setVideoEnabled(true);
         params.setAudioBandwidth(0);
@@ -485,14 +492,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
             Logger.e(TAG, "Cannot switch camera : no camera");
         }
     }
-
-//    public void userFrontCamera() {
-//        if (AndroidCameraConfiguration.hasFrontCamera()) {
-//            linphoneCore.setVideoDevice(1);
-//        } else {
-//            Logger.e(TAG, "Cannot use front camera : no camera");
-//        }
-//    }
 
     public void userFrontCamera() {
         int camId = 0;
