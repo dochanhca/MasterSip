@@ -11,11 +11,11 @@ import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
@@ -200,8 +201,10 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void onSoftKeyboardShow() {
             isSoftKeyboardOpened = true;
+            Logger.e(TAG,"onSoftKeyboardShow   -> slide up");
             slideUpCustomActionHeaderInChat();
             if (uiMode == UIMode.SELECT_IMAGE_MODE) {
+                Logger.e(TAG,"onSoftKeyboardShow   -> switch ui mode");
                 switchUIMode();
             }
         }
@@ -209,6 +212,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void onSoftKeyboardHide() {
             isSoftKeyboardOpened = false;
+            Logger.e(TAG,"onSoftKeyboardShow   -> slide down");
             slideDownCustomActionHeaderInChat();
         }
     };
@@ -384,29 +388,24 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (!donotHideSoftKeyboard && dy != 0) {
                     if (scrollDown(dy)) {
+                        Logger.e(TAG,"onScrollStateChanged   -> slide down");
                         slideDownCustomActionHeaderInChat();
                     } else {
+                        Logger.e(TAG,"onScrollStateChanged   -> slide up");
                         slideUpCustomActionHeaderInChat();
                     }
                 }
                 if (donotHideSoftKeyboard) {
                     donotHideSoftKeyboard = false;
                 } else {
-                    hideSoftInputKeyboard();
+                    Logger.e(TAG,"onScrollStateChanged   -> hide soft keyboard");
+                    hideSoftKeyboard();
                 }
             }
         }
 
         private boolean scrollDown(int dy) {
             return dy < 0;
-        }
-
-        private void hideSoftInputKeyboard() {
-            View view = ChatActivity.this.getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
         }
     };
 
@@ -549,6 +548,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                 doSendMessage();
                 break;
             case R.id.img_left_bottom_action:
+                Logger.e(TAG,"img_left_bottom_action   -> switch ui mode");
                 switchUIMode();
                 break;
             case R.id.rl_open_gallery:
@@ -562,9 +562,22 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         }
     }
 
+    @OnTouch(R.id.recycler_chat)
+    public boolean onTouchEvent(MotionEvent event) {
+        Logger.e(TAG,"onTouch");
+        if (isSoftKeyboardOpened) {
+            Logger.e(TAG,"onTouch -> hide soft keboard");
+            donotHideSoftKeyboard = true;
+            hideSoftKeyboard();
+            return false;
+        }
+        return super.onTouchEvent(event);
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case SelectImageDialog.PICK_AVATAR_CAMERA:
@@ -692,6 +705,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
 
     private void slideDownCustomActionHeaderInChat() {
         if (!isCustomActionHeaderInChatOpened) {
+            Utils.enableDisableView(customActionHeaderInChat, true);
             customActionHeaderInChat.startAnimation(slideDown);
         }
         isCustomActionHeaderInChatOpened = true;
@@ -701,6 +715,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private void slideUpCustomActionHeaderInChat() {
         if (isCustomActionHeaderInChatOpened) {
             customActionHeaderInChat.startAnimation(slideUp);
+            Utils.enableDisableView(customActionHeaderInChat, false);
         }
         isCustomActionHeaderInChatOpened = false;
         updateTopPaddingRecycle();
@@ -804,17 +819,21 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             layoutSelectImage.setVisibility(View.VISIBLE);
             hideSoftKeyboard();
             uiMode = UIMode.SELECT_IMAGE_MODE;
+
+            Logger.e(TAG,"switchUIMode   -> hide soft keyboard");
         } else if (uiMode == UIMode.SELECT_IMAGE_MODE) {
             imgLeftBottomAction.setImageResource(R.drawable.img_capture);
             edtChat.requestFocus();
             layoutSelectImage.setVisibility(View.GONE);
             showSoftKeyboard();
             uiMode = UIMode.INPUT_TEXT_MODE;
+
+            Logger.e(TAG,"switchUIMode   -> show soft keyboard");
         }
     }
 
     private void hideSoftKeyboard() {
-        Utils.closeKeyboard(this, edtChat.getWindowToken());
+        Utils.closeKeyboard(this, ChatActivity.this.getCurrentFocus().getWindowToken());
     }
 
     private void showSoftKeyboard() {
