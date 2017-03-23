@@ -144,6 +144,7 @@ public class RegisterProfileFemaleActivity extends RegisterBaseActivity implemen
         availableTimeItems = new ArrayList<>();
 
         userItem = getUserItem();
+        edtNickname.setText(userItem.getUsername());
 
         String[] femaleJobs = getResources().getStringArray(R.array.female_job);
         for (int i = 0; i < femaleJobs.length; i++) {

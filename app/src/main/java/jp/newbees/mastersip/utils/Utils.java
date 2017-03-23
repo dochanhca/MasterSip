@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -156,6 +158,16 @@ public class Utils {
         while (imageItem.getWidth() > halfWidth || imageItem.getHeight() > halfHeight) {
             imageItem.setWidth(imageItem.getWidth() * 2 / 3);
             imageItem.setHeight(imageItem.getHeight() * 2 / 3);
+        }
+    }
+
+    public static void enableDisableView(View view, boolean enable) {
+        view.setEnabled(enable);
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                enableDisableView(group.getChildAt(i), enable);
+            }
         }
     }
 }

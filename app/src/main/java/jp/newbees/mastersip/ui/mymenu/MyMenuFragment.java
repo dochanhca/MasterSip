@@ -202,7 +202,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             txtOnlineList.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_online_list_female, 0, 0);
         } else {
             onlineList.append(getString(R.string.boy)).append("\n").append(getString(R.string.online_notify));
-            btnBuyPoint.setVisibility(View.GONE);
+            btnBuyPoint.setVisibility(View.INVISIBLE);
             txtOnlineList.setText(onlineList.toString());
             txtOnlineList.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_oneline_list_male, 0, 0);
         }
@@ -308,6 +308,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void didLogout() {
         disMissLoading();
+        ConfigManager.getInstance().resetSettings();
+        presenter.stopLinphoneService();
         Intent intent = new Intent(getActivity().getApplicationContext(), StartActivity.class);
         startActivity(intent);
         try {
