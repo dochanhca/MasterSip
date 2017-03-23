@@ -144,7 +144,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
 
     @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
-        BaseHandleOutgoingCallActivity activity = ((BaseHandleOutgoingCallActivity) getActivity());
+        BaseHandleOutgoingCallActivity activity = (BaseHandleOutgoingCallActivity) getActivity();
 
         switch (view.getId()) {
             case R.id.btn_on_off_mic:

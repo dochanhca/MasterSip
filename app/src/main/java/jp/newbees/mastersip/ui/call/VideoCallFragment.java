@@ -74,7 +74,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem userItem;
-//    private Handler timerHandler = new Handler();
 
     private MyCountingTimerThread myCountingThreadToHideAction;
     private MyCountingTimerThread myCountingTimer;
@@ -85,6 +84,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private Animation moveDownTxtPoint;
     private Animation fadeIn;
     private Animation fadeOut;
+    private boolean isShowingView = true;
 
     private Handler handler = new Handler() {
         @Override
@@ -97,8 +97,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             }
         }
     };
-
-    private boolean isShowingView = true;
 
     public static VideoCallFragment newInstance(UserItem currentUser, int callType,
                                                 boolean enableSpeaker, boolean enableMic) {
@@ -252,14 +250,10 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             case R.id.videoCaptureSurface:
                 resetCountingToHideAction();
                 break;
+            default:
+                break;
         }
         return true;
-    }
-
-    private void enableSpeaker() {
-        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
-        activity.enableSpeaker(true);
-
     }
 
     private void resetCountingToHideAction() {
@@ -346,7 +340,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     }
 
     public void onCoinChanged(int coin) {
-        if (isDetached()) return;
+        if (isDetached()) {
+            return;
+        }
 
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coin)).append(getString(R.string.pt));

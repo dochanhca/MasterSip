@@ -7,6 +7,9 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import org.greenrobot.eventbus.EventBus;
+
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
@@ -36,8 +39,12 @@ public class LinphoneService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
-        SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
-        loginToVoIP(sipItem);
+        if (!linphoneHandler.isRunning()) {
+            SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
+            loginToVoIP(sipItem);
+        } else {
+            EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
+        }
         return START_NOT_STICKY;
     }
 
@@ -45,7 +52,7 @@ public class LinphoneService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Logger.e("LinphonService", "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
+                Logger.e(TAG, "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                 linphoneHandler.loginVoIPServer(sipItem);
             }
         }).start();

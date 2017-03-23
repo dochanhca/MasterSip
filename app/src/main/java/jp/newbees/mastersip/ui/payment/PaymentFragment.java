@@ -60,19 +60,31 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-        setOnBackPressed(this);
         txtActionBarTitle.setText(getArguments().getString(TITLE));
+
+        loadWebView(webview);
+
+        topPresenter = ((TopActivity) getActivity()).getPresenter();
+        topPresenter.setupForPurchase();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setOnBackPressed(this);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+    }
 
-        loadWebView(webview);
-
-        topPresenter = ((TopActivity) getActivity()).getPresenter();
-        topPresenter.setupForPurchase();
+    @Override
+    public void onPause() {
+        super.onPause();
+        setOnBackPressed(null);
+        imgBack.setOnClickListener(null);
     }
 
     @Override

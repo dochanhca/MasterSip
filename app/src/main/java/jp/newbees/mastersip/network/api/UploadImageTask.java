@@ -21,10 +21,10 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class UploadImageTask extends BaseUploadTask<ImageItem> {
 
-    public static int UPLOAD_FOR_AVATAR = 3;
-    public static int UPLOAD_FOR_GALLERY = 2;
-    public static int UPLOAD_FOR_POST = 1;
-    public static int UPLOAD_FOR_TEMPLATE = 0;
+    public static final int UPLOAD_FOR_AVATAR = 3;
+    public static final int UPLOAD_FOR_GALLERY = 2;
+    public static final int UPLOAD_FOR_POST = 1;
+    public static final int UPLOAD_FOR_TEMPLATE = 0;
 
     private final String userId;
     private final int typeUpload;

@@ -30,7 +30,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,7 +55,7 @@ import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.dialog.CustomMessageDialog;
+import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -79,15 +79,13 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
-        CustomMessageDialog.OnCusTomMessageDialogClickListener {
+        OneButtonDialog.OnCusTomMessageDialogClickListener {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
-    public static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
     private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
     private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
-    private static final int SELECT_VIDEO_CALL_DIALOG = 13;
 
     public static final int NAV_PROFILE = 0;
     public static final int NAV_GALLERY = 1;
@@ -149,7 +147,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private Bitmap bitmap;
     private int maxImageSize = Constant.Application.MAX_IMAGE_SIZE;
 
-    private HashMap<String, UserItem> members;
+    private Map<String, UserItem> members;
 
     private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener =
             new NavigationLayoutGroup.OnChildItemClickListener() {
@@ -331,7 +329,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         public void didCalleeRejectCall() {
             String message = userItem.getUsername() + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
-            CustomMessageDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
+            OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
         }
 
         @Override
@@ -346,6 +344,18 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
             disMissLoading();
+        }
+
+        private void initActionCalls(UserItem userItem) {
+            if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+                actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+                imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
+            }
+
+            if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+                actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+                imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
+            }
         }
 
         private void showDialogNotifyNotEnoughPoint() {
@@ -467,18 +477,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         updateTopPaddingRecycle();
 
         presenter.loadChatHistory(userItem, 0);
-    }
-
-    private void initActionCalls(UserItem userItem) {
-        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-            imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
-        }
-
-        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-            imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
-        }
     }
 
     @Override

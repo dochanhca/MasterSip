@@ -18,7 +18,7 @@ import jp.newbees.mastersip.R;
  * Created by ducpv on 3/21/17.
  */
 
-public class CustomMessageDialog extends DialogFragment {
+public class OneButtonDialog extends DialogFragment {
 
     public static final String MESSAGE_DIALOG_TITLE = "MESSAGE_DIALOG_TITLE";
     public static final String MESSAGE_DIALOG_CONTENT = "MESSAGE_DIALOG_CONTENT";
@@ -136,7 +136,7 @@ public class CustomMessageDialog extends DialogFragment {
     public static void showDialog(Fragment fragment, FragmentManager fragmentManager,
                                   int requestCode, String title,
                                   String content, String note, String positiveTitle) {
-        CustomMessageDialog messageDialog = new CustomMessageDialog();
+        OneButtonDialog messageDialog = new OneButtonDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString(MESSAGE_DIALOG_TITLE, title);
@@ -146,12 +146,12 @@ public class CustomMessageDialog extends DialogFragment {
 
         messageDialog.setArguments(bundle);
         messageDialog.setTargetFragment(fragment, requestCode);
-        messageDialog.show(fragmentManager, "CustomMessageDialog");
+        messageDialog.show(fragmentManager, "OneButtonDialog");
     }
 
     public static void showDialog(FragmentManager fragmentManager, String title,
                                   String content, String note, String positiveTitle) {
-        CustomMessageDialog messageDialog = new CustomMessageDialog();
+        OneButtonDialog messageDialog = new OneButtonDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString(MESSAGE_DIALOG_TITLE, title);
@@ -160,6 +160,6 @@ public class CustomMessageDialog extends DialogFragment {
         bundle.putString(MESSAGE_BUTTON_TITLE, positiveTitle);
 
         messageDialog.setArguments(bundle);
-        messageDialog.show(fragmentManager, "CustomMessageDialog");
+        messageDialog.show(fragmentManager, "OneButtonDialog");
     }
 }

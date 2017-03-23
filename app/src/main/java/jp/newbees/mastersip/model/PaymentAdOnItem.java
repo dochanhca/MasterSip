@@ -14,17 +14,6 @@ public class PaymentAdOnItem implements Parcelable {
     private int cash;
     private int status;
 
-    public PaymentAdOnItem() {
-
-    }
-
-    protected PaymentAdOnItem(Parcel in) {
-        id = in.readString();
-        point = in.readInt();
-        cash = in.readInt();
-        status = in.readInt();
-    }
-
     public static final Creator<PaymentAdOnItem> CREATOR = new Creator<PaymentAdOnItem>() {
         @Override
         public PaymentAdOnItem createFromParcel(Parcel in) {
@@ -36,6 +25,17 @@ public class PaymentAdOnItem implements Parcelable {
             return new PaymentAdOnItem[size];
         }
     };
+
+    public PaymentAdOnItem() {
+
+    }
+
+    protected PaymentAdOnItem(Parcel in) {
+        id = in.readString();
+        point = in.readInt();
+        cash = in.readInt();
+        status = in.readInt();
+    }
 
     public String getId() {
         return id;

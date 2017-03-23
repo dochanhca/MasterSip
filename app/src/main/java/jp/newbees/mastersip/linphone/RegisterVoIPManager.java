@@ -9,14 +9,14 @@ import org.linphone.core.LinphoneCore;
 public class RegisterVoIPManager {
     private static RegisterVoIPManager instance = null;
 
+    private RegisterVoIPManager() {
+    }
+
     public static RegisterVoIPManager getInstance() {
         if (instance == null) {
             instance = new RegisterVoIPManager();
         }
         return instance;
-    }
-
-    private RegisterVoIPManager() {
     }
 
     public void registrationStateChanged(LinphoneCore.RegistrationState state, LinphoneNotifier notifier) {
@@ -25,7 +25,7 @@ public class RegisterVoIPManager {
         } else if (state == LinphoneCore.RegistrationState.RegistrationFailed){
             notifier.registerVoIPFailed();
         } else if (state == LinphoneCore.RegistrationState.RegistrationCleared) {
-            //TODO
+            //nothing
         }
     }
 }

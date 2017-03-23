@@ -39,10 +39,9 @@ public class PacketManager {
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
     private final ThreadPoolExecutor processorThreadPool;
     private Handler handler;
-    private static String TAG;
+    private final String TAG = getClass().getSimpleName();
 
     private PacketManager() {
-        TAG = this.getClass().getSimpleName();
         //Prevent init object
         processorQueue = new LinkedBlockingDeque<>();
 
@@ -90,8 +89,6 @@ public class PacketManager {
                 processor = new HangUpForGirlProcessor();
                 break;
             case Constant.SOCKET.ACTION_RUN_OUT_OF_COINS:
-                processor = new RunOutOfCoinProcessor();
-                break;
             case Constant.SOCKET.ACTION_ABOUT_RUN_OUT_OF_COINS:
                 processor = new RunOutOfCoinProcessor();
                 break;
