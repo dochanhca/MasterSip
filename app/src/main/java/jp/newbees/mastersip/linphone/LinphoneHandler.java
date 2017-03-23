@@ -234,6 +234,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
             instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
+        } finally {
+            instance = null;
         }
     }
 

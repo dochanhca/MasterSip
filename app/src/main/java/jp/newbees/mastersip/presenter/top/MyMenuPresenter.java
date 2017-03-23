@@ -111,14 +111,12 @@ public class MyMenuPresenter extends BasePresenter {
      * 3. Remove all cached
      */
     public void requestLogout() {
-        stopLinphoneService();
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         LogoutTask logoutTask = new LogoutTask(getContext(), userItem);
         requestToServer(logoutTask);
-        ConfigManager.getInstance().resetSettings();
     }
 
-    private void stopLinphoneService() {
+    public void stopLinphoneService() {
         Intent intent = new Intent(getContext(), LinphoneService.class);
         getContext().stopService(intent);
     }

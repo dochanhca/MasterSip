@@ -101,6 +101,7 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         userItem = getUserItem();
+        edtNickname.setText(userItem.getUsername());
 
         updateRegisterProfilePresenter = new UpdateRegisterProfilePresenter(getApplicationContext(),
                 this);
