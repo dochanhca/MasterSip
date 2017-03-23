@@ -26,7 +26,11 @@ public class LinphoneService extends Service {
         Logger.e(TAG, "onCreate");
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
-        linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
+        if (LinphoneHandler.getInstance() == null) {
+            linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
+        } else {
+            linphoneHandler = LinphoneHandler.getInstance();
+        }
     }
 
     @Override
