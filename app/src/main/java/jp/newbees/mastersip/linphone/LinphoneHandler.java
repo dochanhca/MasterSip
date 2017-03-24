@@ -2,6 +2,7 @@ package jp.newbees.mastersip.linphone;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.view.SurfaceView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,7 +27,6 @@ import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
-import org.linphone.core.VideoSize;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
@@ -59,6 +59,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private static LinphoneHandler instance;
 
     private Timer mTimer;
+    private String basePath;
+    private String mRingSoundFile;
 
     /**
      * @param notifier
@@ -114,6 +116,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void globalState(LinphoneCore lc, LinphoneCore.GlobalState state, String message) {
         //NOTE 2
         Logger.e(TAG, message + " - " + state.toString());
+
+        if (state == LinphoneCore.GlobalState.GlobalOn){
+            try {
+                initLiblinphone(lc);
+            } catch (LinphoneCoreException e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        }
     }
 
     public void newSubscriptionRequest(LinphoneCore lc, LinphoneFriend lf, String url) {
@@ -127,16 +137,39 @@ public class LinphoneHandler implements LinphoneCoreListener {
         int state = cstate.value();
         if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
+        } else if (cstate == LinphoneCall.State.IncomingReceived) {
+            updateLocalRing();
         }
         String callId = ConfigManager.getInstance().getCallId();
         ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callId);
         EventBus.getDefault().post(receivingCallEvent);
     }
 
+    /**
+     * update local ring with setting of ringtone in device
+     */
+    private void updateLocalRing() {
+        final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        switch (audioManager.getRingerMode()) {
+            case AudioManager.RINGER_MODE_SILENT:
+            case AudioManager.RINGER_MODE_VIBRATE:
+                enableDeviceRingtone(false);
+                break;
+            case AudioManager.RINGER_MODE_NORMAL:
+                enableDeviceRingtone(true);
+                break;
+            default:
+                enableDeviceRingtone(true);
+        }
+    }
+
+    private void enableDeviceRingtone(boolean enable) {
+        linphoneCore.setRing(enable?mRingSoundFile:null);
+    }
+
     private void resetDefaultSpeaker() {
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
-        userFrontCamera();
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
@@ -168,21 +201,17 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void createLinphoneCore() {
         try {
-            String basePath = context.getFilesDir().getAbsolutePath();
+            basePath = context.getFilesDir().getAbsolutePath();
+            mRingSoundFile = basePath + "/oldphone_mono.wav";
             copyAssetsFromPackage(basePath);
             linphoneCore = LinphoneCoreFactory.instance().createLinphoneCore(this, basePath + "/.linphonerc", basePath + "/linphonerc", null, context);
-            initLinphoneCoreValues(basePath);
-            setUserAgent();
-            userFrontCamera();
-            linphoneCore.setPreferredVideoSize(new VideoSize(1080, 1920));
-            linphoneCore.setNetworkReachable(true); // Let's assume it's true
         } catch (LinphoneCoreException | IOException e) {
             e.printStackTrace();
         }
     }
 
     private void copyAssetsFromPackage(String basePath) throws IOException {
-        LinphoneUtils.copyIfNotExist(context, R.raw.oldphone_mono, basePath + "/oldphone_mono.wav");
+        LinphoneUtils.copyIfNotExist(context, R.raw.oldphone_mono, mRingSoundFile);
         LinphoneUtils.copyIfNotExist(context, R.raw.ringback, basePath + "/ringback.wav");
         LinphoneUtils.copyIfNotExist(context, R.raw.toy_mono, basePath + "/toy_mono.wav");
         LinphoneUtils.copyIfNotExist(context, R.raw.linphonerc_default, basePath + "/.linphonerc");
@@ -191,17 +220,30 @@ public class LinphoneHandler implements LinphoneCoreListener {
         LinphoneUtils.copyIfNotExist(context, R.raw.rootca, basePath + "/rootca.pem");
     }
 
-    private void initLinphoneCoreValues(String basePath) {
+    private void initLiblinphone(LinphoneCore lc) throws LinphoneCoreException{
+        linphoneCore = lc;
+
         linphoneCore.setContext(context);
-        linphoneCore.setRing(null);
-        linphoneCore.setPlayLevel(0);
+        linphoneCore.setPlayLevel(1);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
-        linphoneCore.setPlayFile(basePath + "/toy_mono.wav");
+
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
+
+        setUserAgent();
+        userFrontCamera();
+//        linphoneCore.setVideoPreset("default");
+//        linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
+//        linphoneCore.setPreferredFramerate(0);
+//        setBandwidthLimit(660);
+//        linphoneCore.setNetworkReachable(true); // Let's assume it's true
     }
 
+    private void setBandwidthLimit(int bandwidth) {
+        linphoneCore.setUploadBandwidth(bandwidth);
+        linphoneCore.setDownloadBandwidth(bandwidth);
+    }
 
     public static final synchronized LinphoneCore getLinphoneCore() {
         return getInstance().linphoneCore;
@@ -236,6 +278,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             getInstance().running = false;
             getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
+            instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
         } finally {
@@ -446,31 +489,31 @@ public class LinphoneHandler implements LinphoneCoreListener {
         userFrontCamera();
         LinphoneCall call = linphoneCore.getCurrentCall();
         call.enableCamera(enable);
-        reInviteWithVideo();
+        if (enable) {
+            reinviteWithVideo();
+        }
     }
 
-    private boolean reInviteWithVideo() {
+    private void reinviteWithVideo() {
         LinphoneCall lCall = linphoneCore.getCurrentCall();
         if (lCall == null) {
-            return false;
+            return;
         }
         LinphoneCallParams params = lCall.getCurrentParamsCopy();
 
-        if (params.getVideoEnabled()) {
-            return false;
-        }
+        if (params.getVideoEnabled()) return;
 
         params.setVideoEnabled(true);
         params.setAudioBandwidth(0);
 
         // Abort if not enough bandwidth...
         if (!params.getVideoEnabled()) {
-            return false;
+            return;
         }
 
         // Not yet in video call: try to re-invite with video
         linphoneCore.updateCall(lCall, params);
-        return true;
+        return;
     }
 
     /**
