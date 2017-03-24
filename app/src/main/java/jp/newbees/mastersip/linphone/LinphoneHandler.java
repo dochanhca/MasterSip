@@ -27,6 +27,7 @@ import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
+import org.linphone.core.VideoSize;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
@@ -117,7 +118,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         //NOTE 2
         Logger.e(TAG, message + " - " + state.toString());
 
-        if (state == LinphoneCore.GlobalState.GlobalOn){
+        if (state == LinphoneCore.GlobalState.GlobalOn) {
             try {
                 initLiblinphone(lc);
             } catch (LinphoneCoreException e) {
@@ -164,7 +165,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void enableDeviceRingtone(boolean enable) {
-        linphoneCore.setRing(enable?mRingSoundFile:null);
+        linphoneCore.setRing(enable ? mRingSoundFile : null);
     }
 
     private void resetDefaultSpeaker() {
@@ -220,7 +221,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         LinphoneUtils.copyIfNotExist(context, R.raw.rootca, basePath + "/rootca.pem");
     }
 
-    private void initLiblinphone(LinphoneCore lc) throws LinphoneCoreException{
+    private void initLiblinphone(LinphoneCore lc) throws LinphoneCoreException {
         linphoneCore = lc;
 
         linphoneCore.setContext(context);
@@ -233,11 +234,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
         setUserAgent();
         userFrontCamera();
-//        linphoneCore.setVideoPreset("default");
-//        linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
-//        linphoneCore.setPreferredFramerate(0);
-//        setBandwidthLimit(660);
-//        linphoneCore.setNetworkReachable(true); // Let's assume it's true
+        linphoneCore.setVideoPreset("default");
+        linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
+        linphoneCore.setPreferredFramerate(0);
+        setBandwidthLimit(1024 + 128);
+        linphoneCore.setNetworkReachable(true); // Let's assume it's true
     }
 
     private void setBandwidthLimit(int bandwidth) {
@@ -450,7 +451,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         muteMicrophone(false);
         call(roomId, true);
     }
-    
+
     public final void acceptCall() throws LinphoneCoreException {
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         linphoneCore.acceptCall(currentCall);
