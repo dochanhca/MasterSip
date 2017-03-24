@@ -138,8 +138,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         int state = cstate.value();
         if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
-        } else if (cstate == LinphoneCall.State.IncomingReceived) {
-            updateLocalRing();
         }
         String callId = ConfigManager.getInstance().getCallId();
         ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callId);
@@ -149,8 +147,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     /**
      * update local ring with setting of ringtone in device
      */
-    private void updateLocalRing() {
+    public void updateLocalRing() {
         final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Logger.e(TAG, "AudioManager mode = " + audioManager.getRingerMode());
         switch (audioManager.getRingerMode()) {
             case AudioManager.RINGER_MODE_SILENT:
             case AudioManager.RINGER_MODE_VIBRATE:
@@ -162,6 +161,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             default:
                 enableDeviceRingtone(true);
         }
+        updateCall();
     }
 
     private void enableDeviceRingtone(boolean enable) {
@@ -233,7 +233,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setCpuCount(availableCores);
 
         setUserAgent();
-        userFrontCamera();
+        userFrontCamera(false);
+        updateLocalRing();
         linphoneCore.setVideoPreset("default");
         linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
         linphoneCore.setPreferredFramerate(0);
@@ -247,6 +248,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static final synchronized LinphoneCore getLinphoneCore() {
+        if (getInstance() == null) {
+            return null;
+        }
         return getInstance().linphoneCore;
     }
 
@@ -439,7 +443,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void handleVideoVideoCall(String roomId) {
         enableSpeaker(false);
         muteMicrophone(false);
-        userFrontCamera();
+        userFrontCamera(false);
         call(roomId, true);
     }
 
@@ -484,7 +488,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
      * @param enable
      */
     public final void enableVideo(boolean enable) {
-        userFrontCamera();
         LinphoneCall call = linphoneCore.getCurrentCall();
         call.enableCamera(enable);
         if (enable) {
@@ -534,7 +537,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public void userFrontCamera() {
+    public void userFrontCamera(boolean needUpdateCall) {
         int camId = 0;
         AndroidCameraConfiguration.AndroidCamera[] cameras = AndroidCameraConfiguration.retrieveCameras();
         for (AndroidCameraConfiguration.AndroidCamera androidCamera : cameras) {
@@ -542,6 +545,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 camId = androidCamera.id;
         }
         linphoneCore.setVideoDevice(camId);
+        if (needUpdateCall) {
+            updateCall();
+        }
     }
 
     private void switchCamera() {

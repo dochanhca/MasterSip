@@ -33,7 +33,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String TITLE_CALL = "TITLE_CALL";
 
-    private static final int MAX_WAITING_TIME = 60;
+    private static final int MAX_WAITING_TIME = 15;
 
     @BindView(R.id.profile_image)
     protected CircleImageView profileImage;

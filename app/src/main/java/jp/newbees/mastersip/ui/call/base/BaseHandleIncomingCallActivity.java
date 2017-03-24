@@ -104,8 +104,8 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         enableSpeaker(incomingWaitingFragment.isEnableSpeaker());
     }
 
-    protected final void startVideoCall() {
-        presenter.startVideoCall();
+    protected final void startIncomingVideoCall() {
+        presenter.startIncomingVideoCall();
     }
 
     public UserItem getCaller() {
