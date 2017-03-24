@@ -68,7 +68,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private Handler waitingTimeHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            getActivity().finish();
+            getOutgoingActivity().endCall();
         }
     };
     private MyCountingTimerThread countWaitingTimeThread;
@@ -144,17 +144,15 @@ public class OutgoingWaitingFragment extends BaseFragment {
 
     @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
-        BaseHandleOutgoingCallActivity activity = (BaseHandleOutgoingCallActivity) getActivity();
-
         switch (view.getId()) {
             case R.id.btn_on_off_mic:
-                activity.muteMicrophone(btnOnOffMic.isChecked());
+                getOutgoingActivity().muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
-                activity.endCall();
+                getOutgoingActivity().endCall();
                 break;
             case R.id.btn_on_off_speaker:
-                activity.enableSpeaker(btnOnOffSpeaker.isChecked());
+                getOutgoingActivity().enableSpeaker(btnOnOffSpeaker.isChecked());
                 break;
             default:
                 break;
@@ -162,8 +160,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
     }
 
     public void enableSpeaker(boolean enable) {
-        BaseHandleOutgoingCallActivity activity = ((BaseHandleOutgoingCallActivity) getActivity());
-        activity.enableSpeaker(enable);
+        getOutgoingActivity().enableSpeaker(enable);
     }
 
     public boolean isSpeakerEnable() {
@@ -174,7 +171,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
         return btnOnOffMic.isChecked();
     }
 
-    public void onCoinChange(int coin) {
+    public void onCoinChanged(int coin) {
         StringBuilder point = new StringBuilder();
         point.append(" ")
                 .append(String.valueOf(coin))
@@ -203,5 +200,9 @@ public class OutgoingWaitingFragment extends BaseFragment {
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+    }
+
+    private BaseHandleOutgoingCallActivity getOutgoingActivity() {
+        return ((BaseHandleOutgoingCallActivity) getActivity());
     }
 }
