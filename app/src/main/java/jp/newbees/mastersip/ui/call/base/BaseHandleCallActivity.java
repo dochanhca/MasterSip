@@ -69,7 +69,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     protected void useFrontCamera() {
-        presenter.useFrontCamera();
+        presenter.useFrontCamera(true);
     }
 
     public final void enableCamera(boolean enable) {

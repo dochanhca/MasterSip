@@ -21,6 +21,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     }
 
     public void startVideoCall() {
+        useFrontCamera(false);
         enableCamera(true);
     }
 
