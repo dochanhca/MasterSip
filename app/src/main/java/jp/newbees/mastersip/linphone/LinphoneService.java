@@ -1,7 +1,11 @@
 package jp.newbees.mastersip.linphone;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -22,6 +26,7 @@ public class LinphoneService extends Service {
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
+    private BroadcastReceiver receiverRingerModeChanged;
 
     @Override
     public void onCreate() {
@@ -34,6 +39,7 @@ public class LinphoneService extends Service {
         } else {
             linphoneHandler = LinphoneHandler.getInstance();
         }
+        registerReceiverRingerMOdeChanged();
     }
 
     @Override
@@ -68,6 +74,7 @@ public class LinphoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
         linphoneHandler.destroy();
+        unregisterReceiver(receiverRingerModeChanged);
         Logger.e(TAG, "Stop Linphone Service");
     }
 
@@ -81,5 +88,18 @@ public class LinphoneService extends Service {
         Logger.e(TAG, "onTaskRemoved");
         stopSelf();
         super.onTaskRemoved(rootIntent);
+    }
+
+    private void registerReceiverRingerMOdeChanged() {
+        receiverRingerModeChanged = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (LinphoneHandler.getLinphoneCore() != null) {
+                    linphoneHandler.updateLocalRing();
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        registerReceiver(receiverRingerModeChanged, filter);
     }
 }

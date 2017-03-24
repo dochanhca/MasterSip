@@ -20,7 +20,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         this.view = view;
     }
 
-    public void startVideoCall() {
+    public void startIncomingVideoCall() {
         useFrontCamera(false);
         enableCamera(true);
     }

@@ -32,7 +32,7 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     public void onStreamingConnected() {
-        startVideoCall();
+        startIncomingVideoCall();
         showVideoCallFragment();
     }
 
