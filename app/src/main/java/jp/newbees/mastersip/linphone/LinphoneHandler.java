@@ -251,10 +251,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static final synchronized LinphoneHandler getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        throw new RuntimeException("Linphone Manager should be created before accessed");
+        return instance;
     }
 
     public synchronized void loginVoIPServer(final SipItem sipItem) {
