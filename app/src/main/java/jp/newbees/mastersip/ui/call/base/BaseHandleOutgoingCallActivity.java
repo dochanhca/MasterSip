@@ -67,7 +67,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
             if (outgoingWaitingFragment == null) {
                 videoCallFragment.onCoinChanged(coin);
             } else {
-                outgoingWaitingFragment.onCoinChange(coin);
+                outgoingWaitingFragment.onCoinChanged(coin);
             }
         }
     }

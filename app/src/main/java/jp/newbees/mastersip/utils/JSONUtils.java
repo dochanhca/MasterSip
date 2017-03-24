@@ -168,10 +168,7 @@ public class JSONUtils {
         int status = getInt(jUser, Constant.JSON.STATUS);
         userItem.setStatus(status);
 
-
-        int gender = ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE
-                ? UserItem.FEMALE : UserItem.MALE;
-        userItem.setGender(gender);
+        userItem.setGender(getInteractionUserGender());
         if (jUser.has(Constant.JSON.EXTEND_INFO)) {
             JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.EXTEND_INFO);
             if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
@@ -515,6 +512,7 @@ public class JSONUtils {
             settingItem.setVoiceCall(jMember.getInt(Constant.JSON.VOICE_CALL_SET));
             settingItem.setVideoCall(jMember.getInt(Constant.JSON.VIDEO_CALL_SET));
             userItem.setSettings(settingItem);
+            userItem.setGender(getInteractionUserGender());
 
             members.put(userItem.getUserId(), userItem);
         }
@@ -799,5 +797,10 @@ public class JSONUtils {
             paymentAdOnItems.add(paymentAdOnItem);
         }
         return paymentAdOnItems;
+    }
+
+    public static int getInteractionUserGender() {
+        return ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE ?
+                UserItem.FEMALE : UserItem.MALE;
     }
 }

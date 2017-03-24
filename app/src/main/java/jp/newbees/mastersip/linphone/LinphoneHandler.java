@@ -280,7 +280,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
             getInstance().running = false;
             getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
-            instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
         } finally {
@@ -491,11 +490,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         LinphoneCall call = linphoneCore.getCurrentCall();
         call.enableCamera(enable);
         if (enable) {
-            reinviteWithVideo();
+            reInviteWithVideo();
         }
     }
 
-    private void reinviteWithVideo() {
+    private void reInviteWithVideo() {
         LinphoneCall lCall = linphoneCore.getCurrentCall();
         if (lCall == null) {
             return;
