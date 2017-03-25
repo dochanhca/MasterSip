@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/12/17.
@@ -54,6 +55,7 @@ public final class CancelCallTask extends BaseTask<Void> {
 
     @Override
     protected Void didResponse(JSONObject data) throws JSONException {
+        Logger.e(TAG, "cancel call Successfully");
         return null;
     }
 }

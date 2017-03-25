@@ -53,7 +53,7 @@ public class ChatImageDetailActivity extends CallCenterIncomingActivity {
             layoutBottomAction.setVisibility(View.VISIBLE);
         }
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imgPhoto, true);
-        Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl()).fitCenter()
+        Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl())
                 .into(imgPhoto);
     }
 

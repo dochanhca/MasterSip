@@ -44,7 +44,7 @@ public class RegisterTask extends BaseTask<UserItem> {
         String deviceInfo = ConfigManager.getInstance().getDeviceInfo();
 
         jParam.put(Constant.JSON.BIRTHDAY,dob);
-        jParam.put(Constant.JSON.GENDER,gender);
+        jParam.put(Constant.JSON.GEN,gender);
         jParam.put(Constant.JSON.SOCIAL_ID,facebooklID);
         jParam.put(Constant.JSON.DEVICE_ID,deviceId);
         jParam.put(Constant.JSON.OS_VERSION,osVersion);

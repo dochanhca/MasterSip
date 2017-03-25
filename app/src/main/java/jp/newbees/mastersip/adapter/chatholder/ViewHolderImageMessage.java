@@ -2,7 +2,6 @@ package jp.newbees.mastersip.adapter.chatholder;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,9 +51,8 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
                 imageChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ ?
                         View.VISIBLE : View.GONE);
         int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-        ImageItem imageItem = imageChatItem.getImageItem();
-        Utils.calculateChatImageSize(getContext(), imageItem);
-        setImageSize(imageItem.getWidth(), imageItem.getHeight());
+        ImageItem imageItem = Utils.calculateChatImageSize(getContext(), imageChatItem.getImageItem());
+        Utils.setChatImageSize(imgChat, imageItem.getWidth(), imageItem.getHeight());
 
 
         Glide.with(getContext()).load(imageChatItem.getImageItem().getOriginUrl())
@@ -66,12 +64,4 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
                 .dontAnimate()
                 .into(imgChat);
     }
-
-    private void setImageSize(int width, int height) {
-        ViewGroup.LayoutParams layoutParams = imgChat.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
-        imgChat.setLayoutParams(layoutParams);
-    }
-
 }

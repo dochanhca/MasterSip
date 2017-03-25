@@ -73,7 +73,8 @@ public final class Constant {
         public static final String REGIST_TOKEN = "regist_token";
         public static final String TOKEN_DEVICE = "token_device";
         public static final String BIRTHDAY = "birthday";
-        public static final String GENDER = "gen";
+        public static final String GEN = "gen";
+        public static final String GENDER = "gender";
         public static final String SOCIAL_ID = "social_id";
         public static final String OS_VERSION = "os_version";
         public static final String APP_VERSION = "app_version";
@@ -207,8 +208,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //                private static final String DEVELOPMENT_IP = "52.197.138.1";
+//        private static final String DEVELOPMENT_IP = "52.199.112.26";
+                        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -341,7 +342,8 @@ public final class Constant {
         public static final int LAST_LOGIN = 1;
         public static final int LAST_REGISTER = 2;
 
-        public static final int MAX_IMAGE_SIZE = 1024;
+        public static final int MAX_IMAGE_WIDTH = 1080;
+        public static final int MAX_IMAGE_HEIGHT = 1920;
         public static final int ANDROID = 2;
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
