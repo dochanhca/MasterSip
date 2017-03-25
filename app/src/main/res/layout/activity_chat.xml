@@ -243,7 +243,7 @@
                         style="@style/origin_style_content_text_view_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filter_call_in_message"
+                        android:text="@string/voice_call"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -268,7 +268,7 @@
                         style="@style/origin_style_content_text_view_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filter_call_in_message"
+                        android:text="@string/video_call"
                         android:textColor="@color/white" />
                 </LinearLayout>
             </LinearLayout>
