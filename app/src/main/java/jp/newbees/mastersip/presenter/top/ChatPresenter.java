@@ -19,7 +19,7 @@ import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
-import jp.newbees.mastersip.network.api.LoadChatHistoryTask;
+import jp.newbees.mastersip.network.api.GetChatHistoryTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
@@ -85,8 +85,8 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
         } else if (task instanceof UpdateStateMessageTask) {
             BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
             chatPresenterListener.didSendingReadMessageToServer(result);
-        } else if (task instanceof LoadChatHistoryTask) {
-            LoadChatHistoryResultItem resultItem = ((LoadChatHistoryTask) task).getDataResponse();
+        } else if (task instanceof GetChatHistoryTask) {
+            LoadChatHistoryResultItem resultItem = ((GetChatHistoryTask) task).getDataResponse();
             chatPresenterListener.didLoadChatHistory(resultItem);
         } else if (task instanceof FollowUserTask) {
             chatPresenterListener.didFollowUser();
@@ -105,7 +105,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
             chatPresenterListener.didSendingReadMessageToServerError(errorCode, errorMessage);
-        } else if (task instanceof LoadChatHistoryTask) {
+        } else if (task instanceof GetChatHistoryTask) {
             chatPresenterListener.didLoadChatHistoryError(errorCode, errorMessage);
         } else if (task instanceof FollowUserTask) {
             chatPresenterListener.didFollowUserError(errorMessage, errorCode);
@@ -165,9 +165,9 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     public void loadChatHistory(UserItem friendUser, int lastMessageId) {
         UserItem owner = ConfigManager.getInstance().getCurrentUser();
-        LoadChatHistoryTask loadChatHistoryTask = new LoadChatHistoryTask(context, owner.getUserId(),
+        GetChatHistoryTask getChatHistoryTask = new GetChatHistoryTask(context, owner.getUserId(),
                 friendUser.getUserId(), lastMessageId);
-        requestToServer(loadChatHistoryTask);
+        requestToServer(getChatHistoryTask);
     }
 
     public final void sendFile(String receiverExtension, int typeUpload, InputStream file) {

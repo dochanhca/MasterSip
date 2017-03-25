@@ -73,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_20"
+            android:lineSpacingMultiplier="1.4"
             android:text="@string/mess_chat_room_for_boy" />
 
         <jp.newbees.mastersip.customviews.HiraginoButton

@@ -23,13 +23,13 @@ import static jp.newbees.mastersip.utils.JSONUtils.getMembers;
 /**
  * Created by thangit14 on 1/17/17.
  */
-public class LoadChatHistoryTask extends BaseTask<LoadChatHistoryResultItem> {
+public class GetChatHistoryTask extends BaseTask<LoadChatHistoryResultItem> {
     private Context context;
     private String userID;
     private String friendUserId;
     private int lastMessageId;
 
-    public LoadChatHistoryTask(Context context, String userID, String friendUserId, int lastMessageId) {
+    public GetChatHistoryTask(Context context, String userID, String friendUserId, int lastMessageId) {
         super(context);
         this.context = context;
         this.userID = userID;

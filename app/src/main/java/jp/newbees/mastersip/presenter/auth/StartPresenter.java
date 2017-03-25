@@ -155,7 +155,7 @@ public class StartPresenter extends RegisterPresenterBase {
         try {
             JSONObject jData = userInfo.getJSONObject("data");
             boolean isSilhouette = jData.getBoolean("is_silhouette");
-            if (!isSilhouette) {
+            if (!isSilhouette && !"".equals(jData.getString("url"))) {
                 String urlPicture = jData.getString("url");
                 avatarItem.setOriginUrl(urlPicture);
             } else {

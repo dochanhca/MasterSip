@@ -87,11 +87,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
     private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
 
-    public static final int NAV_PROFILE = 0;
-    public static final int NAV_GALLERY = 1;
-    public static final int NAV_GIFT = 2;
-    public static final int NAV_FOLLOW = 3;
-
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
     @BindView(R.id.custom_action_header_in_chat)
@@ -145,7 +140,8 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private boolean isShowDialogForHandleImage = false;
 
     private Bitmap bitmap;
-    private int maxImageSize = Constant.Application.MAX_IMAGE_SIZE;
+    private int maxImageWidth = Constant.Application.MAX_IMAGE_WIDTH;
+    private int maxImageHeight = Constant.Application.MAX_IMAGE_HEIGHT;
 
     private Map<String, UserItem> members;
 
@@ -153,17 +149,17 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             new NavigationLayoutGroup.OnChildItemClickListener() {
                 @Override
                 public void onChildItemClick(View view, int position) {
-                    switch (position) {
-                        case NAV_PROFILE:
+                    switch (view.getId()) {
+                        case R.id.nav_profile:
                             gotoProfileDetailActivity();
                             break;
-                        case NAV_GALLERY:
+                        case R.id.nav_gallery:
                             ChattingPhotoGalleryActivity.startActivity(ChatActivity.this, userItem.getUserId());
                             break;
-                        case NAV_GIFT:
+                        case R.id.nav_gift:
                             gotoListGiftActivity();
                             break;
-                        case NAV_FOLLOW:
+                        case R.id.nav_follow:
                             showLoading();
                             presenter.doFollowUser(presenter.
                                     getUserHasRelationShipItem(userItem, members));
@@ -562,7 +558,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
 
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {
-        Logger.e(TAG,"onTouch");
         if (isSoftKeyboardOpened) {
             Logger.e(TAG,"onTouch -> hide soft keboard");
             donotHideSoftKeyboard = true;
@@ -775,7 +770,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
             bitmap = ImageUtils.decodeBitmapFromFile(outFile.getPath(),
-                    maxImageSize, maxImageSize);
+                    maxImageWidth, maxImageHeight);
             uploadImageToServer();
         }
     }
@@ -802,11 +797,11 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             imagePath = ImageFilePath.getPath(this,
                     ImageUtils.getImageUrlWithAuthority(this, pickedImage));
 
-            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
+            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageWidth, maxImageHeight);
             bitmap = ImageUtils.rotateBitmap(bitmap, imagePath);
         } else {
             imagePath = ImageFilePath.getPath(this, pickedImage);
-            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageSize, maxImageSize);
+            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageWidth, maxImageHeight);
         }
         uploadImageToServer();
     }

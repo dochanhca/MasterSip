@@ -165,8 +165,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/blue_dark"
                 android:orientation="horizontal"
-                app:dividerColor="@color/white"
-                app:showDivider="true">
+                app:showDivider="false">
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
                     android:id="@+id/nav_profile"
@@ -179,8 +178,12 @@
                     app:text="@string/profile"
                     app:textColorNormal="@color/white"
                     app:textColorSelected="@color/white">
-
                 </jp.newbees.mastersip.customviews.NavigationLayoutChild>
+
+                <View
+                    android:layout_width="@dimen/_1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"/>
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
                     android:id="@+id/nav_gallery"
@@ -194,6 +197,11 @@
 
                 </jp.newbees.mastersip.customviews.NavigationLayoutChild>
 
+                <View
+                    android:layout_width="@dimen/_1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"/>
+
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
                     android:id="@+id/nav_gift"
                     android:layout_width="match_parent"
@@ -203,6 +211,11 @@
                     app:iconNormal="@drawable/ic_gift_in_chat"
                     app:text="@string/give_a_gift"
                     app:textColorNormal="@color/white" />
+
+                <View
+                    android:layout_width="@dimen/_1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"/>
 
                 <jp.newbees.mastersip.customviews.NavigationLayoutChild
                     android:id="@+id/nav_follow"
@@ -243,7 +256,7 @@
                         style="@style/origin_style_content_text_view_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filter_call_in_message"
+                        android:text="@string/voice_call"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -268,7 +281,7 @@
                         style="@style/origin_style_content_text_view_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filter_call_in_message"
+                        android:text="@string/video_call"
                         android:textColor="@color/white" />
                 </LinearLayout>
             </LinearLayout>

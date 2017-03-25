@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -152,13 +153,43 @@ public class Utils {
         return url.toString();
     }
 
-    public static void calculateChatImageSize(Context context, ImageItem imageItem) {
+    public static ImageItem calculateChatImageSize(Context context, ImageItem imageItem) {
         int halfWidth = getScreenWidth(context) / 2;
         int halfHeight = getScreenHeight(context) / 2;
         while (imageItem.getWidth() > halfWidth || imageItem.getHeight() > halfHeight) {
-            imageItem.setWidth(imageItem.getWidth() * 2 / 3);
-            imageItem.setHeight(imageItem.getHeight() * 2 / 3);
+            imageItem.setWidth(getChatImageWidth(imageItem.getWidth() * 2 / 3));
+            imageItem.setHeight(getChatImageHeight(imageItem.getHeight() * 2 / 3));
         }
+        return imageItem;
+    }
+
+    public static void setChatImageSize(View imageView, int width, int height) {
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.width = getChatImageWidth(width);
+        layoutParams.height = getChatImageHeight(height);
+        imageView.setLayoutParams(layoutParams);
+    }
+
+    public static int getChatImageWidth(int width) {
+        if (width <= 150) {
+            return 150;
+        } else if (width <= 300) {
+            return 300;
+        } else if (width <= 600) {
+            return 450;
+        }
+        return width;
+    }
+
+    public static int getChatImageHeight(int height) {
+        if (height <= 150) {
+            return 150;
+        } else if (height <= 300) {
+            return 300;
+        } else if (height <= 600) {
+            return 450;
+        }
+        return height;
     }
 
     public static void enableDisableView(View view, boolean enable) {
@@ -169,5 +200,13 @@ public class Utils {
                 enableDisableView(group.getChildAt(i), enable);
             }
         }
+    }
+
+    public static void addPropertyForRelativeChildView(View childView, int property) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) childView.getLayoutParams();
+        layoutParams.addRule(property, RelativeLayout.TRUE);
+        childView.setLayoutParams(layoutParams);
+
     }
 }
