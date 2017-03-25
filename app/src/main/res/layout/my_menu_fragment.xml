@@ -124,7 +124,8 @@
                     android:layout_marginLeft="@dimen/_15dp"
                     android:background="@drawable/bg_corner_layout"
                     android:layout_alignTop="@+id/layout_my_notify"
-                    android:layout_toEndOf="@+id/group_avatar">
+                    android:layout_toEndOf="@+id/group_avatar"
+                    android:layout_marginStart="13dp">
 
                     <LinearLayout
                         android:id="@+id/parent_point"

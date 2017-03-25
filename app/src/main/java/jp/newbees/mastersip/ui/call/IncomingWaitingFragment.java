@@ -96,7 +96,7 @@ public class IncomingWaitingFragment extends BaseFragment {
 
     @Override
     protected int layoutId() {
-        return R.layout.fragment_incomint_wating;
+        return R.layout.fragment_incoming_wating;
     }
 
     @Override

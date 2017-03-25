@@ -414,4 +414,5 @@
     <string name="from">さんから</string>
     <string name="gift">ギフト</string>
     <string name="has_arrived">が届きました。</string>
+    <string name="end">終了</string>
 </resources>

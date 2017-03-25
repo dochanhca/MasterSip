@@ -51,6 +51,7 @@ import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -203,6 +204,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         } else {
             onlineList.append(getString(R.string.boy)).append("\n").append(getString(R.string.online_notify));
             btnBuyPoint.setVisibility(View.INVISIBLE);
+            Utils.addPropertyForRelativeChildView(parentPoint, RelativeLayout.CENTER_IN_PARENT);
             txtOnlineList.setText(onlineList.toString());
             txtOnlineList.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_oneline_list_male, 0, 0);
         }

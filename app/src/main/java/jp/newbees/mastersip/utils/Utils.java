@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,5 +170,13 @@ public class Utils {
                 enableDisableView(group.getChildAt(i), enable);
             }
         }
+    }
+
+    public static void addPropertyForRelativeChildView(View childView, int property) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams)childView.getLayoutParams();
+        layoutParams.addRule(property, RelativeLayout.TRUE);
+        childView.setLayoutParams(layoutParams);
+
     }
 }
