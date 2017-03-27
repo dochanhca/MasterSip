@@ -37,6 +37,7 @@ import jp.newbees.mastersip.adapter.GalleryAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
+import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -47,6 +48,7 @@ import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -295,6 +297,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.layout_common_guide:
                 break;
             case R.id.layout_profile_detail:
+                UserItem me = ConfigManager.getInstance().getCurrentUser();
+                ProfileDetailItemActivity.startActivity(getActivity(), me);
                 break;
             case R.id.btn_buy_point:
                 MyMenuContainerFragment.showChosePaymentTypeFragment(getActivity());
@@ -338,8 +342,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void didLoadGallery(GalleryItem galleryItem) {
         this.galleryItem = galleryItem;
-        this.galleryAdapter.setPhotos(galleryItem.getPhotos());
-        this.galleryAdapter.notifyDataSetChanged();
+        galleryAdapter.clearData();
+        galleryAdapter.setPhotos(galleryItem.getPhotos());
+        Logger.e(TAG, "load Gallery: "+galleryAdapter.getItemCount());
     }
 
     @Override
@@ -451,6 +456,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         showMessageDialog(message.toString());
 
         EventBus.getDefault().removeStickyEvent(paymentSuccessEvent);
+    }
+
+    @Subscribe(sticky =  true)
+    public void onReloadProfileEvent(ReLoadProfileEvent event) {
+        presenter.requestMyMenuInfo();
+        EventBus.getDefault().removeStickyEvent(event);
     }
 
     private void handleUploadPhotoForGallery() {
@@ -582,9 +593,5 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             pickedImage = ImageUtils.getImageUrlWithAuthority(getContext(), pickedImage);
         }
         CropImageActivity.startActivityForResult(this, pickedImage);
-    }
-
-    public void reloadData() {
-        presenter.requestMyMenuInfo();
     }
 }

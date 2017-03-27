@@ -62,7 +62,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
-OneButtonDialog.OnCusTomMessageDialogClickListener {
+        OneButtonDialog.OnCusTomMessageDialogClickListener {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
 
@@ -142,6 +142,8 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
     ViewGroup layoutVoiceCall;
     @BindView(R.id.layout_video_call)
     ViewGroup layoutVideoCall;
+    @BindView(R.id.layout_chat)
+    ViewGroup layoutChat;
     @BindView(R.id.txt_video_call)
     TextView txtVideoCall;
     @BindView(R.id.txt_voice_call)
@@ -194,6 +196,10 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
         return profileDetailItemFragment;
     }
 
+    public void reloadData() {
+        profileDetailPresenter.getListPhotos(userItem.getUserId());
+    }
+
     @Override
     protected int layoutId() {
         return R.layout.item_profile_detail;
@@ -213,6 +219,11 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
 
         initRecyclerUserImage();
         initVariables();
+        initActions();
+    }
+
+    private boolean isCurrentUser() {
+        return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
     }
 
     @Override
@@ -380,9 +391,17 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
     }
 
     @Override
+    public void didEditProfileImage() {
+        profileDetailPresenter.getListPhotos(userItem.getUserId());
+    }
+
+    @Override
     public void onUserImageClick(int position) {
-        //do something
-        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
+        if (isCurrentUser()) {
+            ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
+        } else {
+            ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
+        }
     }
 
     @Override
@@ -411,15 +430,6 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
         }
     }
 
-    private void doFollowUser() {
-        showLoading();
-        if (btnFollow.isChecked()) {
-            profileDetailPresenter.followUser(userItem.getUserId());
-        } else {
-            profileDetailPresenter.unFollowUser(userItem.getUserId());
-        }
-    }
-
     @Override
     public void onOkVoiceCallClick() {
         profileDetailPresenter.checkVoiceCall(userItem);
@@ -437,6 +447,26 @@ OneButtonDialog.OnCusTomMessageDialogClickListener {
     @Override
     public void onCustomMessageDialogPositiveClick() {
         //listen callback event
+    }
+
+    private void doFollowUser() {
+        showLoading();
+        if (btnFollow.isChecked()) {
+            profileDetailPresenter.followUser(userItem.getUserId());
+        } else {
+            profileDetailPresenter.unFollowUser(userItem.getUserId());
+        }
+    }
+
+    private void initActions() {
+        if (isCurrentUser()) {
+            btnFollow.setEnabled(false);
+            btnSendGift.setEnabled(false);
+            btnOnOffNotify.setEnabled(false);
+            layoutVideoCall.setEnabled(false);
+            layoutVoiceCall.setEnabled(false);
+            layoutChat.setEnabled(false);
+        }
     }
 
     private void updatePhotos(GalleryItem galleryItem) {

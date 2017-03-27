@@ -75,7 +75,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
             setFragmentTitle(titleGiftsList);
         } else {
             hideFragmentActionBar();
-            ((BaseActivity)getActivity()).changeHeaderText(titleGiftsList);
+            ((BaseActivity) getActivity()).changeHeaderText(titleGiftsList);
         }
 
         userItem = getArguments().getParcelable(ListGiftFragment.USER_ITEM);

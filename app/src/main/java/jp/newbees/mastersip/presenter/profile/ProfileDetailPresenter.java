@@ -2,6 +2,9 @@ package jp.newbees.mastersip.presenter.profile;
 
 import android.content.Context;
 
+import org.greenrobot.eventbus.Subscribe;
+
+import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.GalleryItem;
@@ -16,6 +19,7 @@ import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -65,6 +69,8 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         void didCheckCallError(String errorMessage, int errorCode);
 
         void didCalleeRejectCall(String calleeExtension);
+
+        void didEditProfileImage();
     }
 
     public ProfileDetailPresenter(Context context, ProfileDetailItemView view) {
@@ -119,6 +125,12 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
         String calleeExtension = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId())
                 .getSipItem().getExtension();
         view.didCalleeRejectCall(calleeExtension);
+    }
+
+    @Subscribe(sticky =  true)
+    public void onReloadProfileEvent(ReLoadProfileEvent event) {
+        Logger.e(TAG, "" + event.isNeedReload());
+        view.didEditProfileImage();
     }
 
     private void getNextIdForLoadMore(GalleryItem galleryItem) {

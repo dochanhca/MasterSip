@@ -79,6 +79,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     public void setPhotos(List<ImageItem> photos) {
         this.photos = photos;
+        notifyDataSetChanged();
     }
 
     public void addPhoto(ImageItem photo) {
@@ -87,6 +88,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     public void setMorePhotos(List<ImageItem> photos) {
         this.photos.addAll(photos);
+    }
+
+    public void clearData() {
+        this.photos.clear();
+        notifyDataSetChanged();
     }
 
 

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.mailbackup.ChangeEmailBackupFragment;
 import jp.newbees.mastersip.ui.mailbackup.CheckCodeFragment;
@@ -14,6 +15,7 @@ import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
+import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -82,8 +84,14 @@ public class MyMenuContainerFragment extends BaseFragment {
         performShowFragment(activity, fragment);
     }
 
+    public static void showMyProfileDetailFragment(FragmentActivity activity, UserItem me) {
+        ProfileDetailItemFragment profileDetailItemFragment =
+                ProfileDetailItemFragment.newInstance(me, false);
+        performShowFragment(activity, profileDetailItemFragment);
+    }
 
-    private static void showFragmentAndAddToBackstack(FragmentActivity activity, BaseFragment fragment) {
+
+    private static void showFragmentAndAddToBackStack(FragmentActivity activity, BaseFragment fragment) {
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
         fragment.setTransitionAnimation(transaction);
         transaction.addToBackStack(null);
@@ -123,23 +131,14 @@ public class MyMenuContainerFragment extends BaseFragment {
     /**
      * @param activity
      * @param fragment
-     * @param addToBackstack
+     * @param addToBackStack
      */
-    private static void performShowFragment(FragmentActivity activity, BaseFragment fragment, boolean addToBackstack) {
-        if (addToBackstack) {
-            showFragmentAndAddToBackstack(activity, fragment);
+    private static void performShowFragment(FragmentActivity activity, BaseFragment fragment, boolean addToBackStack) {
+        if (addToBackStack) {
+            showFragmentAndAddToBackStack(activity, fragment);
         } else {
             FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragment_my_menu_container, fragment, MyMenuFragment.class.getName()).commit();
-        }
-    }
-
-    public void reloadData() {
-        MyMenuFragment fragment = (MyMenuFragment) getFragmentManager().
-                findFragmentByTag(MyMenuFragment.class.getName());
-
-        if (null != fragment) {
-            fragment.reloadData();
         }
     }
 }
