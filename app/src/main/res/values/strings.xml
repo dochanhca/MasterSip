@@ -415,4 +415,9 @@
     <string name="gift">ギフト</string>
     <string name="has_arrived">が届きました。</string>
     <string name="end">終了</string>
+    <string name="to_send_a_message">メッセージを送信するには、</string>
+    <string name="the_lowest">最低</string>
+    <string name="is_required">必要です。</string>
+    <string name="do_you_want_to_add_point">ポイントを追加しますか？</string>
+    <string name="to_send_an_image">画像を送信するには、</string>
 </resources>

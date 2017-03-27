@@ -55,15 +55,15 @@ public class MyMenuContainerFragment extends BaseFragment {
         performShowFragment(activity, fragment);
     }
 
-    private static void showWebViewFragment(FragmentActivity activity, String url) {
-        BaseFragment fragment = PaymentFragment.newInstance(url,"Purchase");
+    private static void showWebViewFragment(FragmentActivity activity) {
+        BaseFragment fragment = PaymentFragment.newInstance(false);
         performShowFragment(activity, fragment);
     }
 
     public static void showChosePaymentTypeFragment(FragmentActivity activity) {
         String url = Utils.getURLChosePaymentType();
         Logger.e("showChosePaymentTypeFragment", url);
-        showWebViewFragment(activity, url);
+        showWebViewFragment(activity);
     }
 
     public static void showChangeEmailBackupFragment(FragmentActivity activity) {

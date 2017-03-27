@@ -241,6 +241,11 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".ui.payment.PaymentActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

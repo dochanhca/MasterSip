@@ -7,7 +7,7 @@
         android:background="@color/divider">
 
         <include
-            android:id="@+id/action_bar01"
+            android:id="@+id/action_bar"
             layout="@layout/layout_action_bar" />
 
         <LinearLayout
@@ -131,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/layout_actions"
-            android:layout_below="@id/action_bar01">
+            android:layout_below="@id/action_bar">
 
             <LinearLayout
                 android:id="@+id/swap_layout"
@@ -157,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/header_search_height"
             android:layout_marginTop="@dimen/_1dp"
-            android:layout_below="@id/action_bar01">
+            android:layout_below="@id/action_bar">
 
             <jp.newbees.mastersip.customviews.NavigationLayoutGroup
                 android:id="@+id/custom_action_header_in_chat"

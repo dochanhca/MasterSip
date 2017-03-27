@@ -318,7 +318,6 @@ public class JSONUtils {
     private static BaseChatItem parseCallChatItem(JSONObject jData, UserItem me) throws JSONException {
         CallChatItem callChatItem = new CallChatItem();
         JSONObject jCall = jData.getJSONObject(Constant.JSON.CALL);
-        callChatItem.setMessageId(jData.getInt(Constant.JSON.MESSAGE_ID));
         callChatItem.setKindCall(jCall.getInt(Constant.JSON.KIND_CALL));
         if (jCall.has(Constant.JSON.DURATION)) {
             callChatItem.setDuration(jCall.getString(Constant.JSON.DURATION));

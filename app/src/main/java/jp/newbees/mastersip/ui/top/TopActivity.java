@@ -184,7 +184,7 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     @Override
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
-        onBackPressed();
+        backToMyMenuFragment(getSupportFragmentManager());
         showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
     }
 
@@ -192,6 +192,15 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     public void onSendPurchaseResultToServerError(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    private void backToMyMenuFragment(FragmentManager fragmentManager) {
+        if (fragmentManager != null) {
+            int count = fragmentManager.getBackStackEntryCount();
+            for (int i = 0; i <= count - 1; i++) {
+                fragmentManager.popBackStackImmediate();
+            }
+        }
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
