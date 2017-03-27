@@ -40,20 +40,16 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         return presenter;
     }
 
-    public final void rejectCall(String caller, int callType, String calId) {
-        this.presenter.rejectCall(caller, callType, calId);
+    public final void declineCall(String calId) {
+        this.presenter.declineCall(calId);
     }
 
     public final void acceptCall(String calId) throws LinphoneCoreException {
         this.presenter.acceptCall(calId);
     }
 
-    public final void endCall(String caller, int callType, String calId) {
-        this.presenter.endCall(caller, callType, calId);
-    }
-
-    public final void endCall() {
-        presenter.endCall(getCurrentUser(), getCallType());
+    public final void terminalCall(String calId) {
+        this.presenter.terminalCall(calId);
     }
 
     public final void enableSpeaker(boolean enable) {
@@ -76,7 +72,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         presenter.enableCamera(enable);
     }
 
-    public abstract UserItem getCurrentUser();
+    public abstract UserItem getCompetitor();
 
     public abstract int getCallType();
 

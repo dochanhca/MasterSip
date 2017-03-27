@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -35,10 +36,11 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  */
 
 public class VideoCallFragment extends BaseFragment implements View.OnTouchListener {
-    private static final String USER_ITEM = "USER ITEM";
+    private static final String COMPETITOR = "USER ITEM";
     private static final String CALL_TYPE = "CALL TYPE";
     private static final String SPEAKER = "SPEAKER";
     private static final String MIC = "MIC";
+    private static final String CALL_ID = "CALL_ID";
 
     private static final int BREAK_TIME_TO_HIDE_ACTION = 5;
     private static final int BREAK_TIME_OF_COUNTING_CALL_DURATION = 1;
@@ -73,7 +75,8 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
     private AndroidVideoWindowImpl androidVideoWindow;
 
-    private UserItem userItem;
+    private UserItem competitor;
+    private String callId;
 
     private MyCountingTimerThread myCountingThreadToHideAction;
     private MyCountingTimerThread myCountingTimer;
@@ -86,7 +89,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private Animation fadeOut;
     private boolean isShowingView = true;
 
-    private Handler handler = new Handler() {
+    private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             if (msg.obj.toString().equalsIgnoreCase(ID_TIMER_HIDE_ACTION)) {
@@ -98,13 +101,14 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         }
     };
 
-    public static VideoCallFragment newInstance(UserItem currentUser, int callType,
+    public static VideoCallFragment newInstance(UserItem competitor, String callID, int callType,
                                                 boolean enableSpeaker, boolean enableMic) {
         Bundle args = new Bundle();
-        args.putParcelable(USER_ITEM, currentUser);
+        args.putParcelable(COMPETITOR, competitor);
         args.putInt(CALL_TYPE, callType);
         args.putBoolean(SPEAKER, enableSpeaker);
         args.putBoolean(MIC, enableMic);
+        args.putString(CALL_ID, callID);
         VideoCallFragment fragment = new VideoCallFragment();
         fragment.setArguments(args);
         return fragment;
@@ -119,7 +123,8 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
 
-        userItem = getArguments().getParcelable(USER_ITEM);
+        competitor = getArguments().getParcelable(COMPETITOR);
+        callId = getArguments().getString(CALL_ID);
 
         moveUpTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_up_txt_time);
         moveDownTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_time);
@@ -179,9 +184,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         bindVideoViewToLinphone();
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        llPoint.setVisibility(userItem.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
+        llPoint.setVisibility(competitor.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
-        txtName.setText(userItem.getUsername());
+        txtName.setText(competitor.getUsername());
         startCountingCallDuration();
 
         boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
@@ -225,7 +230,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         resetCountingToHideAction();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
-                activity.endCall();
+                activity.terminalCall(callId);
                 break;
             case R.id.btn_on_off_mic:
                 activity.muteMicrophone(btnOnOffMic.isChecked());

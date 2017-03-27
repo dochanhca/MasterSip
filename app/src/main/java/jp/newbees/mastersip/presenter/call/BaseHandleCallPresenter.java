@@ -11,11 +11,9 @@ import org.linphone.core.LinphoneCoreException;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 3/10/17.
@@ -40,8 +38,8 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         view.onRunningOutOfCoin();
     }
 
-    protected void performCancelCall(String caller, String callee, int callType, String calId) {
-        CancelCallTask cancelCallTask = new CancelCallTask(context, caller, callee, callType, calId);
+    protected void performCancelCall(String calId) {
+        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
         requestToServer(cancelCallTask);
     }
 
@@ -71,23 +69,14 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         LinphoneHandler.getInstance().acceptCall();
     }
 
-    public final void rejectCall(String caller, int callType, String calId) {
-        LinphoneHandler.getInstance().rejectCall();
-        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        performCancelCall(caller, callee, callType, calId);
+    public final void declineCall(String calId) {
+        LinphoneHandler.getInstance().declineCall();
+        performCancelCall(calId);
     }
 
-    public void endCall(String caller, int callType, String calId) {
-        LinphoneHandler.getInstance().endCall();
-        String callee = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
-        performCancelCall(caller, callee, callType, calId);
-    }
-
-    public void endCall(UserItem callee, int callType) {
-        LinphoneHandler.getInstance().endCall();
-        String caller = getCurrentUserItem().getSipItem().getExtension();
-        String callID = ConfigManager.getInstance().getCallId();
-        performCancelCall(caller, callee.getSipItem().getExtension(), callType, callID);
+    public void terminalCall(String calId) {
+        LinphoneHandler.getInstance().terminalCall();
+        performCancelCall(calId);
     }
 
     protected void handleCallEnd() {

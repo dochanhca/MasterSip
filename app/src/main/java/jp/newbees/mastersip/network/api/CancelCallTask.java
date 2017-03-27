@@ -19,25 +19,16 @@ import jp.newbees.mastersip.utils.Logger;
 public final class CancelCallTask extends BaseTask<Void> {
 
     private final String callID;
-    private final int callType;
-    private final String caller;
-    private final String callee;
 
-    public CancelCallTask(Context context, String caller, String callee, int callType, String callID) {
+    public CancelCallTask(Context context, String callID) {
         super(context);
         this.callID = callID;
-        this.callType = callType;
-        this.caller = caller;
-        this.callee = callee;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
-        jParams.put(Constant.JSON.CALLER, caller);
-        jParams.put(Constant.JSON.RECEIVER, callee);
-        jParams.put(Constant.JSON.TYPE, callType);
         jParams.put(Constant.JSON.CALL_ID, callID);
         return jParams;
     }
@@ -55,7 +46,7 @@ public final class CancelCallTask extends BaseTask<Void> {
 
     @Override
     protected Void didResponse(JSONObject data) throws JSONException {
-        Logger.e(TAG, "cancel call Successfully");
+        Logger.e("CancelCallTask", "cancel call Successfully");
         return null;
     }
 }

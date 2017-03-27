@@ -20,6 +20,7 @@ import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -58,6 +59,7 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
                 onIncomingCall();
                 break;
             case ReceivingCallEvent.OUTGOING_CALL:
+                Logger.e(TAG,"my outgoing event -------- ** ==");
                 reconnectRoom();
                 onOutgoingCall(receivingCallEvent.getCallId());
                 break;
@@ -124,13 +126,13 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
         int callType = ConfigManager.getInstance().getCurrentCallType();
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                centerCallView.outgoingVoiceCall(callee);
+                centerCallView.outgoingVoiceCall(callee, callId);
                 break;
             case Constant.API.VIDEO_CALL:
-                centerCallView.outgoingVideoCall(callee);
+                centerCallView.outgoingVideoCall(callee, callId);
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                centerCallView.outgoingVideoChatCall(callee);
+                centerCallView.outgoingVideoChatCall(callee, callId);
                 break;
         }
     }
@@ -150,11 +152,11 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
 
         void incomingVideoChatCall(UserItem caller, String callID);
 
-        void outgoingVoiceCall(UserItem callee);
+        void outgoingVoiceCall(UserItem callee, String callID);
 
-        void outgoingVideoCall(UserItem callee);
+        void outgoingVideoCall(UserItem callee, String callID);
 
-        void outgoingVideoChatCall(UserItem callee);
+        void outgoingVideoChatCall(UserItem callee, String callID);
 
         void didConnectCallError(int errorCode, String errorMessage);
 

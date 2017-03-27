@@ -134,7 +134,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        Logger.e(TAG, msg + " - " + cstate.toString());
+        Logger.e(TAG, msg + " - " + cstate.toString() + " - "+cstate.value());
         int state = cstate.value();
         if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
@@ -457,12 +457,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.acceptCall(currentCall);
     }
 
-    public final void endCall() {
+    public final void terminalCall() {
+        Logger.e(TAG,"Terminal Call");
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         linphoneCore.terminateCall(currentCall);
     }
 
-    public final void rejectCall() {
+    public final void declineCall() {
+        Logger.e(TAG,"Decline Call");
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         if (null != currentCall) {
             linphoneCore.declineCall(currentCall, Reason.Busy);

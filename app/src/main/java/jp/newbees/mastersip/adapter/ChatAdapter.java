@@ -111,7 +111,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     view = layoutInflater.inflate(R.layout.my_chat_video_call_item, parent, false);
                     viewHolder = new ViewHolderVideoCallMessage(view, context);
                 }
+                break;
             default:
+                view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
+                viewHolder = new ViewHolderHeader(view, context);
                 break;
         }
 

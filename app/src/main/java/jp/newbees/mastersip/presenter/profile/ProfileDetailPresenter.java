@@ -6,11 +6,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
-import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
@@ -30,18 +28,6 @@ public class ProfileDetailPresenter extends BaseActionCallPresenter {
     private final ProfileDetailItemView view;
     private int nextId = -1;
     private boolean isLoadMore = false;
-
-    public void endCall(UserItem callee, int callType) {
-        requestCancelCall(callee, callType);
-        LinphoneHandler.getInstance().endCall();
-    }
-
-    private void requestCancelCall(UserItem callee, int callType) {
-        String caller = getCurrentUserItem().getSipItem().getExtension();
-        String callId = ConfigManager.getInstance().getCallId();
-        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),caller,callee.getSipItem().getExtension(),callType, callId);
-        requestToServer(cancelCallTask);
-    }
 
     public interface ProfileDetailItemView {
         void didGetProfileDetail(UserItem userItem);

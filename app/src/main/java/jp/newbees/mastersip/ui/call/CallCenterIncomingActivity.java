@@ -27,20 +27,20 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         incomingCallPresenter = new BaseCenterIncomingCallPresenter(getApplicationContext(), this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
         incomingCallPresenter.registerCallEvent();
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         incomingCallPresenter.unRegisterCallEvent();
+        super.onStop();
     }
 
 
@@ -60,18 +60,18 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
     }
 
     @Override
-    public void outgoingVoiceCall(UserItem callee) {
-        OutgoingVoiceActivity.startActivity(this, callee);
+    public void outgoingVoiceCall(UserItem callee, String callID) {
+        OutgoingVoiceActivity.startActivity(this, callee, callID);
     }
 
     @Override
-    public void outgoingVideoCall(UserItem callee) {
-        OutgoingVideoVideoActivity.startActivity(this, callee);
+    public void outgoingVideoCall(UserItem callee, String callID) {
+        OutgoingVideoVideoActivity.startActivity(this, callee, callID);
     }
 
     @Override
-    public void outgoingVideoChatCall(UserItem callee) {
-        OutgoingVideoChatActivity.startActivity(this, callee);
+    public void outgoingVideoChatCall(UserItem callee, String callID) {
+        OutgoingVideoChatActivity.startActivity(this, callee, callID);
     }
 
     @Override

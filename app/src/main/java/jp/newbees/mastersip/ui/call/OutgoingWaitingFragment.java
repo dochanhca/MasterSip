@@ -29,9 +29,10 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  */
 
 public class OutgoingWaitingFragment extends BaseFragment {
-    private static final String CALLEE = "CALLEE";
+    private static final String CALLEE = "COMPETITOR";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String TITLE_CALL = "TITLE_CALL";
+    private static final String CALL_ID = "CALL_ID";
 
     private static final int MAX_WAITING_TIME = 15;
 
@@ -57,8 +58,9 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private UserItem callee;
     private String titleCall;
     private int callType;
+    private String callID;
 
-    private Handler countingCallDurationHandler = new Handler(){
+    private Handler countingCallDurationHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
@@ -68,19 +70,20 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private Handler waitingTimeHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            getOutgoingActivity().endCall();
+            getOutgoingActivity().terminalCall(callID);
         }
     };
     private MyCountingTimerThread countWaitingTimeThread;
     private MyCountingTimerThread countingCallDurationThread;
 
-    public static OutgoingWaitingFragment newInstance(UserItem callee,
+    public static OutgoingWaitingFragment newInstance(UserItem callee, String callID,
                                                       String titleCall, int callType) {
 
         Bundle args = new Bundle();
         args.putParcelable(CALLEE, callee);
         args.putInt(CALL_TYPE, callType);
         args.putString(TITLE_CALL, titleCall);
+        args.putString(CALL_ID, callID);
 
         OutgoingWaitingFragment fragment = new OutgoingWaitingFragment();
         fragment.setArguments(args);
@@ -116,6 +119,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
         callee = bundle.getParcelable(CALLEE);
         titleCall = bundle.getString(TITLE_CALL);
         callType = bundle.getInt(CALL_TYPE);
+        callID = bundle.getString(CALL_ID);
     }
 
     private void updateView() {
@@ -149,7 +153,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
                 getOutgoingActivity().muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
-                getOutgoingActivity().endCall();
+                getOutgoingActivity().terminalCall(callID);
                 break;
             case R.id.btn_on_off_speaker:
                 getOutgoingActivity().enableSpeaker(btnOnOffSpeaker.isChecked());
@@ -157,6 +161,10 @@ public class OutgoingWaitingFragment extends BaseFragment {
             default:
                 break;
         }
+    }
+
+    private boolean inVoiceCall() {
+        return imgLoading.getVisibility() == View.GONE;
     }
 
     public void enableSpeaker(boolean enable) {

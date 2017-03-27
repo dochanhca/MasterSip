@@ -25,10 +25,11 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
         return Constant.API.VIDEO_CALL;
     }
 
-    public static void startActivity(Context context, UserItem callee) {
+    public static void startActivity(Context context, UserItem callee, String callID) {
         Intent intent = new Intent(context, OutgoingVideoVideoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(CALLEE, callee);
+        bundle.putParcelable(COMPETITOR, callee);
+        bundle.putString(CALL_ID, callID);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
