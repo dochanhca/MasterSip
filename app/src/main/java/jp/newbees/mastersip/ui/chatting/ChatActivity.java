@@ -60,6 +60,8 @@ import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -86,6 +88,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
     private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
+    private static final int REQUEST_BUY_POINT = 13;
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
@@ -195,10 +198,10 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void onSoftKeyboardShow() {
             isSoftKeyboardOpened = true;
-            Logger.e(TAG,"onSoftKeyboardShow   -> slide up");
+            Logger.e(TAG, "onSoftKeyboardShow   -> slide up");
             slideUpCustomActionHeaderInChat();
             if (uiMode == UIMode.SELECT_IMAGE_MODE) {
-                Logger.e(TAG,"onSoftKeyboardShow   -> switch ui mode");
+                Logger.e(TAG, "onSoftKeyboardShow   -> switch ui mode");
                 switchUIMode();
             }
         }
@@ -206,7 +209,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void onSoftKeyboardHide() {
             isSoftKeyboardOpened = false;
-            Logger.e(TAG,"onSoftKeyboardShow   -> slide down");
+            Logger.e(TAG, "onSoftKeyboardShow   -> slide down");
             slideDownCustomActionHeaderInChat();
         }
     };
@@ -225,6 +228,11 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void didChatError(int errorCode, String errorMessage) {
             donotHideSoftKeyboard = true;
+            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+                showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
+            } else {
+                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+            }
 
         }
 
@@ -278,8 +286,12 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         @Override
         public void didUploadImageToServerError(int errorCode, String errorMessage) {
             disMissLoading();
-            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
             isShowDialogForHandleImage = false;
+            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+                showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_IMAGE, 20);
+            } else {
+                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+            }
         }
 
         @Override
@@ -366,7 +378,28 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                 content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
                 positiveTitle = getString(R.string.to_attack);
             }
-            TextDialog.openTextDialog(getSupportFragmentManager(), content, title, positiveTitle, false);
+            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
+        }
+
+        private void showDialogNotifyNotEnoughPointForChat(int chatType, int minPoint) {
+            String title = getString(R.string.point_are_missing);
+            String positiveTitle = getString(R.string.add_point);
+            StringBuilder content = new StringBuilder();
+            String message = "";
+
+            if (chatType == BaseChatItem.ChatType.CHAT_TEXT) {
+                message = getString(R.string.to_send_a_message);
+            } else if (chatType == BaseChatItem.ChatType.CHAT_IMAGE) {
+                message = getString(R.string.to_send_an_image);
+            }
+
+            content.append(message).append("\n")
+                    .append(getString(R.string.the_lowest))
+                    .append(minPoint).append(getString(R.string.pt)).append(getString(R.string.is_required))
+                    .append("\n").append(getString(R.string.do_you_want_to_add_point));
+
+            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content.toString()
+                    , title, positiveTitle, false);
         }
     };
 
@@ -394,17 +427,17 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (!donotHideSoftKeyboard && dy != 0) {
                     if (scrollDown(dy)) {
-                        Logger.e(TAG,"onScrollStateChanged   -> slide down");
+                        Logger.e(TAG, "onScrollStateChanged   -> slide down");
                         slideDownCustomActionHeaderInChat();
                     } else {
-                        Logger.e(TAG,"onScrollStateChanged   -> slide up");
+                        Logger.e(TAG, "onScrollStateChanged   -> slide up");
                         slideUpCustomActionHeaderInChat();
                     }
                 }
                 if (donotHideSoftKeyboard) {
                     donotHideSoftKeyboard = false;
                 } else {
-                    Logger.e(TAG,"onScrollStateChanged   -> hide soft keyboard");
+                    Logger.e(TAG, "onScrollStateChanged   -> hide soft keyboard");
                     hideSoftKeyboard();
                 }
             }
@@ -542,7 +575,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                 doSendMessage();
                 break;
             case R.id.img_left_bottom_action:
-                Logger.e(TAG,"img_left_bottom_action   -> switch ui mode");
+                Logger.e(TAG, "img_left_bottom_action   -> switch ui mode");
                 switchUIMode();
                 break;
             case R.id.rl_open_gallery:
@@ -559,7 +592,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {
         if (isSoftKeyboardOpened) {
-            Logger.e(TAG,"onTouch -> hide soft keboard");
+            Logger.e(TAG, "onTouch -> hide soft keboard");
             donotHideSoftKeyboard = true;
             hideSoftKeyboard();
             return false;
@@ -585,6 +618,10 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                     isShowDialogForHandleImage = true;
                 }
                 break;
+            case REQUEST_BUY_POINT:
+                if (resultCode == RESULT_OK) {
+                    showDialogBuyPointSuccess(data);
+                }
             default:
                 break;
         }
@@ -640,6 +677,9 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(getSupportFragmentManager());
                 break;
+            case REQUEST_BUY_POINT:
+                PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
+                break;
             default:
                 break;
         }
@@ -657,6 +697,16 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         } else {
             presenter.checkVideoChatCall(userItem);
         }
+    }
+
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
     }
 
     private void handleVoiceCallClick() {
@@ -813,7 +863,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             hideSoftKeyboard();
             uiMode = UIMode.SELECT_IMAGE_MODE;
 
-            Logger.e(TAG,"switchUIMode   -> hide soft keyboard");
+            Logger.e(TAG, "switchUIMode   -> hide soft keyboard");
         } else if (uiMode == UIMode.SELECT_IMAGE_MODE) {
             imgLeftBottomAction.setImageResource(R.drawable.img_capture);
             edtChat.requestFocus();
@@ -821,7 +871,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             showSoftKeyboard();
             uiMode = UIMode.INPUT_TEXT_MODE;
 
-            Logger.e(TAG,"switchUIMode   -> show soft keyboard");
+            Logger.e(TAG, "switchUIMode   -> show soft keyboard");
         }
     }
 

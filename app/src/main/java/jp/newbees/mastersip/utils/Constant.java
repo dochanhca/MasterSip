@@ -274,7 +274,6 @@ public final class Constant {
     }
 
     public final class Error {
-        public static final int NOT_ENOUGH_POINT = 1204;
 
         private Error() {
             //Prevent init constructor
@@ -292,7 +291,7 @@ public final class Constant {
         public static final int SAME_GENDER = 1202;
         public static final int RECEIVER_NOT_EXISTS = 1203;
         public static final int ROOM_CHAT_IS_NOT_EXIST = 1403;
-        public static final int OUT_OF_MONEY = 1204;
+        public static final int NOT_ENOUGH_POINT = 1204;
         public static final int EXTENSION_OFFLINE = 1206;
         public static final int USER_NOT_EXIST = 1011;
         //
@@ -347,6 +346,7 @@ public final class Constant {
         public static final int ANDROID = 2;
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
+        public static final String PURCHASE = "Purchase";
 
         public static final int MIN_COIN_FOR_CALL = 10;
     }

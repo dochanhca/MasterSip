@@ -1,6 +1,8 @@
 package jp.newbees.mastersip.ui.payment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -31,8 +33,8 @@ import jp.newbees.mastersip.utils.Utils;
 
 public class PaymentFragment extends BaseFragment implements BaseActivity.OnBackPressed {
 
-    private static final String MY_URL = "MY_URL";
-    private static final String TITLE = "TITLE";
+    private static final String IS_FROM_ACTIVITY = "IS_FROM_ACTIVITY";
+    public static final String POINT = "POINT";
 
     @BindView(R.id.webview)
     WebView webview;
@@ -42,11 +44,11 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
     ImageView imgBack;
 
     private TopPresenter topPresenter;
+    private boolean isFromActivity;
 
-    public static PaymentFragment newInstance(String url, String title) {
+    public static PaymentFragment newInstance(boolean isFromActivity) {
         Bundle args = new Bundle();
-        args.putString(MY_URL, url);
-        args.putString(TITLE, title);
+        args.putBoolean(IS_FROM_ACTIVITY, isFromActivity);
         PaymentFragment fragment = new PaymentFragment();
         fragment.setArguments(args);
         return fragment;
@@ -60,11 +62,16 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-        txtActionBarTitle.setText(getArguments().getString(TITLE));
+        txtActionBarTitle.setText(Constant.Application.PURCHASE);
+        isFromActivity = getArguments().getBoolean(IS_FROM_ACTIVITY);
 
         loadWebView(webview);
 
-        topPresenter = ((TopActivity) getActivity()).getPresenter();
+        if (isFromActivity) {
+            topPresenter = ((PaymentActivity) getActivity()).getPresenter();
+        } else {
+            topPresenter = ((TopActivity) getActivity()).getPresenter();
+        }
         topPresenter.setupForPurchase();
     }
 
@@ -91,6 +98,8 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
     public void onBackPressed() {
         if (webview.getUrl().contains(Utils.getURLBuyPoint())) {
             webview.goBack();
+        } else if (isFromActivity){
+            getActivity().finish();
         } else {
             getFragmentManager().popBackStackImmediate();
         }
@@ -100,12 +109,19 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new PaymentWebViewClient());
         webview.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
-        webview.loadUrl(getArguments().getString(MY_URL));
+        webview.loadUrl(Utils.getURLChosePaymentType());
     }
 
-    private void redirectToMyMenuFragment(String point) {
-        EventBus.getDefault().postSticky(new PaymentSuccessEvent(point));
-        getFragmentManager().popBackStackImmediate();
+    private void handlePaymentSuccess(String point) {
+        if (isFromActivity) {
+            Intent intent = new Intent();
+            intent.putExtra(POINT, point);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            EventBus.getDefault().postSticky(new PaymentSuccessEvent(point));
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
     public class WebAppInterface {
@@ -145,7 +161,7 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
 
         public void checkPaymentSuccess(String url) {
             String point = splitUrl(url);
-            redirectToMyMenuFragment(point);
+            handlePaymentSuccess(point);
         }
 
         private String splitUrl(String url) {

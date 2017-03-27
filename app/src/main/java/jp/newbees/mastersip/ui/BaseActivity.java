@@ -159,7 +159,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void hideActionBar() {
-        findViewById(R.id.action_bar01).setVisibility(View.GONE);
+        findViewById(R.id.action_bar).setVisibility(View.GONE);
     }
 
     public void showSwitchModeInHeader(View.OnClickListener onSwitchModeListener) {

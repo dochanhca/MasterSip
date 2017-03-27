@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/action_bar01"
+        android:id="@+id/action_bar"
         layout="@layout/layout_action_bar" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView

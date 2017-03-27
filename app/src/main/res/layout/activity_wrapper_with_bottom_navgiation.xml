@@ -5,11 +5,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <include
-        android:id="@+id/action_bar01"
+        android:id="@+id/action_bar"
         layout="@layout/layout_action_bar" />
 
     <FrameLayout
-        android:layout_below="@id/action_bar01"
+        android:layout_below="@id/action_bar"
         android:id="@+id/fragment_search_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
