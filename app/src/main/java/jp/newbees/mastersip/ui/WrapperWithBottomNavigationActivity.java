@@ -37,9 +37,9 @@ public abstract class WrapperWithBottomNavigationActivity extends BaseActivity i
         navigationLayoutGroup.setSelectedItem(ConfigManager.getInstance().getCurrentTabInRootNavigater());
     }
 
-    public void showFragmentContent(Fragment fragment) {
+    public void showFragmentContent(Fragment fragment, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_search_container, fragment).commit();
+        fragmentTransaction.add(R.id.fragment_search_container, fragment, tag).commit();
     }
 
     private void goTopActivity() {

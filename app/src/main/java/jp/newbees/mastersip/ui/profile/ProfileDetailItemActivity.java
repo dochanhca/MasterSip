@@ -17,18 +17,18 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
 
     private UserItem userItem;
 
+    public static void startActivity(Context context, UserItem userItem) {
+        Intent intent = new Intent(context, ProfileDetailItemActivity.class);
+        intent.putExtra(ProfileDetailItemFragment.USER_ITEM, (Parcelable) userItem);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         userItem = getIntent().getParcelableExtra(ProfileDetailItemFragment.USER_ITEM);
         Fragment fragment = ProfileDetailItemFragment.newInstance(userItem, false);
         initHeader(userItem.getUsername());
-        showFragmentContent(fragment);
-    }
-
-    public static void startActivity(Context context, UserItem userItem) {
-        Intent intent = new Intent(context, ProfileDetailItemActivity.class);
-        intent.putExtra(ProfileDetailItemFragment.USER_ITEM, (Parcelable) userItem);
-        context.startActivity(intent);
+        showFragmentContent(fragment, ProfileDetailItemFragment.class.getName());
     }
 
     @Override

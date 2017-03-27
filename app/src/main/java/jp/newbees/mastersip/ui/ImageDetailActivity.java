@@ -258,7 +258,7 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
     @Override
     public void onBackPressed() {
         if (needReloadProfile && viewType == MY_PHOTOS) {
-            EventBus.getDefault().post(new ReLoadProfileEvent(true));
+            EventBus.getDefault().postSticky(new ReLoadProfileEvent(true));
         }
         super.onBackPressed();
     }

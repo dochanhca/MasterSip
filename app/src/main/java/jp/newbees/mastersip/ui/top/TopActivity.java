@@ -15,7 +15,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
@@ -83,8 +82,6 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(3);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
-
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -94,11 +91,20 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        EventBus.getDefault().unregister(this);
-
         Logger.e(TAG, "Destroying helper.");
         if (getIabHelper() != null) {
             topPresenter.disposeIabHelper();
@@ -137,17 +143,6 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
         setUnreadMessageValue(roomChatEvent.getNumberOfRoomUnRead());
-    }
-
-    @Subscribe
-    public void onReloadProfileEvent(ReLoadProfileEvent event) {
-        if (event.isNeedReload()) {
-            FragmentManager manager = getSupportFragmentManager();
-            MyMenuContainerFragment myMenuFragment = (MyMenuContainerFragment) manager.
-                    findFragmentByTag(makeFragmentName(viewPager.getId(), MY_MENU_CONTAINER_FRAGMENT));
-            myMenuFragment.reloadData();
-        }
-        Logger.e(TAG, "" + event.isNeedReload());
     }
 
     private void fillData() {

@@ -21,7 +21,7 @@ public class ListGiftActivity extends WrapperWithBottomNavigationActivity {
     protected void initVariables(Bundle savedInstanceState) {
         UserItem userItem = getIntent().getParcelableExtra(ListGiftFragment.USER_ITEM);
         Fragment fragment = ListGiftFragment.newInstance(userItem, ListGiftFragment.OPEN_FROM_CHAT, false);
-        showFragmentContent(fragment);
+        showFragmentContent(fragment, ListGiftFragment.class.getName());
         String titleGiftsList = getString(R.string.gifts_list);
         initHeader(titleGiftsList);
     }
