@@ -351,18 +351,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
-        disMissLoading();
-        TextDialog.openTextDialog(this, -1, getFragmentManager(),
-                getOutgoingCallPresenter().getMessageSendRequestSuccess(userItem, type), "", true);
-    }
-
-    @Override
-    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
-        disMissLoading();
-    }
-
-    @Override
     public void didEditProfileImage() {
         profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }

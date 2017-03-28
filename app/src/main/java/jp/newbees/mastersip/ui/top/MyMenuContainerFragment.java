@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.mailbackup.ChangeEmailBackupFragment;
 import jp.newbees.mastersip.ui.mailbackup.CheckCodeFragment;
@@ -15,7 +14,6 @@ import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
-import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -83,13 +81,6 @@ public class MyMenuContainerFragment extends BaseFragment {
         BaseFragment fragment = CheckCodeFragment.newInstanceFromChangeBackupEmail(email);
         performShowFragment(activity, fragment);
     }
-
-    public static void showMyProfileDetailFragment(FragmentActivity activity, UserItem me) {
-        ProfileDetailItemFragment profileDetailItemFragment =
-                ProfileDetailItemFragment.newInstance(me, false);
-        performShowFragment(activity, profileDetailItemFragment);
-    }
-
 
     private static void showFragmentAndAddToBackStack(FragmentActivity activity, BaseFragment fragment) {
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();

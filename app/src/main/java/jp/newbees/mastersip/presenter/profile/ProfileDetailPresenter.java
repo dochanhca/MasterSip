@@ -9,9 +9,9 @@ import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 2/3/17.
@@ -30,9 +30,11 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
         void didLoadUserError(int errorCode, String errorMessage);
 
-//        void didCalleeRejectCall(String calleeExtension);
-
         void didCheckCallError(String errorMessage, int errorCode);
+
+        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
+
+        void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
     }
 
     public void loadMoreUser(String nextPage, int typeSearch) {
@@ -42,7 +44,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
         requestToServer(filterUserTask);
     }
 
-
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof FilterUserTask) {
@@ -50,6 +51,9 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
             view.didLoadMoreUser(data);
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
+        } else if (task instanceof SendMessageRequestEnableCallTask) {
+            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
+            view.didSendMsgRequestEnableSettingCall(type);
         }
     }
 
@@ -59,6 +63,8 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
             view.didLoadUserError(errorCode, errorMessage);
         } else if (task instanceof CheckCallTask) {
             view.didCheckCallError(errorMessage, errorCode);
+        } else if (task instanceof SendMessageRequestEnableCallTask) {
+            view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 }

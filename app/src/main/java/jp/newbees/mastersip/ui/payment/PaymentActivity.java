@@ -3,6 +3,7 @@ package jp.newbees.mastersip.ui.payment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import jp.newbees.mastersip.R;
@@ -23,6 +24,11 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
     public static void startActivityForResult(Activity activity,int requestCode) {
         Intent intent = new Intent(activity, PaymentActivity.class);
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void startActivityForResult(Fragment fragment, int requestCode) {
+        Intent intent = new Intent(fragment.getActivity().getApplicationContext(), PaymentActivity.class);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     @Override

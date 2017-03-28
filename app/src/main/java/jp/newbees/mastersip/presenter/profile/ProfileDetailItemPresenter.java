@@ -10,7 +10,6 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
 import jp.newbees.mastersip.network.api.GetProfileDetailTask;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -45,12 +44,7 @@ public class ProfileDetailItemPresenter extends BasePresenter {
 
         void didUnFollowUserError(String errorMessage, int errorCode);
 
-        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
-
-        void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
-
         void didEditProfileImage();
-
     }
 
     public ProfileDetailItemPresenter(BaseActivity context, ProfileDetailItemView view) {
@@ -75,9 +69,6 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUser();
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
-            view.didSendMsgRequestEnableSettingCall(type);
         }
     }
 
@@ -91,8 +82,6 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUserError(errorMessage, errorCode);
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 

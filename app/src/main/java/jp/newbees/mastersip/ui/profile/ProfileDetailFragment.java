@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
@@ -18,6 +20,7 @@ import jp.newbees.mastersip.adapter.AdapterViewPagerProfileDetail;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.FilterUserTask;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
@@ -26,6 +29,8 @@ import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -34,7 +39,7 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public class ProfileDetailFragment extends BaseFragment implements ProfileDetailPresenter.ProfileView,
-        BaseCenterOutgoingCallPresenter.OutgoingCallListener {
+        BaseCenterOutgoingCallPresenter.OutgoingCallListener, TextDialog.OnTextDialogPositiveClick {
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
     private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
 
@@ -187,7 +192,18 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
     @Override
     public void didConnectCallError(int errorCode, String errorMessage) {
         showToastExceptionVolleyError(errorCode, errorMessage);
+    }
 
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+        disMissLoading();
+        TextDialog.openTextDialog(this, -1, getFragmentManager(),
+                profileDetailPresenter.getMessageSendRequestSuccess(userItemList.get(currentIndex), type), "", true);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+        disMissLoading();
     }
 
     @Override
@@ -196,6 +212,31 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(this, getFragmentManager(),
                 REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT) {
+            PaymentActivity.startActivityForResult(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT && resultCode == Activity.RESULT_OK) {
+            showDialogBuyPointSuccess(data);
+        }
+    }
+
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
     }
 
     private void showDialogNotifyNotEnoughPoint() {
@@ -267,6 +308,7 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
     public ProfileDetailPresenter getProfileDetailPresenter() {
         return profileDetailPresenter;
     }
+
 }
 
 

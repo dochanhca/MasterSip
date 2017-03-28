@@ -208,8 +208,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-//                        private static final String DEVELOPMENT_IP = "52.197.138.1";
+//        private static final String DEVELOPMENT_IP = "52.199.112.26";
+                        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
         public static final String GET_PROFILE = "profile";
 
@@ -262,7 +262,7 @@ public final class Constant {
         public static final String PAYMENT_PACKAGE_LIST = "payment/list_package";
 
         public static void initBaseURL() {
-            BASE_URL = !Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
+            BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
         }
 
         public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
