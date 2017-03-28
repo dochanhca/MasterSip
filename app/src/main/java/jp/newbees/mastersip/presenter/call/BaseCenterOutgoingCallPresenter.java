@@ -14,6 +14,7 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
@@ -63,12 +64,20 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.OUTGOING_CALL:
-                reconnectRoom();
+                reconnectRoom(receivingCallEvent.getCallId());
                 onOutgoingCall(receivingCallEvent.getCallId());
+                break;
+            case ReceivingCallEvent.LINPHONE_ERROR:
+                performCancelCall(receivingCallEvent.getCallId());
                 break;
             default:
                 break;
         }
+    }
+
+    protected void performCancelCall(String calId) {
+        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
+        requestToServer(cancelCallTask);
     }
 
     private void handleCheckCallError(int errorCode, String errorMessage) {
@@ -198,9 +207,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         }
     }
 
-    private void reconnectRoom() {
+    private void reconnectRoom(String callId) {
         ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
-                ConfigManager.getInstance().getCallId());
+                callId);
         requestToServer(reconnectCallTask);
     }
 

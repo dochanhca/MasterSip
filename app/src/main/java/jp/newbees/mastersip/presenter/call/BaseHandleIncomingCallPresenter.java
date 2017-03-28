@@ -48,6 +48,10 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
                 break;
             case ReceivingCallEvent.STREAMING_CALL:
                 view.onStreamingConnected();
+                break;
+            case ReceivingCallEvent.LINPHONE_ERROR:
+                performCancelCall(receivingCallEvent.getCallId());
+                break;
             default:
                 break;
         }

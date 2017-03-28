@@ -38,6 +38,9 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
             case ReceivingCallEvent.END_CALL:
                 handleCallEnd();
                 break;
+            case ReceivingCallEvent.LINPHONE_ERROR:
+                performCancelCall(receivingCallEvent.getCallId());
+                break;
             default:
                 break;
         }

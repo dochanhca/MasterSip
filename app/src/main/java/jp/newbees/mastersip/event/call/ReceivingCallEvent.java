@@ -12,6 +12,7 @@ public class ReceivingCallEvent {
     public static final int OUTGOING_CONNECTED_CALL = 600;
     public static final int STREAMING_CALL = 7;
     public static final int RELEASE_CALL = 18;
+    public static final int LINPHONE_ERROR = 12;
 
     private int callEvent;
     private String callId;
