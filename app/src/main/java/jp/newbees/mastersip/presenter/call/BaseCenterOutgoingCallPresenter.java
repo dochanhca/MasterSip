@@ -10,30 +10,60 @@ import java.util.HashMap;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
+import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 1/24/17.
+ * Use for listener outgoing call only
  */
 
-public abstract class BaseActionCallPresenter extends BasePresenter {
+public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
+    private OutgoingCallListener outgoingCallListener;
 
-    public BaseActionCallPresenter(Context context) {
+    public BaseCenterOutgoingCallPresenter(Context context, OutgoingCallListener outgoingCallListener) {
         super(context);
+        this.outgoingCallListener = outgoingCallListener;
     }
 
-    protected abstract void onCalleeRejectCall(BusyCallEvent busyCallEvent);
+    @Override
+    protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        if (task instanceof ReconnectCallTask) {
+            outgoingCallListener.didConnectCallError(errorCode,errorMessage);
+        }
+    }
+
+    @Override
+    protected void didResponseTask(BaseTask task) {
+        if (task instanceof ReconnectCallTask) {
+            Logger.e(TAG,"Reconnect call task successful");
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
-        onCalleeRejectCall(busyCallEvent);
+        outgoingCallListener.onCalleeRejectCall(busyCallEvent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
+        switch (receivingCallEvent.getCallEvent()) {
+            case ReceivingCallEvent.OUTGOING_CALL:
+                reconnectRoom();
+                onOutgoingCall(receivingCallEvent.getCallId());
+                break;
+            default:
+                break;
+        }
     }
 
     protected void handleResponseCheckCall(BaseTask task) {
@@ -43,7 +73,6 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
 
         String callId = (String) result.get(CheckCallTask.CALL_ID);
         ConfigManager.getInstance().setCallId(callId);
-
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
 
         ConfigManager.getInstance().setCurrentCallee(callee, callId);
@@ -122,5 +151,40 @@ public abstract class BaseActionCallPresenter extends BasePresenter {
                 break;
         }
         return message;
+    }
+
+    private void onOutgoingCall(String callId) {
+        UserItem callee = ConfigManager.getInstance().getCurrentCallee(callId);
+        int callType = ConfigManager.getInstance().getCurrentCallType();
+        switch (callType) {
+            case Constant.API.VOICE_CALL:
+                outgoingCallListener.outgoingVoiceCall(callee, callId);
+                break;
+            case Constant.API.VIDEO_CALL:
+                outgoingCallListener.outgoingVideoCall(callee, callId);
+                break;
+            case Constant.API.VIDEO_CHAT_CALL:
+                outgoingCallListener.outgoingVideoChatCall(callee, callId);
+                break;
+        }
+    }
+
+    private void reconnectRoom() {
+        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
+                ConfigManager.getInstance().getCallId());
+        requestToServer(reconnectCallTask);
+    }
+
+    public interface OutgoingCallListener {
+
+        void outgoingVoiceCall(UserItem callee, String callID);
+
+        void outgoingVideoCall(UserItem callee, String callID);
+
+        void outgoingVideoChatCall(UserItem callee, String callID);
+
+        void didConnectCallError(int errorCode, String errorMessage);
+
+        void onCalleeRejectCall(BusyCallEvent busyCallEvent);
     }
 }

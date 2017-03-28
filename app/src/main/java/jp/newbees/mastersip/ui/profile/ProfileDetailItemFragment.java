@@ -38,19 +38,18 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
-import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -59,15 +58,12 @@ import jp.newbees.mastersip.utils.Utils;
  */
 
 public class ProfileDetailItemFragment extends BaseFragment implements
-        ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
+        ProfileDetailItemPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
-        OneButtonDialog.OnCusTomMessageDialogClickListener {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
 
-    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
-    private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
@@ -149,7 +145,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @BindView(R.id.txt_voice_call)
     TextView txtVoiceCall;
 
-    private ProfileDetailPresenter profileDetailPresenter;
+    private ProfileDetailItemPresenter profileDetailItemPresenter;
     private UserItem userItem;
     private GalleryItem galleryItem;
     private boolean isLoading;
@@ -196,10 +192,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         return profileDetailItemFragment;
     }
 
-    public void reloadData() {
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
-    }
-
     @Override
     protected int layoutId() {
         return R.layout.item_profile_detail;
@@ -207,7 +199,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        profileDetailPresenter = new ProfileDetailPresenter(getActivity().getApplicationContext(),
+        profileDetailItemPresenter = new ProfileDetailItemPresenter((BaseActivity) getActivity(),
                 this);
         ButterKnife.bind(this, mRoot);
 
@@ -227,15 +219,19 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        profileDetailPresenter.registerEvent();
+    public void onPause() {
+        super.onPause();
+        if (isCurrentUser()) {
+            profileDetailItemPresenter.unRegisterEvent();
+        }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        profileDetailPresenter.unRegisterEvent();
+    public void onResume() {
+        super.onResume();
+        if (isCurrentUser()) {
+            profileDetailItemPresenter.registerEvent();
+        }
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
@@ -358,7 +354,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         disMissLoading();
         TextDialog.openTextDialog(this, -1, getFragmentManager(),
-                profileDetailPresenter.getMessageSendRequestSuccess(userItem, type), "", true);
+                getOutgoingCallPresenter().getMessageSendRequestSuccess(userItem, type), "", true);
     }
 
     @Override
@@ -367,27 +363,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void didCheckCallError(String errorMessage, int errorCode) {
-        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-            showDialogNotifyNotEnoughPoint();
-        } else {
-            showToastExceptionVolleyError(errorCode, errorMessage);
-        }
-    }
-
-    @Override
-    public void didCalleeRejectCall(String calleeExtension) {
-        if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
-            String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
-            String positiveTitle = getString(R.string.back_to_profile_detail);
-            OneButtonDialog.showDialog(this, getFragmentManager(),
-                    REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);
-        }
-    }
-
-    @Override
     public void didEditProfileImage() {
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
+        profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }
 
     @Override
@@ -410,12 +387,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
                 //send request to enable voice call
                 showLoading();
-                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
+                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
                 break;
             case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
                 //send request to enable video call
                 showLoading();
-                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
                 break;
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
@@ -425,32 +402,31 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     }
 
+    private void doFollowUser() {
+        showLoading();
+        if (btnFollow.isChecked()) {
+            profileDetailItemPresenter.followUser(userItem.getUserId());
+        } else {
+            profileDetailItemPresenter.unFollowUser(userItem.getUserId());
+        }
+    }
+
     @Override
     public void onOkVoiceCallClick() {
-        profileDetailPresenter.checkVoiceCall(userItem);
+        getOutgoingCallPresenter().checkVoiceCall(userItem);
     }
 
     @Override
     public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
         if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            profileDetailPresenter.checkVideoCall(userItem);
+            getOutgoingCallPresenter().checkVideoCall(userItem);
         } else {
-            profileDetailPresenter.checkVideoChatCall(userItem);
+            getOutgoingCallPresenter().checkVideoChatCall(userItem);
         }
     }
 
-    @Override
-    public void onCustomMessageDialogPositiveClick() {
-        //listen callback event
-    }
-
-    private void doFollowUser() {
-        showLoading();
-        if (btnFollow.isChecked()) {
-            profileDetailPresenter.followUser(userItem.getUserId());
-        } else {
-            profileDetailPresenter.unFollowUser(userItem.getUserId());
-        }
+    private BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
+        return ((ProfileDetailFragment) getParentFragment()).getProfileDetailPresenter();
     }
 
     private void initActions() {
@@ -475,15 +451,15 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                profileDetailPresenter.getProfileDetail(userItem.getUserId());
-                profileDetailPresenter.getListPhotos(userItem.getUserId());
+                profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
+                profileDetailItemPresenter.getListPhotos(userItem.getUserId());
             }
         });
 
         scrollView.setOnScrollChangeListener(onViewScrollListener);
 
-        profileDetailPresenter.getProfileDetail(userItem.getUserId());
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
+        profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
+        profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }
 
     private void initRecyclerUserImage() {
@@ -515,9 +491,9 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                     firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
                     if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0
-                            && !isLoading && profileDetailPresenter.canLoadMoreUser()) {
+                            && !isLoading && profileDetailItemPresenter.canLoadMoreUser()) {
                         isLoading = true;
-                        profileDetailPresenter.loadMoreListPhotos(userItem.getUserId());
+                        profileDetailItemPresenter.loadMoreListPhotos(userItem.getUserId());
                     }
                 }
             }
@@ -614,22 +590,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
         return prettyTime.format(DateTimeUtils.convertStringToDate(lastLogin,
                 DateTimeUtils.SERVER_DATE_FORMAT));
-    }
-
-    private void showDialogNotifyNotEnoughPoint() {
-        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-        String title, content, positiveTitle;
-        if (gender == UserItem.MALE) {
-            title = getString(R.string.point_are_missing);
-            content = getString(R.string.mess_suggest_buy_point);
-            positiveTitle = getString(R.string.add_point);
-        } else {
-            title = getString(R.string.partner_point_are_missing);
-            content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
-            positiveTitle = getString(R.string.to_attack);
-        }
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
-                content, title, positiveTitle, false);
     }
 
     private void showGiftFragment() {

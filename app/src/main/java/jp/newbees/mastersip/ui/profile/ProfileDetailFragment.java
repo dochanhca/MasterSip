@@ -15,16 +15,28 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.AdapterViewPagerProfileDetail;
+import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.FilterUserTask;
-import jp.newbees.mastersip.presenter.profile.ProfilePresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
+import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
+import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
+import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by ducpv on 1/5/17.
  */
 
-public class ProfileDetailFragment extends BaseFragment implements ProfilePresenter.ProfileView {
+public class ProfileDetailFragment extends BaseFragment implements ProfileDetailPresenter.ProfileView,
+        BaseCenterOutgoingCallPresenter.OutgoingCallListener {
+    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
+    private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
 
     @BindView(R.id.view_pager_profile)
     ViewPager viewPagerProfile;
@@ -38,17 +50,17 @@ public class ProfileDetailFragment extends BaseFragment implements ProfilePresen
     private static final String NEXT_PAGE = "NEXT_PAGE";
     private static final String TYPE_SEARCH = "TYPE_SEARCH";
 
-    private UserItem userItem;
     private List<UserItem> userItemList;
     private String nextPage;
     private int typeSearch;
-    private int currentIndex;
+    private int currentIndex = -1;
     private AdapterViewPagerProfileDetail adapterViewPagerProfileDetail;
-    private ProfilePresenter profilePresenter;
+    private ProfileDetailPresenter profileDetailPresenter;
     private boolean isLoadingMoreUser = false;
 
     private ViewPager.OnPageChangeListener onPagerProfileChangeListener = new ViewPager.OnPageChangeListener() {
         boolean lastPageChanged = false;
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             int lastIndex = adapterViewPagerProfileDetail.getCount() - 1;
@@ -92,19 +104,24 @@ public class ProfileDetailFragment extends BaseFragment implements ProfilePresen
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        profilePresenter = new ProfilePresenter(getActivity().getApplicationContext(), this);
+        profileDetailPresenter = new ProfileDetailPresenter(getActivity().getApplicationContext(), this, this);
 
         userItemList = getArguments().getParcelableArrayList(USER_ITEMS);
         currentIndex = getArguments().getInt(POSITION);
         nextPage = getArguments().getString(NEXT_PAGE);
         typeSearch = getArguments().getInt(TYPE_SEARCH);
 
-        userItem = userItemList.get(currentIndex);
-
         ButterKnife.bind(this, mRoot);
-        setFragmentTitle(userItem.getUsername());
+        setFragmentTitle(userItemList.get(currentIndex).getUsername());
 
         initViewPagerProfile();
+        profileDetailPresenter.registerEvent();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        profileDetailPresenter.unRegisterEvent();
     }
 
     @OnClick({R.id.img_back, R.id.img_previous, R.id.img_next})
@@ -141,6 +158,60 @@ public class ProfileDetailFragment extends BaseFragment implements ProfilePresen
         showToastExceptionVolleyError(errorCode, errorMessage);
         isLoadingMoreUser = false;
         disMissLoading();
+    }
+
+    @Override
+    public void didCheckCallError(String errorMessage, int errorCode) {
+        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+            showDialogNotifyNotEnoughPoint();
+        } else {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
+    }
+
+    @Override
+    public void outgoingVoiceCall(UserItem callee, String callID) {
+        OutgoingVoiceActivity.startActivity(getContext(), callee, callID);
+    }
+
+    @Override
+    public void outgoingVideoCall(UserItem callee, String callID) {
+        OutgoingVideoVideoActivity.startActivity(getContext(), callee, callID);
+    }
+
+    @Override
+    public void outgoingVideoChatCall(UserItem callee, String callID) {
+        OutgoingVideoChatActivity.startActivity(getContext(), callee, callID);
+    }
+
+    @Override
+    public void didConnectCallError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(errorCode, errorMessage);
+
+    }
+
+    @Override
+    public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
+        String message = busyCallEvent.getHandleName() + " " + getString(R.string.mess_callee_reject_call);
+        String positiveTitle = getString(R.string.back_to_profile_detail);
+        OneButtonDialog.showDialog(this, getFragmentManager(),
+                REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);
+    }
+
+    private void showDialogNotifyNotEnoughPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        String title, content, positiveTitle;
+        if (gender == UserItem.MALE) {
+            title = getString(R.string.point_are_missing);
+            content = getString(R.string.mess_suggest_buy_point);
+            positiveTitle = getString(R.string.add_point);
+        } else {
+            title = getString(R.string.partner_point_are_missing);
+            content = userItemList.get(currentIndex).getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
+            positiveTitle = getString(R.string.to_attack);
+        }
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
+                content, title, positiveTitle, false);
     }
 
     private void initViewPagerProfile() {
@@ -186,11 +257,15 @@ public class ProfileDetailFragment extends BaseFragment implements ProfilePresen
     private void loadMoreUser() {
         isLoadingMoreUser = true;
         showLoading();
-        profilePresenter.loadMoreUser(nextPage, typeSearch);
+        profileDetailPresenter.loadMoreUser(nextPage, typeSearch);
     }
 
     private boolean canLoadMoreUser() {
         return (!nextPage.isEmpty() && !nextPage.equals("0")) ? true : false;
+    }
+
+    public ProfileDetailPresenter getProfileDetailPresenter() {
+        return profileDetailPresenter;
     }
 }
 

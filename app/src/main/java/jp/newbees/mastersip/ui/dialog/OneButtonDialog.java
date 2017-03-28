@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 3/21/17.
@@ -61,7 +62,7 @@ public class OneButtonDialog extends DialogFragment {
             try {
                 onCusTomMessageDialogClickListener = (OnCusTomMessageDialogClickListener) getTargetFragment();
             } catch (ClassCastException e) {
-                throw new ClassCastException(e.getMessage());
+                Logger.e("OneButtonDialog","Need implement OnCusTomMessageDialogClickListener to listener callback");
             }
         }
     }
@@ -103,7 +104,9 @@ public class OneButtonDialog extends DialogFragment {
         btnPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onCusTomMessageDialogClickListener.onCustomMessageDialogPositiveClick();
+                if (onCusTomMessageDialogClickListener != null) {
+                    onCusTomMessageDialogClickListener.onCustomMessageDialogPositiveClick();
+                }
                 dismiss();
             }
         });

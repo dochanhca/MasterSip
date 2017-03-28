@@ -16,22 +16,22 @@ import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
-import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/10/17.
+ *
+ * use for listener incoming call and some common listener
  */
 
 public class BaseCenterIncomingCallPresenter extends BasePresenter {
-    private CenterCallView centerCallView;
+    private IncomingCallListener incomingCallListener;
 
-    public BaseCenterIncomingCallPresenter(Context context, CenterCallView centerCallView) {
+    public BaseCenterIncomingCallPresenter(Context context, IncomingCallListener incomingCallListener) {
         super(context);
-        this.centerCallView = centerCallView;
+        this.incomingCallListener = incomingCallListener;
     }
 
     @Override
@@ -47,9 +47,7 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        if (task instanceof ReconnectCallTask) {
-            centerCallView.didConnectCallError(errorCode, errorMessage);
-        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -57,11 +55,6 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.INCOMING_CALL:
                 onIncomingCall();
-                break;
-            case ReceivingCallEvent.OUTGOING_CALL:
-                Logger.e(TAG,"my outgoing event -------- ** ==");
-                reconnectRoom();
-                onOutgoingCall(receivingCallEvent.getCallId());
                 break;
             default:
                 break;
@@ -75,40 +68,34 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
      */
     @Subscribe()
     public void onHangUpForGirlEvent(HangUpForGirlEvent event) {
-        centerCallView.didCallHangUpForGirl();
+        incomingCallListener.didCallHangUpForGirl();
     }
 
     @Subscribe()
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        centerCallView.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
+        incomingCallListener.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
     }
 
     @Subscribe()
     public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
-        centerCallView.didRunOutOfCoin();
+        incomingCallListener.didRunOutOfCoin();
     }
 
     @Subscribe()
     public void onAdminHangUpEvent(AdminHangUpEvent event) {
-        centerCallView.didAdminHangUpCall();
-    }
-
-    private void reconnectRoom() {
-        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
-                ConfigManager.getInstance().getCallId());
-        requestToServer(reconnectCallTask);
+        incomingCallListener.didAdminHangUpCall();
     }
 
     private void handleIncomingCallType(int callType, UserItem caller, String callID) {
         switch (callType) {
             case Constant.API.VOICE_CALL:
-                centerCallView.incomingVoiceCall(caller, callID);
+                incomingCallListener.incomingVoiceCall(caller, callID);
                 break;
             case Constant.API.VIDEO_CALL:
-                centerCallView.incomingVideoCall(caller, callID);
+                incomingCallListener.incomingVideoCall(caller, callID);
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
-                centerCallView.incomingVideoChatCall(caller, callID);
+                incomingCallListener.incomingVideoChatCall(caller, callID);
                 break;
             default:
                 break;
@@ -121,22 +108,6 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
         requestToServer(checkCallTask);
     }
 
-    private void onOutgoingCall(String callId) {
-        UserItem callee = ConfigManager.getInstance().getCurrentCallee(callId);
-        int callType = ConfigManager.getInstance().getCurrentCallType();
-        switch (callType) {
-            case Constant.API.VOICE_CALL:
-                centerCallView.outgoingVoiceCall(callee, callId);
-                break;
-            case Constant.API.VIDEO_CALL:
-                centerCallView.outgoingVideoCall(callee, callId);
-                break;
-            case Constant.API.VIDEO_CHAT_CALL:
-                centerCallView.outgoingVideoChatCall(callee, callId);
-                break;
-        }
-    }
-
     public void registerCallEvent() {
         EventBus.getDefault().register(this);
     }
@@ -145,20 +116,13 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    public interface CenterCallView {
+    public interface IncomingCallListener {
+
         void incomingVoiceCall(UserItem caller, String callID);
 
         void incomingVideoCall(UserItem caller, String callID);
 
         void incomingVideoChatCall(UserItem caller, String callID);
-
-        void outgoingVoiceCall(UserItem callee, String callID);
-
-        void outgoingVideoCall(UserItem callee, String callID);
-
-        void outgoingVideoChatCall(UserItem callee, String callID);
-
-        void didConnectCallError(int errorCode, String errorMessage);
 
         void didCallHangUpForGirl();
 
