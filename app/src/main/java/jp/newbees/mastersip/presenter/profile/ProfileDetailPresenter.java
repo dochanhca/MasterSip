@@ -7,7 +7,6 @@ import java.util.Map;
 
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
@@ -30,7 +29,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
         void didLoadUserError(int errorCode, String errorMessage);
 
-        void didCheckCallError(String errorMessage, int errorCode);
 
         void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
 
@@ -46,11 +44,10 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        super.didResponseTask(task);
         if (task instanceof FilterUserTask) {
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
             view.didLoadMoreUser(data);
-        } else if (task instanceof CheckCallTask) {
-            handleResponseCheckCall(task);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
             view.didSendMsgRequestEnableSettingCall(type);
@@ -59,10 +56,9 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof FilterUserTask) {
             view.didLoadUserError(errorCode, errorMessage);
-        } else if (task instanceof CheckCallTask) {
-            view.didCheckCallError(errorMessage, errorCode);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }

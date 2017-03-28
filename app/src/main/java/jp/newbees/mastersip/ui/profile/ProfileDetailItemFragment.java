@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -49,6 +51,8 @@ import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
@@ -63,6 +67,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
+    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -214,10 +219,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         initActions();
     }
 
-    private boolean isCurrentUser() {
-        return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -257,30 +258,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                 break;
             default:
                 break;
-        }
-    }
-
-    private void handleVideoCallClick() {
-        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getString(R.string.confirm_request_enable_video_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
-                    getString(R.string.are_you_sure_make_a_video_call), "");
-        }
-    }
-
-    private void handleVoiceCallClick() {
-        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getResources().getString(R.string.confirm_request_enable_voice_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
-                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
         }
     }
 
@@ -385,17 +362,11 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
                 break;
+            case REQUEST_NOTIFY_NOT_ENOUGH_POINT:
+                PaymentActivity.startActivityForResult(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT);
+                break;
             default:
                 break;
-        }
-    }
-
-    private void doFollowUser() {
-        showLoading();
-        if (btnFollow.isChecked()) {
-            profileDetailItemPresenter.followUser(userItem.getUserId());
-        } else {
-            profileDetailItemPresenter.unFollowUser(userItem.getUserId());
         }
     }
 
@@ -413,8 +384,68 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT && resultCode == Activity.RESULT_OK) {
+            showDialogBuyPointSuccess(data);
+        }
+    }
+
+    private void handleVideoCallClick() {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getString(R.string.confirm_request_enable_video_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
+                    getString(R.string.are_you_sure_make_a_video_call), "");
+        }
+    }
+
+    private void handleVoiceCallClick() {
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getResources().getString(R.string.confirm_request_enable_voice_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
+                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
+        }
+    }
+
+    private boolean isCurrentUser() {
+        return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
+    }
+
+    private void doFollowUser() {
+        showLoading();
+        if (btnFollow.isChecked()) {
+            profileDetailItemPresenter.followUser(userItem.getUserId());
+        } else {
+            profileDetailItemPresenter.unFollowUser(userItem.getUserId());
+        }
+    }
+
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
+    }
+
     private BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
-        return ((ProfileDetailFragment) getParentFragment()).getProfileDetailPresenter();
+        ProfileDetailFragment fragment = ((ProfileDetailFragment) getParentFragment());
+        if (fragment != null) {
+            return fragment.getOutgoingCallPresenter();
+        } else {
+            return ((ProfileDetailItemActivity) getActivity()).getOutgoingCallPresenter();
+        }
     }
 
     private void initActions() {

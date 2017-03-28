@@ -24,6 +24,6 @@ public class BusyCallProcessor extends BaseSocketProcessor {
     protected Object doInBackgroundData(PacketItem packetItem) throws JSONException {
         JSONObject jData = new JSONObject(packetItem.getData());
         JSONObject jCaller = jData.getJSONObject(Constant.JSON.CALLER);
-        return jCaller.getString(Constant.JSON.HANDLE_NAME);
+        return jCaller.getString("handle-name");
     }
 }

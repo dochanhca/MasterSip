@@ -50,7 +50,7 @@ public class OneButtonDialog extends DialogFragment {
             try {
                 onCusTomMessageDialogClickListener = (OnCusTomMessageDialogClickListener) context;
             } catch (ClassCastException e) {
-                throw new ClassCastException(e.getMessage());
+                Logger.e("OneButtonDialog","Need implement OnCusTomMessageDialogClickListener to listener callback");
             }
         }
     }

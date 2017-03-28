@@ -31,8 +31,6 @@ import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
-import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by ducpv on 1/5/17.
@@ -120,12 +118,17 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         setFragmentTitle(userItemList.get(currentIndex).getUsername());
 
         initViewPagerProfile();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         profileDetailPresenter.registerEvent();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onPause() {
+        super.onPause();
         profileDetailPresenter.unRegisterEvent();
     }
 
@@ -165,13 +168,16 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         disMissLoading();
     }
 
+
     @Override
-    public void didCheckCallError(String errorMessage, int errorCode) {
-        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-            showDialogNotifyNotEnoughPoint();
-        } else {
-            showToastExceptionVolleyError(errorCode, errorMessage);
-        }
+    public void didCheckCallError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
+    public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
+                content, title, positiveTitle, false);
     }
 
     @Override
@@ -239,22 +245,6 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         showMessageDialog(message.toString());
     }
 
-    private void showDialogNotifyNotEnoughPoint() {
-        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-        String title, content, positiveTitle;
-        if (gender == UserItem.MALE) {
-            title = getString(R.string.point_are_missing);
-            content = getString(R.string.mess_suggest_buy_point);
-            positiveTitle = getString(R.string.add_point);
-        } else {
-            title = getString(R.string.partner_point_are_missing);
-            content = userItemList.get(currentIndex).getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
-            positiveTitle = getString(R.string.to_attack);
-        }
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
-                content, title, positiveTitle, false);
-    }
-
     private void initViewPagerProfile() {
         if (adapterViewPagerProfileDetail == null) {
             adapterViewPagerProfileDetail = new AdapterViewPagerProfileDetail(getChildFragmentManager(),
@@ -305,10 +295,9 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         return (!nextPage.isEmpty() && !nextPage.equals("0")) ? true : false;
     }
 
-    public ProfileDetailPresenter getProfileDetailPresenter() {
+    public ProfileDetailPresenter getOutgoingCallPresenter() {
         return profileDetailPresenter;
     }
-
 }
 
 

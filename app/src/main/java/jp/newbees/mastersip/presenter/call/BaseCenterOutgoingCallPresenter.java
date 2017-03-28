@@ -29,6 +29,7 @@ import jp.newbees.mastersip.utils.Logger;
 
 public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     private OutgoingCallListener outgoingCallListener;
+    private UserItem callee;
 
     public BaseCenterOutgoingCallPresenter(Context context, OutgoingCallListener outgoingCallListener) {
         super(context);
@@ -38,7 +39,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof ReconnectCallTask) {
-            outgoingCallListener.didConnectCallError(errorCode,errorMessage);
+            outgoingCallListener.didConnectCallError(errorCode, errorMessage);
+        } else if (task instanceof CheckCallTask) {
+            handleCheckCallError(errorCode, errorMessage);
         }
     }
 
@@ -46,6 +49,8 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof ReconnectCallTask) {
             Logger.e(TAG,"Reconnect call task successful");
+        } else if (task instanceof CheckCallTask) {
+            handleResponseCheckCall(task);
         }
     }
 
@@ -66,7 +71,30 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         }
     }
 
-    protected void handleResponseCheckCall(BaseTask task) {
+    private void handleCheckCallError(int errorCode, String errorMessage) {
+        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+            genMessageNotifyUserNotEnoughPoint();
+        } else {
+            outgoingCallListener.didCheckCallError(errorCode, errorMessage);
+        }
+    }
+
+    private void genMessageNotifyUserNotEnoughPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        String title, content, positiveTitle;
+        if (gender == UserItem.MALE) {
+            title = context.getString(R.string.point_are_missing);
+            content = context.getString(R.string.mess_suggest_buy_point);
+            positiveTitle = context.getString(R.string.add_point);
+        } else {
+            title = context.getString(R.string.partner_point_are_missing);
+            content = callee.getUsername() + context.getString(R.string.mess_suggest_missing_point_for_girl);
+            positiveTitle = context.getString(R.string.to_attack);
+        }
+        outgoingCallListener.didUserNotEnoughPoint(title, content, positiveTitle);
+    }
+
+    private void handleResponseCheckCall(BaseTask task) {
         HashMap<String, Object> result = (HashMap<String, Object>) task.getDataResponse();
         int callType = (int) result.get(CheckCallTask.CALL_TYPE);
         UserItem callee = (UserItem) result.get(CheckCallTask.CALLEE);
@@ -117,6 +145,7 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
      * @param callType
      */
     private void checkCall(UserItem callee, int callType) {
+        this.callee = callee;
         UserItem caller = getCurrentUserItem();
         CheckCallTask checkCallTask = new CheckCallTask(context, caller, callee, callType, Constant.API.CALL_FROM_OTHER);
         requestToServer(checkCallTask);
@@ -186,5 +215,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         void didConnectCallError(int errorCode, String errorMessage);
 
         void onCalleeRejectCall(BusyCallEvent busyCallEvent);
+
+        void didCheckCallError(int errorCode, String errorMessage);
+
+        void didUserNotEnoughPoint(String title, String content, String positiveTitle);
     }
 }
