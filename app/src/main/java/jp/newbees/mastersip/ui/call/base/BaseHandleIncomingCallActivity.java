@@ -59,7 +59,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     @Override
-    public UserItem getCurrentUser() {
+    public UserItem getCompetitor() {
         return caller;
     }
 
@@ -86,7 +86,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         incomingWaitingFragment = null;
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType(), false, false);
+        videoCallFragment = VideoCallFragment.newInstance(getCompetitor(), callId, getCallType(), false, false);
         transaction.replace(R.id.fragment_container, videoCallFragment,
                 VideoCallFragment.class.getName()).commit();
     }

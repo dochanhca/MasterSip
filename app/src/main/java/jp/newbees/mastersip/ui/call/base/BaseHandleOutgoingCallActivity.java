@@ -14,10 +14,12 @@ import jp.newbees.mastersip.ui.call.VideoCallFragment;
  */
 
 public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActivity {
-    protected static final String CALLEE = "CALLEE";
+    protected static final String COMPETITOR = "COMPETITOR";
+    protected static final String CALL_ID = "CALL_ID";
 
     private BaseHandleOutgoingCallPresenter presenter;
-    private UserItem callee;
+    private UserItem competitor;
+    private String callId;
 
     private OutgoingWaitingFragment outgoingWaitingFragment;
     private VideoCallFragment videoCallFragment;
@@ -41,14 +43,15 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
     protected abstract String getTextTitle();
 
     @Override
-    public UserItem getCurrentUser() {
-        return callee;
+    public UserItem getCompetitor() {
+        return competitor;
     }
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        callee = getIntent().getExtras().getParcelable(CALLEE);
-        showOutgoingWaitingFragment(callee, getTextTitle(), getCallType());
+        competitor = getIntent().getExtras().getParcelable(COMPETITOR);
+        callId = getIntent().getExtras().getString(CALL_ID);
+        showOutgoingWaitingFragment(competitor, getTextTitle(), getCallType());
     }
 
     @Override
@@ -63,7 +66,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCoinChanged(int coin) {
-        if (callee.getGender() == UserItem.MALE) {
+        if (competitor.getGender() == UserItem.MALE) {
             if (outgoingWaitingFragment == null) {
                 videoCallFragment.onCoinChanged(coin);
             } else {
@@ -74,7 +77,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     protected void showVideoCallFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        videoCallFragment = VideoCallFragment.newInstance(getCurrentUser(), getCallType(),
+        videoCallFragment = VideoCallFragment.newInstance(getCompetitor(), callId, getCallType(),
                 outgoingWaitingFragment.isSpeakerEnable(), outgoingWaitingFragment.muteMic());
         transaction.replace(R.id.fragment_container, videoCallFragment,
                 VideoCallFragment.class.getName()).commit();
@@ -82,13 +85,9 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     }
 
-    public UserItem getCallee() {
-        return callee;
-    }
-
     private void showOutgoingWaitingFragment(UserItem callee, String titleCall, int callType) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        outgoingWaitingFragment = OutgoingWaitingFragment.newInstance(callee, titleCall, callType);
+        outgoingWaitingFragment = OutgoingWaitingFragment.newInstance(callee, callId, titleCall, callType);
         transaction.add(R.id.fragment_container, outgoingWaitingFragment,
                 OutgoingWaitingFragment.class.getName()).commit();
     }

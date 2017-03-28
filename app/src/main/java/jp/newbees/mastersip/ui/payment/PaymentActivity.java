@@ -3,6 +3,7 @@ package jp.newbees.mastersip.ui.payment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import jp.newbees.mastersip.R;
@@ -25,11 +26,16 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
         activity.startActivityForResult(intent, requestCode);
     }
 
+    public static void startActivityForResult(Fragment fragment, int requestCode) {
+        Intent intent = new Intent(fragment.getActivity().getApplicationContext(), PaymentActivity.class);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         hideActionBar();
         PaymentFragment paymentFragment = PaymentFragment.newInstance(true);
-        showFragmentContent(paymentFragment);
+        showFragmentContent(paymentFragment,"PaymentFragment");
         topPresenter = new TopPresenter(this, this);
     }
 

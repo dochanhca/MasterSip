@@ -17,7 +17,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Use for all activity listen incoming call
  */
 
-public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterIncomingCallPresenter.CenterCallView,
+public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterIncomingCallPresenter.IncomingCallListener,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, TextDialog.OnTextDialogPositiveClick {
 
     private BaseCenterIncomingCallPresenter incomingCallPresenter;
@@ -27,22 +27,21 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        incomingCallPresenter = new BaseCenterIncomingCallPresenter(this, this);
         super.onCreate(savedInstanceState);
-        incomingCallPresenter = new BaseCenterIncomingCallPresenter(getApplicationContext(), this);
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
         incomingCallPresenter.registerCallEvent();
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         incomingCallPresenter.unRegisterCallEvent();
+        super.onStop();
     }
-
 
     @Override
     public void incomingVoiceCall(UserItem caller, String callID) {
@@ -57,26 +56,6 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
     @Override
     public void incomingVideoChatCall(UserItem caller, String callID) {
         IncomingVideoChatActivity.startActivity(this, caller, callID);
-    }
-
-    @Override
-    public void outgoingVoiceCall(UserItem callee) {
-        OutgoingVoiceActivity.startActivity(this, callee);
-    }
-
-    @Override
-    public void outgoingVideoCall(UserItem callee) {
-        OutgoingVideoVideoActivity.startActivity(this, callee);
-    }
-
-    @Override
-    public void outgoingVideoChatCall(UserItem callee) {
-        OutgoingVideoChatActivity.startActivity(this, callee);
-    }
-
-    @Override
-    public void didConnectCallError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 
     @Override

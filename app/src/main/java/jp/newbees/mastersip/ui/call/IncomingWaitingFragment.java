@@ -33,7 +33,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class IncomingWaitingFragment extends BaseFragment {
-    private static final String CALLER = "CALLER";
+    private static final String COMPETITOR = "COMPETITOR";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String CALL_ID = "CALL_ID";
     private static final String ACCEPT_CALL_IMAGE = "ACCEPT_CALL_IMAGE";
@@ -73,20 +73,20 @@ public class IncomingWaitingFragment extends BaseFragment {
         }
     };
 
-    private UserItem caller;
+    private UserItem competitor;
     private String callId;
     private int callType;
     private int acceptCallImage;
     private String titleCall;
 
-    public static IncomingWaitingFragment newInstance(UserItem caller, String callId,
+    public static IncomingWaitingFragment newInstance(UserItem competitor, String callId,
                                                       int acceptCallImage, String titleCall, int callType) {
 
         Bundle args = new Bundle();
         args.putString(TITLE_CALL, titleCall);
         args.putInt(ACCEPT_CALL_IMAGE, acceptCallImage);
         args.putString(CALL_ID, callId);
-        args.putParcelable(CALLER, caller);
+        args.putParcelable(COMPETITOR, competitor);
         args.putInt(CALL_TYPE, callType);
         IncomingWaitingFragment fragment = new IncomingWaitingFragment();
         fragment.setArguments(args);
@@ -113,7 +113,7 @@ public class IncomingWaitingFragment extends BaseFragment {
             BaseHandleIncomingCallActivity activity = ((BaseHandleIncomingCallActivity) getActivity());
             switch (view.getId()) {
                 case R.id.btn_reject_call:
-                    activity.rejectCall(caller.getSipItem().getExtension(), callType, callId);
+                    activity.declineCall(callId);
                     break;
                 case R.id.btn_accept_call:
                     activity.acceptCall(callId);
@@ -123,7 +123,7 @@ public class IncomingWaitingFragment extends BaseFragment {
                     activity.muteMicrophone(btnOnOffMic.isChecked());
                     break;
                 case R.id.btn_cancel_call:
-                    activity.endCall(caller.getSipItem().getExtension(), callType, callId);
+                    activity.terminalCall(callId);
                     break;
                 case R.id.btn_on_off_speaker:
                     activity.enableSpeaker(btnOnOffSpeaker.isChecked());
@@ -136,11 +136,11 @@ public class IncomingWaitingFragment extends BaseFragment {
     }
 
     private void updateView() {
-        txtUserName.setText(caller.getUsername());
+        txtUserName.setText(competitor.getUsername());
 
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
-        if (caller.getAvatarItem() != null) {
-            Glide.with(this).load(caller.getAvatarItem().getOriginUrl())
+        if (competitor.getAvatarItem() != null) {
+            Glide.with(this).load(competitor.getAvatarItem().getOriginUrl())
                     .error(imageID).placeholder(imageID)
                     .centerCrop()
                     .into(profileImage);
@@ -156,7 +156,7 @@ public class IncomingWaitingFragment extends BaseFragment {
 
     private void getArgs() {
         Bundle args = getArguments();
-        caller = args.getParcelable(CALLER);
+        competitor = args.getParcelable(COMPETITOR);
         callId = args.getString(CALL_ID);
         acceptCallImage = args.getInt(ACCEPT_CALL_IMAGE);
         titleCall = args.getString(TITLE_CALL);

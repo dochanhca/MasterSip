@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -38,19 +40,20 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
-import jp.newbees.mastersip.presenter.profile.ProfileDetailPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
 import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -59,15 +62,13 @@ import jp.newbees.mastersip.utils.Utils;
  */
 
 public class ProfileDetailItemFragment extends BaseFragment implements
-        ProfileDetailPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
+        ProfileDetailItemPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
-        OneButtonDialog.OnCusTomMessageDialogClickListener {
+        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
-
     private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
-    private static final int REQUEST_NOTIFY_CALLEE_REJECT_CALL = 2;
+
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
@@ -149,7 +150,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @BindView(R.id.txt_voice_call)
     TextView txtVoiceCall;
 
-    private ProfileDetailPresenter profileDetailPresenter;
+    private ProfileDetailItemPresenter profileDetailItemPresenter;
     private UserItem userItem;
     private GalleryItem galleryItem;
     private boolean isLoading;
@@ -196,10 +197,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         return profileDetailItemFragment;
     }
 
-    public void reloadData() {
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
-    }
-
     @Override
     protected int layoutId() {
         return R.layout.item_profile_detail;
@@ -207,7 +204,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        profileDetailPresenter = new ProfileDetailPresenter(getActivity().getApplicationContext(),
+        profileDetailItemPresenter = new ProfileDetailItemPresenter((BaseActivity) getActivity(),
                 this);
         ButterKnife.bind(this, mRoot);
 
@@ -222,23 +219,23 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         initActions();
     }
 
-    private boolean isCurrentUser() {
-        return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isCurrentUser()) {
+            profileDetailItemPresenter.unRegisterEvent();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        profileDetailPresenter.registerEvent();
+        if (isCurrentUser()) {
+            profileDetailItemPresenter.registerEvent();
+        }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        profileDetailPresenter.unRegisterEvent();
-    }
-
-    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift, R.id.btn_cancel_call,
+    @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
             R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -259,37 +256,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case R.id.layout_video_call:
                 handleVideoCallClick();
                 break;
-            case R.id.btn_cancel_call:
-                /**
-                 * TEST
-                 */
-                profileDetailPresenter.endCall(userItem, Constant.API.VOICE_CALL);
             default:
                 break;
-        }
-    }
-
-    private void handleVideoCallClick() {
-        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getString(R.string.confirm_request_enable_video_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
-                    getString(R.string.are_you_sure_make_a_video_call), "");
-        }
-    }
-
-    private void handleVoiceCallClick() {
-        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getResources().getString(R.string.confirm_request_enable_voice_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
-                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
         }
     }
 
@@ -360,39 +328,8 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
-        disMissLoading();
-        TextDialog.openTextDialog(this, -1, getFragmentManager(),
-                profileDetailPresenter.getMessageSendRequestSuccess(userItem, type), "", true);
-    }
-
-    @Override
-    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
-        disMissLoading();
-    }
-
-    @Override
-    public void didCheckCallError(String errorMessage, int errorCode) {
-        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-            showDialogNotifyNotEnoughPoint();
-        } else {
-            showToastExceptionVolleyError(errorCode, errorMessage);
-        }
-    }
-
-    @Override
-    public void didCalleeRejectCall(String calleeExtension) {
-        if (calleeExtension.equals(userItem.getSipItem().getExtension())) {
-            String message = userItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
-            String positiveTitle = getString(R.string.back_to_profile_detail);
-            OneButtonDialog.showDialog(this, getFragmentManager(),
-                    REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);
-        }
-    }
-
-    @Override
     public void didEditProfileImage() {
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
+        profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }
 
     @Override
@@ -415,15 +352,18 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
                 //send request to enable voice call
                 showLoading();
-                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
+                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
                 break;
             case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
                 //send request to enable video call
                 showLoading();
-                profileDetailPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
                 break;
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
+                break;
+            case REQUEST_NOTIFY_NOT_ENOUGH_POINT:
+                PaymentActivity.startActivityForResult(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT);
                 break;
             default:
                 break;
@@ -432,29 +372,79 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
     @Override
     public void onOkVoiceCallClick() {
-        profileDetailPresenter.checkVoiceCall(userItem);
+        getOutgoingCallPresenter().checkVoiceCall(userItem);
     }
 
     @Override
     public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
         if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            profileDetailPresenter.checkVideoCall(userItem);
+            getOutgoingCallPresenter().checkVideoCall(userItem);
         } else {
-            profileDetailPresenter.checkVideoChatCall(userItem);
+            getOutgoingCallPresenter().checkVideoChatCall(userItem);
         }
     }
 
     @Override
-    public void onCustomMessageDialogPositiveClick() {
-        //listen callback event
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT && resultCode == Activity.RESULT_OK) {
+            showDialogBuyPointSuccess(data);
+        }
+    }
+
+    private void handleVideoCallClick() {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getString(R.string.confirm_request_enable_video_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
+                    getString(R.string.are_you_sure_make_a_video_call), "");
+        }
+    }
+
+    private void handleVoiceCallClick() {
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            String content = userItem.getUsername() + getString(R.string.mr)
+                    + getResources().getString(R.string.confirm_request_enable_voice_call);
+            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
+            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
+        } else {
+            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
+                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
+        }
+    }
+
+    private boolean isCurrentUser() {
+        return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
     }
 
     private void doFollowUser() {
         showLoading();
         if (btnFollow.isChecked()) {
-            profileDetailPresenter.followUser(userItem.getUserId());
+            profileDetailItemPresenter.followUser(userItem.getUserId());
         } else {
-            profileDetailPresenter.unFollowUser(userItem.getUserId());
+            profileDetailItemPresenter.unFollowUser(userItem.getUserId());
+        }
+    }
+
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
+    }
+
+    private BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
+        ProfileDetailFragment fragment = ((ProfileDetailFragment) getParentFragment());
+        if (fragment != null) {
+            return fragment.getOutgoingCallPresenter();
+        } else {
+            return ((ProfileDetailItemActivity) getActivity()).getOutgoingCallPresenter();
         }
     }
 
@@ -480,15 +470,15 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                profileDetailPresenter.getProfileDetail(userItem.getUserId());
-                profileDetailPresenter.getListPhotos(userItem.getUserId());
+                profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
+                profileDetailItemPresenter.getListPhotos(userItem.getUserId());
             }
         });
 
         scrollView.setOnScrollChangeListener(onViewScrollListener);
 
-        profileDetailPresenter.getProfileDetail(userItem.getUserId());
-        profileDetailPresenter.getListPhotos(userItem.getUserId());
+        profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
+        profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }
 
     private void initRecyclerUserImage() {
@@ -520,9 +510,9 @@ public class ProfileDetailItemFragment extends BaseFragment implements
                     firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
                     if (firstVisibleItem + visibleItemCount >= totalItemCount && totalItemCount != 0
-                            && !isLoading && profileDetailPresenter.canLoadMoreUser()) {
+                            && !isLoading && profileDetailItemPresenter.canLoadMoreUser()) {
                         isLoading = true;
-                        profileDetailPresenter.loadMoreListPhotos(userItem.getUserId());
+                        profileDetailItemPresenter.loadMoreListPhotos(userItem.getUserId());
                     }
                 }
             }
@@ -619,22 +609,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
 
         return prettyTime.format(DateTimeUtils.convertStringToDate(lastLogin,
                 DateTimeUtils.SERVER_DATE_FORMAT));
-    }
-
-    private void showDialogNotifyNotEnoughPoint() {
-        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-        String title, content, positiveTitle;
-        if (gender == UserItem.MALE) {
-            title = getString(R.string.point_are_missing);
-            content = getString(R.string.mess_suggest_buy_point);
-            positiveTitle = getString(R.string.add_point);
-        } else {
-            title = getString(R.string.partner_point_are_missing);
-            content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
-            positiveTitle = getString(R.string.to_attack);
-        }
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
-                content, title, positiveTitle, false);
     }
 
     private void showGiftFragment() {

@@ -16,13 +16,14 @@ public class BusyCallProcessor extends BaseSocketProcessor {
 
     @Override
     protected void didProcess(Object data) {
-        String callId = (String) data;
-        this.postEvent(new BusyCallEvent(callId));
+        String handleName = (String) data;
+        this.postEvent(new BusyCallEvent(handleName));
     }
 
     @Override
     protected Object doInBackgroundData(PacketItem packetItem) throws JSONException {
         JSONObject jData = new JSONObject(packetItem.getData());
-        return String.valueOf(jData.getInt(Constant.JSON.CALL_ID));
+        JSONObject jCaller = jData.getJSONObject(Constant.JSON.CALLER);
+        return jCaller.getString("handle-name");
     }
 }

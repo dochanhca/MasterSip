@@ -1,13 +1,10 @@
 package jp.newbees.mastersip.presenter.top;
 
-import android.content.Context;
-
 import com.android.volley.Response;
 
 import java.io.InputStream;
 import java.util.Map;
 
-import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
@@ -16,30 +13,29 @@ import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
-import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.GetChatHistoryTask;
+import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
-import jp.newbees.mastersip.presenter.call.BaseActionCallPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 1/11/17.
  */
 
-public class ChatPresenter extends BaseActionCallPresenter implements BaseUploadTask.ErrorListener,
+public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements BaseUploadTask.ErrorListener,
         Response.Listener<BaseChatItem> {
 
     private ChatPresenterListener chatPresenterListener;
 
-    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener) {
-        super(context);
+    public ChatPresenter(BaseActivity context, ChatPresenterListener chatPresenterListener, OutgoingCallListener outgoingCallListener) {
+        super(context, outgoingCallListener);
         this.chatPresenterListener = chatPresenterListener;
     }
 
@@ -68,10 +64,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
         void didUnFollowUserError(String errorMessage, int errorCode);
 
-        void didCheckCallError(String errorMessage, int errorCode);
-
-        void didCalleeRejectCall();
-
         void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
 
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
@@ -79,6 +71,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        super.didResponseTask(task);
         if (task instanceof SendTextMessageTask) {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             chatPresenterListener.didSendChatToServer(result);
@@ -92,8 +85,6 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
             chatPresenterListener.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUser();
-        } else if (task instanceof CheckCallTask) {
-            handleResponseCheckCall(task);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             chatPresenterListener.didSendMsgRequestEnableSettingCall(((SendMessageRequestEnableCallTask) task).getDataResponse());
         }
@@ -101,6 +92,7 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
@@ -111,18 +103,11 @@ public class ChatPresenter extends BaseActionCallPresenter implements BaseUpload
             chatPresenterListener.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUserError(errorMessage, errorCode);
-        } else if (task instanceof CheckCallTask) {
-            chatPresenterListener.didCheckCallError(errorMessage, errorCode);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             chatPresenterListener.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 
-    @Override
-    protected void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        chatPresenterListener.didCalleeRejectCall();
-        Logger.e(TAG, "Callee reject call");
-    }
 
     /**
      * Upload image error

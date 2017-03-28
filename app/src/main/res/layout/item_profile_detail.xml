@@ -16,14 +16,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_cancel_call"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone"
-                android:text="Cancel" />
-
             <LinearLayout
                 android:id="@+id/layout_actions"
                 android:layout_width="match_parent"
