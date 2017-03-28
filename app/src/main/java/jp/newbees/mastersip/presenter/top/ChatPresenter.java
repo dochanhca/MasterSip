@@ -13,7 +13,6 @@ import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetChatHistoryTask;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
@@ -65,8 +64,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
         void didUnFollowUserError(String errorMessage, int errorCode);
 
-        void didCheckCallError(String errorMessage, int errorCode);
-
         void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
 
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
@@ -74,6 +71,7 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        super.didResponseTask(task);
         if (task instanceof SendTextMessageTask) {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             chatPresenterListener.didSendChatToServer(result);
@@ -87,8 +85,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
             chatPresenterListener.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUser();
-        } else if (task instanceof CheckCallTask) {
-            handleResponseCheckCall(task);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             chatPresenterListener.didSendMsgRequestEnableSettingCall(((SendMessageRequestEnableCallTask) task).getDataResponse());
         }
@@ -96,6 +92,7 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
@@ -106,8 +103,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
             chatPresenterListener.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUserError(errorMessage, errorCode);
-        } else if (task instanceof CheckCallTask) {
-            chatPresenterListener.didCheckCallError(errorMessage, errorCode);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
             chatPresenterListener.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }

@@ -63,6 +63,7 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
+    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
 
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
@@ -426,7 +427,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     }
 
     private BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
-        return ((ProfileDetailFragment) getParentFragment()).getProfileDetailPresenter();
+        ProfileDetailFragment fragment = ((ProfileDetailFragment) getParentFragment());
+        if (fragment != null) {
+            return fragment.getOutgoingCallPresenter();
+        } else {
+            return ((ProfileDetailItemActivity)getActivity()).getOutgoingCallPresenter();
+        }
     }
 
     private void initActions() {
@@ -600,5 +606,21 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         transaction.addToBackStack(null);
         transaction.add(R.id.fragment_search_container, giftFragment,
                 ListGiftFragment.class.getName()).commit();
+    }
+
+    public void showDialogNotifyNotEnoughPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        String title, content, positiveTitle;
+        if (gender == UserItem.MALE) {
+            title = getString(R.string.point_are_missing);
+            content = getString(R.string.mess_suggest_buy_point);
+            positiveTitle = getString(R.string.add_point);
+        } else {
+            title = getString(R.string.partner_point_are_missing);
+            content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
+            positiveTitle = getString(R.string.to_attack);
+        }
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT, getFragmentManager(),
+                content, title, positiveTitle, false);
     }
 }

@@ -330,15 +330,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         }
 
         @Override
-        public void didCheckCallError(String errorMessage, int errorCode) {
-            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-                showDialogNotifyNotEnoughPoint();
-            } else {
-                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-            }
-        }
-
-        @Override
         public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
             disMissLoading();
             TextDialog.openTextDialog(getSupportFragmentManager(), -1,
@@ -362,21 +353,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
                 actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
                 imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
             }
-        }
-
-        private void showDialogNotifyNotEnoughPoint() {
-            int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-            String title, content, positiveTitle;
-            if (gender == UserItem.MALE) {
-                title = getString(R.string.point_are_missing);
-                content = getString(R.string.mess_suggest_buy_point);
-                positiveTitle = getString(R.string.add_point);
-            } else {
-                title = getString(R.string.partner_point_are_missing);
-                content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
-                positiveTitle = getString(R.string.to_attack);
-            }
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
         }
 
         private void showDialogNotifyNotEnoughPointForChat(int chatType, int minPoint) {
@@ -480,6 +456,15 @@ public class ChatActivity extends CallCenterIncomingActivity implements
             String message = busyCallEvent.getHandleName() + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
             OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
+        }
+
+        @Override
+        public void didCheckCallError(int errorCode, String errorMessage) {
+            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+                showDialogNotifyNotEnoughPoint();
+            } else {
+                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+            }
         }
     };
 
@@ -924,5 +909,20 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         } else {
             navFollow.changeToNormalTab();
         }
+    }
+
+    private void showDialogNotifyNotEnoughPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        String title, content, positiveTitle;
+        if (gender == UserItem.MALE) {
+            title = getString(R.string.point_are_missing);
+            content = getString(R.string.mess_suggest_buy_point);
+            positiveTitle = getString(R.string.add_point);
+        } else {
+            title = getString(R.string.partner_point_are_missing);
+            content = userItem.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
+            positiveTitle = getString(R.string.to_attack);
+        }
+        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
     }
 }

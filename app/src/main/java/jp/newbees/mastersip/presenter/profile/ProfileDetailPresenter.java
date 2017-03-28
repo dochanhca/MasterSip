@@ -7,11 +7,9 @@ import java.util.Map;
 
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 2/3/17.
@@ -29,10 +27,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
         void didLoadMoreUser(Map<String, Object> data);
 
         void didLoadUserError(int errorCode, String errorMessage);
-
-//        void didCalleeRejectCall(String calleeExtension);
-
-        void didCheckCallError(String errorMessage, int errorCode);
     }
 
     public void loadMoreUser(String nextPage, int typeSearch) {
@@ -45,20 +39,18 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        super.didResponseTask(task);
         if (task instanceof FilterUserTask) {
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
             view.didLoadMoreUser(data);
-        } else if (task instanceof CheckCallTask) {
-            handleResponseCheckCall(task);
         }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof FilterUserTask) {
             view.didLoadUserError(errorCode, errorMessage);
-        } else if (task instanceof CheckCallTask) {
-            view.didCheckCallError(errorMessage, errorCode);
         }
     }
 }

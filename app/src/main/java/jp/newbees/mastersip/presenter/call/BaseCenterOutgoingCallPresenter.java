@@ -38,7 +38,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof ReconnectCallTask) {
-            outgoingCallListener.didConnectCallError(errorCode,errorMessage);
+            outgoingCallListener.didConnectCallError(errorCode, errorMessage);
+        } else if (task instanceof CheckCallTask) {
+            outgoingCallListener.didCheckCallError(errorCode, errorMessage);
         }
     }
 
@@ -46,6 +48,8 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof ReconnectCallTask) {
             Logger.e(TAG,"Reconnect call task successful");
+        } else if (task instanceof CheckCallTask) {
+            handleResponseCheckCall(task);
         }
     }
 
@@ -66,7 +70,7 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         }
     }
 
-    protected void handleResponseCheckCall(BaseTask task) {
+    private void handleResponseCheckCall(BaseTask task) {
         HashMap<String, Object> result = (HashMap<String, Object>) task.getDataResponse();
         int callType = (int) result.get(CheckCallTask.CALL_TYPE);
         UserItem callee = (UserItem) result.get(CheckCallTask.CALLEE);
@@ -186,5 +190,7 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         void didConnectCallError(int errorCode, String errorMessage);
 
         void onCalleeRejectCall(BusyCallEvent busyCallEvent);
+
+        void didCheckCallError(int errorCode, String errorMessage);
     }
 }
