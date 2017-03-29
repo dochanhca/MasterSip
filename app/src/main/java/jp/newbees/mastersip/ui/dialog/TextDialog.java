@@ -166,7 +166,8 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
                                             String title,
                                             String positiveTitle,
                                             boolean hiddenNegativeButton) {
-        if (positiveTitle == null) positiveTitle = "";
+        if (positiveTitle == null)
+            positiveTitle = "";
 
         TextDialog textDialog = new TextDialog();
         Bundle bundle = new Bundle();

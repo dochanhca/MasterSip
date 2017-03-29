@@ -28,12 +28,10 @@ public class UploadFileForChatTask extends BaseUploadTask<BaseChatItem> {
     private UserItem sender;
     private int typeUpload;
     private InputStream fileUpload;
-    private Context context;
 
     public UploadFileForChatTask(Context context, String receiverExtension, UserItem sender,
                                  int typeUpload, InputStream fileUpload) {
         super(context);
-        this.context = context;
         this.receiverExtension = receiverExtension;
         this.sender = sender;
         this.typeUpload = typeUpload;

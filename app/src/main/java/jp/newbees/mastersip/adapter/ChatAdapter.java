@@ -18,6 +18,8 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.chatholder.BaseChatViewHolder;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderCallMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderCallMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderGiftMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderGiftMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderHeader;
@@ -25,10 +27,6 @@ import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageReply;
-import jp.newbees.mastersip.adapter.chatholder.ViewHolderVideoCallMessage;
-import jp.newbees.mastersip.adapter.chatholder.ViewHolderVideoCallMessageReply;
-import jp.newbees.mastersip.adapter.chatholder.ViewHolderVoiceCallMessage;
-import jp.newbees.mastersip.adapter.chatholder.ViewHolderVoiceCallMessageReply;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -95,21 +93,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 break;
             case BaseChatItem.ChatType.CHAT_VOICE_CALL:
-                if (isReplyMessage) {
-                    view = layoutInflater.inflate(R.layout.reply_chat_voice_call_item, parent, false);
-                    viewHolder = new ViewHolderVoiceCallMessageReply(view, context, onItemClickListener);
-                } else {
-                    view = layoutInflater.inflate(R.layout.my_chat_voice_call_item, parent, false);
-                    viewHolder = new ViewHolderVoiceCallMessage(view, context);
-                }
-                break;
             case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
+            case BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL:
                 if (isReplyMessage) {
-                    view = layoutInflater.inflate(R.layout.reply_chat_video_call_item, parent, false);
-                    viewHolder = new ViewHolderVideoCallMessageReply(view, context, onItemClickListener);
+                    view = layoutInflater.inflate(R.layout.reply_chat_call_item, parent, false);
+                    viewHolder = new ViewHolderCallMessageReply(view, context, onItemClickListener);
                 } else {
-                    view = layoutInflater.inflate(R.layout.my_chat_video_call_item, parent, false);
-                    viewHolder = new ViewHolderVideoCallMessage(view, context);
+                    view = layoutInflater.inflate(R.layout.my_chat_call_item, parent, false);
+                    viewHolder = new ViewHolderCallMessage(view, context);
                 }
                 break;
             default:

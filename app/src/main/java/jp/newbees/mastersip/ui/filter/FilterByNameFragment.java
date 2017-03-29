@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.AdapterSearchUserModeList;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterByNamePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
-import jp.newbees.mastersip.adapter.AdapterSearchUserModeList;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Utils;
@@ -98,11 +98,11 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
         }
 
         private void hideFilterAndNavigationBar() {
-            ((TopActivity)getActivity()).hideNavigation();
+            ((TopActivity) getActivity()).hideNavigation();
         }
 
         private void showFilterAndNavigationBar() {
-            ((TopActivity)getActivity()).showNavigation();
+            ((TopActivity) getActivity()).showNavigation();
         }
     };
 
@@ -170,10 +170,9 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (view instanceof EditText) {
-            if (txtCancel.getVisibility() == View.GONE) {
-                txtCancel.setVisibility(View.VISIBLE);// User touched edittext
-            }
+        if (view instanceof EditText && txtCancel.getVisibility() == View.GONE) {
+            // User touched edittext
+            txtCancel.setVisibility(View.VISIBLE);
         }
         return false;
     }
@@ -184,7 +183,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
         userItems.addAll(datas);
         adapterSearchUserModeList.notifyDataSetChanged();
         imgClose.setVisibility(View.VISIBLE);
-        if (datas.size() > 0) {
+        if (datas.isEmpty()) {
             txtNote.setVisibility(View.GONE);
         }
 

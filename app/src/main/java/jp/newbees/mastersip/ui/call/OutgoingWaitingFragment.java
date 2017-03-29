@@ -163,10 +163,6 @@ public class OutgoingWaitingFragment extends BaseFragment {
         }
     }
 
-    private boolean inVoiceCall() {
-        return imgLoading.getVisibility() == View.GONE;
-    }
-
     public void enableSpeaker(boolean enable) {
         getOutgoingActivity().enableSpeaker(enable);
     }
@@ -211,6 +207,6 @@ public class OutgoingWaitingFragment extends BaseFragment {
     }
 
     private BaseHandleOutgoingCallActivity getOutgoingActivity() {
-        return ((BaseHandleOutgoingCallActivity) getActivity());
+        return (BaseHandleOutgoingCallActivity) getActivity();
     }
 }

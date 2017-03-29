@@ -46,5 +46,7 @@
     <color name="text_chat_color">#004b50</color>
     <color name="text_color_blue_dark">#10565a</color>
     <color name="bg_point_video_call">#80388d92</color>
+    <color name="gray_bg_call">#f4f4f4</color>
+    <color name="light_blue_bg_call">#bde4e6</color>
 
 </resources>

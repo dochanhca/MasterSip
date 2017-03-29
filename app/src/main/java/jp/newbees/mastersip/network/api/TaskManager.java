@@ -7,11 +7,16 @@ import com.android.volley.Response;
  */
 
 public class TaskManager {
-    public final static void requestTask(BaseTask task, final Response.Listener listener, final BaseTask.ErrorListener errorListener){
+
+    private TaskManager() {
+
+    }
+
+    public static final void requestTask(BaseTask task, final Response.Listener listener, final BaseTask.ErrorListener errorListener){
        task.request(listener,errorListener);
     }
 
-    public final static void requestUploadTask(BaseUploadTask task, final Response.Listener listener, final BaseUploadTask.ErrorListener errorListener){
+    public static final void requestUploadTask(BaseUploadTask task, final Response.Listener listener, final BaseUploadTask.ErrorListener errorListener){
         task.request(listener,errorListener);
     }
 }

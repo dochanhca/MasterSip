@@ -45,7 +45,6 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
     private RelativeLayout layoutDeletePicture;
     private RelativeLayout layoutCancel;
 
-    private boolean isShowButtonDeleteImage;
     private boolean showFromActivity;
 
     public interface OnSelectAvatarDiaLogClick {
@@ -66,7 +65,7 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
         layoutCancel.setOnClickListener(this);
         layoutDeletePicture.setOnClickListener(this);
 
-        isShowButtonDeleteImage = getArguments().getBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, false);
+        boolean isShowButtonDeleteImage = getArguments().getBoolean(IS_SHOW_BUTTON_DELETE_IMAGE, false);
         showFromActivity = getArguments().getBoolean(CALL_FROM_ACTIVITY, true);
 
         if (isShowButtonDeleteImage) {

@@ -75,7 +75,6 @@ public class IncomingWaitingFragment extends BaseFragment {
 
     private UserItem competitor;
     private String callId;
-    private int callType;
     private int acceptCallImage;
     private String titleCall;
 
@@ -117,7 +116,6 @@ public class IncomingWaitingFragment extends BaseFragment {
                     break;
                 case R.id.btn_accept_call:
                     activity.acceptCall(callId);
-
                     break;
                 case R.id.btn_on_off_mic:
                     activity.muteMicrophone(btnOnOffMic.isChecked());
@@ -160,7 +158,6 @@ public class IncomingWaitingFragment extends BaseFragment {
         callId = args.getString(CALL_ID);
         acceptCallImage = args.getInt(ACCEPT_CALL_IMAGE);
         titleCall = args.getString(TITLE_CALL);
-        callType = args.getInt(CALL_TYPE);
     }
 
     /**

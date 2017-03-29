@@ -24,6 +24,11 @@ public abstract class WrapperWithBottomNavigationActivity extends CallCenterInco
             ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
             goTopActivity();
         }
+
+        private void goTopActivity() {
+            Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+            startActivity(intent);
+        }
     };
 
     @Override
@@ -41,10 +46,5 @@ public abstract class WrapperWithBottomNavigationActivity extends CallCenterInco
     public void showFragmentContent(Fragment fragment, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_search_container, fragment, tag).commit();
-    }
-
-    private void goTopActivity() {
-        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-        startActivity(intent);
     }
 }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/xnormal_margin"
+    android:paddingLeft="@dimen/normal_margin">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_reply_avatar"
+        android:layout_width="@dimen/avatar_reply_chat_size"
+        android:layout_height="@dimen/avatar_reply_chat_size"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/comma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_reply_avatar"
+        android:src="@drawable/img_comma_reply_chat_item" />
+
+    <LinearLayout
+        android:id="@+id/ll_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/chat_call_history_w"
+        android:layout_marginLeft="@dimen/offset_comma"
+        android:layout_toRightOf="@id/comma"
+        android:padding="@dimen/_5dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/bg_white_xlarge_radius">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_3dp"
+            android:background="@drawable/bg_gray_with_top_radius">
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_call_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_3dp"
+                android:textSize="@dimen/text_size_9"
+                android:textColor="@color/text_color_gray"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
+                android:text="ビデオ通話"/>
+            <ImageView
+                android:id="@+id/img_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_call_history_reply"/>
+        </LinearLayout>
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:textSize="@dimen/text_size_11"
+            android:textColor="@color/text_color_gray"
+            android:textStyle="bold"
+            android:text="59:33"/>
+    </LinearLayout>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_tiny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_5dp"
+        android:layout_alignBottom="@id/ll_container"
+        android:layout_toRightOf="@id/ll_container"
+        android:paddingLeft="@dimen/small_margin"
+        android:text="12:34"
+        android:textColor="@color/dark_gray" />
+</RelativeLayout>

@@ -28,8 +28,6 @@ import jp.newbees.mastersip.utils.Logger;
 public class FilterLocationFragment extends BaseFragment implements
         LocationAdapter.OnLocationAdapterClick, View.OnClickListener {
 
-    private final String TAG = getClass().getSimpleName();
-
     private RecyclerView recyclerLocation;
     private ImageView btnUnCheckAll;
 
@@ -117,8 +115,8 @@ public class FilterLocationFragment extends BaseFragment implements
 
         locationItems = new ArrayList<>();
 
-        String districts[] = getResources().getStringArray(R.array.districts);
-        String cities[] = getResources().getStringArray(R.array.cities);
+        String[] districts = getResources().getStringArray(R.array.districts);
+        String[] cities = getResources().getStringArray(R.array.cities);
 
         // Hokkaido
         LocationItem hokkaido = new LocationItem();
@@ -132,7 +130,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem northeastItem = new SelectionItem(LocationItem.NORTHEAST, cities[0]);
         addLocationItemParent(northeastItem);
         for (int i = 1; i <= 6; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.NORTHEAST);
         }
 
@@ -140,7 +138,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem kantoItem = new SelectionItem(LocationItem.KANTO, cities[1]);
         addLocationItemParent(kantoItem);
         for (int i = 7; i <= 13; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.KANTO);
         }
 
@@ -148,7 +146,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem middleItem = new SelectionItem(LocationItem.MIDDLE, cities[2]);
         addLocationItemParent(middleItem);
         for (int i = 14; i <= 22; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.MIDDLE);
         }
 
@@ -156,7 +154,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem kinkiItem = new SelectionItem(LocationItem.KINKI, cities[3]);
         addLocationItemParent(kinkiItem);
         for (int i = 23; i <= 29; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.KINKI);
         }
 
@@ -164,7 +162,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem chinaItem = new SelectionItem(LocationItem.CHINA, cities[4]);
         addLocationItemParent(chinaItem);
         for (int i = 30; i <= 34; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.CHINA);
 
         }
@@ -173,7 +171,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem shikokuItem = new SelectionItem(LocationItem.SHIKOKU, cities[5]);
         addLocationItemParent(shikokuItem);
         for (int i = 35; i <= 38; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.SHIKOKU);
         }
 
@@ -181,7 +179,7 @@ public class FilterLocationFragment extends BaseFragment implements
         SelectionItem kyushuItem = new SelectionItem(LocationItem.KYUSHU, cities[6]);
         addLocationItemParent(kyushuItem);
         for (int i = 39; i <= 46; i++) {
-            SelectionItem selectionItem = new SelectionItem((i + 1), districts[i]);
+            SelectionItem selectionItem = new SelectionItem(i + 1, districts[i]);
             addLocationItemChild(selectionItem, LocationItem.KYUSHU);
         }
 

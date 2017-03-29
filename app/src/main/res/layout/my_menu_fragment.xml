@@ -333,7 +333,7 @@
                         android:paddingTop="@dimen/_25dp"
                         android:layout_height="match_parent"
                         android:text="@string/call_history"
-                        android:drawableTop="@drawable/ic_call_history" />
+                        android:drawableTop="@drawable/ic_my_call_history" />
 
                     <View
                         android:layout_width="@dimen/_1dp"

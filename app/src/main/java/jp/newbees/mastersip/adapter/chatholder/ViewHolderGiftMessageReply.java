@@ -12,7 +12,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.GiftChatItem;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 2/3/17.
@@ -44,12 +43,6 @@ public class ViewHolderGiftMessageReply extends BaseChatReplyViewHolder<GiftChat
         txtContent.setText(giftChatItem.getContent());
         txtTime.setText(giftChatItem.getShortDate());
 
-        int defaultImageId = ConfigManager.getInstance().getImageCalleeDefault();
-        if (giftChatItem.getOwner().getAvatarItem() != null) {
-            Glide.with(getContext()).load(giftChatItem.getOwner().getAvatarItem().getThumbUrl()).placeholder(defaultImageId).
-                    error(defaultImageId).into(imgAvatar);
-        } else {
-            imgAvatar.setImageResource(defaultImageId);
-        }
+       setUserAvatar(imgAvatar, giftChatItem);
     }
 }

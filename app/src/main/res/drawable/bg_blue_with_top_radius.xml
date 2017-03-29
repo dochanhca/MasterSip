@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!--bg color-->
+    <solid android:color="@color/light_blue_bg_call" />
+
+    <!--set border size & color -->
+    <corners
+        android:topRightRadius="@dimen/xlarge_radius"
+        android:topLeftRadius="@dimen/xlarge_radius"/>
+</shape>

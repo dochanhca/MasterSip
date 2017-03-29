@@ -204,6 +204,8 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
             case Constant.API.VIDEO_CHAT_CALL:
                 outgoingCallListener.outgoingVideoChatCall(callee, callId);
                 break;
+            default:
+                break;
         }
     }
 

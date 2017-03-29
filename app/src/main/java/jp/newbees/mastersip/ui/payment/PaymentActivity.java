@@ -35,7 +35,7 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
     protected void initVariables(Bundle savedInstanceState) {
         hideActionBar();
         PaymentFragment paymentFragment = PaymentFragment.newInstance(true);
-        showFragmentContent(paymentFragment,"PaymentFragment");
+        showFragmentContent(paymentFragment, PaymentFragment.class.getName());
         topPresenter = new TopPresenter(this, this);
     }
 

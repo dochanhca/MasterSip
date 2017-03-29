@@ -101,6 +101,17 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
             int lastIndex = galleryPagerAdapter.getCount() - 1;
             lastPageChanged = (currentPosition == lastIndex && state == 1) ? true : false;
         }
+
+        private void loadMorePhotos() {
+            showLoading();
+            isLoadingMorePhotos = true;
+            if (viewType == MY_PHOTOS) {
+                imageDetailPresenter.loadMorePhotos(galleryItem);
+            } else {
+                ChattingGalleryItem chattingGalleryItem = (ChattingGalleryItem) galleryItem;
+                imageDetailPresenter.loadMoreChattingPhotos(chattingGalleryItem);
+            }
+        }
     };
 
     @Override
@@ -136,6 +147,7 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
                 SelectImageDialog.showDialogSelectAvatar(this, false);
                 break;
             case R.id.txt_report:
+                // Report photo
                 break;
             case R.id.txt_delete_photo:
                 confirmDeleteImage();
@@ -173,6 +185,8 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
                     int position = data.getIntExtra(POSITION, 0);
                     viewPagerGallery.setCurrentItem(position, false);
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -352,17 +366,6 @@ public class ImageDetailActivity extends CallCenterIncomingActivity implements I
             pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
         }
         CropImageActivity.startActivityForResult(this, pickedImage);
-    }
-
-    private void loadMorePhotos() {
-        showLoading();
-        isLoadingMorePhotos = true;
-        if (viewType == MY_PHOTOS) {
-            imageDetailPresenter.loadMorePhotos(galleryItem);
-        } else {
-            ChattingGalleryItem chattingGalleryItem = (ChattingGalleryItem) galleryItem;
-            imageDetailPresenter.loadMoreChattingPhotos(chattingGalleryItem);
-        }
     }
 
     private void updatePhotos(GalleryItem galleryItem) {

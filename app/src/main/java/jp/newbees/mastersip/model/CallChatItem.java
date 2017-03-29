@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class CallChatItem extends BaseChatItem implements Parcelable {
 
-    private int kindCall;
+    private int callType;
     private String duration;
 
     public CallChatItem() {
@@ -18,7 +18,7 @@ public class CallChatItem extends BaseChatItem implements Parcelable {
 
     protected CallChatItem(Parcel in) {
         super(in);
-        kindCall = in.readInt();
+        callType = in.readInt();
         duration = in.readString();
     }
 
@@ -42,16 +42,16 @@ public class CallChatItem extends BaseChatItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeInt(kindCall);
+        parcel.writeInt(callType);
         parcel.writeString(duration);
     }
 
-    public int getKindCall() {
-        return kindCall;
+    public int getCallType() {
+        return callType;
     }
 
-    public void setKindCall(int kindCall) {
-        this.kindCall = kindCall;
+    public void setCallType(int callType) {
+        this.callType = callType;
     }
 
     public String getDuration() {

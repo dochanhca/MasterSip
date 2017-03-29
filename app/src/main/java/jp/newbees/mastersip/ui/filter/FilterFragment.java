@@ -67,8 +67,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private ConfigManager configManager;
 
     public static FilterFragment newInstance() {
-        FilterFragment fragment = new FilterFragment();
-        return fragment;
+        return new FilterFragment();
     }
 
     @Override
@@ -317,7 +316,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     }
 
     private void showAreaToTextView(ArrayList<LocationItem> temps) {
-        if (temps.size() == 0) {
+        if (temps.isEmpty()) {
             txtArea.setText(getString(R.string.do_not_care));
         } else {
             StringBuilder area = new StringBuilder();
@@ -371,7 +370,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
     private void initAges() {
         ages.add(defaultAge);
         for (int i = Constant.Application.MIN_AGE; i <= Constant.Application.MAX_AGE; i++) {
-            SelectionItem age = new SelectionItem(i, i + "");
+            SelectionItem age = new SelectionItem(i,Integer.toString(i));
             AgeItem ageItem = new AgeItem(age, false);
             ages.add(ageItem);
         }

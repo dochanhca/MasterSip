@@ -24,11 +24,9 @@ public class SendPurchaseResultToServerTask extends BaseTask<Integer>{
     private final TopPresenter.PurchaseStatus purchaseStatus;
     private final String skuID;
     private final String transection;
-    private final Context context;
 
     public SendPurchaseResultToServerTask(Context context, String skuID, String transection, TopPresenter.PurchaseStatus purchaseStatus) {
         super(context);
-        this.context = context;
         this.purchaseStatus = purchaseStatus;
         this.skuID = skuID;
         this.transection = transection;

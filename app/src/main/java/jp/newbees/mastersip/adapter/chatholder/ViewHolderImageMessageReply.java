@@ -61,15 +61,6 @@ public class ViewHolderImageMessageReply extends BaseChatReplyViewHolder {
                 .dontAnimate()
                 .into(imgChat);
 
-
-        int defaultAvatar = ConfigManager.getInstance().getImageCalleeDefault();
-        if (imageChatItem.getOwner().getAvatarItem() != null) {
-            Glide.with(getContext()).load(imageChatItem.getOwner().getAvatarItem().getThumbUrl())
-                    .placeholder(defaultAvatar)
-                    .error(defaultAvatar)
-                    .into(imgAvatar);
-        } else {
-            imgAvatar.setImageResource(defaultAvatar);
-        }
+       setUserAvatar(imgAvatar, item);
     }
 }

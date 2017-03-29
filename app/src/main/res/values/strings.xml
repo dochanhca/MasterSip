@@ -420,4 +420,6 @@
     <string name="is_required">必要です。</string>
     <string name="do_you_want_to_add_point">ポイントを追加しますか？</string>
     <string name="to_send_an_image">画像を送信するには、</string>
+    <string name="video_chat_call">ビデオ通話+チャット</string>
+    <string name="missed_call">不在着信</string>
 </resources>
