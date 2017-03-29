@@ -73,7 +73,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void loginToVoIP(final SipItem sipItem) {
@@ -99,18 +99,6 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         linphoneHandler.destroy();
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
-    }
-
-    /**
-     * Run when app be killed
-     *
-     * @param rootIntent
-     */
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        Logger.e(TAG, "onTaskRemoved");
-        stopSelf();
-        super.onTaskRemoved(rootIntent);
     }
 
     private void registerReceiverRingerModeChanged() {

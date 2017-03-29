@@ -191,16 +191,19 @@
 
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
