@@ -49,6 +49,7 @@ public class LinphoneNotifier extends TutorialNotifier {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                Logger.e(TAG, "registerVoIP failed");
                 EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_FAILED));
             }
         });

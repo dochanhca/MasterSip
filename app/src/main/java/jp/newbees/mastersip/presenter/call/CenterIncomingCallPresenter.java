@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
+import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -8,13 +9,18 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
+import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHander;
 
 /**
  * Created by thangit14 on 3/29/17.
@@ -55,6 +61,37 @@ public class CenterIncomingCallPresenter extends BasePresenter {
             default:
                 break;
         }
+    }
+
+    /**
+     * @param event listener Register VoIP response
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
+        Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
+        if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
+            if (!MyLifecycleHander.isApplicationInForeground()) {
+                saveLoginState(true);
+//                reconnectRoom();
+            }
+        } else {
+            stopLinphoneService();
+        }
+    }
+
+    private void reconnectRoom(String callId) {
+        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
+                callId);
+        requestToServer(reconnectCallTask);
+    }
+
+    private void stopLinphoneService() {
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.stopService(intent);
+    }
+
+    private void saveLoginState(boolean loginState) {
+        ConfigManager.getInstance().saveLoginFlag(loginState);
     }
 
     private void handleIncomingCallType(int callType, UserItem caller, String callID) {

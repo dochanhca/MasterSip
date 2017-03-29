@@ -69,7 +69,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void loginToVoIP(final SipItem sipItem) {
