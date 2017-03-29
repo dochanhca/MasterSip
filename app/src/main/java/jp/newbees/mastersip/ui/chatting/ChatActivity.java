@@ -52,7 +52,6 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
-import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
 import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
@@ -220,6 +219,45 @@ public class ChatActivity extends CallCenterIncomingActivity implements
 
 
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
+        @Override
+        public void outgoingVoiceCall(UserItem callee, String callID) {
+            OutgoingVoiceActivity.startActivity(ChatActivity.this, callee, callID);
+        }
+
+        @Override
+        public void outgoingVideoCall(UserItem callee, String callID) {
+            OutgoingVideoVideoActivity.startActivity(ChatActivity.this, callee, callID);
+
+        }
+
+        @Override
+        public void outgoingVideoChatCall(UserItem callee, String callID) {
+            OutgoingVideoChatActivity.startActivity(ChatActivity.this, callee, callID);
+        }
+
+        @Override
+        public void didConnectCallError(int errorCode, String errorMessage) {
+            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+        }
+
+        @Override
+        public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
+            String message = busyCallEvent.getHandleName() + getString(R.string.mess_callee_reject_call);
+            String positiveTitle = getString(R.string.back_to_profile_detail);
+            OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
+        }
+
+        @Override
+        public void didCheckCallError(int errorCode, String errorMessage) {
+
+            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        }
+
+        @Override
+        public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
+            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
+        }
+
         @Override
         public void didSendChatToServer(BaseChatItem baseChatItem) {
             Logger.e(TAG, "sending message to server success");
@@ -428,46 +466,6 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         }
     };
 
-    private BaseCenterOutgoingCallPresenter.OutgoingCallListener mOnOutgoingCallListener = new BaseCenterOutgoingCallPresenter.OutgoingCallListener() {
-        @Override
-        public void outgoingVoiceCall(UserItem callee, String callID) {
-            OutgoingVoiceActivity.startActivity(ChatActivity.this, callee, callID);
-        }
-
-        @Override
-        public void outgoingVideoCall(UserItem callee, String callID) {
-            OutgoingVideoVideoActivity.startActivity(ChatActivity.this, callee, callID);
-
-        }
-
-        @Override
-        public void outgoingVideoChatCall(UserItem callee, String callID) {
-            OutgoingVideoChatActivity.startActivity(ChatActivity.this, callee, callID);
-        }
-
-        @Override
-        public void didConnectCallError(int errorCode, String errorMessage) {
-            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-        }
-
-        @Override
-        public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-            String message = busyCallEvent.getHandleName() + getString(R.string.mess_callee_reject_call);
-            String positiveTitle = getString(R.string.back_to_profile_detail);
-            OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
-        }
-
-        @Override
-        public void didCheckCallError(int errorCode, String errorMessage) {
-
-            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-        }
-
-        @Override
-        public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
-        }
-    };
 
     @Override
     protected int layoutId() {
@@ -504,7 +502,7 @@ public class ChatActivity extends CallCenterIncomingActivity implements
         slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener, mOnOutgoingCallListener);
+        presenter = new ChatPresenter(this, mOnChatListener);
         userItem = getIntent().getParcelableExtra(USER);
 
         initHeader(userItem.getUsername(), mOnHeaderClickListener);

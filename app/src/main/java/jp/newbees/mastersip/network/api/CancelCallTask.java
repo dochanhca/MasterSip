@@ -20,6 +20,11 @@ public final class CancelCallTask extends BaseTask<Void> {
 
     private final String callID;
 
+    /**
+     * This API uses for cancel a call
+     * @param context
+     * @param callID
+     */
     public CancelCallTask(Context context, String callID) {
         super(context);
         this.callID = callID;

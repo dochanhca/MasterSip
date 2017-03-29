@@ -25,6 +25,10 @@ public class GetListGiftTask extends BaseTask<List<GiftItem>> {
     public static final String GIFTS_LIST = "GIFTS_LIST";
     public static final String NEXT_PAGE = "NEXT_PAGE";
 
+    /**
+     * This API uses for get list gift
+     * @param context
+     */
     public GetListGiftTask(Context context) {
         super(context);
     }

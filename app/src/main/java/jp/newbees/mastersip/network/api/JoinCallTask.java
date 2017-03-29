@@ -19,6 +19,11 @@ public class JoinCallTask extends BaseTask<Void> {
 
     private String callId;
 
+    /**
+     * This API uses for join call
+     * @param context
+     * @param callId
+     */
     public JoinCallTask(Context context, String callId) {
         super(context);
         this.callId = callId;

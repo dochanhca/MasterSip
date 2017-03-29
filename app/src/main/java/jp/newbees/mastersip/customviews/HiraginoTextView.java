@@ -2,8 +2,8 @@ package jp.newbees.mastersip.customviews;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import jp.newbees.mastersip.utils.FontUtils;
 
@@ -11,7 +11,7 @@ import jp.newbees.mastersip.utils.FontUtils;
  * Created by ducpv on 12/8/16.
  */
 
-public class HiraginoTextView extends TextView {
+public class HiraginoTextView extends AppCompatTextView {
 
     public HiraginoTextView(Context context) {
         super(context);

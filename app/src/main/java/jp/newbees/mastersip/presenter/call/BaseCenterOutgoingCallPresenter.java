@@ -28,7 +28,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Use for listener outgoing call only
  */
 
-public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
+public class BaseCenterOutgoingCallPresenter extends BasePresenter {
     private OutgoingCallListener outgoingCallListener;
     private UserItem callee;
 
@@ -43,6 +43,8 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
             outgoingCallListener.didConnectCallError(errorCode, errorMessage);
         } else if (task instanceof CheckCallTask) {
             handleCheckCallError(errorCode, errorMessage);
+        }  else if (task instanceof SendMessageRequestEnableCallTask) {
+            outgoingCallListener.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 
@@ -52,6 +54,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
             Logger.e(TAG,"Reconnect call task successful");
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
+        } else if (task instanceof SendMessageRequestEnableCallTask) {
+            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
+            outgoingCallListener.didSendMsgRequestEnableSettingCall(type);
         }
     }
 
@@ -230,5 +235,9 @@ public abstract class BaseCenterOutgoingCallPresenter extends BasePresenter {
         void didCheckCallError(int errorCode, String errorMessage);
 
         void didUserNotEnoughPoint(String title, String content, String positiveTitle);
+
+        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
+
+        void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
     }
 }

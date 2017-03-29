@@ -30,6 +30,12 @@ public class GetListRoomTask extends BaseTask<Map<String, Object>> {
     private final UserItem userItem;
     private int lastRoomId;
 
+    /**
+     * This API uses for get list rooms
+     * @param context
+     * @param userItem
+     * @param lastRoomId
+     */
     public GetListRoomTask(Context context, UserItem userItem, int lastRoomId) {
         super(context);
         this.userItem = userItem;

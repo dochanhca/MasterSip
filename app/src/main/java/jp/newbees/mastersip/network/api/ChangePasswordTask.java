@@ -21,6 +21,13 @@ public class ChangePasswordTask extends BaseTask {
     private String newPass;
     private String code;
 
+    /**
+     * This API uses for change password
+     * @param context
+     * @param email
+     * @param newPass
+     * @param code
+     */
     public ChangePasswordTask(Context context, String email, String newPass, String code) {
         super(context);
         this.email = email;

@@ -34,6 +34,13 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     private final int page;
     private String name;
 
+    /**
+     * This API uses for filter User by name
+     * @param context
+     * @param userItem
+     * @param page
+     * @param name
+     */
     public FilterNameTask(Context context, UserItem userItem, int page, String name) {
         super(context);
         this.userItem = userItem;

@@ -22,6 +22,12 @@ public class GetListChattingPhotos extends BaseTask<ChattingGalleryItem> {
     private String nextId;
     private String userId;
 
+    /**
+     * This API uses for get list photos in a chat room
+     * @param context
+     * @param nextId
+     * @param userId
+     */
     public GetListChattingPhotos(Context context, String nextId, String userId) {
         super(context);
         this.nextId = nextId;

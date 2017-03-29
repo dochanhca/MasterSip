@@ -18,6 +18,11 @@ import jp.newbees.mastersip.utils.JSONUtils;
 public class CheckCodeTask extends BaseTask<Void>{
     private String code;
 
+    /**
+     * This API uses for check Code forgot password
+     * @param context
+     * @param code
+     */
     public CheckCodeTask(Context context, String code) {
         super(context);
         this.code = code;

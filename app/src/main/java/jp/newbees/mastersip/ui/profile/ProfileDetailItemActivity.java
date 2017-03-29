@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
@@ -112,6 +113,16 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
     public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
         TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_NOT_ENOUGH_POINT,
                 content, title, positiveTitle, false);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+
     }
 
     @Override

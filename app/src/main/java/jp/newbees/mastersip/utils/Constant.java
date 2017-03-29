@@ -53,7 +53,10 @@ public final class Constant {
         public static final String HEIGHT = "height";
         public static final String EXTENSION_FROM = "extension_from";
         public static final String FCM_PUSH_ITEM = "fcm_push_item";
-
+        public static final String LIST = "list";
+        public static final String USER_NAME = "user_name";
+        public static final String TIMESTAMP = "timestamp";
+        public static final String SETTING_CALL = "setting_call";
 
         private JSON() {
             //Prevent init constructor
@@ -261,6 +264,8 @@ public final class Constant {
         public static final String RECONNECT_CALL = "calls/reconnect-call";
         public static final String JOIN_TO_CALL = "calls/join-to-call";
         public static final String PAYMENT_PACKAGE_LIST = "payment/list_package";
+        public static final String LIST_FOOTPRINT_VIEWED_BY_ME = "footprint_list_by_me";
+        public static final String LIST_FOOTPRINT_VIEWED_BY_OTHER = "footprint_list_by_someone";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
