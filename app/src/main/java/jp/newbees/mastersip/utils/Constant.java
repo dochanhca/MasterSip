@@ -52,6 +52,7 @@ public final class Constant {
         public static final String WIDTH = "width";
         public static final String HEIGHT = "height";
         public static final String EXTENSION_FROM = "extension_from";
+        public static final String FCM_PUSH_ITEM = "fcm_push_item";
 
 
         private JSON() {
@@ -375,7 +376,7 @@ public final class Constant {
         public static final int STATUS_CALLING_END = 5;
     }
 
-    public static class InAppBilling {
+    public static final class InAppBilling {
         public static final String SKU_TYPE_01 = "1";
         public static final String SKU_TYPE_02 = "2";
         public static final String SKU_TYPE_03 = "3";
@@ -385,6 +386,21 @@ public final class Constant {
         public static final int RC_REQUEST = 10001;
 
         public static final String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqnLWbhSgEG1u+0PZ3frkI7EeRge5iD8gOthik3llKyCbSpHPCY/9YjMIXrbe97XQZj7vp2MUeX4DHMB7sBNHT/T2rcpHvoezTZrUiUEPb4rTodEd9c1Ks1pcOEJ+cZpBRHOVRkG1Y+ZM4ftvvYnfsQE9xdaGAhWm+BJDoFmBP9YNwSyLI4WC07qp4s38a9hpB3XWXJG6p20oCyhVAyY/vazW53BpWlupyGpfI4C5Au8rwOGbJ/2scl0xAfKsxQxj2pNPU7yrs1XLDUjdPiS7swSuVp803Fu8v5o1CWRnQhEXi/XPjtEqSM/MRS04JP3PoV/YjrdgYboskqIRbRbZcwIDAQAB";
+
+    }
+
+    public static final class FCM {
+        public static final String APS = "aps";
+        public static final String BADGE = "badge";
+        public static final String ALERT = "alert";
+        public static final String LOC_ARGS = "loc-args";
+        public static final String LOC_KEY = "loc-key";
+        public static final String SOUND = "sound";
+        public static final String LINK_URL = "link-url";
+        public static final String CATEGORY = "category";
+
+        public static final String HANDLE_NAME = "handle-name";
+        public static final String EXTENSION_ID = "extension-id";
 
     }
 }
