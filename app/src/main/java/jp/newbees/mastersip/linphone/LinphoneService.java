@@ -33,24 +33,19 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     private CenterIncomingCallPresenter incomingCallPresenter;
 
-    @Override
-    public void incomingVoiceCall(UserItem caller, String callID) {
-        IncomingVoiceActivity.startActivity(this, caller, callID);
+    private static LinphoneService instance;
+
+    public static boolean isReady() {
+        return instance != null;
     }
 
-    @Override
-    public void incomingVideoCall(UserItem caller, String callID) {
-        IncomingVideoVideoActivity.startActivity(this, caller, callID);
-    }
+    /**
+     * @throws RuntimeException service not instantiated
+     */
+    public static LinphoneService instance()  {
+        if (isReady()) return instance;
 
-    @Override
-    public void incomingVideoChatCall(UserItem caller, String callID) {
-        IncomingVideoChatActivity.startActivity(this, caller, callID);
-    }
-
-    @Override
-    public void didCheckCallError(int errorCode, String errorMessage) {
-        Toast.makeText(this, "Error "+errorCode+" when check call : "+errorMessage, Toast.LENGTH_SHORT).show();
+        throw new RuntimeException("LinphoneService not instantiated yet");
     }
 
 
@@ -67,6 +62,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
         loginToVoIP(sipItem);
         registerReceiverRingerModeChanged();
+        instance = this;
     }
 
     @Override
@@ -99,6 +95,26 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         linphoneHandler.destroy();
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
+    }
+
+    @Override
+    public void incomingVoiceCall(UserItem caller, String callID) {
+        IncomingVoiceActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void incomingVideoCall(UserItem caller, String callID) {
+        IncomingVideoVideoActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void incomingVideoChatCall(UserItem caller, String callID) {
+        IncomingVideoChatActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void didCheckCallError(int errorCode, String errorMessage) {
+        Toast.makeText(this, "Error "+errorCode+" when check call : "+errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     private void registerReceiverRingerModeChanged() {
