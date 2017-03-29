@@ -54,7 +54,7 @@ import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
-import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
+import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
@@ -81,7 +81,7 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends CallCenterIncomingActivity implements
+public class ChatActivity extends CallCenterFinishedCallActivity implements
         ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
         ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
         TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,

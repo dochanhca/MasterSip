@@ -10,11 +10,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
-
-import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.model.SipItem;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.call.CenterIncomingCallPresenter;
+import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
+import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
+import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -22,35 +25,54 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service {
+public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener{
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
     private BroadcastReceiver receiverRingerModeChanged;
 
+    private CenterIncomingCallPresenter incomingCallPresenter;
+
+    @Override
+    public void incomingVoiceCall(UserItem caller, String callID) {
+        IncomingVoiceActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void incomingVideoCall(UserItem caller, String callID) {
+        IncomingVideoVideoActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void incomingVideoChatCall(UserItem caller, String callID) {
+        IncomingVideoChatActivity.startActivity(this, caller, callID);
+    }
+
+    @Override
+    public void didCheckCallError(int errorCode, String errorMessage) {
+        Toast.makeText(this, "Error "+errorCode+" when check call : "+errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG, "onCreate");
+        incomingCallPresenter = new CenterIncomingCallPresenter(getApplicationContext(), this);
+        incomingCallPresenter.registerCallEvent();
+
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
-        if (LinphoneHandler.getInstance() == null) {
-            linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
-        } else {
-            linphoneHandler = LinphoneHandler.getInstance();
-        }
-        registerReceiverRingerMOdeChanged();
+        linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
+        SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
+        loginToVoIP(sipItem);
+        registerReceiverRingerModeChanged();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
-        if (!linphoneHandler.isRunning()) {
-            SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
-            loginToVoIP(sipItem);
-        } else {
-            EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
-        }
+
         return START_NOT_STICKY;
     }
 
@@ -72,9 +94,10 @@ public class LinphoneService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        linphoneHandler.destroy();
         unregisterReceiver(receiverRingerModeChanged);
+        incomingCallPresenter.unRegisterCallEvent();
+        linphoneHandler.destroy();
+        super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
     }
 
@@ -90,7 +113,7 @@ public class LinphoneService extends Service {
         super.onTaskRemoved(rootIntent);
     }
 
-    private void registerReceiverRingerMOdeChanged() {
+    private void registerReceiverRingerModeChanged() {
         receiverRingerModeChanged = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

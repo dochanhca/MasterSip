@@ -19,7 +19,7 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
+import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -29,7 +29,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterIncomingActivity implements View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
+public class TopActivity extends CallCenterFinishedCallActivity implements View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
 
     private static final String TAG = "TopActivity";
     private TopPresenter topPresenter;

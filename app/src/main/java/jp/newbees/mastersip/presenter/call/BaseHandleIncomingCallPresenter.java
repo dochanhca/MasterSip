@@ -10,6 +10,7 @@ import jp.newbees.mastersip.network.api.BaseTask;
 
 /**
  * Created by vietbq on 1/10/17.
+ * use for handler incoming for Incoming video, chat, voice activity
  */
 
 public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {

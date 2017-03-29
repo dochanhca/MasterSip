@@ -16,6 +16,7 @@ import org.json.JSONException;
 import java.util.Map;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.ui.SplashActivity;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -67,6 +68,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
+
+        if (LinphoneHandler.isRunning()) {
+
+        }
     }
 
     /**
