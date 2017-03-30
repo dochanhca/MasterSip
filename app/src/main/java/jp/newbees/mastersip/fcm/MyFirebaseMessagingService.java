@@ -11,6 +11,10 @@ import android.support.v4.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+
+import java.util.Map;
+
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.SplashActivity;
 import jp.newbees.mastersip.utils.Logger;
@@ -21,7 +25,7 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
+    private static final String TAG = "MyFirebaseMessagingService";
 
     /**
      * Called when message is received.
@@ -47,6 +51,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Logger.d(TAG, "Message data payload: " + remoteMessage.getData());
+            try {
+                Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
+                Logger.e(TAG, data.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         // Check if message contains a notification payload.
