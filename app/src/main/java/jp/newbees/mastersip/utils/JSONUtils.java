@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import jp.newbees.mastersip.model.CallChatItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.EmailBackupItem;
+import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.model.GiftItem;
@@ -846,5 +848,71 @@ public class JSONUtils {
     public static int getInteractionUserGender() {
         return ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE ?
                 UserItem.FEMALE : UserItem.MALE;
+    }
+
+    public static Map<String, Object> parseFootprintItem(JSONObject jData) throws JSONException {
+        JSONArray jListGroupDate = jData.getJSONArray(Constant.JSON.LIST);
+        int total = jData.getInt(Constant.JSON.TOTAL);
+
+        ArrayList<FootprintItem> listFootprint = new ArrayList<>();
+
+        for (int j = 0 , m = jListGroupDate.length() ; j<m ;j++){
+            JSONObject jGroup =  jListGroupDate.getJSONObject(j);
+            JSONArray jUsers = jGroup.getJSONArray(Constant.JSON.USERS);
+            String groupDate = jGroup.getString(Constant.JSON.DATE);
+
+            FootprintItem footPrint = new FootprintItem();
+
+            for (int i=0,n = jUsers.length() ;i<n ;i++){
+                JSONObject jUser = jUsers.getJSONObject(i);
+                UserItem userItem = parseUserForFootprint(jUser);
+                footPrint.addUser(userItem);
+            }
+            footPrint.setDate(groupDate);
+            listFootprint.add(footPrint);
+        }
+        HashMap result = new HashMap();
+        result.put(Constant.JSON.LIST, listFootprint);
+        result.put(Constant.JSON.TOTAL , total);
+        return result;
+    }
+
+    @NonNull
+    private static UserItem parseUserForFootprint(JSONObject jUser) throws JSONException {
+        String userId = jUser.getString(Constant.JSON.USER_ID);
+        String extension = jUser.getString(Constant.JSON.EXTENSION);
+        String userName = jUser.getString(Constant.JSON.USER_NAME);
+        String slogan = jUser.getString(Constant.JSON.SLOGAN);
+        String avatarUrl = jUser.getString(Constant.JSON.AVATAR);
+        String footprintTime = jUser.getString(Constant.JSON.TIMESTAMP);
+        String birthDay = jUser.getString(Constant.JSON.BIRTHDAY);
+        int status = jUser.getInt(Constant.JSON.STATUS);
+        String lastLogin = jUser.getString(Constant.JSON.LAST_LOGIN);
+
+        int videoSettingCall = jUser.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VIDEO_CALL_SET);
+        int voiceSettingCall = jUser.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VOICE_CALL_SET);
+
+        ImageItem imageItem = new ImageItem();
+        imageItem.setOriginUrl(avatarUrl);
+
+        SipItem sipItem = new SipItem();
+        sipItem.setExtension(extension);
+
+        SettingItem settingItem = new SettingItem();
+        settingItem.setVideoCall(videoSettingCall);
+        settingItem.setVoiceCall(voiceSettingCall);
+
+        UserItem userItem = new UserItem();
+        userItem.setUserId(userId);
+        userItem.setUsername(userName);
+        userItem.setMemo(slogan);
+        userItem.setFootprintTime(footprintTime);
+        userItem.setDateOfBirth(birthDay);
+        userItem.setStatus(status);
+        userItem.setLastLogin(lastLogin);
+        userItem.setAvatarItem(imageItem);
+        userItem.setSipItem(sipItem);
+        userItem.setSettings(settingItem);
+        return userItem;
     }
 }

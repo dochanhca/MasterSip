@@ -22,6 +22,12 @@ public class GetListUserPhotos extends BaseTask<GalleryItem> {
     private int imageId;
     private String userId;
 
+    /**
+     * This API uses for get list photos of user
+     * @param context
+     * @param imageId
+     * @param userId
+     */
     public GetListUserPhotos(Context context, int imageId, String userId) {
         super(context);
         this.imageId = imageId;

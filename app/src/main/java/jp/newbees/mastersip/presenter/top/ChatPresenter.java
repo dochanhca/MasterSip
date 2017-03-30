@@ -34,12 +34,13 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
     private ChatPresenterListener chatPresenterListener;
 
-    public ChatPresenter(BaseActivity context, ChatPresenterListener chatPresenterListener, OutgoingCallListener outgoingCallListener) {
-        super(context, outgoingCallListener);
+    public ChatPresenter(BaseActivity context, ChatPresenterListener chatPresenterListener) {
+        super(context, chatPresenterListener);
         this.chatPresenterListener = chatPresenterListener;
     }
 
-    public interface ChatPresenterListener {
+    public interface ChatPresenterListener extends OutgoingCallListener {
+
         void didSendChatToServer(BaseChatItem baseChatItem);
 
         void didChatError(int errorCode, String errorMessage);
@@ -64,9 +65,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
         void didUnFollowUserError(String errorMessage, int errorCode);
 
-        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
-
-        void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
     }
 
     @Override
@@ -85,8 +83,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
             chatPresenterListener.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUser();
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            chatPresenterListener.didSendMsgRequestEnableSettingCall(((SendMessageRequestEnableCallTask) task).getDataResponse());
         }
     }
 

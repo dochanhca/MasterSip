@@ -31,6 +31,11 @@ public class CheckIncomingCallTask extends BaseTask<Map<String, Object>> {
     public static final String CALL_ID = "CALL ID";
     public static final String CALLER = "CALLER";
 
+    /**
+     * This API use for check incoming call
+     * @param context
+     * @param receiverExtension
+     */
     public CheckIncomingCallTask(Context context, String receiverExtension) {
         super(context);
         this.receiverExtension = receiverExtension;

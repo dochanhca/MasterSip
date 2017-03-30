@@ -21,6 +21,10 @@ import jp.newbees.mastersip.utils.JSONUtils;
 
 public class GetListPaymentAdOnTask extends BaseTask<List<PaymentAdOnItem>> {
 
+    /**
+     * This API uses for get list payments add-on
+     * @param context
+     */
     public GetListPaymentAdOnTask(Context context) {
         super(context);
     }

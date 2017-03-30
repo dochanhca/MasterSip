@@ -31,6 +31,13 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     private final String nextPage;
     private final UserItem userItem;
 
+    /**
+     * This API uses for filter user by conditions
+     * @param context
+     * @param filterItem
+     * @param nextPage
+     * @param userItem
+     */
     public FilterUserTask(Context context, FilterItem filterItem, String nextPage, UserItem userItem) {
         super(context);
         this.filterItem = filterItem;

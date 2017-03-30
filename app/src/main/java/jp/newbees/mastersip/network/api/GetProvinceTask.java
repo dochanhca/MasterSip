@@ -21,6 +21,11 @@ public class GetProvinceTask extends BaseTask {
 
     private final LatLng location;
 
+    /**
+     * This API uses for get province when register user
+     * @param context
+     * @param latLng
+     */
     public GetProvinceTask(Context context, LatLng latLng) {
         super(context);
         this.location = latLng;

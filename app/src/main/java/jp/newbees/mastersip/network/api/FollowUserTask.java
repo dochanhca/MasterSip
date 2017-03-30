@@ -18,6 +18,11 @@ import jp.newbees.mastersip.utils.Constant;
 public class FollowUserTask extends BaseTask<Void> {
     private String destUserId;
 
+    /**
+     * This API uses for follow a user
+     * @param context
+     * @param destUserId
+     */
     public FollowUserTask(Context context, String destUserId) {
         super(context);
         this.destUserId = destUserId;

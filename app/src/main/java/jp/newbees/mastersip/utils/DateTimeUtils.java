@@ -19,6 +19,9 @@ public class DateTimeUtils {
     public static final SimpleDateFormat JAPAN_DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日",
             Locale.JAPAN);
 
+    public static final SimpleDateFormat JAPAN_SHORT_TIME = new SimpleDateFormat("HH時mm分",
+            Locale.JAPAN);
+
     public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
             Locale.ENGLISH);
 
@@ -72,6 +75,11 @@ public class DateTimeUtils {
         return SHORT_TIME_FORMAT.format(date);
     }
 
+    public static String getShortTimeJapanese(String fullDate) {
+        Date date = convertStringToDate(fullDate, SERVER_DATE_FORMAT);
+        return JAPAN_SHORT_TIME.format(date);
+    }
+
     public static String getServerTime(Date date) {
         return SERVER_DATE_FORMAT.format(date);
     }
@@ -91,6 +99,11 @@ public class DateTimeUtils {
 
     public static int getCurrentAgeFromDoB(String dateOfBirth) {
         Date dob = convertStringToDate(dateOfBirth, ENGLISH_FACEBOOK_DATE_FORMAT);
+        return calculateAgeWithDOB(dob);
+    }
+
+    public static int getAgeFromBirthDayServer(String dateOfBirth) {
+        Date dob = convertStringToDate(dateOfBirth, ENGLISH_DATE_FORMAT);
         return calculateAgeWithDOB(dob);
     }
 

@@ -267,4 +267,12 @@
         <item name="android:textSize">23sp</item>
 
     </style>
+    <style name="style_action_button_in_cell">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:paddingTop">@dimen/_5dp</item>
+        <item name="android:drawablePadding">-3dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/_8sp</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

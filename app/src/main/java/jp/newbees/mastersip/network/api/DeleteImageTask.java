@@ -21,6 +21,12 @@ public class DeleteImageTask extends BaseTask<Boolean> {
     private final UserItem userItem;
     private final ImageItem imageItem;
 
+    /**
+     * This API uses for Delete Image
+     * @param context
+     * @param userItem
+     * @param imageItem
+     */
     public DeleteImageTask(Context context, UserItem userItem, ImageItem imageItem) {
         super(context);
         this.userItem = userItem;

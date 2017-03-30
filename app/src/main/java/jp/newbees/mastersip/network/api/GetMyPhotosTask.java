@@ -22,6 +22,11 @@ public class GetMyPhotosTask extends BaseTask<GalleryItem> {
     private static final int NUMBER_OF_PHOTO = 40;
     private final GalleryItem galleryItem;
 
+    /**
+     * This API uses for get My photos
+     * @param context
+     * @param galleryItem
+     */
     public GetMyPhotosTask(Context context, GalleryItem galleryItem) {
         super(context);
         this.galleryItem = galleryItem;
