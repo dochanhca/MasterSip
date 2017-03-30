@@ -6,10 +6,14 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.auth.SplashPresenter;
 import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 
+import static jp.newbees.mastersip.fcm.MyFirebaseMessagingService.FROM_USER;
 import static jp.newbees.mastersip.ui.StartActivity.IS_REGISTERED;
 
 /**
@@ -19,7 +23,8 @@ import static jp.newbees.mastersip.ui.StartActivity.IS_REGISTERED;
 public class SplashActivity extends RegisterBaseActivity implements SplashPresenter.SplashView {
 
     private SplashPresenter splashPresenter;
-    private static final long TIME_DELAY = 1000;
+    private static final long TIME_DELAY = 500;
+    private UserItem userItem;
 
     @Override
     protected int layoutId() {
@@ -29,6 +34,9 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
     @Override
     protected void initViews(Bundle savedInstanceState) {
         //Init views
+        if (getIntent().getExtras() != null) {
+            userItem = getIntent().getExtras().getParcelable(FROM_USER);
+        }
     }
 
     @Override
@@ -73,11 +81,26 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
 
     @Override
     public void didLoginVoIP() {
-        startTopScreenWithNewTask();
+        if (userItem == null) {
+            startTopScreenWithNewTask();
+        } else {
+            startTopScreenForChatMessage();
+        }
     }
 
     @Override
     public void didLoginVoIPError(String errorMessage) {
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
+
+    private void startTopScreenForChatMessage() {
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MyFirebaseMessagingService.FROM_USER, userItem);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
 }

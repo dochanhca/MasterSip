@@ -90,6 +90,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void onDestroy() {
+        instance = null;
         unregisterReceiver(receiverRingerModeChanged);
         incomingCallPresenter.unRegisterCallEvent();
         linphoneHandler.destroy();

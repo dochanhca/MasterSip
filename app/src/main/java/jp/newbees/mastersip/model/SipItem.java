@@ -9,7 +9,26 @@ import java.io.Serializable;
  * Created by vietbq on 12/6/16.
  */
 
-public class SipItem implements Parcelable , Serializable{
+public class SipItem implements Parcelable , Serializable {
+
+    private String extension;
+    private String secret;
+
+    public static final Parcelable.Creator<SipItem> CREATOR = new Parcelable.Creator<SipItem>() {
+        @Override
+        public SipItem createFromParcel(Parcel source) {
+            return new SipItem(source);
+        }
+
+        @Override
+        public SipItem[] newArray(int size) {
+            return new SipItem[size];
+        }
+    };
+
+    public SipItem() {
+    }
+
     public SipItem(String extension, String password) {
         this.extension = extension;
         this.secret = password;
@@ -35,9 +54,6 @@ public class SipItem implements Parcelable , Serializable{
         this.secret = secret;
     }
 
-    private String extension;
-    private String secret;
-
     @Override
     public int describeContents() {
         return 0;
@@ -49,23 +65,8 @@ public class SipItem implements Parcelable , Serializable{
         dest.writeString(this.secret);
     }
 
-    public SipItem() {
-    }
-
     public SipItem(Parcel in) {
         this.extension = in.readString();
         this.secret = in.readString();
     }
-
-    public static final Parcelable.Creator<SipItem> CREATOR = new Parcelable.Creator<SipItem>() {
-        @Override
-        public SipItem createFromParcel(Parcel source) {
-            return new SipItem(source);
-        }
-
-        @Override
-        public SipItem[] newArray(int size) {
-            return new SipItem[size];
-        }
-    };
 }

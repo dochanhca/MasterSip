@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -16,10 +17,13 @@ import org.json.JSONException;
 import java.util.Map;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.linphone.LinphoneService;
+import jp.newbees.mastersip.model.FCMPushItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.SplashActivity;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by thanglh on 11/21/16.
@@ -28,6 +32,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
+    public static final String FROM_USER = "FROM_USER";
 
     /**
      * Called when message is received.
@@ -55,6 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Logger.d(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
+                handlePushMessage(data);
                 Logger.e(TAG, data.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -70,9 +76,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
 
-        if (!LinphoneHandler.isRunning()) {
-            Logger.e(TAG,"Linphone is not running, start Linphone service");
-            startLinphone();
+//        if (!LinphoneHandler.isRunning()) {
+//            Logger.e(TAG,"Linphone is not running, start Linphone service");
+//            startLinphone();
+//        }
+    }
+
+    private void handlePushMessage(Map<String, Object> data) {
+        FCMPushItem fcmItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+        if (!MyLifecycleHandler.isApplicationVisible() &&
+                fcmItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
+            sendNotificationForChat(fcmItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
         }
     }
 
@@ -81,15 +95,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         getApplicationContext().startService(intent);
     }
 
+    private void sendNotification(String message) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        sendNotification(message, intent);
+
+    }
+
+    private void sendNotificationForChat(String message, UserItem fromUser) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FROM_USER, fromUser);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
     /**
      * Create and show a simple notification containing the received FCM message.
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, Intent intent) {
         int messageId = (int) System.currentTimeMillis();
 
-        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT);

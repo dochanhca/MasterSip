@@ -8,7 +8,7 @@ import android.os.Bundle;
  * Created by thangit14 on 3/29/17.
  */
 
-public class MyLifecycleHander implements Application.ActivityLifecycleCallbacks{
+public class MyLifecycleHandler implements Application.ActivityLifecycleCallbacks {
     private static int resumed;
     private static int paused;
     private static int started;

@@ -4,7 +4,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.MyLifecycleHander;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -18,7 +18,7 @@ public class Application extends android.app.Application{
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         initConfigs();
-        registerActivityLifecycleCallbacks(new MyLifecycleHander());
+        registerActivityLifecycleCallbacks(new MyLifecycleHandler());
     }
 
     /**

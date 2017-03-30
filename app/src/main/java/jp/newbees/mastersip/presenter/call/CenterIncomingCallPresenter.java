@@ -20,7 +20,7 @@ import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
-import jp.newbees.mastersip.utils.MyLifecycleHander;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by thangit14 on 3/29/17.
@@ -70,9 +70,8 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            if (!MyLifecycleHander.isApplicationInForeground()) {
+            if (!MyLifecycleHandler.isApplicationInForeground()) {
                 saveLoginState(true);
-//                reconnectRoom();
             }
         } else {
             stopLinphoneService();

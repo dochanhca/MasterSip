@@ -41,9 +41,15 @@ public class FirebaseUtils {
         JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         String roomId = data.get(Constant.JSON.ROOM_ID);
         String extension = data.get(Constant.JSON.EXTENSION);
+        String userId = data.get(Constant.JSON.USER_ID);
+
+        SipItem sipItem = new SipItem(extension);
+        UserItem userItem = new UserItem();
+        userItem.setUserId(userId);
+        userItem.setSipItem(sipItem);
 
         result.put(Constant.JSON.FCM_PUSH_ITEM, parsePushItem(jAps));
-        result.put(Constant.JSON.EXTENSION, extension);
+        result.put(Constant.JSON.USER, userItem);
         result.put(Constant.JSON.ROOM_ID, roomId);
 
 
