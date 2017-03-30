@@ -66,7 +66,8 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <service android:name=".linphone.LinphoneService"
+        <service
+            android:name=".linphone.LinphoneService"
             android:stopWithTask="false" />
 
         <service android:name=".fcm.MyFirebaseMessagingService">
@@ -96,8 +97,8 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
@@ -174,35 +175,41 @@
         <activity
             android:name=".ui.call.OutgoingVoiceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.OutgoingVideoVideoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.OutgoingVideoChatActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:taskAffinity=".NotificationActivity"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:taskAffinity=".NotificationActivity"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"></activity>
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:taskAffinity=".NotificationActivity"></activity>
 
         <activity
             android:name=".ui.profile.ProfileDetailItemActivity"
@@ -224,28 +231,31 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.chatting.ChatImageDetailActivity"
+        <activity
+            android:name=".ui.chatting.ChatImageDetailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeDarkActionBar"></activity>
 
-        <activity android:name=".ui.chatting.ChattingPhotoGalleryActivity"
+        <activity
+            android:name=".ui.chatting.ChattingPhotoGalleryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.auth.ForgotPasswordActivity"
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.auth.ChangePasswordActivity"
+        <activity
+            android:name=".ui.auth.ChangePasswordActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.payment.PaymentActivity"
+        <activity
+            android:name=".ui.payment.PaymentActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

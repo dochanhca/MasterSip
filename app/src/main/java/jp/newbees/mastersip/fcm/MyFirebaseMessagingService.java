@@ -16,10 +16,14 @@ import org.json.JSONException;
 import java.util.Map;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.linphone.LinphoneService;
+import jp.newbees.mastersip.model.FCMPushItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.SplashActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHander;
 
 /**
  * Created by thanglh on 11/21/16.
@@ -28,6 +32,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
+    private static boolean showMissedCallPush = true;
 
     /**
      * Called when message is received.
@@ -48,14 +53,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // [END_EXCLUDE]
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Logger.d(TAG, "From: " + remoteMessage.getFrom());
+        Logger.e(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Logger.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Logger.e(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
-                Logger.e(TAG, data.toString());
+                FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+
+                Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
+                switch (fcmPushItem.getCategory()) {
+                    case FCMPushItem.CATEGORY.INCOMING_CALL:
+                        if (MyLifecycleHander.isApplicationVisible()) {
+                            showMissedCallPush = false;
+                        } else {
+                            showMissedCallPush = true;
+                        }
+                        handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
+                        break;
+                    case FCMPushItem.CATEGORY.MISS_CALL:
+                        if (showMissedCallPush) {
+                            sendNotification((UserItem) data.get(Constant.JSON.CALLER));
+                        }
+                        break;
+                    case FCMPushItem.CATEGORY.CHAT_TEXT:
+                        break;
+                    default:
+                        break;
+
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -63,22 +90,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Logger.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Logger.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
-
-        if (!LinphoneHandler.isRunning()) {
-            Logger.e(TAG,"Linphone is not running, start Linphone service");
-            startLinphone();
-        }
+//        sendNotification("da nhan duoc message");
     }
 
-    private void startLinphone() {
-        Intent intent = new Intent(getApplicationContext(), LinphoneService.class);
-        getApplicationContext().startService(intent);
+    private void sendNotification(UserItem caller) {
+        sendNotification(caller.getUsername() + getApplicationContext().getResources().getString(R.string.push_missed_call));
+    }
+
+    private void handleIncomingCall(String callId) {
+        ConfigManager.getInstance().setCallId(callId);
+        if (!LinphoneService.isRunning()) {
+            LinphoneService.startLinphone(getApplicationContext());
+        }
     }
 
     /**
@@ -94,7 +121,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.push_title))

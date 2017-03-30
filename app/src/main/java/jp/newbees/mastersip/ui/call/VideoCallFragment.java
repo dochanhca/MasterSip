@@ -284,7 +284,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
 
 
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        if (LinphoneHandler.getInstance() != null) {
+            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        }
     }
 
     private void fixZOrder(SurfaceView video, SurfaceView preview) {

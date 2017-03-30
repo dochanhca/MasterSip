@@ -34,7 +34,6 @@ import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Timer;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
@@ -59,7 +58,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private static LinphoneHandler instance;
 
-    private Timer mTimer;
     private String basePath;
     private String mRingSoundFile;
 
@@ -282,8 +280,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
             return;
         }
         try {
+            getInstance().setVideoWindow(null);
             getInstance().running = false;
-            getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
@@ -324,11 +322,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 linphoneCore.iterate();
                 this.sleep(50);
             }
-
-            linphoneCore.getDefaultProxyConfig().edit();
-            linphoneCore.getDefaultProxyConfig().enableRegister(false);
-            linphoneCore.getDefaultProxyConfig().done();
-
         } catch (NullPointerException e) {
             this.running = false;
             Logger.e(TAG, "linphoneCore is " + linphoneCore);

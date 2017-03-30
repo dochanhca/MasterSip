@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.presenter.auth;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -39,10 +38,14 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     }
 
     public void loginVoIP() {
+        if (LinphoneService.isRunning()) {
+            Logger.e(TAG, "Linphone Service is ready");
+            handleRegisterSuccess();
+            return;
+        }
         EventBus.getDefault().register(this);
         Logger.e(TAG, "Start Linphone Service");
-        Intent intent = new Intent(context, LinphoneService.class);
-        context.startService(intent);
+        LinphoneService.startLinphone(context);
     }
 
     /**
@@ -52,14 +55,18 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            saveLoginState(true);
-            onDidRegisterVoIPSuccess();
-            sendFCMTokenToServer();
+            handleRegisterSuccess();
         } else {
             stopLinphoneService();
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void handleRegisterSuccess() {
+        saveLoginState(true);
+        onDidRegisterVoIPSuccess();
+        sendFCMTokenToServer();
     }
 
     private void sendFCMTokenToServer() {
@@ -69,8 +76,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     }
 
     private void stopLinphoneService() {
-        Intent intent = new Intent(context, LinphoneService.class);
-        context.stopService(intent);
+        LinphoneService.stopLinphone(context);
     }
 
     private void saveLoginState(boolean loginState) {

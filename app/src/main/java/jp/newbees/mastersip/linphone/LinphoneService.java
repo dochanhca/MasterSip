@@ -35,8 +35,26 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     private static LinphoneService instance;
 
+    public static void startLinphone(Context context) {
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.startService(intent);
+    }
+
+    public static void stopLinphone(Context context) {
+        Intent intent = new Intent(context, LinphoneService.class);
+        context.stopService(intent);
+//        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     public static boolean isReady() {
         return instance != null;
+    }
+
+    public static boolean isRunning() {
+        if (instance == null || instance.linphoneHandler == null) {
+            return false;
+        }
+        return instance.linphoneHandler.isRunning();
     }
 
     /**

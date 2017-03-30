@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
-import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,9 +69,9 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            if (!MyLifecycleHander.isApplicationInForeground()) {
+            if (!MyLifecycleHander.isApplicationVisible()) {
                 saveLoginState(true);
-//                reconnectRoom();
+                reconnectRoom(ConfigManager.getInstance().getCallId());
             }
         } else {
             stopLinphoneService();
@@ -86,8 +85,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     }
 
     private void stopLinphoneService() {
-        Intent intent = new Intent(context, LinphoneService.class);
-        context.stopService(intent);
+        LinphoneService.stopLinphone(context);
     }
 
     private void saveLoginState(boolean loginState) {
