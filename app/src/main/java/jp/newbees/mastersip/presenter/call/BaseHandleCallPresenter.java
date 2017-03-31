@@ -70,11 +70,17 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
     }
 
     public final void declineCall(String calId) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().declineCall();
         performCancelCall(calId);
     }
 
     public void terminalCall(String calId) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().terminalCall();
         performCancelCall(calId);
     }

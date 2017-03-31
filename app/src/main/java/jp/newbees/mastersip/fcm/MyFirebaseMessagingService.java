@@ -1,11 +1,14 @@
 package jp.newbees.mastersip.fcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -16,8 +19,14 @@ import org.json.JSONException;
 import java.util.Map;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneService;
+import jp.newbees.mastersip.model.FCMPushItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.SplashActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by thanglh on 11/21/16.
@@ -26,6 +35,9 @@ import jp.newbees.mastersip.utils.Logger;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
+    public static final String FROM_USER = "FROM_USER";
+    public static final String IS_FROM_MISS_CALL = "IS_FROM_MISS_CALL";
+    private static boolean showMissedCallPush = true;
 
     /**
      * Called when message is received.
@@ -46,14 +58,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // [END_EXCLUDE]
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Logger.d(TAG, "From: " + remoteMessage.getFrom());
+        Logger.e(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Logger.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Logger.e(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
-                Logger.e(TAG, data.toString());
+                handlePushMessage(data);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -61,12 +74,78 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Logger.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Logger.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
         }
+    }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+    // Also if you intend on generating your own notifications as a result of a received FCM
+    // message, here is where that should be initiated. See sendNotification method below.
+
+    private void handlePushMessage(Map<String, Object> data) {
+        FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+        Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
+        switch (fcmPushItem.getCategory()) {
+            case FCMPushItem.CATEGORY.INCOMING_CALL:
+                if (MyLifecycleHandler.isApplicationVisible()) {
+                    showMissedCallPush = false;
+                } else {
+                    showMissedCallPush = true;
+                }
+                handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
+                break;
+            case FCMPushItem.CATEGORY.MISS_CALL:
+                if (showMissedCallPush) {
+                    handleMissCallMessage((UserItem) data.get(Constant.JSON.CALLER));
+                }
+                break;
+            case FCMPushItem.CATEGORY.CHAT_TEXT:
+                handleChatMessage(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleMissCallMessage(UserItem caller) {
+        String message = caller.getUsername() +
+                getApplicationContext().getResources().getString(R.string.push_missed_call);
+        sendNotificationForMissCall(message, caller, true);
+    }
+
+    private void handleIncomingCall(String callId) {
+        ConfigManager.getInstance().setCallId(callId);
+        if (!LinphoneService.isRunning()) {
+            LinphoneService.startLinphone(getApplicationContext());
+        }
+    }
+
+    private void handleChatMessage(String message, UserItem userItem) {
+        if (!MyLifecycleHandler.isApplicationVisible()) {
+            sendNotificationForChat(message, userItem);
+        }
+    }
+
+    private void sendNotificationForMissCall(String message, UserItem caller, boolean isFromMissCall) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FROM_USER, caller);
+        bundle.putBoolean(IS_FROM_MISS_CALL, isFromMissCall);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotificationForChat(String message, UserItem fromUser) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FROM_USER, fromUser);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotification(String message) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        sendNotification(message, intent);
     }
 
     /**
@@ -74,26 +153,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, Intent intent) {
         int messageId = (int) System.currentTimeMillis();
 
-        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.push_title))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
+
+        if (Build.VERSION.SDK_INT >= 21) notificationBuilder.setVibrate(new long[0]);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         notificationManager.notify(messageId, notificationBuilder.build());
     }
 }

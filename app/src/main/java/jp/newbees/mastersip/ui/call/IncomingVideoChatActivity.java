@@ -35,9 +35,9 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
 
     }
 
-
     public static void startActivity(Context context, UserItem caller, String callID) {
         Intent intent = new Intent(context, IncomingVideoChatActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Bundle bundle = new Bundle();
         bundle.putParcelable(CALLER, caller);
         bundle.putString(CALL_ID, callID);

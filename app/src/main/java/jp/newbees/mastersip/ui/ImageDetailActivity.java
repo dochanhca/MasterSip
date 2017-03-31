@@ -31,7 +31,7 @@ import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
-import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
+import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -40,7 +40,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallCenterIncomingActivity implements ImageDetailPresenter.PhotoDetailView,
+public class ImageDetailActivity extends CallCenterFinishedCallActivity implements ImageDetailPresenter.PhotoDetailView,
         TextDialog.OnTextDialogPositiveClick {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";

@@ -16,11 +16,16 @@ import org.greenrobot.eventbus.Subscribe;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
+import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
+import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
+import jp.newbees.mastersip.ui.chatting.ChatActivity;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -29,10 +34,12 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterIncomingActivity implements View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
+public class TopActivity extends CallCenterFinishedCallActivity implements
+        View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation,
+        TextDialog.OnTextDialogPositiveClick {
 
     private static final String TAG = "TopActivity";
-    private TopPresenter topPresenter;
+    private static final int REQUEST_OPEN_CALLER_PROFILE = 33;
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
     private static final int FOOT_PRINT_FRAGMENT = 2;
@@ -41,6 +48,8 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
+    private TopPresenter topPresenter;
+    private UserItem caller;
 
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
@@ -88,12 +97,23 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     protected void initVariables(Bundle savedInstanceState) {
         fillData();
         topPresenter.requestPermissions();
+        getDataFromFCMChatMessage(getIntent());
+        ConfigManager.getInstance().setCurrentTabInRootNavigater(0);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_search_container);
+        if (fragment != null && fragment instanceof ListGiftFragment) {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override
@@ -128,13 +148,10 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        getDataFromFCMChatMessage(intent);
         int position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
         viewPager.setCurrentItem(position, false);
         navigationLayoutGroup.setSelectedItem(position);
-    }
-
-    private IabHelper getIabHelper() {
-        return topPresenter.getIabHelper();
     }
 
     /**
@@ -143,11 +160,6 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
         setUnreadMessageValue(roomChatEvent.getNumberOfRoomUnRead());
-    }
-
-    private void fillData() {
-        myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(myPagerAdapter);
     }
 
     @Override
@@ -189,6 +201,28 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
         showToastExceptionVolleyError(this, errorCode, errorMessage);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
+        topPresenter.requestPermissions();
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        super.onTextDialogOkClick(requestCode);
+        if (requestCode == REQUEST_OPEN_CALLER_PROFILE) {
+            ProfileDetailItemActivity.startActivity(this, caller);
+        }
+    }
+
+    private IabHelper getIabHelper() {
+        return topPresenter.getIabHelper();
+    }
+
+    private void fillData() {
+        myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(myPagerAdapter);
+    }
+
     private void backToMyMenuFragment(FragmentManager fragmentManager) {
         if (fragmentManager != null) {
             int count = fragmentManager.getBackStackEntryCount();
@@ -196,6 +230,31 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
                 fragmentManager.popBackStackImmediate();
             }
         }
+    }
+
+    private void getDataFromFCMChatMessage(Intent intent) {
+        if (intent.getExtras() != null) {
+            UserItem fromUser = intent.getExtras().getParcelable(MyFirebaseMessagingService.FROM_USER);
+            boolean isFromMissCall = intent.getExtras().getBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, false);
+            if (isFromMissCall) {
+                showMessageDialogForMissedCall(fromUser);
+            } else {
+                ChatActivity.startChatActivity(this, fromUser);
+            }
+        }
+    }
+
+    private void showMessageDialogForMissedCall(UserItem fromUser) {
+        this.caller = fromUser;
+        StringBuilder content = new StringBuilder();
+        content.append(fromUser.getUsername()).append(getString(R.string.from)).append("\n")
+                .append(getString(R.string.i_done_with_incoming_call)).append("\n")
+                .append(getString(R.string.would_you_like_to_check_profile));
+        String positiveTitle = getString(R.string.check);
+        String negativeTitle = getString(R.string.do_not_check);
+
+        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_OPEN_CALLER_PROFILE,
+                content.toString(), "", positiveTitle, negativeTitle, false);
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
@@ -224,21 +283,6 @@ public class TopActivity extends CallCenterIncomingActivity implements View.OnCl
         @Override
         public int getCount() {
             return navigationLayoutGroup.getChildCount();
-        }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
-        topPresenter.requestPermissions();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_search_container);
-        if (fragment != null && fragment instanceof ListGiftFragment) {
-            getSupportFragmentManager().popBackStack();
         }
     }
 

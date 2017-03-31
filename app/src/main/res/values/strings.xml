@@ -435,4 +435,9 @@
     <string name="description_viewed_by_me"><![CDATA[
     自分が訪問した最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
 ]]></string>
+    <string name="push_missed_call">さんから着信がありました</string>
+    <string name="i_done_with_incoming_call">の着信は終了しました。</string>
+    <string name="would_you_like_to_check_profile">プロフィールを確認しますか？</string>
+    <string name="check">確認する</string>
+    <string name="do_not_check">確認しない</string>
 </resources>

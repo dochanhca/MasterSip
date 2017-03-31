@@ -8,28 +8,27 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
-import jp.newbees.mastersip.event.call.AdminHangUpEvent;
-import jp.newbees.mastersip.event.call.CoinChangedEvent;
-import jp.newbees.mastersip.event.call.HangUpForGirlEvent;
+import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
-import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
+import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
- * Created by vietbq on 1/10/17.
- *
- * use for listener incoming call and some common listener
+ * Created by thangit14 on 3/29/17.
  */
 
-public class BaseCenterIncomingCallPresenter extends BasePresenter {
+public class CenterIncomingCallPresenter extends BasePresenter {
     private IncomingCallListener incomingCallListener;
 
-    public BaseCenterIncomingCallPresenter(Context context, IncomingCallListener incomingCallListener) {
+    public CenterIncomingCallPresenter(Context context, IncomingCallListener incomingCallListener) {
         super(context);
         this.incomingCallListener = incomingCallListener;
     }
@@ -47,7 +46,9 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-
+        if (task instanceof CheckIncomingCallTask) {
+            incomingCallListener.didCheckCallError(errorCode,errorMessage);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -62,28 +63,33 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
     }
 
     /**
-     * Listen when call ended less than 1 minute
-     *
-     * @param event
+     * @param event listener Register VoIP response
      */
-    @Subscribe()
-    public void onHangUpForGirlEvent(HangUpForGirlEvent event) {
-        incomingCallListener.didCallHangUpForGirl();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
+        Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
+        if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
+            if (!MyLifecycleHandler.isApplicationVisible()) {
+                saveLoginState(true);
+                reconnectRoom(ConfigManager.getInstance().getCallId());
+            }
+        } else {
+            stopLinphoneService();
+        }
     }
 
-    @Subscribe()
-    public void onCoinChangedEvent(CoinChangedEvent event) {
-        incomingCallListener.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
+    private void reconnectRoom(String callId) {
+        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
+                callId);
+        requestToServer(reconnectCallTask);
     }
 
-    @Subscribe()
-    public void onRunOutOfCoinEvent(RunOutOfCoinEvent event) {
-        incomingCallListener.didRunOutOfCoin();
+    private void stopLinphoneService() {
+        LinphoneService.stopLinphone(context);
     }
 
-    @Subscribe()
-    public void onAdminHangUpEvent(AdminHangUpEvent event) {
-        incomingCallListener.didAdminHangUpCall();
+    private void saveLoginState(boolean loginState) {
+        ConfigManager.getInstance().saveLoginFlag(loginState);
     }
 
     private void handleIncomingCallType(int callType, UserItem caller, String callID) {
@@ -124,12 +130,6 @@ public class BaseCenterIncomingCallPresenter extends BasePresenter {
 
         void incomingVideoChatCall(UserItem caller, String callID);
 
-        void didCallHangUpForGirl();
-
-        void didCoinChangedAfterHangUp(int totalCoinChanged, int currentCoin);
-
-        void didRunOutOfCoin();
-
-        void didAdminHangUpCall();
+        void didCheckCallError(int errorCode, String errorMessage);
     }
 }

@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.call.BaseCenterIncomingCallPresenter;
+import jp.newbees.mastersip.presenter.call.BaseCenterFinishedCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -17,17 +17,17 @@ import jp.newbees.mastersip.utils.Logger;
  * Use for all activity listen incoming call
  */
 
-public abstract class CallCenterIncomingActivity extends BaseActivity implements BaseCenterIncomingCallPresenter.IncomingCallListener,
+public abstract class CallCenterFinishedCallActivity extends BaseActivity implements BaseCenterFinishedCallPresenter.FinishedCallListener,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, TextDialog.OnTextDialogPositiveClick {
 
-    private BaseCenterIncomingCallPresenter incomingCallPresenter;
+    private BaseCenterFinishedCallPresenter incomingCallPresenter;
     private static final int REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL = 99;
 
     private boolean isMessageDialogShowing = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        incomingCallPresenter = new BaseCenterIncomingCallPresenter(this, this);
+        incomingCallPresenter = new BaseCenterFinishedCallPresenter(this, this);
         super.onCreate(savedInstanceState);
     }
 
@@ -41,21 +41,6 @@ public abstract class CallCenterIncomingActivity extends BaseActivity implements
     protected void onStop() {
         incomingCallPresenter.unRegisterCallEvent();
         super.onStop();
-    }
-
-    @Override
-    public void incomingVoiceCall(UserItem caller, String callID) {
-        IncomingVoiceActivity.startActivity(this, caller, callID);
-    }
-
-    @Override
-    public void incomingVideoCall(UserItem caller, String callID) {
-        IncomingVideoVideoActivity.startActivity(this, caller, callID);
-    }
-
-    @Override
-    public void incomingVideoChatCall(UserItem caller, String callID) {
-        IncomingVideoChatActivity.startActivity(this, caller, callID);
     }
 
     @Override

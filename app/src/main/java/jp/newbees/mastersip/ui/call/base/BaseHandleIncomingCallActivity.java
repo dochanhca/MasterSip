@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
 import jp.newbees.mastersip.ui.call.VideoCallFragment;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -112,9 +115,12 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         return caller;
     }
 
-
     @Override
     public void onCallEnd() {
+        if (MyLifecycleHandler.getNumberOfActivity() == 1) {
+            Logger.e(TAG,"we have only calling activity, stop service and destroy app");
+            LinphoneService.stopLinphone(this);
+        }
         this.finish();
     }
 

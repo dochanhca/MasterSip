@@ -20,6 +20,7 @@ public class UserItem implements Serializable, Parcelable {
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
 
+    private String userId;
     private String lastLogin;
 
     private RelationshipItem relationshipItem;
@@ -68,8 +69,6 @@ public class UserItem implements Serializable, Parcelable {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-    private String userId;
 
     public UserItem() {
         this.jobItem = new SelectionItem();

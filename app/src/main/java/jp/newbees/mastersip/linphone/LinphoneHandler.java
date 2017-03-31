@@ -34,7 +34,6 @@ import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Timer;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
@@ -59,7 +58,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private static LinphoneHandler instance;
 
-    private Timer mTimer;
     private String basePath;
     private String mRingSoundFile;
 
@@ -81,8 +79,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         return instance;
     }
 
-    public boolean isRunning() {
-        return running;
+    public static final synchronized boolean isRunning() {
+        if (getInstance() == null) {
+            return false;
+        }
+        return getInstance().running;
     }
 
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
@@ -269,16 +270,18 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public static final synchronized void restart(SipItem sipItem) {
         destroy();
+        Logger.e(TAG, "Restart linphone...");
         getInstance().loginVoIPServer(sipItem);
     }
 
     public static synchronized void destroy() {
+        Logger.e(TAG, "Shutting down linphone...");
         if (getInstance() == null) {
             return;
         }
         try {
+            getInstance().setVideoWindow(null);
             getInstance().running = false;
-            getInstance().mTimer.cancel();
             getInstance().linphoneCore.destroy();
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
@@ -319,16 +322,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 linphoneCore.iterate();
                 this.sleep(50);
             }
-
-            linphoneCore.getDefaultProxyConfig().edit();
-            linphoneCore.getDefaultProxyConfig().enableRegister(false);
-            linphoneCore.getDefaultProxyConfig().done();
-
         } catch (NullPointerException e) {
+            this.running = false;
             Logger.e(TAG, "linphoneCore is " + linphoneCore);
         } finally {
-            Logger.e(TAG, "Shutting down linphone...");
-            linphoneCore.destroy();
+            destroy();
         }
     }
 
@@ -588,8 +586,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public boolean isCalling() {
-        return linphoneCore.isIncall();
+    public static synchronized boolean isCalling() {
+        if (getInstance() == null) {
+            return false;
+        }
+        return getInstance().linphoneCore.isIncall();
     }
 
     public void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {

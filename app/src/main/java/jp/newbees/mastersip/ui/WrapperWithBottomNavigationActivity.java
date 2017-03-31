@@ -8,7 +8,7 @@ import android.view.View;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.ui.call.CallCenterIncomingActivity;
+import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -16,7 +16,7 @@ import jp.newbees.mastersip.utils.ConfigManager;
  * Created by thangit14 on 2/7/17.
  */
 
-public abstract class WrapperWithBottomNavigationActivity extends CallCenterIncomingActivity implements BaseActivity.BottomNavigation {
+public abstract class WrapperWithBottomNavigationActivity extends CallCenterFinishedCallActivity implements BaseActivity.BottomNavigation {
 
     private NavigationLayoutGroup.OnChildItemClickListener onChildItemClickListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
