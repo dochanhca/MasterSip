@@ -52,6 +52,7 @@ public class UserItem implements Serializable, Parcelable {
     private SipItem sipItem;
 
     private SettingItem settings;
+    private String footprintTime;
 
     public SettingItem getSettings() {
         return settings;
@@ -240,6 +241,22 @@ public class UserItem implements Serializable, Parcelable {
         return lastLogin;
     }
 
+    public boolean hasAvatar() {
+        if (this.avatarItem != null && !avatarItem.getOriginUrl().equalsIgnoreCase("")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setFootprintTime(String footprintTime) {
+        this.footprintTime = footprintTime;
+    }
+
+    public String getFootprintTime() {
+        return footprintTime;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -265,8 +282,9 @@ public class UserItem implements Serializable, Parcelable {
         dest.writeParcelable(this.avatarItem, flags);
         dest.writeString(this.facebookId);
         dest.writeParcelable(this.sipItem, flags);
-        dest.writeString(this.userId);
         dest.writeParcelable(this.settings, flags);
+        dest.writeString(this.footprintTime);
+        dest.writeString(this.userId);
     }
 
     protected UserItem(Parcel in) {
@@ -288,8 +306,9 @@ public class UserItem implements Serializable, Parcelable {
         this.avatarItem = in.readParcelable(ImageItem.class.getClassLoader());
         this.facebookId = in.readString();
         this.sipItem = in.readParcelable(SipItem.class.getClassLoader());
-        this.userId = in.readString();
         this.settings = in.readParcelable(SettingItem.class.getClassLoader());
+        this.footprintTime = in.readString();
+        this.userId = in.readString();
     }
 
     public static final Creator<UserItem> CREATOR = new Creator<UserItem>() {
@@ -303,12 +322,4 @@ public class UserItem implements Serializable, Parcelable {
             return new UserItem[size];
         }
     };
-
-    public boolean hasAvatar() {
-        if (this.avatarItem != null && !avatarItem.getOriginUrl().equalsIgnoreCase("")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

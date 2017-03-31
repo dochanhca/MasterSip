@@ -19,6 +19,11 @@ import jp.newbees.mastersip.utils.JSONUtils;
 public class ChangeEmailBackupTask extends BaseTask<Void>{
     private EmailBackupItem item;
 
+    /**
+     * This API uses for setup email backup
+     * @param context
+     * @param item
+     */
     public ChangeEmailBackupTask(Context context, EmailBackupItem item) {
         super(context);
         this.item = item;

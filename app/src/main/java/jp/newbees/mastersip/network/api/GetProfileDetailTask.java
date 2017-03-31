@@ -20,6 +20,11 @@ public class GetProfileDetailTask extends BaseTask {
 
     private String userId;
 
+    /**
+     * This API uses for get profile details
+     * @param context
+     * @param userId
+     */
     public GetProfileDetailTask(Context context, String userId) {
         super(context);
         this.userId = userId;

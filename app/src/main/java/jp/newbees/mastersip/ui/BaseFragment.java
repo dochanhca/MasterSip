@@ -173,4 +173,9 @@ public abstract class BaseFragment extends Fragment {
     protected void setOnBackPressed(BaseActivity.OnBackPressed listener) {
         ((BaseActivity) getActivity()).setOnBackPressed(listener);
     }
+
+    protected final void showFragmentContent(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = this.getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_search_container, fragment, tag).commit();
+    }
 }

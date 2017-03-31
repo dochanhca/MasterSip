@@ -29,6 +29,13 @@ public class GetChatHistoryTask extends BaseTask<LoadChatHistoryResultItem> {
     private String friendUserId;
     private int lastMessageId;
 
+    /**
+     * This API uses for get history chat
+     * @param context
+     * @param userID
+     * @param friendUserId
+     * @param lastMessageId
+     */
     public GetChatHistoryTask(Context context, String userID, String friendUserId, int lastMessageId) {
         super(context);
         this.context = context;

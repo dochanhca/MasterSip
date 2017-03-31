@@ -422,6 +422,19 @@
     <string name="to_send_an_image">画像を送信するには、</string>
     <string name="video_chat_call">ビデオ通話+チャット</string>
     <string name="missed_call">不在着信</string>
+    <string name="footprint_viewed_by_other">お相手からの足あと</string>
+    <string name="footprint_viewed_by_me">自分の足あと</string>
+    <string name="footprint">足あと</string>
+    <string name="allow_video_voice_call">音声/ビデオ通話できます</string>
+    <string name="allow_video_only">ビデオ通話できます</string>
+    <string name="allow_voice_only">音声通話できます</string>
+    <string name="allow_chat_only">ログイン%1$s/チャットできます</string>
+    <string name="description_viewed_by_other"><![CDATA[
+    最新の訪問者<font color=\'#fb5050\'>%1$d人</font>を表示しています。
+    ]]></string>
+    <string name="description_viewed_by_me"><![CDATA[
+    自分が訪問した最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
+]]></string>
     <string name="push_missed_call">さんから着信がありました</string>
     <string name="i_done_with_incoming_call">の着信は終了しました。</string>
     <string name="would_you_like_to_check_profile">プロフィールを確認しますか？</string>

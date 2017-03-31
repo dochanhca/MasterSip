@@ -33,6 +33,14 @@ public class CheckCallTask extends BaseTask {
     private int type;
     private int kind;
 
+    /**
+     * This API uses for check incoming call or outgoing call type (Video, Voice, Video-Chat)
+     * @param context
+     * @param caller
+     * @param callee
+     * @param callType
+     * @param callFrom
+     */
     public CheckCallTask(Context context, UserItem caller, UserItem callee, int callType, int callFrom) {
         super(context);
         this.callerExtension = caller.getSipItem().getExtension();
