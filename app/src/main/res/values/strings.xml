@@ -423,4 +423,8 @@
     <string name="video_chat_call">ビデオ通話+チャット</string>
     <string name="missed_call">不在着信</string>
     <string name="push_missed_call">さんから着信がありました</string>
+    <string name="i_done_with_incoming_call">の着信は終了しました。</string>
+    <string name="would_you_like_to_check_profile">プロフィールを確認しますか？</string>
+    <string name="check">確認する</string>
+    <string name="do_not_check">確認しない</string>
 </resources>

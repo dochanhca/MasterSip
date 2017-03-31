@@ -34,6 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
     public static final String FROM_USER = "FROM_USER";
+    public static final String IS_FROM_MISS_CALL = "IS_FROM_MISS_CALL";
     private static boolean showMissedCallPush = true;
 
     /**
@@ -62,30 +63,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Logger.e(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
-                FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+                handlePushMessage(data);
 
-                Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
-                switch (fcmPushItem.getCategory()) {
-                    case FCMPushItem.CATEGORY.INCOMING_CALL:
-                        if (MyLifecycleHandler.isApplicationVisible()) {
-                            showMissedCallPush = false;
-                        } else {
-                            showMissedCallPush = true;
-                        }
-                        handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
-                        break;
-                    case FCMPushItem.CATEGORY.MISS_CALL:
-                        if (showMissedCallPush) {
-                            sendNotification((UserItem) data.get(Constant.JSON.CALLER));
-                        }
-                        break;
-                    case FCMPushItem.CATEGORY.CHAT_TEXT:
-                        handleChat(fcmPushItem, (UserItem) data.get(Constant.JSON.USER));
-                        break;
-                    default:
-                        break;
-
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -101,16 +80,35 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // Also if you intend on generating your own notifications as a result of a received FCM
     // message, here is where that should be initiated. See sendNotification method below.
 
-    private void sendNotification(UserItem caller) {
-        sendNotification(caller.getUsername() + getApplicationContext().getResources().getString(R.string.push_missed_call));
+    private void handlePushMessage(Map<String, Object> data) {
+        FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+        Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
+        switch (fcmPushItem.getCategory()) {
+            case FCMPushItem.CATEGORY.INCOMING_CALL:
+                if (MyLifecycleHandler.isApplicationVisible()) {
+                    showMissedCallPush = false;
+                } else {
+                    showMissedCallPush = true;
+                }
+                handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
+                break;
+            case FCMPushItem.CATEGORY.MISS_CALL:
+                if (showMissedCallPush) {
+                    handleMissCallMessage((UserItem) data.get(Constant.JSON.CALLER));
+                }
+                break;
+            case FCMPushItem.CATEGORY.CHAT_TEXT:
+                handleChatMessage(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
+                break;
+            default:
+                break;
+        }
     }
 
-    private void handlePushMessage(Map<String, Object> data) {
-        FCMPushItem fcmItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
-        if (!MyLifecycleHandler.isApplicationVisible() &&
-                fcmItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
-            sendNotificationForChat(fcmItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
-        }
+    private void handleMissCallMessage(UserItem caller) {
+        String message = caller.getUsername() +
+                getApplicationContext().getResources().getString(R.string.push_missed_call);
+        sendNotifiCationForMissCall(message, caller, true);
     }
 
     private void handleIncomingCall(String callId) {
@@ -120,17 +118,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleChat(FCMPushItem fcmPushItem, UserItem userItem) {
-        if (!MyLifecycleHandler.isApplicationVisible() &&
-                fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
-            sendNotificationForChat(fcmPushItem.getMessage(), userItem);
+    private void handleChatMessage(String message, UserItem userItem) {
+        if (!MyLifecycleHandler.isApplicationVisible()) {
+            sendNotificationForChat(message, userItem);
         }
     }
 
-    private void sendNotification(String message) {
+    private void sendNotifiCationForMissCall(String message, UserItem caller, boolean isFromMissCall) {
         Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FROM_USER, caller);
+        bundle.putBoolean(IS_FROM_MISS_CALL, isFromMissCall);
+        intent.putExtras(bundle);
         sendNotification(message, intent);
-
     }
 
     private void sendNotificationForChat(String message, UserItem fromUser) {
@@ -138,6 +138,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Bundle bundle = new Bundle();
         bundle.putParcelable(FROM_USER, fromUser);
         intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotification(String message) {
+        Intent intent = new Intent(this, SplashActivity.class);
         sendNotification(message, intent);
     }
 

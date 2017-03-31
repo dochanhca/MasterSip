@@ -25,6 +25,7 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
     private SplashPresenter splashPresenter;
     private static final long TIME_DELAY = 500;
     private UserItem userItem;
+    private boolean isFromMissCall;
 
     @Override
     protected int layoutId() {
@@ -36,6 +37,8 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
         //Init views
         if (getIntent().getExtras() != null) {
             userItem = getIntent().getExtras().getParcelable(FROM_USER);
+            isFromMissCall = getIntent().getExtras().
+                    getBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, false);
         }
     }
 
@@ -84,7 +87,7 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
         if (userItem == null) {
             startTopScreenWithNewTask();
         } else {
-            startTopScreenForChatMessage();
+            startTopScreenForPush();
         }
     }
 
@@ -93,12 +96,13 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
-    private void startTopScreenForChatMessage() {
+    private void startTopScreenForPush() {
         Intent intent = new Intent(getApplicationContext(), TopActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putParcelable(MyFirebaseMessagingService.FROM_USER, userItem);
+        bundle.putBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, isFromMissCall);
         intent.putExtras(bundle);
         startActivity(intent);
     }

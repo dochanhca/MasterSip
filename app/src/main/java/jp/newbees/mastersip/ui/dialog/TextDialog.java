@@ -20,6 +20,7 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     private static final String DIALOG_TITLE = "DIALOG_TITLE";
     private static final String REQUEST_CODE = "REQUEST_CODE";
     private static final String POSITIVE_TITLE = "POSITIVE_TITLE";
+    private static final String NEGATIVE_TITLE = "NEGATIVE_TITLE";
     private static final String HIDDEN_NEGATIVE_BUTTON = "HIDDEN_NEGATIVE_BUTTON";
 
     private TextView txtDialogTitle;
@@ -68,9 +69,15 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
 
         this.requestCode = getArguments().getInt(REQUEST_CODE);
         String positiveTitle = getArguments().getString(POSITIVE_TITLE);
-        if (!positiveTitle.equalsIgnoreCase("")) {
+        if (!"".equals(positiveTitle)) {
             setPositiveButtonContent(positiveTitle);
         }
+
+        String negativeTitle = getArguments().getString(NEGATIVE_TITLE);
+        if (!"".equals(negativeTitle)) {
+            setNegativeButtonContent(negativeTitle);
+        }
+
         setNegativeButtonInvisible(hiddenNegativeButton);
         txtContent.setText(content);
         if (title.length() > 0) {
@@ -114,7 +121,6 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     }
 
     /**
-     *
      * @param fragment
      * @param requestCode
      * @param fragmentManager
@@ -132,7 +138,6 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     }
 
     /**
-     *
      * @param fragment
      * @param requestCode
      * @param fragmentManager
@@ -151,7 +156,6 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
 
 
     /**
-     *
      * @param fragment
      * @param requestCode
      * @param fragmentManager
@@ -166,6 +170,18 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
                                             String title,
                                             String positiveTitle,
                                             boolean hiddenNegativeButton) {
+        openTextDialog(fragment, requestCode, fragmentManager, content, title, positiveTitle, "",
+                hiddenNegativeButton);
+    }
+
+    public static final void openTextDialog(Fragment fragment,
+                                             int requestCode,
+                                             FragmentManager fragmentManager,
+                                             String content,
+                                             String title,
+                                             String positiveTitle,
+                                             String negativeTitle,
+                                             boolean hiddenNegativeButton) {
         if (positiveTitle == null)
             positiveTitle = "";
 
@@ -175,15 +191,15 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
         bundle.putString(DIALOG_TITLE, title);
         bundle.putInt(TextDialog.REQUEST_CODE, requestCode);
         bundle.putString(TextDialog.POSITIVE_TITLE, positiveTitle);
+        bundle.putString(TextDialog.NEGATIVE_TITLE, negativeTitle);
         bundle.putBoolean(TextDialog.HIDDEN_NEGATIVE_BUTTON, hiddenNegativeButton);
         textDialog.setArguments(bundle);
         textDialog.setTargetFragment(fragment, requestCode);
         textDialog.show(fragmentManager, "TextDialog");
     }
 
+
     /**
-     *
-     *
      * @param fragmentManager
      * @param content
      * @param title
@@ -191,11 +207,12 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     public static final void openTextDialog(FragmentManager fragmentManager,
                                             String content, String title, String positiveTitle,
                                             boolean hiddenNegativeButton) {
-        openTextDialog(fragmentManager, -100, content, title, positiveTitle, hiddenNegativeButton);
+        openTextDialog(fragmentManager, -100, content, title, positiveTitle, "", hiddenNegativeButton);
     }
 
     /**
      * Open Dialog from Activity
+     *
      * @param fragmentManager
      * @param requestCode
      * @param content
@@ -206,11 +223,20 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     public static final void openTextDialog(FragmentManager fragmentManager, int requestCode,
                                             String content, String title, String positiveTitle,
                                             boolean hiddenNegativeButton) {
+        openTextDialog(fragmentManager, requestCode, content, title, positiveTitle, "",
+                hiddenNegativeButton);
+
+    }
+
+    public static final void openTextDialog(FragmentManager fragmentManager, int requestCode,
+                                             String content, String title, String positiveTitle,
+                                             String negativeTitle, boolean hiddenNegativeButton) {
         TextDialog textDialog = new TextDialog();
         Bundle bundle = new Bundle();
         bundle.putString(DIALOG_CONTENT, content);
         bundle.putString(DIALOG_TITLE, title);
         bundle.putString(POSITIVE_TITLE, positiveTitle);
+        bundle.putString(NEGATIVE_TITLE, negativeTitle);
         bundle.putInt(TextDialog.REQUEST_CODE, requestCode);
         bundle.putBoolean(HIDDEN_NEGATIVE_BUTTON, hiddenNegativeButton);
         textDialog.setArguments(bundle);
