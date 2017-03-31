@@ -16,10 +16,13 @@ import org.greenrobot.eventbus.Subscribe;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
+import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
+import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -88,6 +91,14 @@ public class TopActivity extends CallCenterFinishedCallActivity implements View.
     protected void initVariables(Bundle savedInstanceState) {
         fillData();
         topPresenter.requestPermissions();
+        getDataFromFCMChatMessage(getIntent());
+    }
+
+    private void getDataFromFCMChatMessage(Intent intent) {
+        if (intent.getExtras() != null) {
+            UserItem fromUser = intent.getExtras().getParcelable(MyFirebaseMessagingService.FROM_USER);
+            ChatActivity.startChatActivity(this, fromUser);
+        }
     }
 
     @Override
@@ -128,6 +139,7 @@ public class TopActivity extends CallCenterFinishedCallActivity implements View.
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        getDataFromFCMChatMessage(intent);
         int position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
         viewPager.setCurrentItem(position, false);
         navigationLayoutGroup.setSelectedItem(position);

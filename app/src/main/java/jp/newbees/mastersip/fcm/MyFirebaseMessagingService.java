@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -23,7 +24,7 @@ import jp.newbees.mastersip.ui.SplashActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
-import jp.newbees.mastersip.utils.MyLifecycleHander;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by thanglh on 11/21/16.
@@ -32,6 +33,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHander;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
+    public static final String FROM_USER = "FROM_USER";
     private static boolean showMissedCallPush = true;
 
     /**
@@ -65,7 +67,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
                 switch (fcmPushItem.getCategory()) {
                     case FCMPushItem.CATEGORY.INCOMING_CALL:
-                        if (MyLifecycleHander.isApplicationVisible()) {
+                        if (MyLifecycleHandler.isApplicationVisible()) {
                             showMissedCallPush = false;
                         } else {
                             showMissedCallPush = true;
@@ -78,6 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }
                         break;
                     case FCMPushItem.CATEGORY.CHAT_TEXT:
+                        handleChat(fcmPushItem, (UserItem) data.get(Constant.JSON.USER));
                         break;
                     default:
                         break;
@@ -93,12 +96,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Logger.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
         }
-
-//        sendNotification("da nhan duoc message");
     }
+
+    // Also if you intend on generating your own notifications as a result of a received FCM
+    // message, here is where that should be initiated. See sendNotification method below.
 
     private void sendNotification(UserItem caller) {
         sendNotification(caller.getUsername() + getApplicationContext().getResources().getString(R.string.push_missed_call));
+    }
+
+    private void handlePushMessage(Map<String, Object> data) {
+        FCMPushItem fcmItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+        if (!MyLifecycleHandler.isApplicationVisible() &&
+                fcmItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
+            sendNotificationForChat(fcmItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
+        }
     }
 
     private void handleIncomingCall(String callId) {
@@ -108,15 +120,35 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    private void handleChat(FCMPushItem fcmPushItem, UserItem userItem) {
+        if (!MyLifecycleHandler.isApplicationVisible() &&
+                fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
+            sendNotificationForChat(fcmPushItem.getMessage(), userItem);
+        }
+    }
+
+    private void sendNotification(String message) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        sendNotification(message, intent);
+
+    }
+
+    private void sendNotificationForChat(String message, UserItem fromUser) {
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FROM_USER, fromUser);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
     /**
      * Create and show a simple notification containing the received FCM message.
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody, Intent intent) {
         int messageId = (int) System.currentTimeMillis();
 
-        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, messageId, intent,
                 PendingIntent.FLAG_ONE_SHOT);

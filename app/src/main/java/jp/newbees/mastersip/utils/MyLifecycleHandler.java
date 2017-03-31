@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by thangit14 on 3/29/17.
  */
 
-public class MyLifecycleHander implements Application.ActivityLifecycleCallbacks{
+public class MyLifecycleHandler implements Application.ActivityLifecycleCallbacks{
     private static ArrayList<Activity> activities = new ArrayList<>();
     private static int resumed;
     private static int paused;
@@ -27,25 +27,25 @@ public class MyLifecycleHander implements Application.ActivityLifecycleCallbacks
     @Override
     public void onActivityStarted(Activity activity) {
         ++started;
-        Logger.e("MyLifecycleHander","started = "+started);
+        Logger.e("MyLifecycleHandler","started = "+started);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         ++resumed;
-        Logger.e("MyLifecycleHander","resumed = "+resumed);
+        Logger.e("MyLifecycleHandler","resumed = "+resumed);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         ++paused;
-        Logger.e("MyLifecycleHander","paused = "+paused);
+        Logger.e("MyLifecycleHandler","paused = "+paused);
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         ++stopped;
-        Logger.e("MyLifecycleHander","stopped = "+stopped);
+        Logger.e("MyLifecycleHandler","stopped = "+stopped);
 
     }
 

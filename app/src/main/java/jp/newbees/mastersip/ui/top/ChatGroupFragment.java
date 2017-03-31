@@ -457,4 +457,14 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         }
         return chatRoomIds;
     }
+
+    public UserItem getUserItemByRoomId(String roomID) {
+        UserItem userItem = new UserItem();
+        for (RoomChatItem item : chatGroupAdapter.getData()) {
+            if (item.getRoomId().equals(roomID)) {
+                return userItem;
+            }
+        }
+        return null;
+    }
 }

@@ -10,7 +10,7 @@ import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
 import jp.newbees.mastersip.ui.call.VideoCallFragment;
 import jp.newbees.mastersip.utils.Logger;
-import jp.newbees.mastersip.utils.MyLifecycleHander;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -117,7 +117,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCallEnd() {
-        if (MyLifecycleHander.getNumberOfActivity() == 1) {
+        if (MyLifecycleHandler.getNumberOfActivity() == 1) {
             Logger.e(TAG,"we have only calling activity, stop service and destroy app");
             LinphoneService.stopLinphone(this);
         }

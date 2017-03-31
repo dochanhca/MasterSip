@@ -40,7 +40,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     public void loginVoIP() {
         if (LinphoneService.isRunning()) {
             Logger.e(TAG, "Linphone Service is ready");
-            handleRegisterSuccess();
+            handleLoginVoIPSuccess();
             return;
         }
         EventBus.getDefault().register(this);
@@ -55,7 +55,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            handleRegisterSuccess();
+            handleLoginVoIPSuccess();
         } else {
             stopLinphoneService();
             onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
@@ -63,7 +63,7 @@ public abstract class RegisterPresenterBase extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    private void handleRegisterSuccess() {
+    private void handleLoginVoIPSuccess() {
         saveLoginState(true);
         onDidRegisterVoIPSuccess();
         sendFCMTokenToServer();
