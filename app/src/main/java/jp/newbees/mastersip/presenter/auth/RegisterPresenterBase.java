@@ -43,7 +43,9 @@ public abstract class RegisterPresenterBase extends BasePresenter {
             handleLoginVoIPSuccess();
             return;
         }
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         Logger.e(TAG, "Start Linphone Service");
         LinphoneService.startLinphone(context);
     }
