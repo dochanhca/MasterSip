@@ -1,11 +1,13 @@
 package jp.newbees.mastersip.fcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -108,7 +110,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleMissCallMessage(UserItem caller) {
         String message = caller.getUsername() +
                 getApplicationContext().getResources().getString(R.string.push_missed_call);
-        sendNotifiCationForMissCall(message, caller, true);
+        sendNotificationForMissCall(message, caller, true);
     }
 
     private void handleIncomingCall(String callId) {
@@ -124,7 +126,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendNotifiCationForMissCall(String message, UserItem caller, boolean isFromMissCall) {
+    private void sendNotificationForMissCall(String message, UserItem caller, boolean isFromMissCall) {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(FROM_USER, caller);
@@ -164,12 +166,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(getString(R.string.push_title))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
+
+        if (Build.VERSION.SDK_INT >= 21) notificationBuilder.setVibrate(new long[0]);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         notificationManager.notify(messageId, notificationBuilder.build());
     }
 }
