@@ -168,7 +168,7 @@ public abstract class BaseCallFragment extends BaseFragment implements
 
     @Override
     public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = busyCallEvent.getHandleName() + " " + getString(R.string.mess_callee_reject_call);
+        String message = currentUserItem.getUsername() + " " + getString(R.string.mess_callee_reject_call);
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(this, getFragmentManager(),
                 REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);

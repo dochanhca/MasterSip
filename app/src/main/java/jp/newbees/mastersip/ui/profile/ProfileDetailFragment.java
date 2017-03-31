@@ -31,6 +31,7 @@ import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 1/5/17.
@@ -214,7 +215,8 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
 
     @Override
     public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = busyCallEvent.getHandleName() + " " + getString(R.string.mess_callee_reject_call);
+        String userName = ConfigManager.getInstance().getCurrentCallee(busyCallEvent.getCallId()).getUsername();
+        String message = userName + " " + getString(R.string.mess_callee_reject_call);
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(this, getFragmentManager(),
                 REQUEST_NOTIFY_CALLEE_REJECT_CALL, "", message, "", positiveTitle);

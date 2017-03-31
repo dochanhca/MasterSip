@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.call;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
@@ -8,6 +9,8 @@ import jp.newbees.mastersip.presenter.call.BaseCenterFinishedCallPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.NotifyRunOutOfCoinDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -20,6 +23,7 @@ import jp.newbees.mastersip.utils.Logger;
 public abstract class CallCenterFinishedCallActivity extends BaseActivity implements BaseCenterFinishedCallPresenter.FinishedCallListener,
         NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, TextDialog.OnTextDialogPositiveClick {
 
+    protected static final int REQUEST_BUY_POINT = 15;
     private BaseCenterFinishedCallPresenter incomingCallPresenter;
     private static final int REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL = 99;
 
@@ -41,6 +45,14 @@ public abstract class CallCenterFinishedCallActivity extends BaseActivity implem
     protected void onStop() {
         incomingCallPresenter.unRegisterCallEvent();
         super.onStop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BUY_POINT && resultCode == RESULT_OK) {
+            showDialogBuyPointSuccess(data);
+        }
     }
 
     @Override
@@ -94,6 +106,7 @@ public abstract class CallCenterFinishedCallActivity extends BaseActivity implem
     @Override
     public void onPositiveButtonClick() {
         // Redirect to buy point screen
+        PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
     }
 
     @Override
@@ -108,6 +121,16 @@ public abstract class CallCenterFinishedCallActivity extends BaseActivity implem
                 .append(total)
                 .append(getString(R.string.pt))
                 .append(getString(R.string.i_acquired_it));
+        showMessageDialog(message.toString());
+    }
+
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
         showMessageDialog(message.toString());
     }
 }

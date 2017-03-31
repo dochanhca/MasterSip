@@ -65,7 +65,6 @@ import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
-import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
@@ -91,7 +90,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
     private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
     private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
-    private static final int REQUEST_BUY_POINT = 13;
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
@@ -242,7 +240,7 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
 
         @Override
         public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-            String message = busyCallEvent.getHandleName() + getString(R.string.mess_callee_reject_call);
+            String message = busyCallEvent.getCallId() + getString(R.string.mess_callee_reject_call);
             String positiveTitle = getString(R.string.back_to_profile_detail);
             OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
         }
@@ -625,10 +623,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
                     isShowDialogForHandleImage = true;
                 }
                 break;
-            case REQUEST_BUY_POINT:
-                if (resultCode == RESULT_OK) {
-                    showDialogBuyPointSuccess(data);
-                }
             default:
                 break;
         }
@@ -705,16 +699,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
         } else {
             presenter.checkVideoChatCall(userItem);
         }
-    }
-
-    private void showDialogBuyPointSuccess(Intent data) {
-        StringBuilder message = new StringBuilder();
-        message.append(getString(R.string.settlement_is_completed))
-                .append("\n")
-                .append(data.getStringExtra(PaymentFragment.POINT))
-                .append(getString(R.string.pt))
-                .append(getString(R.string.have_been_granted));
-        showMessageDialog(message.toString());
     }
 
     private void handleVoiceCallClick() {

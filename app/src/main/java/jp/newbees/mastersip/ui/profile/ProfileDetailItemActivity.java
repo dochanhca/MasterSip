@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.profile;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
-import jp.newbees.mastersip.ui.payment.PaymentFragment;
 
 /**
  * Created by thangit14 on 2/7/17.
@@ -64,14 +62,6 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT && resultCode == Activity.RESULT_OK) {
-            showDialogBuyPointSuccess(data);
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         changeHeaderText(userItem.getUsername());
         super.onBackPressed();
@@ -99,7 +89,7 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
 
     @Override
     public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = busyCallEvent.getHandleName() + getString(R.string.mess_callee_reject_call);
+        String message = userItem.getUsername() + getString(R.string.mess_callee_reject_call);
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
     }
@@ -117,30 +107,23 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
 
     @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
-
+        disMissLoading();
+        TextDialog.openTextDialog(getSupportFragmentManager(),
+                outgoingCallPresenter.getMessageSendRequestSuccess(userItem, type), "","", true);
     }
 
     @Override
     public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
-
+        disMissLoading();
+        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
         super.onTextDialogOkClick(requestCode);
         if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT) {
-            PaymentActivity.startActivityForResult(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT);
+            PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
         }
-    }
-
-    private void showDialogBuyPointSuccess(Intent data) {
-        StringBuilder message = new StringBuilder();
-        message.append(getString(R.string.settlement_is_completed))
-                .append("\n")
-                .append(data.getStringExtra(PaymentFragment.POINT))
-                .append(getString(R.string.pt))
-                .append(getString(R.string.have_been_granted));
-        showMessageDialog(message.toString());
     }
 
     public BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {

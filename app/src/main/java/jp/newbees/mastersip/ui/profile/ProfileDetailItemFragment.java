@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.profile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -51,7 +50,6 @@ import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
 import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
-import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -362,9 +360,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
                 break;
-            case REQUEST_NOTIFY_NOT_ENOUGH_POINT:
-                PaymentActivity.startActivityForResult(this, REQUEST_NOTIFY_NOT_ENOUGH_POINT);
-                break;
             default:
                 break;
         }
@@ -381,14 +376,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             getOutgoingCallPresenter().checkVideoCall(userItem);
         } else {
             getOutgoingCallPresenter().checkVideoChatCall(userItem);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT && resultCode == Activity.RESULT_OK) {
-            showDialogBuyPointSuccess(data);
         }
     }
 

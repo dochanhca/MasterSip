@@ -6,16 +6,16 @@ package jp.newbees.mastersip.event.call;
 
 public class BusyCallEvent {
 
-    private String handleName;
+    private String callId;
 
     public BusyCallEvent() {
     }
 
-    public BusyCallEvent(String handleName) {
-        this.handleName = handleName;
+    public BusyCallEvent(String callId) {
+        this.callId = callId;
     }
 
-    public String getHandleName() {
-        return handleName;
+    public String getCallId() {
+        return callId;
     }
 }

@@ -16,11 +16,21 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public class CoinChangedProcessor extends BaseSocketProcessor {
+    /**
+     *
+     * @param data
+     */
     @Override
     protected void didProcess(Object data) {
         int coin = ((HashMap<String, Integer>) data).get(Constant.JSON.COINT);
         int total = ((HashMap<String, Integer>) data).get(Constant.JSON.TOTAL);
-        this.postEvent(new CoinChangedEvent(coin, total));
+
+        /**
+         * Only Coin changed event after call ended contain total field
+         */
+        if (total >= 0) {
+            this.postEvent(new CoinChangedEvent(coin, total));
+        }
     }
 
     @Override
@@ -29,7 +39,7 @@ public class CoinChangedProcessor extends BaseSocketProcessor {
         JSONObject jData = new JSONObject(packetItem.getData());
 
         int coin = jData.getInt(Constant.JSON.COINT);
-        int total = 0;
+        int total = -1;
         if (!jData.isNull(Constant.JSON.TOTAL)) {
             total = jData.getInt(Constant.JSON.TOTAL);
         }

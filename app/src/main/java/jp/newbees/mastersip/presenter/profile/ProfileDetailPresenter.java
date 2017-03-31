@@ -8,7 +8,6 @@ import java.util.Map;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -28,11 +27,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
         void didLoadMoreUser(Map<String, Object> data);
 
         void didLoadUserError(int errorCode, String errorMessage);
-
-
-        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
-
-        void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
     }
 
     public void loadMoreUser(String nextPage, int typeSearch) {
@@ -48,9 +42,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
         if (task instanceof FilterUserTask) {
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
             view.didLoadMoreUser(data);
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
-            view.didSendMsgRequestEnableSettingCall(type);
         }
     }
 
@@ -59,8 +50,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
         super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof FilterUserTask) {
             view.didLoadUserError(errorCode, errorMessage);
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            view.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 }

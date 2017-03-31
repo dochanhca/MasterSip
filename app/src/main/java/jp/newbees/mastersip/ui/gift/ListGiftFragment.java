@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.gift;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,8 @@ import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
+import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
@@ -89,17 +93,19 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         rcvGiftsList.addItemDecoration(itemDecoration);
     }
 
-    private String getDescription() {
-        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
-        int titleId = userItem.getGender() == UserItem.MALE ? R.string.gifts_description_male : R.string.gifts_description_female;
-        return getString(titleId);
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setRetainInstance(true);
         giftListPresenter.loadGiftList();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BUY_POINT && resultCode == Activity.RESULT_OK) {
+            showDialogBuyPointSuccess(data);
+        }
     }
 
     @Override
@@ -122,12 +128,6 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         }
     }
 
-    private void showDialogSendGiftSuccess() {
-        String title = getString(R.string.title_send_gift_success);
-        String content = String.format(getString(R.string.content_send_gift_success), userItem.getUsername(), currentGiftSelected.getName());
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, true);
-    }
-
     @Override
     public void didSendGiftFailure(int errorCode, String errorMessage) {
         showToastExceptionVolleyError(errorCode, errorMessage);
@@ -140,6 +140,32 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
             showDialogNotEnoughPointForFemale(currentUser);
         } else {
             showDialogNotEnoughPointForMale(currentUser);
+        }
+    }
+
+    @Override
+    public void onGiftItemSelect(GiftItem giftItem) {
+        this.currentGiftSelected = giftItem;
+        String title = getString(R.string.title_send_gift);
+        String content = String.format(getString(R.string.confirm_send_gift), userItem.getUsername(), giftItem.getName());
+        TextDialog.openTextDialog(this, REQUEST_SEND_GIFT, getFragmentManager(), content, title);
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == REQUEST_SEND_GIFT) {
+            giftListPresenter.sendGiftToUser(userItem, currentGiftSelected);
+        } else if (requestCode == REQUEST_BUY_POINT) {
+            PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
+        } else if (requestCode == REQUEST_NOTIFY_SEND_GIFT_SUCESS) {
+            openChatScreen();
+        }
+    }
+
+    @Override
+    protected void onImageBackPressed() {
+        if (openFrom == OPEN_FROM_CHAT) {
+            getActivity().finish();
         }
     }
 
@@ -160,40 +186,29 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         showMessageDialog(title, content, "", false);
     }
 
-    @Override
-    public void onGiftItemSelect(GiftItem giftItem) {
-        this.currentGiftSelected = giftItem;
-        String title = getString(R.string.title_send_gift);
-        String content = String.format(getString(R.string.confirm_send_gift), userItem.getUsername(), giftItem.getName());
-        TextDialog.openTextDialog(this, REQUEST_SEND_GIFT, getFragmentManager(), content, title);
+    private void showDialogSendGiftSuccess() {
+        String title = getString(R.string.title_send_gift_success);
+        String content = String.format(getString(R.string.content_send_gift_success), userItem.getUsername(), currentGiftSelected.getName());
+        TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, true);
     }
 
-    @Override
-    public void onTextDialogOkClick(int requestCode) {
-        if (requestCode == REQUEST_SEND_GIFT) {
-            giftListPresenter.sendGiftToUser(userItem, currentGiftSelected);
-        } else if (requestCode == REQUEST_BUY_POINT) {
-            showBuyCoinScreen();
-        } else if (requestCode == REQUEST_NOTIFY_SEND_GIFT_SUCESS) {
-            openChatScreen();
-        }
+    private String getDescription() {
+        UserItem userItem = ConfigManager.getInstance().getCurrentUser();
+        int titleId = userItem.getGender() == UserItem.MALE ? R.string.gifts_description_male : R.string.gifts_description_female;
+        return getString(titleId);
     }
 
-    @Override
-    protected void onImageBackPressed() {
-        if (openFrom == OPEN_FROM_CHAT) {
-            getActivity().finish();
-        }
+    private void showDialogBuyPointSuccess(Intent data) {
+        StringBuilder message = new StringBuilder();
+        message.append(getString(R.string.settlement_is_completed))
+                .append("\n")
+                .append(data.getStringExtra(PaymentFragment.POINT))
+                .append(getString(R.string.pt))
+                .append(getString(R.string.have_been_granted));
+        showMessageDialog(message.toString());
     }
 
     private void openChatScreen() {
         ChatActivity.startChatActivity(getContext(), userItem);
-    }
-
-    /**
-     * TODO : Need implement function : Open Buy Coin Screen
-     */
-    private void showBuyCoinScreen() {
-
     }
 }
