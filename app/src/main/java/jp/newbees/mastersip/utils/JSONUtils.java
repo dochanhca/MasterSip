@@ -200,10 +200,15 @@ public class JSONUtils {
 
     public static final RelationshipItem parseRelationship(JSONObject jsonObject) throws JSONException {
         RelationshipItem relationshipItem = new RelationshipItem();
-        int followed = jsonObject.getInt(Constant.JSON.FOLLOWED);
-        int isNotification = jsonObject.getInt(Constant.JSON.ONLINE_NOTIFICATION);
-        relationshipItem.setFollowed(followed);
-        relationshipItem.setIsNotification(isNotification);
+        if (jsonObject.has(Constant.JSON.FOLLOWED)) {
+            int followed = jsonObject.getInt(Constant.JSON.FOLLOWED);
+            relationshipItem.setFollowed(followed);
+        }
+
+        if (jsonObject.has(Constant.JSON.ONLINE_NOTIFICATION)) {
+            int isNotification = jsonObject.getInt(Constant.JSON.ONLINE_NOTIFICATION);
+            relationshipItem.setIsNotification(isNotification);
+        }
         return relationshipItem;
     }
 
@@ -856,14 +861,14 @@ public class JSONUtils {
 
         ArrayList<FootprintItem> listFootprint = new ArrayList<>();
 
-        for (int j = 0 , m = jListGroupDate.length() ; j<m ;j++){
-            JSONObject jGroup =  jListGroupDate.getJSONObject(j);
+        for (int j = 0, m = jListGroupDate.length(); j < m; j++) {
+            JSONObject jGroup = jListGroupDate.getJSONObject(j);
             JSONArray jUsers = jGroup.getJSONArray(Constant.JSON.USERS);
             String groupDate = jGroup.getString(Constant.JSON.DATE);
 
             FootprintItem footPrint = new FootprintItem();
 
-            for (int i=0,n = jUsers.length() ;i<n ;i++){
+            for (int i = 0, n = jUsers.length(); i < n; i++) {
                 JSONObject jUser = jUsers.getJSONObject(i);
                 UserItem userItem = parseUserForFootprint(jUser);
                 footPrint.addUser(userItem);
@@ -873,7 +878,7 @@ public class JSONUtils {
         }
         HashMap result = new HashMap();
         result.put(Constant.JSON.LIST, listFootprint);
-        result.put(Constant.JSON.TOTAL , total);
+        result.put(Constant.JSON.TOTAL, total);
         return result;
     }
 
