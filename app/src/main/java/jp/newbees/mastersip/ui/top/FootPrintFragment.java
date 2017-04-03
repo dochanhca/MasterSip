@@ -69,7 +69,7 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.adapterFootprint = new FootprintAdapter(getContext(), new ArrayList<FootprintItem>());
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
-        this.presenter = new FootprintPresenter(getContext(), this);
+//        this.presenter = new FootprintPresenter(getContext(), this);
         this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
@@ -110,11 +110,11 @@ public class FootPrintFragment extends BaseCallFragment implements
         if (checkedId == rdoFootprintViewedByOther.getId()) {
             showLoading();
             descriptionTotal = getString(R.string.description_viewed_by_other);
-            presenter.getListFootprintViewedByOther();
+//            presenter.getListFootprintViewedByOther();
         } else {
             showLoading();
             descriptionTotal = getString(R.string.description_viewed_by_me);
-            presenter.getListFootprintViewedByMe();
+//            presenter.getListFootprintViewedByMe();
         }
     }
 

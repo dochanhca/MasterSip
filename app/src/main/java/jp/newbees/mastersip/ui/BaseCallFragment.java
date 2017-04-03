@@ -46,19 +46,19 @@ public abstract class BaseCallFragment extends BaseFragment implements
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
-        baseCallPresenter = new BaseCenterOutgoingCallPresenter(getContext(), this);
+//        baseCallPresenter = new BaseCenterOutgoingCallPresenter(getContext(), this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        baseCallPresenter.registerEvent();
+//        baseCallPresenter.registerEvent();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        baseCallPresenter.unRegisterEvent();
+//        baseCallPresenter.unRegisterEvent();
     }
 
     @Override
@@ -119,11 +119,11 @@ public abstract class BaseCallFragment extends BaseFragment implements
         switch (requestCode) {
             case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
                 showLoading();
-                baseCallPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
+//                baseCallPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
                 break;
             case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
                 showLoading();
-                baseCallPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
+//                baseCallPresenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
                 break;
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
@@ -140,9 +140,9 @@ public abstract class BaseCallFragment extends BaseFragment implements
     public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
         UserItem userItem = this.currentUserItem;
         if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            baseCallPresenter.checkVideoCall(userItem);
+//            baseCallPresenter.checkVideoCall(userItem);
         } else {
-            baseCallPresenter.checkVideoChatCall(userItem);
+//            baseCallPresenter.checkVideoChatCall(userItem);
         }
     }
 
@@ -187,7 +187,7 @@ public abstract class BaseCallFragment extends BaseFragment implements
 
     @Override
     public void onOkVoiceCallClick() {
-        baseCallPresenter.checkVoiceCall(currentUserItem);
+//        baseCallPresenter.checkVoiceCall(currentUserItem);
     }
 
     @Override
