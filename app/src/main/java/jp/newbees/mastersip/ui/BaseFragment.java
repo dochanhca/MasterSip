@@ -20,6 +20,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public abstract class BaseFragment extends Fragment {
+
     public static final String SHOW_FRAGMENT_ACTION_BAR = "SHOW_FRAGMENT_ACTION_BAR";
     protected View mRoot;
 

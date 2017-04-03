@@ -23,7 +23,6 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FootprintPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
-import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -62,7 +61,6 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     @Override
     protected void init(View rootView, Bundle savedInstanceState) {
-        super.init(rootView, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFootprintGroup.setOnCheckedChangeListener(this);
@@ -128,12 +126,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         }
     }
 
-    private void gotoProfileDetails(UserItem userItem) {
-        ProfileDetailItemFragment fragment = ProfileDetailItemFragment.newInstance(userItem, false);
-        this.txtActionBarTitle.setText(userItem.getUsername());
-        showFragmentContent(fragment, ProfileDetailItemFragment.class.getName());
-    }
-
     @Override
     public void didLoadListFootprint(ArrayList<FootprintItem> data, int totalFootprint) {
         disMissLoading();
@@ -158,21 +150,21 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     @Override
     public void onChatClickListener(UserItem userItem) {
-        super.requestChatClick(userItem);
+        super.chatWithUser(userItem);
     }
 
     @Override
     public void onVideoClickListener(UserItem userItem) {
-        super.requestVideoCallClick(userItem);
+        super.callVideo(userItem, false);
     }
 
     @Override
     public void onVoiceClickListener(UserItem userItem) {
-        super.requestVoiceCallClick(userItem);
+        super.callVoice(userItem, false);
     }
 
     @Override
     public void onProfileClickListener(UserItem userItem) {
-        super.requestGotoProfile(userItem);
+        super.gotoProfileDetail(userItem);
     }
 }

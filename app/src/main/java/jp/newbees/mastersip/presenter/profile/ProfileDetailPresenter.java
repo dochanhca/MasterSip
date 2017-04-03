@@ -8,18 +8,18 @@ import java.util.Map;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
-import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by ducpv on 2/3/17.
  */
 
-public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
+public class ProfileDetailPresenter extends BasePresenter {
     private ProfileView view;
 
-    public ProfileDetailPresenter(Context context, ProfileView view, OutgoingCallListener outgoingCallListener) {
-        super(context, outgoingCallListener);
+    public ProfileDetailPresenter(Context context, ProfileView view) {
+        super(context);
         this.view = view;
     }
 
@@ -38,7 +38,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        super.didResponseTask(task);
         if (task instanceof FilterUserTask) {
             HashMap<String, Object> data = ((FilterUserTask) task).getDataResponse();
             view.didLoadMoreUser(data);
@@ -47,7 +46,6 @@ public class ProfileDetailPresenter extends BaseCenterOutgoingCallPresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof FilterUserTask) {
             view.didLoadUserError(errorCode, errorMessage);
         }

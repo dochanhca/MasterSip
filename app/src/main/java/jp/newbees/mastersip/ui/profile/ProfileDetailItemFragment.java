@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -38,19 +37,12 @@ import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
-import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.ui.BaseCallFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
-import jp.newbees.mastersip.ui.chatting.ChatActivity;
-import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
-import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
-import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
-import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
@@ -59,21 +51,15 @@ import jp.newbees.mastersip.utils.Utils;
  * Created by ducpv on 1/18/17.
  */
 
-public class ProfileDetailItemFragment extends BaseFragment implements
-        ProfileDetailItemPresenter.ProfileDetailItemView, UserPhotoAdapter.OnItemClickListener,
-        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog {
+public class ProfileDetailItemFragment extends BaseCallFragment implements
+        ProfileDetailItemPresenter.ProfileDetailItemView,
+        UserPhotoAdapter.OnItemClickListener,
+        TextDialog.OnTextDialogPositiveClick {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
-    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
-
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
-    private static final int CONFIRM_VOICE_CALL_DIALOG = 10;
-    private static final int SELECT_VIDEO_CALL_DIALOG = 14;
-    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 12;
-    private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 13;
-    private static final int CONFIRM_MAKE_VIDEO_CALL = 15;
+    private static final String SELECTED = "SELECTED";
 
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
@@ -185,12 +171,16 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     };
 
-
     public static ProfileDetailItemFragment newInstance(UserItem data, boolean needShowActionBarInGiftFragment) {
+       return ProfileDetailItemFragment.newInstance(data, needShowActionBarInGiftFragment, true);
+    }
+
+    public static ProfileDetailItemFragment newInstance(UserItem data, boolean needShowActionBarInGiftFragment, boolean selected) {
         ProfileDetailItemFragment profileDetailItemFragment = new ProfileDetailItemFragment();
         Bundle args = new Bundle();
         args.putParcelable(ProfileDetailItemFragment.USER_ITEM, data);
         args.putBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT, needShowActionBarInGiftFragment);
+        args.putBoolean(SELECTED, selected);
         profileDetailItemFragment.setArguments(args);
         return profileDetailItemFragment;
     }
@@ -207,7 +197,10 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         ButterKnife.bind(this, mRoot);
 
         userItem = getArguments().getParcelable(USER_ITEM);
-
+        boolean selected = getArguments().getBoolean(SELECTED);
+        if (selected) {
+            super.setShowingProfile(userItem);
+        }
         progressWheel.spin();
         progressWheel.setVisibility(View.VISIBLE);
         restoreNavigationBarState();
@@ -246,13 +239,13 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             case R.id.btn_on_off_notify:
                 break;
             case R.id.layout_chat:
-                ChatActivity.startChatActivity(getContext(), userItem);
+                chatWithUser(userItem);
                 break;
             case R.id.layout_voice_call:
-                handleVoiceCallClick();
+                super.callVoice(userItem, true);
                 break;
             case R.id.layout_video_call:
-                handleVideoCallClick();
+                super.callVideo(userItem, true);
                 break;
             default:
                 break;
@@ -298,8 +291,12 @@ public class ProfileDetailItemFragment extends BaseFragment implements
     @Override
     public void didFollowUser() {
         disMissLoading();
-        ConfirmSendGiftDialog.openConfirmSendGiftDialog(this, CONFIRM_SEND_GIFT_DIALOG,
-                getFragmentManager(), userItem.getUsername());
+        String title = getString(R.string.mess_followed);
+        StringBuilder content = new StringBuilder();
+        content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
+        String positiveTitle = getString(R.string.send_a_give);
+        TextDialog.openTextDialog(this, CONFIRM_SEND_GIFT_DIALOG, getFragmentManager(),
+                content.toString(), title, positiveTitle);
         btnFollow.setText(getString(R.string.un_follow));
     }
 
@@ -339,70 +336,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         }
     }
 
-    @Override
-    public void onOkConfirmSendGiftClick() {
-        showGiftFragment();
-    }
-
-    @Override
-    public void onTextDialogOkClick(int requestCode) {
-        switch (requestCode) {
-            case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
-                //send request to enable voice call
-                showLoading();
-                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
-                break;
-            case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
-                //send request to enable video call
-                showLoading();
-                getOutgoingCallPresenter().sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
-                break;
-            case CONFIRM_MAKE_VIDEO_CALL:
-                SelectVideoCallDialog.openDialog(this, SELECT_VIDEO_CALL_DIALOG, getFragmentManager());
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onOkVoiceCallClick() {
-        getOutgoingCallPresenter().checkVoiceCall(userItem);
-    }
-
-    @Override
-    public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
-        if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            getOutgoingCallPresenter().checkVideoCall(userItem);
-        } else {
-            getOutgoingCallPresenter().checkVideoChatCall(userItem);
-        }
-    }
-
-    private void handleVideoCallClick() {
-        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getString(R.string.confirm_request_enable_video_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VIDEO_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            TextDialog.openTextDialog(this, CONFIRM_MAKE_VIDEO_CALL, getFragmentManager(),
-                    getString(R.string.are_you_sure_make_a_video_call), "");
-        }
-    }
-
-    private void handleVoiceCallClick() {
-        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getResources().getString(R.string.confirm_request_enable_voice_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
-            TextDialog.openTextDialog(this, CONFIRM_REQUEST_ENABLE_VOICE_CALL, getFragmentManager(), content, "", positive);
-        } else {
-            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(this,
-                    CONFIRM_VOICE_CALL_DIALOG, getFragmentManager());
-        }
-    }
-
     private boolean isCurrentUser() {
         return userItem.getUserId().equals(ConfigManager.getInstance().getCurrentUser().getUserId());
     }
@@ -413,25 +346,6 @@ public class ProfileDetailItemFragment extends BaseFragment implements
             profileDetailItemPresenter.followUser(userItem.getUserId());
         } else {
             profileDetailItemPresenter.unFollowUser(userItem.getUserId());
-        }
-    }
-
-    private void showDialogBuyPointSuccess(Intent data) {
-        StringBuilder message = new StringBuilder();
-        message.append(getString(R.string.settlement_is_completed))
-                .append("\n")
-                .append(data.getStringExtra(PaymentFragment.POINT))
-                .append(getString(R.string.pt))
-                .append(getString(R.string.have_been_granted));
-        showMessageDialog(message.toString());
-    }
-
-    private BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
-        ProfileDetailFragment fragment = ((ProfileDetailFragment) getParentFragment());
-        if (fragment != null) {
-            return fragment.getOutgoingCallPresenter();
-        } else {
-            return ((ProfileDetailItemActivity) getActivity()).getOutgoingCallPresenter();
         }
     }
 
@@ -606,5 +520,22 @@ public class ProfileDetailItemFragment extends BaseFragment implements
         transaction.addToBackStack(null);
         transaction.add(R.id.fragment_search_container, giftFragment,
                 ListGiftFragment.class.getName()).commit();
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
+            showGiftFragment();
+        }
+    }
+
+    public final void onPageSelected() {
+        super.setShowingProfile(userItem);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        super.setShowingProfile(null);
     }
 }

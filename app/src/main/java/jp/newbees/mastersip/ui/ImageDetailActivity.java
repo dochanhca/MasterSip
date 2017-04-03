@@ -31,7 +31,6 @@ import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
-import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -40,8 +39,7 @@ import jp.newbees.mastersip.utils.ImageUtils;
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallCenterFinishedCallActivity implements ImageDetailPresenter.PhotoDetailView,
-        TextDialog.OnTextDialogPositiveClick {
+public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
@@ -51,6 +49,7 @@ public class ImageDetailActivity extends CallCenterFinishedCallActivity implemen
     public static final int MY_PHOTOS = 1;
     public static final int OTHER_USER_PHOTOS = 3;
     public static final int RECEIVED_PHOTOS_FROM_CHAT = 2;
+    private static final int REQUEST_DELETE_IMAGE = 24;
 
     @BindView(R.id.view_pager_gallery)
     HackyViewPager viewPagerGallery;
@@ -265,8 +264,11 @@ public class ImageDetailActivity extends CallCenterFinishedCallActivity implemen
 
     @Override
     public void onTextDialogOkClick(int requestCode) {
-        showLoading();
-        imageDetailPresenter.deleteImage(photos.get(currentPosition));
+        super.onTextDialogOkClick(requestCode);
+        if (requestCode == REQUEST_DELETE_IMAGE) {
+            showLoading();
+            imageDetailPresenter.deleteImage(photos.get(currentPosition));
+        }
     }
 
     @Override
@@ -290,7 +292,7 @@ public class ImageDetailActivity extends CallCenterFinishedCallActivity implemen
     }
 
     private void confirmDeleteImage() {
-        TextDialog.openTextDialog(getSupportFragmentManager(), getString(R.string.do_you_want_to_delete_this_photo),
+        TextDialog.openTextDialog(getSupportFragmentManager(),REQUEST_DELETE_IMAGE, getString(R.string.do_you_want_to_delete_this_photo),
                 getString(R.string.delete_photo),
                 "", false);
     }

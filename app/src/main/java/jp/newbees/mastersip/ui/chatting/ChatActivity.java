@@ -42,7 +42,6 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
-import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -52,19 +51,13 @@ import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
+import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.top.ChatPresenter;
-import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
-import jp.newbees.mastersip.ui.dialog.ConfirmSendGiftDialog;
-import jp.newbees.mastersip.ui.dialog.ConfirmVoiceCallDialog;
+import jp.newbees.mastersip.ui.CallActivity;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
-import jp.newbees.mastersip.ui.dialog.SelectVideoCallDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
-import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
@@ -79,17 +72,14 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 /**
  * Created by thangit14 on 1/9/17.
  */
-public class ChatActivity extends CallCenterFinishedCallActivity implements
-        ConfirmVoiceCallDialog.OnDialogConfirmVoiceCallClick,
-        ConfirmSendGiftDialog.OnConfirmSendGiftDialog, ChatAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogPositiveClick, SelectVideoCallDialog.OnSelectVideoCallDialog,
-        OneButtonDialog.OnCusTomMessageDialogClickListener {
+public class ChatActivity extends CallActivity implements
+        ChatAdapter.OnItemClickListener,
+        TextDialog.OnTextDialogPositiveClick,
+        OneButtonDialog.OneButtonDialogClickListener {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
-    private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
-    private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
-    private static final int CONFIRM_MAKE_VIDEO_CALL = 12;
+    private static final int CONFIRM_SEND_GIFT_DIALOG = 23;
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
@@ -218,45 +208,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
 
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
         @Override
-        public void outgoingVoiceCall(UserItem callee, String callID) {
-            OutgoingVoiceActivity.startActivity(ChatActivity.this, callee, callID);
-        }
-
-        @Override
-        public void outgoingVideoCall(UserItem callee, String callID) {
-            OutgoingVideoVideoActivity.startActivity(ChatActivity.this, callee, callID);
-
-        }
-
-        @Override
-        public void outgoingVideoChatCall(UserItem callee, String callID) {
-            OutgoingVideoChatActivity.startActivity(ChatActivity.this, callee, callID);
-        }
-
-        @Override
-        public void didConnectCallError(int errorCode, String errorMessage) {
-            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-        }
-
-        @Override
-        public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-            String message = busyCallEvent.getCallId() + getString(R.string.mess_callee_reject_call);
-            String positiveTitle = getString(R.string.back_to_profile_detail);
-            OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
-        }
-
-        @Override
-        public void didCheckCallError(int errorCode, String errorMessage) {
-
-            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-        }
-
-        @Override
-        public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
-        }
-
-        @Override
         public void didSendChatToServer(BaseChatItem baseChatItem) {
             Logger.e(TAG, "sending message to server success");
             chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
@@ -273,7 +224,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
             } else {
                 showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
             }
-
         }
 
         @Override
@@ -338,7 +288,12 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
         public void didFollowUser() {
             disMissLoading();
             updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.FOLLOW));
-            ConfirmSendGiftDialog.openConfirmSendGiftDialog(getSupportFragmentManager(), userItem.getUsername());
+            String title = getString(R.string.mess_followed);
+            StringBuilder content = new StringBuilder();
+            content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
+            String positiveTitle = getString(R.string.send_a_give);
+            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_SEND_GIFT_DIALOG,
+                    content.toString(), title, positiveTitle, false);
         }
 
         @Override
@@ -362,20 +317,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
         public void didUnFollowUserError(String errorMessage, int errorCode) {
             disMissLoading();
             showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-        }
-
-        @Override
-        public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
-            disMissLoading();
-            TextDialog.openTextDialog(getSupportFragmentManager(), -1,
-                    presenter.getMessageSendRequestSuccess(userItem, type), "", "", true);
-            chatAdapter.clearData();
-            presenter.loadChatHistory(userItem, 0);
-        }
-
-        @Override
-        public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
-            disMissLoading();
         }
 
         private void initActionCalls(UserItem userItem) {
@@ -520,14 +461,12 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.registerEvent();
         EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.unRegisterEvent();
         EventBus.getDefault().unregister(this);
     }
 
@@ -571,10 +510,10 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_phone:
-                handleVoiceCallClick();
+                callVoice(userItem, false);
                 break;
             case R.id.action_video:
-                handleVideoCallClick();
+                callVideo(userItem, false);
                 break;
             case R.id.txt_send:
                 doSendMessage();
@@ -608,7 +547,6 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case SelectImageDialog.PICK_AVATAR_CAMERA:
@@ -629,21 +567,11 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
     }
 
     @Override
-    public void onOkVoiceCallClick() {
-        presenter.checkVoiceCall(userItem);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         donotHideSoftKeyboard = true;
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
-    }
-
-    @Override
-    public void onOkConfirmSendGiftClick() {
-        gotoListGiftActivity();
     }
 
     @Override
@@ -665,65 +593,15 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
     @Override
     public void onTextDialogOkClick(int requestCode) {
         super.onTextDialogOkClick(requestCode);
-        switch (requestCode) {
-            case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
-                //send request to enable voice call
-                showLoading();
-                presenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VOICE);
-                break;
-            case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
-                //send request to enable video call
-                showLoading();
-                presenter.sendMessageRequestEnableSettingCall(userItem, SendMessageRequestEnableCallTask.Type.VIDEO);
-                break;
-            case CONFIRM_MAKE_VIDEO_CALL:
-                SelectVideoCallDialog.openDialog(getSupportFragmentManager());
-                break;
-            case REQUEST_BUY_POINT:
-                PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
-                break;
-            default:
-                break;
+        if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
+                gotoListGiftActivity();
+
         }
     }
 
     @Override
-    public void onCustomMessageDialogPositiveClick() {
+    public void onOneButtonPositiveClick() {
         gotoProfileDetailActivity();
-    }
-
-    @Override
-    public void onSelectedVideoCall(SelectVideoCallDialog.VideoCall videoCall) {
-        if (videoCall == SelectVideoCallDialog.VideoCall.VIDEO_VIDEO) {
-            presenter.checkVideoCall(userItem);
-        } else {
-            presenter.checkVideoChatCall(userItem);
-        }
-    }
-
-    private void handleVoiceCallClick() {
-        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getResources().getString(R.string.confirm_request_enable_voice_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VOICE_CALL,
-                    content, "", positive, false);
-        } else {
-            ConfirmVoiceCallDialog.openConfirmVoiceCallDialog(getSupportFragmentManager());
-        }
-    }
-
-    private void handleVideoCallClick() {
-        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-            String content = userItem.getUsername() + getString(R.string.mr)
-                    + getString(R.string.confirm_request_enable_video_call);
-            String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VIDEO_CALL,
-                    content, "", positive, false);
-        } else {
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_MAKE_VIDEO_CALL,
-                    getString(R.string.are_you_sure_make_a_video_call), "", "", false);
-        }
     }
 
     private void updateTopPaddingRecycle() {
@@ -881,6 +759,15 @@ public class ChatActivity extends CallCenterFinishedCallActivity implements
 
     private void gotoListGiftActivity() {
         ListGiftActivity.startActivity(this, userItem);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+        super.didSendMsgRequestEnableSettingCall(type);
+        TextDialog.openTextDialog(getSupportFragmentManager(), -1,
+                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type), "", "", true);
+        chatAdapter.clearData();
+        presenter.loadChatHistory(userItem, 0);
     }
 
     private enum UIMode {
