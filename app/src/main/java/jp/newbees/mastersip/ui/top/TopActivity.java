@@ -18,10 +18,12 @@ import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
+import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
+import jp.newbees.mastersip.ui.CallActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
@@ -34,9 +36,8 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/6/16.
  */
 
-public class TopActivity extends CallCenterFinishedCallActivity implements
-        View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation,
-        TextDialog.OnTextDialogPositiveClick {
+public class TopActivity extends CallActivity implements
+        View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
 
     private static final String TAG = "TopActivity";
     private static final int REQUEST_OPEN_CALLER_PROFILE = 33;
@@ -58,6 +59,7 @@ public class TopActivity extends CallCenterFinishedCallActivity implements
             ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
         }
     };
+
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
@@ -315,5 +317,17 @@ public class TopActivity extends CallCenterFinishedCallActivity implements
         viewPager.setCurrentItem(0, false);
         FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+        super.didSendMsgRequestEnableSettingCall(type);
+        TextDialog.openTextDialog(getSupportFragmentManager(),
+                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), getCurrentCallee(), type), "", "", true);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+        super.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
     }
 }

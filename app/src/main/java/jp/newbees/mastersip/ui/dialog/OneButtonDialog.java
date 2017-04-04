@@ -37,10 +37,10 @@ public class OneButtonDialog extends DialogFragment {
     private String note;
     private String positiveTitle;
 
-    private OnCusTomMessageDialogClickListener onCusTomMessageDialogClickListener;
+    private OneButtonDialogClickListener oneButtonDialogClickListener;
 
-    public interface OnCusTomMessageDialogClickListener {
-        void onCustomMessageDialogPositiveClick();
+    public interface OneButtonDialogClickListener {
+        void onOneButtonPositiveClick();
     }
 
     @Override
@@ -48,9 +48,9 @@ public class OneButtonDialog extends DialogFragment {
         super.onAttach(context);
         if (getTargetFragment() == null) {
             try {
-                onCusTomMessageDialogClickListener = (OnCusTomMessageDialogClickListener) context;
+                oneButtonDialogClickListener = (OneButtonDialogClickListener) context;
             } catch (ClassCastException e) {
-                Logger.e("OneButtonDialog","Need implement OnCusTomMessageDialogClickListener to listener callback");
+                Logger.e("OneButtonDialog","Need implement OneButtonDialogClickListener to listener callback");
             }
         }
     }
@@ -60,9 +60,9 @@ public class OneButtonDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getTargetFragment() != null) {
             try {
-                onCusTomMessageDialogClickListener = (OnCusTomMessageDialogClickListener) getTargetFragment();
+                oneButtonDialogClickListener = (OneButtonDialogClickListener) getTargetFragment();
             } catch (ClassCastException e) {
-                Logger.e("OneButtonDialog","Need implement OnCusTomMessageDialogClickListener to listener callback");
+                Logger.e("OneButtonDialog","Need implement OneButtonDialogClickListener to listener callback");
             }
         }
     }
@@ -104,8 +104,8 @@ public class OneButtonDialog extends DialogFragment {
         btnPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onCusTomMessageDialogClickListener != null) {
-                    onCusTomMessageDialogClickListener.onCustomMessageDialogPositiveClick();
+                if (oneButtonDialogClickListener != null) {
+                    oneButtonDialogClickListener.onOneButtonPositiveClick();
                 }
                 dismiss();
             }

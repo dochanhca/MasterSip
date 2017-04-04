@@ -11,14 +11,13 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryModeFourAdapter;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.ui.call.CallCenterFinishedCallActivity;
 import jp.newbees.mastersip.utils.GridSpacingItemDecoration;
 
 /**
  * Created by thangit14 on 2/13/17.
  */
 
-public abstract class BaseGalleryActivity extends CallCenterFinishedCallActivity implements GalleryModeFourAdapter.OnItemClickListener {
+public abstract class BaseGalleryActivity extends CallActivity implements GalleryModeFourAdapter.OnItemClickListener {
 
     protected static final int SPAN_COUNT = 4;
 
