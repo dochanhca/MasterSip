@@ -305,9 +305,9 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         } else {
             message = new SpannableString(getString(R.string.mess_chat_room_for_girl));
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
-                    , 15, 19, 0);
+                    , 15, 21, 0);
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
-                    , 20, 22, 0);
+                    , 22, 25, 0);
 
             btnGo.setText(getString(R.string.i_will_go_looking_for_a_man));
         }
