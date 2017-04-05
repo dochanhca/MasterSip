@@ -22,6 +22,8 @@ import java.io.InputStream;
 
 public class ImageUtils {
 
+    private static final String TAG = "Image Utils";
+
     public static Uri getImageUrlWithAuthority(Context context, Uri uri) {
         InputStream is = null;
         if (uri.getAuthority() != null) {
@@ -75,7 +77,45 @@ public class ImageUtils {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(imgPath, options);
+
+        Bitmap decodeSampledBitmap = null;
+        boolean isSuccess = false;
+        while(!isSuccess) {
+            try {
+                isSuccess = true;
+                decodeSampledBitmap = BitmapFactory.decodeFile(imgPath, options);
+            } catch (OutOfMemoryError ex) {
+                Logger.e(TAG, "BitmapLoadUtils decode OutOfMemoryError");
+                options.inSampleSize = options.inSampleSize * 2;
+                isSuccess = false;
+            }
+
+        }
+
+        ExifInterface exif = getExif(imgPath);
+        if( exif == null){
+            return decodeSampledBitmap;
+        }
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int rotationInDegrees = exifToDegrees(exifOrientation);
+        return rotate(decodeSampledBitmap,rotationInDegrees);
+    }
+
+    private static ExifInterface getExif(String path) {
+        try {
+            return new ExifInterface(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int width, int height) {
@@ -93,10 +133,36 @@ public class ImageUtils {
         return inSampleSize;
     }
 
+    public static Bitmap rotate(Bitmap bitmap, int degrees)
+    {
+        if(degrees != 0 && bitmap != null)
+        {
+            Matrix m = new Matrix();
+            m.setRotate(degrees, (float) bitmap.getWidth() / 2,
+                    (float) bitmap.getHeight() / 2);
+
+            try
+            {
+                Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
+                        bitmap.getWidth(), bitmap.getHeight(), m, true);
+                if(bitmap != converted)
+                {
+                    bitmap.recycle();
+                    bitmap = converted;
+                }
+            }
+            catch(OutOfMemoryError ex)
+            {
+                // if out of memory, return original bitmap
+            }
+        }
+        return bitmap;
+    }
+
     public static InputStream convertToInputStream(Bitmap bitmap) {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
 
         byte[] imageInByte = stream.toByteArray();
         System.out.println("........length......" + imageInByte);

@@ -10,7 +10,8 @@
         android:id="@+id/image_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/corner_5">
+        app:cardCornerRadius="@dimen/corner_5"
+        app:cardElevation="0dp">
 
         <ImageView
             android:id="@+id/img_user"

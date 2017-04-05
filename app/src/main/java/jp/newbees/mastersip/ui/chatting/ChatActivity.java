@@ -261,7 +261,6 @@ public class ChatActivity extends CallActivity implements
         @Override
         public void didLoadChatHistoryError(int errorCode, String errorMessage) {
             showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-
         }
 
         @Override
@@ -480,10 +479,10 @@ public class ChatActivity extends CallActivity implements
     protected void onResume() {
         super.onResume();
         isResume = true;
-        updateStateLastMessage();
         if (isShowDialogForHandleImage) {
             showLoading();
         }
+        updateStateLastMessage();
     }
 
     @Subscribe()
@@ -701,7 +700,6 @@ public class ChatActivity extends CallActivity implements
         }
         InputStream file = ImageUtils.convertToInputStream(bitmap);
 
-        showLoading();
         presenter.sendFile(userItem.getSipItem().getExtension(), Constant.API.TYPE_UPLOAD_IMAGE,
                 file);
     }
