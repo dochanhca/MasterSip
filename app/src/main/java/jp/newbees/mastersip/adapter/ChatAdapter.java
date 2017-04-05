@@ -293,7 +293,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateSendeeLastMessageStateToRead() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
-            if (!baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+            if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
+                    !baseChatItem.isOwner() &&
+                    baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
                 return;
             }
