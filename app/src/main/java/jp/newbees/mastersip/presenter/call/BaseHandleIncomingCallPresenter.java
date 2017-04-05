@@ -59,7 +59,6 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     }
 
     public interface IncomingCallView extends CallView{
-
         void onStreamingConnected();
     }
 }

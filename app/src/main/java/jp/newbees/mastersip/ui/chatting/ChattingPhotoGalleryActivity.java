@@ -9,6 +9,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryModeFourAdapter;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.chatting.ChattingPhotoGalleryPresenter;
 import jp.newbees.mastersip.ui.BaseGalleryActivity;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
@@ -105,5 +106,15 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
         intent.putExtra(USER_ID, userId);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.enter_from_bot, R.anim.exit_to_top);
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+
+    }
+
+    @Override
+    public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
+
     }
 }

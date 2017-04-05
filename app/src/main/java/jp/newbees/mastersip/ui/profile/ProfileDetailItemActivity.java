@@ -5,31 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
-import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
+import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
-import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
-import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
-import jp.newbees.mastersip.ui.payment.PaymentActivity;
 
 /**
  * Created by thangit14 on 2/7/17.
  */
 
 public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivity
-        implements BaseCenterOutgoingCallPresenter.OutgoingCallListener,
-        TextDialog.OnTextDialogPositiveClick {
-
-    private static final int REQUEST_NOTIFY_NOT_ENOUGH_POINT = 1;
-
+        {
     private UserItem userItem;
-    private BaseCenterOutgoingCallPresenter outgoingCallPresenter;
     private ProfileDetailItemFragment fragment;
 
     public static void startActivity(Context context, UserItem userItem) {
@@ -44,21 +32,6 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
         fragment = ProfileDetailItemFragment.newInstance(userItem, false);
         initHeader(userItem.getUsername());
         showFragmentContent(fragment, ProfileDetailItemFragment.class.getName());
-
-        outgoingCallPresenter = new BaseCenterOutgoingCallPresenter(this, this) {
-        };
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        outgoingCallPresenter.unRegisterEvent();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        outgoingCallPresenter.registerEvent();
     }
 
     @Override
@@ -68,65 +41,16 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
     }
 
     @Override
-    public void outgoingVoiceCall(UserItem callee, String callID) {
-        OutgoingVoiceActivity.startActivity(ProfileDetailItemActivity.this, callee, callID);
-    }
-
-    @Override
-    public void outgoingVideoCall(UserItem callee, String callID) {
-        OutgoingVideoVideoActivity.startActivity(ProfileDetailItemActivity.this, callee, callID);
-    }
-
-    @Override
-    public void outgoingVideoChatCall(UserItem callee, String callID) {
-        OutgoingVideoChatActivity.startActivity(ProfileDetailItemActivity.this, callee, callID);
-    }
-
-    @Override
-    public void didConnectCallError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(ProfileDetailItemActivity.this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = userItem.getUsername() + getString(R.string.mess_callee_reject_call);
-        String positiveTitle = getString(R.string.back_to_profile_detail);
-        OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
-    }
-
-    @Override
-    public void didCheckCallError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void didUserNotEnoughPoint(String title, String content, String positiveTitle) {
-        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_NOTIFY_NOT_ENOUGH_POINT,
-                content, title, positiveTitle, false);
-    }
-
-    @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
-        disMissLoading();
+        super.didSendMsgRequestEnableSettingCall(type);
         TextDialog.openTextDialog(getSupportFragmentManager(),
-                outgoingCallPresenter.getMessageSendRequestSuccess(userItem, type), "","", true);
+                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type), "","", true);
     }
 
     @Override
     public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
-        disMissLoading();
+        super.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 
-    @Override
-    public void onTextDialogOkClick(int requestCode) {
-        super.onTextDialogOkClick(requestCode);
-        if (requestCode == REQUEST_NOTIFY_NOT_ENOUGH_POINT) {
-            PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
-        }
-    }
-
-    public BaseCenterOutgoingCallPresenter getOutgoingCallPresenter() {
-        return outgoingCallPresenter;
-    }
 }

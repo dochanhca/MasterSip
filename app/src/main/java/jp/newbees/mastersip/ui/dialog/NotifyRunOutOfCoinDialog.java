@@ -14,9 +14,9 @@ import jp.newbees.mastersip.R;
 public class NotifyRunOutOfCoinDialog extends BaseDialog implements View.OnClickListener {
 
     public interface NotifyRunOutOfCoinDialogClick {
-        void onPositiveButtonClick();
+        void onBuyCoinClick();
 
-        void onNegativeButtonClick();
+        void onCancelBuyCoinClick();
     }
 
     private NotifyRunOutOfCoinDialogClick notifyRunOutOfCoinDialog;
@@ -50,9 +50,9 @@ public class NotifyRunOutOfCoinDialog extends BaseDialog implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v == mButtonPositive) {
-            notifyRunOutOfCoinDialog.onPositiveButtonClick();
+            notifyRunOutOfCoinDialog.onBuyCoinClick();
         } else if (v == mButtonNegative) {
-            notifyRunOutOfCoinDialog.onNegativeButtonClick();
+            notifyRunOutOfCoinDialog.onCancelBuyCoinClick();
         }
 
         dismiss();

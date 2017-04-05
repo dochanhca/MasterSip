@@ -106,4 +106,5 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
     public TopPresenter getPresenter() {
         return topPresenter;
     }
+
 }

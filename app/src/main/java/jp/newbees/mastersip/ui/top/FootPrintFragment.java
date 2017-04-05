@@ -23,7 +23,6 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FootprintPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
-import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -62,14 +61,13 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     @Override
     protected void init(View rootView, Bundle savedInstanceState) {
-        super.init(rootView, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFootprintGroup.setOnCheckedChangeListener(this);
         this.adapterFootprint = new FootprintAdapter(getContext(), new ArrayList<FootprintItem>());
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
-//        this.presenter = new FootprintPresenter(getContext(), this);
+        this.presenter = new FootprintPresenter(getContext(), this);
         this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
@@ -110,11 +108,11 @@ public class FootPrintFragment extends BaseCallFragment implements
         if (checkedId == rdoFootprintViewedByOther.getId()) {
             showLoading();
             descriptionTotal = getString(R.string.description_viewed_by_other);
-//            presenter.getListFootprintViewedByOther();
+            presenter.getListFootprintViewedByOther();
         } else {
             showLoading();
             descriptionTotal = getString(R.string.description_viewed_by_me);
-//            presenter.getListFootprintViewedByMe();
+            presenter.getListFootprintViewedByMe();
         }
     }
 
@@ -126,12 +124,6 @@ public class FootPrintFragment extends BaseCallFragment implements
             rdoFootprintViewedByMe.setTextColor(getContext().getResources().getColor(R.color.white));
             rdoFootprintViewedByOther.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
         }
-    }
-
-    private void gotoProfileDetails(UserItem userItem) {
-        ProfileDetailItemFragment fragment = ProfileDetailItemFragment.newInstance(userItem, false);
-        this.txtActionBarTitle.setText(userItem.getUsername());
-        showFragmentContent(fragment, ProfileDetailItemFragment.class.getName());
     }
 
     @Override
@@ -158,21 +150,21 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     @Override
     public void onChatClickListener(UserItem userItem) {
-        super.requestChatClick(userItem);
+        super.chatWithUser(userItem);
     }
 
     @Override
     public void onVideoClickListener(UserItem userItem) {
-        super.requestVideoCallClick(userItem);
+        super.callVideo(userItem, false);
     }
 
     @Override
     public void onVoiceClickListener(UserItem userItem) {
-        super.requestVoiceCallClick(userItem);
+        super.callVoice(userItem, false);
     }
 
     @Override
     public void onProfileClickListener(UserItem userItem) {
-        super.requestGotoProfile(userItem);
+        super.gotoProfileDetail(userItem);
     }
 }

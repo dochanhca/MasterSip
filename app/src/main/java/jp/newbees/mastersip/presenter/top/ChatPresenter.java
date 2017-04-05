@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.presenter.top;
 
+import android.content.Context;
+
 import com.android.volley.Response;
 
 import java.io.InputStream;
@@ -16,60 +18,29 @@ import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetChatHistoryTask;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
-import jp.newbees.mastersip.presenter.call.BaseCenterOutgoingCallPresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 1/11/17.
  */
 
-public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements BaseUploadTask.ErrorListener,
+public class ChatPresenter extends BasePresenter implements BaseUploadTask.ErrorListener,
         Response.Listener<BaseChatItem> {
 
     private ChatPresenterListener chatPresenterListener;
 
-    public ChatPresenter(BaseActivity context, ChatPresenterListener chatPresenterListener) {
-        super(context, chatPresenterListener);
+    public ChatPresenter(Context context, ChatPresenterListener chatPresenterListener) {
+        super(context);
         this.chatPresenterListener = chatPresenterListener;
-    }
-
-    public interface ChatPresenterListener extends OutgoingCallListener {
-
-        void didSendChatToServer(BaseChatItem baseChatItem);
-
-        void didChatError(int errorCode, String errorMessage);
-
-        void didSendingReadMessageToServer(BaseChatItem baseChatItem);
-
-        void didSendingReadMessageToServerError(int errorCode, String errorMessage);
-
-        void didLoadChatHistory(LoadChatHistoryResultItem resultItem);
-
-        void didLoadChatHistoryError(int errorCode, String errorMessage);
-
-        void didUploadImageToServer(ImageChatItem imageChatItem);
-
-        void didUploadImageToServerError(int errorCode, String errorMessage);
-
-        void didFollowUser();
-
-        void didFollowUserError(String errorMessage, int errorCode);
-
-        void didUnFollowUser();
-
-        void didUnFollowUserError(String errorMessage, int errorCode);
-
     }
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        super.didResponseTask(task);
         if (task instanceof SendTextMessageTask) {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             chatPresenterListener.didSendChatToServer(result);
@@ -88,7 +59,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof SendTextMessageTask) {
             chatPresenterListener.didChatError(errorCode, errorMessage);
         } else if (task instanceof UpdateStateMessageTask) {
@@ -99,8 +69,6 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
             chatPresenterListener.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUserError(errorMessage, errorCode);
-        } else if (task instanceof SendMessageRequestEnableCallTask) {
-            chatPresenterListener.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         }
     }
 
@@ -205,5 +173,33 @@ public class ChatPresenter extends BaseCenterOutgoingCallPresenter implements Ba
         RelationshipItem relationshipItem = members.get(currentUser.getUserId()).getRelationshipItem();
         relationshipItem.setFollowed(follow);
         return relationshipItem;
+    }
+
+    public interface ChatPresenterListener {
+
+        void didSendChatToServer(BaseChatItem baseChatItem);
+
+        void didChatError(int errorCode, String errorMessage);
+
+        void didSendingReadMessageToServer(BaseChatItem baseChatItem);
+
+        void didSendingReadMessageToServerError(int errorCode, String errorMessage);
+
+        void didLoadChatHistory(LoadChatHistoryResultItem resultItem);
+
+        void didLoadChatHistoryError(int errorCode, String errorMessage);
+
+        void didUploadImageToServer(ImageChatItem imageChatItem);
+
+        void didUploadImageToServerError(int errorCode, String errorMessage);
+
+        void didFollowUser();
+
+        void didFollowUserError(String errorMessage, int errorCode);
+
+        void didUnFollowUser();
+
+        void didUnFollowUserError(String errorMessage, int errorCode);
+
     }
 }
