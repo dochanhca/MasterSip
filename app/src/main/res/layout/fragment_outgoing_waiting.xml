@@ -63,5 +63,10 @@
             android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
-    <include layout="@layout/layout_voice_calling_action" />
+    <include
+        android:visibility="gone"
+        layout="@layout/layout_calling_three_action" />
+
+    <include
+        layout="@layout/layout_calling_two_action" />
 </RelativeLayout>

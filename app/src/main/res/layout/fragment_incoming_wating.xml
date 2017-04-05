@@ -65,7 +65,7 @@
 
     <include
         android:id="@+id/layout_voice_calling_action"
-        layout="@layout/layout_voice_calling_action"
+        layout="@layout/layout_calling_three_action"
         android:visibility="gone" />
 
 </RelativeLayout>

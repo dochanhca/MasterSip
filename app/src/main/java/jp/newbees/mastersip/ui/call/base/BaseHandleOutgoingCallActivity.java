@@ -85,6 +85,15 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     }
 
+    protected void showVideoChatFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        videoCallFragment = VideoCallFragment.newInstance(getCompetitor(), callId, getCallType(),
+                outgoingWaitingFragment.isSpeakerEnable(), outgoingWaitingFragment.muteMic());
+        transaction.replace(R.id.fragment_container, videoCallFragment,
+                VideoCallFragment.class.getName()).commit();
+        outgoingWaitingFragment = null;
+    }
+
     private void showOutgoingWaitingFragment(UserItem callee, String titleCall, int callType) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         outgoingWaitingFragment = OutgoingWaitingFragment.newInstance(callee, callId, titleCall, callType);
