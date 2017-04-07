@@ -129,7 +129,11 @@ public class Utils {
     public static void showDialogRegisterSuccess(int requestCode, Fragment fragment) {
         String title = fragment.getContext().getResources().getString(R.string.title_send_confirm_email_backup);
         String content = fragment.getContext().getResources().getString(R.string.content_send_confirm_email_backup_error);
-        TextDialog.openTextDialog(fragment, requestCode, fragment.getFragmentManager(), content, title, true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .hideNegativeButton(true)
+                .build(fragment, content, requestCode);
+        textDialog.show(fragment.getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     public static String getURLChosePaymentType() {

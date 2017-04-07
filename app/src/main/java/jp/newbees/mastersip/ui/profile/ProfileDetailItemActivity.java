@@ -43,8 +43,10 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
     @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         super.didSendMsgRequestEnableSettingCall(type);
-        TextDialog.openTextDialog(getSupportFragmentManager(),
-                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type), "","", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .hideNegativeButton(true)
+                .build(CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     @Override

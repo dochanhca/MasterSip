@@ -27,7 +27,7 @@ public abstract class RegisterBaseActivity extends BaseActivity {
 
     protected void confirmDeleteAvatar() {
         String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
-        TextDialog.openTextDialog(getSupportFragmentManager(),
-                confirmDeleteAvatar, "", "", false);
+        TextDialog textDialog = new TextDialog.Builder().build(confirmDeleteAvatar);
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 }

@@ -291,8 +291,12 @@ public class ChatActivity extends CallActivity implements
             StringBuilder content = new StringBuilder();
             content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
             String positiveTitle = getString(R.string.send_a_give);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_SEND_GIFT_DIALOG,
-                    content.toString(), title, positiveTitle, false);
+            TextDialog textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_SEND_GIFT_DIALOG)
+                    .setTitle(title)
+                    .setPositiveTitle(positiveTitle)
+                    .build(content.toString());
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
 
         @Override
@@ -347,8 +351,10 @@ public class ChatActivity extends CallActivity implements
                     .append(minPoint).append(getString(R.string.pt)).append(getString(R.string.is_required))
                     .append("\n").append(getString(R.string.do_you_want_to_add_point));
 
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content.toString()
-                    , title, positiveTitle, false);
+            TextDialog textDialog = new TextDialog.Builder().setRequestCode(REQUEST_BUY_POINT)
+                    .setTitle(title).setPositiveTitle(positiveTitle)
+                    .build(content.toString());
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
     };
 
@@ -594,7 +600,6 @@ public class ChatActivity extends CallActivity implements
         super.onTextDialogOkClick(requestCode);
         if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
                 gotoListGiftActivity();
-
         }
     }
 
@@ -762,8 +767,10 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         super.didSendMsgRequestEnableSettingCall(type);
-        TextDialog.openTextDialog(getSupportFragmentManager(), -1,
-                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type), "", "", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .hideNegativeButton(true)
+                .build(CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
     }
