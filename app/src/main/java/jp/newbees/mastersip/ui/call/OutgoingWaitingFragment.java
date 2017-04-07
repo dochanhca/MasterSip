@@ -42,6 +42,8 @@ public class OutgoingWaitingFragment extends BaseFragment {
     protected HiraginoTextView txtUserName;
     @BindView(R.id.txt_timer)
     protected HiraginoTextView txtTimer;
+    @BindView(R.id.txt_notify_low_signal)
+    protected HiraginoTextView txtNotifyLowSignal;
     @BindView(R.id.img_loading)
     protected ImageView imgLoading;
     @BindView(R.id.btn_on_off_mic)
@@ -222,6 +224,16 @@ public class OutgoingWaitingFragment extends BaseFragment {
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+    }
+
+    public void onCallPaused() {
+        txtTimer.setVisibility(View.INVISIBLE);
+        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    public final void onCallResume() {
+        txtTimer.setVisibility(View.VISIBLE);
+        txtNotifyLowSignal.setVisibility(View.INVISIBLE);
     }
 
     private BaseHandleOutgoingCallActivity getOutgoingActivity() {

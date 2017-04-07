@@ -279,9 +279,11 @@ public class TopPresenter extends BasePresenter {
     }
 
     public enum Permission {
-        CAMERA(201, Manifest.permission.CAMERA), RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
+        CAMERA(201, Manifest.permission.CAMERA),
+        RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
         WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-        GET_ACCOUNTS(204, Manifest.permission.GET_ACCOUNTS);
+        GET_ACCOUNTS(204, Manifest.permission.GET_ACCOUNTS),
+        READ_PHONE_STATE(205, Manifest.permission.READ_PHONE_STATE);
 
         private final int result;
         private final String permissionName;

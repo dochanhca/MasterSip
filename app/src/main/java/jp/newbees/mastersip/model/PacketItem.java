@@ -3,6 +3,9 @@ package jp.newbees.mastersip.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by vietbq on 1/6/17.
  */
@@ -40,8 +43,6 @@ public class PacketItem implements Parcelable {
         dest.writeString(this.message);
         dest.writeString(this.response);
     }
-
-
 
     protected PacketItem(Parcel in) {
         this.action = in.readString();
@@ -83,5 +84,9 @@ public class PacketItem implements Parcelable {
 
     public void setData(String data) {
         this.response = data;
+    }
+
+    public JSONObject getJsonData() throws JSONException {
+        return new JSONObject(this.response);
     }
 }

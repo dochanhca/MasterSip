@@ -22,7 +22,6 @@ import jp.newbees.mastersip.BuildConfig;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.CheckCallTask;
 
 import static com.facebook.FacebookSdk.getCacheDir;
 import static jp.newbees.mastersip.utils.Constant.API.BASE_URL;
@@ -39,13 +38,14 @@ final public class ConfigManager {
     private final SharedPreferences sharedPreferences;
     private String domain;
     private int imageDrawableCalleeId = -1;
-    private HashMap<String, UserItem> callees;
+    private HashMap<String, UserItem> callUsers;
     private int currentCallType;
     private String callId;
     private int imageDrawableCallerId = -1;
 
     private int unReadMessage;
     private int currentTabInRootNavigater;
+    private String currentCallId;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -81,7 +81,7 @@ final public class ConfigManager {
         //Init SharePreference
         sharedPreferences = context.getSharedPreferences(Constant.Application.PREFERENCE_NAME, Context.MODE_PRIVATE);
         domain = BASE_URL;
-        callees = new HashMap<>();
+        callUsers = new HashMap<>();
     }
 
     public RequestQueue getRequestQueue() {
@@ -202,7 +202,7 @@ final public class ConfigManager {
     public void resetSettings() {
         imageDrawableCalleeId = -1;
         imageDrawableCallerId = -1;
-        callees.clear();
+        callUsers.clear();
         clearUser();
         LoginManager.getInstance().logOut();
     }
@@ -219,30 +219,24 @@ final public class ConfigManager {
     }
 
     public UserItem getCurrentCallee(String callId) {
-        UserItem callee = callees.get(callId);
+        UserItem callee = callUsers.get(callId);
         return callee;
-    }
-
-    public void removeCurrentCallee(String calleeExtension) {
-        callees.remove(calleeExtension);
     }
 
     public int getCurrentCallType() {
         return currentCallType;
     }
 
-    public void setCurrentCallee(UserItem callee, String roomId) {
-        callees.put(roomId, callee);
+    public void setCurrentCallUser(UserItem callUser, String roomId) {
+        callUsers.put(roomId, callUser);
     }
 
     public String getCallId() {
-        return sharedPreferences.getString(CheckCallTask.CALL_ID, "");
+        return this.currentCallId;
     }
 
     public void setCallId(String callId) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(CheckCallTask.CALL_ID, callId);
-        editor.commit();
+        this.currentCallId = callId;
     }
 
     public void setCurrentCallType(int callType) {
@@ -290,5 +284,9 @@ final public class ConfigManager {
 
     public boolean getFirstTimeChattingFlag() {
         return sharedPreferences.getBoolean(Constant.Application.CHATTING_FLAG, false);
+    }
+
+    public UserItem getCalleeByRoomId(String roomId) throws NullPointerException{
+        return this.callUsers.get(roomId);
     }
 }
