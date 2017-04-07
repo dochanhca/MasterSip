@@ -27,15 +27,15 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
-import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
+import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 
 /**
  * Created by thangit14 on 3/14/17.
+ * use for both incoming and outgoing video call
  */
 
-public class VideoCallFragment extends BaseFragment implements View.OnTouchListener {
+public class VideoCallFragment extends CallingFragment implements View.OnTouchListener {
     private static final String COMPETITOR = "USER ITEM";
     private static final String CALL_TYPE = "CALL TYPE";
     private static final String SPEAKER = "SPEAKER";
@@ -79,7 +79,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private String callId;
 
     private MyCountingTimerThread myCountingThreadToHideAction;
-    private MyCountingTimerThread myCountingTimer;
 
     private Animation moveUpTxtTime;
     private Animation moveDownTxtTime;
@@ -95,8 +94,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             if (msg.obj.toString().equalsIgnoreCase(ID_TIMER_HIDE_ACTION)) {
                 hideView();
                 myCountingThreadToHideAction.reset();
-            } else if (msg.obj.toString().equalsIgnoreCase(ID_COUNTING_CALL_DURATION)) {
-                txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
             }
         }
     };
@@ -174,9 +171,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             myCountingThreadToHideAction.turnOffCounting();
         }
 
-        if (myCountingTimer != null) {
-            myCountingTimer.turnOffCounting();
-        }
         super.onDestroy();
     }
 
@@ -187,7 +181,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         llPoint.setVisibility(competitor.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(competitor.getUsername());
-        startCountingCallDuration();
+        countingCallDuration();
 
         boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
         boolean muteMic = getArguments().getBoolean(MIC);
@@ -226,24 +220,24 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     @OnClick({R.id.btn_cancel_call, R.id.two_action_btn_on_off_mic, R.id.two_action_btn_on_off_speaker,
             R.id.btn_on_off_camera, R.id.img_switch_camera})
     public void onClick(View view) {
-        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
+
         resetCountingToHideAction();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
-                activity.terminalCall(callId);
+                terminalCall(callId);
                 break;
             case R.id.two_action_btn_on_off_mic:
-                activity.muteMicrophone(btnOnOffMic.isChecked());
+                muteMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.two_action_btn_on_off_speaker:
-                activity.enableSpeaker(!btnOnOffSpeaker.isChecked());
+                enableSpeaker(!btnOnOffSpeaker.isChecked());
                 break;
             case R.id.btn_on_off_camera:
-                activity.enableCamera(!btnOnOffCamera.isChecked());
+                enableCamera(!btnOnOffCamera.isChecked());
                 updateVideoView();
                 break;
             case R.id.img_switch_camera:
-                activity.switchCamera(mCaptureView);
+                switchCamera(mCaptureView);
                 break;
         }
     }
@@ -341,11 +335,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         new Thread(myCountingThreadToHideAction).start();
     }
 
-    private void startCountingCallDuration() {
-        myCountingTimer = new MyCountingTimerThread(handler, ID_COUNTING_CALL_DURATION, BREAK_TIME_OF_COUNTING_CALL_DURATION);
-        new Thread(myCountingTimer).start();
+    @Override
+    protected void onCallingBreakTime(Message msg) {
+        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
+    @Override
     public void onCoinChanged(int coin) {
         if (isDetached()) {
             return;

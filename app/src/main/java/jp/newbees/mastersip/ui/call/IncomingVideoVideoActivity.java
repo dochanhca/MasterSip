@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.call;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
@@ -36,13 +35,10 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
         showVideoCallFragment();
     }
 
-    public static void startActivity(Context context, UserItem caller, String callID) {
+    public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoVideoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CALLER, caller);
-        bundle.putString(CALL_ID, callID);
-        intent.putExtras(bundle);
+        intent.putExtras(getBundle(competitor,callID));
         context.startActivity(intent);
     }
 }

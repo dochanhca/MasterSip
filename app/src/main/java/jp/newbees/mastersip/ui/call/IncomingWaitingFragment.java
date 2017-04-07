@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.thread.MyCountingTimerThread;
-import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
+import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
+import jp.newbees.mastersip.ui.call.base.WaitingFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -32,13 +30,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by thangit14 on 3/13/17.
  */
 
-public class IncomingWaitingFragment extends BaseFragment {
-    private static final String COMPETITOR = "COMPETITOR";
-    private static final String CALL_TYPE = "CALL_TYPE";
-    private static final String CALL_ID = "CALL_ID";
-    private static final String ACCEPT_CALL_IMAGE = "ACCEPT_CALL_IMAGE";
-    private static final String TITLE_CALL = "TITLE_CALL";
-
+public class IncomingWaitingFragment extends WaitingFragment {
     @BindView(R.id.profile_image)
     protected CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
@@ -66,27 +58,9 @@ public class IncomingWaitingFragment extends BaseFragment {
     @BindView(R.id.layout_voice_calling_action)
     protected ViewGroup layoutVoiceCallingAction;
 
-    private Handler timerHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
-        }
-    };
-
-    private UserItem competitor;
-    private String callId;
-    private int acceptCallImage;
-    private String titleCall;
-
     public static IncomingWaitingFragment newInstance(UserItem competitor, String callId,
                                                       int acceptCallImage, String titleCall, int callType) {
-
-        Bundle args = new Bundle();
-        args.putString(TITLE_CALL, titleCall);
-        args.putInt(ACCEPT_CALL_IMAGE, acceptCallImage);
-        args.putString(CALL_ID, callId);
-        args.putParcelable(COMPETITOR, competitor);
-        args.putInt(CALL_TYPE, callType);
+        Bundle args = WaitingFragment.getBundle(competitor, callId, acceptCallImage, titleCall, callType);
         IncomingWaitingFragment fragment = new IncomingWaitingFragment();
         fragment.setArguments(args);
         return fragment;
@@ -100,27 +74,27 @@ public class IncomingWaitingFragment extends BaseFragment {
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
+        super.init(mRoot,savedInstanceState);
         ButterKnife.bind(this, mRoot);
-        getArgs();
         updateView();
     }
 
     @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
         try {
-            BaseHandleIncomingCallActivity activity = ((BaseHandleIncomingCallActivity) getActivity());
+            BaseHandleCallActivity activity = getCallActivity();
             switch (view.getId()) {
                 case R.id.btn_reject_call:
-                    activity.declineCall(callId);
+                    activity.declineCall(getCallId());
                     break;
                 case R.id.btn_accept_call:
-                    activity.acceptCall(callId);
+                    activity.acceptCall(getCallId());
                     break;
                 case R.id.btn_on_off_mic:
                     activity.muteMicrophone(btnOnOffMic.isChecked());
                     break;
                 case R.id.btn_cancel_call:
-                    activity.terminalCall(callId);
+                    activity.terminalCall(getCallId());
                     break;
                 case R.id.btn_on_off_speaker:
                     activity.enableSpeaker(btnOnOffSpeaker.isChecked());
@@ -133,11 +107,11 @@ public class IncomingWaitingFragment extends BaseFragment {
     }
 
     private void updateView() {
-        txtUserName.setText(competitor.getUsername());
+        txtUserName.setText(getCompetitor().getUsername());
 
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
-        if (competitor.getAvatarItem() != null) {
-            Glide.with(this).load(competitor.getAvatarItem().getOriginUrl())
+        if (getCompetitor().getAvatarItem() != null) {
+            Glide.with(this).load(getCompetitor().getAvatarItem().getOriginUrl())
                     .error(imageID).placeholder(imageID)
                     .centerCrop()
                     .into(profileImage);
@@ -147,22 +121,17 @@ public class IncomingWaitingFragment extends BaseFragment {
         Glide.with(this).load(R.drawable.pinpoint)
                 .asGif()
                 .into(imgLoading);
-        txtTimer.setText(titleCall);
-        btnAcceptCall.setImageResource(acceptCallImage);
+        txtTimer.setText(getTitleCall());
+        btnAcceptCall.setImageResource(getAcceptCallImage());
     }
 
-    private void getArgs() {
-        Bundle args = getArguments();
-        competitor = args.getParcelable(COMPETITOR);
-        callId = args.getString(CALL_ID);
-        acceptCallImage = args.getInt(ACCEPT_CALL_IMAGE);
-        titleCall = args.getString(TITLE_CALL);
+    @Override
+    protected void onCallingBreakTime(Message msg) {
+        txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
-    /**
-     * using for voice call only
-     */
-    public void showCallingViewOnVoiceCall() {
+    @Override
+    public void updateViewWhenVoiceConnected() {
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -173,14 +142,7 @@ public class IncomingWaitingFragment extends BaseFragment {
         imgLoading.setVisibility(View.GONE);
     }
 
-    /**
-     * start when user during a call
-     */
-    public void countingCallDuration() {
-        MyCountingTimerThread timerThread = new MyCountingTimerThread(timerHandler);
-        new Thread(timerThread).start();
-    }
-
+    @Override
     public void onCoinChanged(int coin) {
         if (isDetached()) {
             return;
