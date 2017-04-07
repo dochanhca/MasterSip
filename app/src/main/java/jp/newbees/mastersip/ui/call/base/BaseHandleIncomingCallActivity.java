@@ -77,6 +77,24 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         }
     }
 
+    @Override
+    public void onCallPaused() {
+        if (incomingWaitingFragment == null) {
+            videoCallFragment.onCallPaused();
+        } else {
+            incomingWaitingFragment.onCallPaused();
+        }
+    }
+
+    @Override
+    public void onCallResuming() {
+        if (incomingWaitingFragment == null) {
+            videoCallFragment.onCallResume();
+        } else {
+            incomingWaitingFragment.onCallResume();
+        }
+    }
+
     private void showIncomingWaitingFragment(UserItem caller, String callId,
                                              int acceptCallImage, String titleCall, int callType) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -96,7 +114,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     protected void showCallingViewOnVoiceCall() {
         incomingWaitingFragment.showCallingViewOnVoiceCall();
-
     }
 
     protected void countingCallDuration() {

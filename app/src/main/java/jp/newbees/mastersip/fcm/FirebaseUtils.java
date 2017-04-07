@@ -36,7 +36,7 @@ public class FirebaseUtils {
         return result;
     }
 
-    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data) throws JSONException {
+    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data) throws JSONException, NullPointerException{
         Map<String, Object> result = new HashMap<>();
         JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         String roomId = data.get(Constant.JSON.ROOM_ID);
@@ -51,7 +51,6 @@ public class FirebaseUtils {
         result.put(Constant.JSON.FCM_PUSH_ITEM, parsePushItem(jAps));
         result.put(Constant.JSON.USER, userItem);
         result.put(Constant.JSON.ROOM_ID, roomId);
-
 
         return result;
     }

@@ -18,7 +18,6 @@ import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
@@ -107,7 +106,7 @@ public class CallPresenter extends BasePresenter {
         ConfigManager.getInstance().setCallId(callId);
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
 
-        ConfigManager.getInstance().setCurrentCallee(callee, callId);
+        ConfigManager.getInstance().setCurrentCallUser(callee, callId);
         makeCall(roomId, callType);
     }
 
@@ -199,9 +198,6 @@ public class CallPresenter extends BasePresenter {
                 notifyCallerJoinedRoom(receivingCallEvent.getCallId());
                 handleOutgoingCall(receivingCallEvent.getCallId());
                 break;
-            case ReceivingCallEvent.LINPHONE_ERROR:
-                cancelCall(receivingCallEvent.getCallId());
-                break;
             default:
                 break;
         }
@@ -241,15 +237,15 @@ public class CallPresenter extends BasePresenter {
         }
     }
 
-    /**
-     * Cancel call
-     *
-     * @param calId
-     */
-    private void cancelCall(String calId) {
-        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
-        requestToServer(cancelCallTask);
-    }
+//    /**
+//     * Cancel call
+//     *
+//     * @param calId
+//     */
+//    private void cancelCall(String calId) {
+//        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
+//        requestToServer(cancelCallTask);
+//    }
 
     public final void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
         SendMessageRequestEnableCallTask task = new SendMessageRequestEnableCallTask(context, userItem, type);

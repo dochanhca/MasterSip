@@ -49,7 +49,7 @@ public abstract class BaseTask<T extends Object> {
         TAG = getClass().getSimpleName();
     }
 
-    final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
+    public final void request(final Response.Listener<T> listener, final ErrorListener errorListener) {
         String url = genURL();
         url += genParamURL();
         if (Constant.Application.DEBUG) {
@@ -126,7 +126,9 @@ public abstract class BaseTask<T extends Object> {
             @Override
             protected void deliverResponse(T response) {
                 BaseTask.this.dataResponse = response;
-                listener.onResponse(response);
+                if (listener != null) {
+                    listener.onResponse(response);
+                }
             }
         };
 

@@ -7,6 +7,8 @@ package jp.newbees.mastersip.event.call;
 public class ReceivingCallEvent {
     public static final int INCOMING_CALL = 1;
     public static final int OUTGOING_CALL = 2;
+    public static final int PAUSED_CALL = 9;
+    public static final int RESUMING_CALL = 10;
     public static final int END_CALL = 13;
     public static final int INCOMING_CONNECTED_CALL = 6;
     public static final int OUTGOING_CONNECTED_CALL = 600;
