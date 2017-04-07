@@ -12,11 +12,13 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_timer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_profile"
+        android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:text="@string/in_coming_voice_call"
+        android:text="@string/title_incoming_call_video_chat_for_male"
+        android:lineSpacingExtra="@dimen/normal_spacing_extra"
         android:textColor="@color/text_color_gray_light"
         android:textSize="@dimen/text_size_15" />
 

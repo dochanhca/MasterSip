@@ -40,7 +40,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     }
 
-    protected abstract String getTextTitle();
+    protected abstract String getTextTitleInWaitingFragment();
 
     @Override
     public UserItem getCompetitor() {
@@ -51,12 +51,12 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
     protected void initVariables(Bundle savedInstanceState) {
         competitor = getIntent().getExtras().getParcelable(COMPETITOR);
         callId = getIntent().getExtras().getString(CALL_ID);
-        showOutgoingWaitingFragment(competitor, getTextTitle(), getCallType());
+        showOutgoingWaitingFragment(competitor, getTextTitleInWaitingFragment(), getCallType());
     }
 
     @Override
     protected int layoutId() {
-        return R.layout.activity_out_going_voice;
+        return R.layout.activity_outgoing_call;
     }
 
     @Override

@@ -17,6 +17,7 @@
         android:layout_below="@+id/layout_profile"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
+        android:lineSpacingExtra="@dimen/normal_spacing_extra"
         android:text="@string/during_a_voice_call"
         android:textColor="@color/text_color_gray_light"
         android:textSize="@dimen/text_size_15" />
@@ -63,10 +64,10 @@
             android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
-    <include
-        android:visibility="gone"
-        layout="@layout/layout_calling_three_action" />
-
-    <include
-        layout="@layout/layout_calling_two_action" />
+    <ViewStub
+        android:id="@+id/view_stub_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_25" />
 </RelativeLayout>

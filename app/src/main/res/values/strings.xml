@@ -440,5 +440,8 @@
     <string name="would_you_like_to_check_profile">プロフィールを確認しますか？</string>
     <string name="check">確認する</string>
     <string name="do_not_check">確認しない</string>
-    <string name="title_outgoing_call_video_chat">お相手(チャット)+自分(ビデオ)で 呼び出し中...</string>
+    <string name="title_outgoing_call_video_chat_for_male">お相手(ビデオ)+自分(チャット)で\n呼び出し中...</string>
+    <string name="title_outgoing_call_video_chat_for_female">お相手(チャット)+自分(ビデオ)で\n呼び出し中...</string>
+    <string name="title_incoming_call_video_chat_for_female">お相手(チャット)+自分(ビデオ)で\n着信中...</string>
+    <string name="title_incoming_call_video_chat_for_male">お相手(ビデオ)+自分(チャット)で\n着信中...</string>
 </resources>

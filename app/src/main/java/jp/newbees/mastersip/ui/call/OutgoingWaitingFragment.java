@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
@@ -12,7 +13,6 @@ import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
@@ -28,7 +28,7 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  * Created by thangit14 on 3/15/17.
  */
 
-public class OutgoingWaitingFragment extends BaseFragment {
+public class OutgoingWaitingFragment extends BaseFragment implements View.OnClickListener {
     private static final String CALLEE = "COMPETITOR";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String TITLE_CALL = "TITLE_CALL";
@@ -37,29 +37,29 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private static final int MAX_WAITING_TIME = 15;
 
     @BindView(R.id.profile_image)
-    protected CircleImageView profileImage;
+    CircleImageView profileImage;
     @BindView(R.id.txt_user_name)
-    protected HiraginoTextView txtUserName;
+    HiraginoTextView txtUserName;
     @BindView(R.id.txt_timer)
-    protected HiraginoTextView txtTimer;
+    HiraginoTextView txtTimer;
     @BindView(R.id.img_loading)
-    protected ImageView imgLoading;
-    @BindView(R.id.btn_on_off_mic)
-    protected ToggleButton btnOnOffMic;
-    @BindView(R.id.btn_on_off_speaker)
-    protected ToggleButton btnOnOffSpeaker;
-    @BindView(R.id.btn_cancel_call)
-    protected ImageView btnCancelCall;
+    ImageView imgLoading;
     @BindView(R.id.ll_point)
-    protected LinearLayout llPoint;
+    LinearLayout llPoint;
     @BindView(R.id.txt_point)
-    protected HiraginoTextView txtPoint;
-    @BindView(R.id.layout_calling_three_action)
-    LinearLayout layoutCallingThreeAction;
-    @BindView(R.id.layout_calling_two_action)
-    LinearLayout layoutCallingTwoAction;
+    HiraginoTextView txtPoint;
+    @BindView(R.id.view_stub_action)
+    ViewStub viewStubAction;
+
+    private ToggleButton btnOnOffMic;
+    private ToggleButton btnOnOffSpeaker;
+    private LinearLayout llOnOffSpeaker;
+    private LinearLayout llOnOffMic;
+    private ImageView btnCancelCall;
+
 
     private UserItem callee;
+
     private String titleCall;
     private int callType;
     private String callID;
@@ -74,7 +74,9 @@ public class OutgoingWaitingFragment extends BaseFragment {
     private Handler waitingTimeHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            getOutgoingActivity().terminalCall(callID);
+            if (getOutgoingActivity() != null) {
+                getOutgoingActivity().terminalCall(callID);
+            }
         }
     };
     private MyCountingTimerThread countWaitingTimeThread;
@@ -144,17 +146,16 @@ public class OutgoingWaitingFragment extends BaseFragment {
         profileImage.setImageResource(imageID);
 
         if (callType == Constant.API.VIDEO_CHAT_CALL) {
-            layoutCallingTwoAction.setVisibility(View.VISIBLE);
-            layoutCallingThreeAction.setVisibility(View.GONE);
+            inflateViewAction(R.layout.layout_calling_two_action);
 
             if (callee.getGender() == UserItem.MALE) {
-                btnOnOffMic.setVisibility(View.GONE);
+                llOnOffMic.setVisibility(View.GONE);
             } else {
-                btnOnOffSpeaker.setVisibility(View.GONE);
+                llOnOffSpeaker.setVisibility(View.GONE);
             }
         } else {
-            layoutCallingTwoAction.setVisibility(View.GONE);
-            layoutCallingThreeAction.setVisibility(View.VISIBLE);
+            inflateViewAction(R.layout.layout_calling_three_action);
+
             if (callType == Constant.API.VOICE_CALL) {
                 enableSpeaker(false);
             } else if (callType == Constant.API.VIDEO_CALL) {
@@ -164,7 +165,20 @@ public class OutgoingWaitingFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
+    private void inflateViewAction(int layout) {
+        viewStubAction.setLayoutResource(layout);
+        View view = viewStubAction.inflate();
+        llOnOffMic = (LinearLayout) view.findViewById(R.id.ll_on_off_mic);
+        llOnOffSpeaker = (LinearLayout) view.findViewById(R.id.ll_on_off_speaker);
+        btnOnOffMic = (ToggleButton) view.findViewById(R.id.btn_on_off_mic);
+        btnOnOffSpeaker = (ToggleButton) view.findViewById(R.id.btn_on_off_speaker);
+        btnCancelCall = (ImageView) view.findViewById(R.id.btn_cancel_call);
+        btnCancelCall.setOnClickListener(this);
+        btnOnOffMic.setOnClickListener(this);
+        btnOnOffSpeaker.setOnClickListener(this);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_on_off_mic:

@@ -52,9 +52,9 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
     SurfaceView mCaptureView;
-    @BindView(R.id.btn_on_off_mic)
+    @BindView(R.id.two_action_btn_on_off_mic)
     ToggleButton btnOnOffMic;
-    @BindView(R.id.btn_on_off_speaker)
+    @BindView(R.id.two_action_btn_on_off_speaker)
     ToggleButton btnOnOffSpeaker;
     @BindView(R.id.btn_on_off_camera)
     ToggleButton btnOnOffCamera;
@@ -223,7 +223,7 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         });
     }
 
-    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_mic, R.id.btn_on_off_speaker,
+    @OnClick({R.id.btn_cancel_call, R.id.two_action_btn_on_off_mic, R.id.two_action_btn_on_off_speaker,
             R.id.btn_on_off_camera, R.id.img_switch_camera})
     public void onClick(View view) {
         BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
@@ -232,10 +232,10 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             case R.id.btn_cancel_call:
                 activity.terminalCall(callId);
                 break;
-            case R.id.btn_on_off_mic:
+            case R.id.two_action_btn_on_off_mic:
                 activity.muteMicrophone(btnOnOffMic.isChecked());
                 break;
-            case R.id.btn_on_off_speaker:
+            case R.id.two_action_btn_on_off_speaker:
                 activity.enableSpeaker(!btnOnOffSpeaker.isChecked());
                 break;
             case R.id.btn_on_off_camera:

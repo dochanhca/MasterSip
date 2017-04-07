@@ -25,7 +25,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener{
+public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener {
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
@@ -60,7 +60,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     /**
      * @throws RuntimeException service not instantiated
      */
-    public static LinphoneService instance()  {
+    public static LinphoneService instance() {
         if (isReady()) return instance;
 
         throw new RuntimeException("LinphoneService not instantiated yet");
@@ -108,12 +108,24 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void onDestroy() {
+        if (ConfigManager.getInstance().inCall()) {
+            Logger.e(TAG, "try to cancel current call");
+            incomingCallPresenter.cancelCall();
+        } else {
+            Logger.e(TAG, "callID" + ConfigManager.getInstance().getCallId());
+        }
         instance = null;
         unregisterReceiver(receiverRingerModeChanged);
         incomingCallPresenter.unRegisterCallEvent();
         linphoneHandler.destroy();
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        this.stopSelf();
+        super.onTaskRemoved(rootIntent);
     }
 
     @Override
@@ -133,7 +145,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void didCheckCallError(int errorCode, String errorMessage) {
-        Toast.makeText(this, "Error "+errorCode+" when check call : "+errorMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Error " + errorCode + " when check call : " + errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     private void registerReceiverRingerModeChanged() {

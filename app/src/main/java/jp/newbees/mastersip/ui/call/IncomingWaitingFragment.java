@@ -101,7 +101,6 @@ public class IncomingWaitingFragment extends BaseFragment {
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
-
         getArgs();
         updateView();
     }

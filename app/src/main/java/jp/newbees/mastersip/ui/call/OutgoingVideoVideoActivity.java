@@ -16,7 +16,7 @@ import jp.newbees.mastersip.utils.Constant;
 public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
-    protected String getTextTitle() {
+    protected String getTextTitleInWaitingFragment() {
         return getResources().getString(R.string.title_outgoing_call_video);
     }
 

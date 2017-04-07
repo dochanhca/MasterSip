@@ -7,6 +7,7 @@ import android.os.Bundle;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.BaseHandleIncomingCallActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -17,12 +18,13 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     protected int getAcceptCallImage() {
-        return R.drawable.bg_ic_accept_call;
+        return R.drawable.ic_accept_video_chat_call;
     }
 
     @Override
     protected String getTitleCall() {
-        return "Need update";
+        return getResources().getString(ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE ?
+                R.string.title_incoming_call_video_chat_for_male : R.string.title_incoming_call_video_chat_for_female);
     }
 
     @Override
