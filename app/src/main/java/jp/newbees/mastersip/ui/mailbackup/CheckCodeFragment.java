@@ -99,7 +99,11 @@ public class CheckCodeFragment extends BaseFragment implements CheckCodePresente
                 content = "";
                 break;
         }
-        TextDialog.openTextDialog(this, SUCCESS_DIALOG, getFragmentManager(), content, title, true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .hideNegativeButton(true)
+                .build(this, content, SUCCESS_DIALOG);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     private static CheckCodeFragment newInstance(CallFrom callFrom, String email) {

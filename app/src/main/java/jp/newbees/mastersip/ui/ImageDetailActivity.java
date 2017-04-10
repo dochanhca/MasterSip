@@ -292,9 +292,10 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     }
 
     private void confirmDeleteImage() {
-        TextDialog.openTextDialog(getSupportFragmentManager(),REQUEST_DELETE_IMAGE, getString(R.string.do_you_want_to_delete_this_photo),
-                getString(R.string.delete_photo),
-                "", false);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setRequestCode(REQUEST_DELETE_IMAGE).setTitle(getString(R.string.delete_photo))
+                .build(getString(R.string.do_you_want_to_delete_this_photo));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     private void initViewPager() {

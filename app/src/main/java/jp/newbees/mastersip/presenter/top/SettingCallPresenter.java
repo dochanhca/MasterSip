@@ -18,8 +18,9 @@ public class SettingCallPresenter extends BasePresenter {
     private final SettingCallView view;
 
     public interface SettingCallView {
-        public void didUpdateSettingCall();
-        public void didUpdateSettingCallFailure(String messageError);
+        void didUpdateSettingCall();
+
+        void didUpdateSettingCallFailure(int errorCode, String messageError);
     }
 
     public SettingCallPresenter(Context context, SettingCallView view) {
@@ -50,9 +51,7 @@ public class SettingCallPresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof UpdateSettingCallTask) {
-            view.didUpdateSettingCallFailure(errorMessage);
+            view.didUpdateSettingCallFailure(errorCode, errorMessage);
         }
     }
-
-
 }

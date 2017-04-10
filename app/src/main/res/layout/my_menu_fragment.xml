@@ -38,8 +38,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/action_bar_h"
-        >
+        android:layout_marginBottom="@dimen/action_bar_h">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -121,19 +120,20 @@
                     android:id="@+id/group_point"
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
-                    android:layout_marginLeft="@dimen/_15dp"
-                    android:background="@drawable/bg_corner_layout"
                     android:layout_alignTop="@+id/layout_my_notify"
+                    android:layout_marginLeft="@dimen/_15dp"
+                    android:layout_marginStart="13dp"
                     android:layout_toEndOf="@+id/group_avatar"
-                    android:layout_marginStart="13dp">
+                    android:background="@drawable/bg_corner_layout">
 
                     <LinearLayout
                         android:id="@+id/parent_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginBottom="@dimen/_10dp"
                         android:layout_marginTop="@dimen/_10dp"
-                        android:layout_centerHorizontal="true">
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:id="@+id/img_point"
@@ -145,8 +145,8 @@
                             android:id="@+id/txt_point"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/img_point"
                             android:layout_marginLeft="@dimen/_3dp"
+                            android:layout_toRightOf="@id/img_point"
                             android:background="@color/transparent"
                             android:lines="1"
                             android:text="99999999"
@@ -158,6 +158,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@id/txt_point"
+                            android:paddingTop="@dimen/_1dp"
                             android:text="@string/pt"
                             android:textColor="@color/blue_dark" />
                     </LinearLayout>
@@ -191,18 +192,18 @@
                     android:background="@drawable/bg_white_selector_with_corner">
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:id="@+id/hiraginoTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/margin_20"
                         android:layout_marginRight="@dimen/margin_20"
                         android:drawablePadding="@dimen/_10dp"
                         android:drawableTop="@drawable/ic_my_notify"
                         android:text="@string/notice"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/text_size_13"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/hiraginoTextView2" />
+                        android:textSize="@dimen/text_size_13" />
                 </RelativeLayout>
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
@@ -308,6 +309,7 @@
                     android:text="@string/menu"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_13" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -318,36 +320,36 @@
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_online_list"
                         style="@style/style_text_view_with_button_my_menu"
-                        android:text="男性 \nオンライン通知"
-                        android:drawableTop="@drawable/ic_online_list_female" />
+                        android:drawableTop="@drawable/ic_online_list_female"
+                        android:text="男性 \nオンライン通知" />
 
                     <View
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/color_gray_bg"/>
+                        android:background="@color/color_gray_bg" />
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_call_history"
                         style="@style/style_text_view_with_button_my_menu"
-                        android:drawablePadding="@dimen/_10dp"
-                        android:paddingTop="@dimen/_25dp"
                         android:layout_height="match_parent"
-                        android:text="@string/call_history"
-                        android:drawableTop="@drawable/ic_my_call_history" />
+                        android:drawablePadding="@dimen/_10dp"
+                        android:drawableTop="@drawable/ic_my_call_history"
+                        android:paddingTop="@dimen/_25dp"
+                        android:text="@string/call_history" />
 
                     <View
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/color_gray_bg"/>
+                        android:background="@color/color_gray_bg" />
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_block_list"
                         style="@style/style_text_view_with_button_my_menu"
                         android:layout_height="match_parent"
                         android:drawablePadding="@dimen/_10dp"
+                        android:drawableTop="@drawable/ic_block_list"
                         android:paddingTop="@dimen/_25dp"
-                        android:text="@string/block_list"
-                        android:drawableTop="@drawable/ic_block_list" />
+                        android:text="@string/block_list" />
                 </LinearLayout>
 
                 <!-- action group 2-->
@@ -368,34 +370,35 @@
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal">
+
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_notify_setting"
                         style="@style/style_text_view_with_button_my_menu"
-                        android:text="@string/notify_settings"
-                        android:drawableTop="@drawable/ic_notify_setting" />
+                        android:drawableTop="@drawable/ic_notify_setting"
+                        android:text="@string/notify_settings" />
 
                     <View
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/color_gray_bg"/>
+                        android:background="@color/color_gray_bg" />
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_email_backup_setting"
                         style="@style/style_text_view_with_button_my_menu"
-                        android:text="@string/mail_address_setting"
-                        android:drawableTop="@drawable/ic_mail_backup_setting" />
+                        android:drawableTop="@drawable/ic_mail_backup_setting"
+                        android:text="@string/mail_address_setting" />
 
                     <View
                         android:id="@+id/divider_email_backup"
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/color_gray_bg"/>
+                        android:background="@color/color_gray_bg" />
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_call_setting"
                         style="@style/style_text_view_with_button_my_menu"
-                        android:text="@string/call_settings"
-                        android:drawableTop="@drawable/ic_call_setting" />
+                        android:drawableTop="@drawable/ic_call_setting"
+                        android:text="@string/call_settings" />
                 </LinearLayout>
 
                 <!--action group 3-->
@@ -403,8 +406,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/action_bar_h"
                     android:layout_marginTop="@dimen/common_margin"
-                    android:orientation="horizontal"
-                    android:background="@color/white">
+                    android:background="@color/white"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/layout_guide"
@@ -419,32 +422,33 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_15"
-                            android:src="@drawable/ic_guide"/>
+                            android:src="@drawable/ic_guide" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/margin_10"
                             android:src="@drawable/ic_arrow_right_blue" />
 
                         <jp.newbees.mastersip.customviews.HiraginoTextView
+                            android:id="@+id/hiraginoTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_10"
-                            android:textSize="@dimen/text_size_13"
-                            android:textColor="@color/colorPrimary"
-                            android:text="@string/how_to_use"
                             android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/margin_10"
                             android:layout_toEndOf="@+id/img_guide"
-                            android:id="@+id/hiraginoTextView" />
+                            android:text="@string/how_to_use"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/text_size_13" />
                     </RelativeLayout>
 
                     <View
-                    android:layout_width="@dimen/_1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_gray_bg"/>
+                        android:layout_width="@dimen/_1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_gray_bg" />
+
                     <RelativeLayout
                         android:id="@+id/layout_contact"
                         android:layout_width="0dp"
@@ -458,23 +462,23 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_15"
-                            android:src="@drawable/ic_contact"/>
+                            android:src="@drawable/ic_contact" />
 
                         <jp.newbees.mastersip.customviews.HiraginoTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/img_contact"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_10"
-                            android:textSize="@dimen/text_size_13"
+                            android:layout_toRightOf="@id/img_contact"
+                            android:text="@string/contact_us"
                             android:textColor="@color/colorPrimary"
-                            android:text="@string/contact_us"/>
+                            android:textSize="@dimen/text_size_13" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/margin_10"
                             android:src="@drawable/ic_arrow_right_blue" />
                     </RelativeLayout>
@@ -484,8 +488,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/action_bar_h"
                     android:layout_marginTop="@dimen/_1dp"
-                    android:orientation="horizontal"
-                    android:background="@color/white">
+                    android:background="@color/white"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/layout_common_guide"
@@ -500,61 +504,63 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_15"
-                            android:src="@drawable/ic_common_guide"/>
+                            android:src="@drawable/ic_common_guide" />
 
                         <jp.newbees.mastersip.customviews.HiraginoTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/img_common_guide"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_10"
-                            android:textSize="@dimen/text_size_13"
+                            android:layout_toRightOf="@id/img_common_guide"
+                            android:text="@string/various_guidance"
                             android:textColor="@color/colorPrimary"
-                            android:text="@string/various_guidance"/>
+                            android:textSize="@dimen/text_size_13" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/margin_10"
                             android:src="@drawable/ic_arrow_right_blue" />
                     </RelativeLayout>
+
                     <View
                         android:layout_width="@dimen/_1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/color_gray_bg"/>
+                        android:background="@color/color_gray_bg" />
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
 
                         <ImageView
-                            android:visibility="invisible"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_15"
-                            android:src="@drawable/ic_common_guide"/>
+                            android:src="@drawable/ic_common_guide"
+                            android:visibility="invisible" />
 
                         <jp.newbees.mastersip.customviews.HiraginoTextView
-                            android:visibility="invisible"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/margin_10"
-                            android:textSize="@dimen/text_size_13"
+                            android:text="@string/various_guidance"
                             android:textColor="@color/colorPrimary"
-                            android:text="@string/various_guidance"/>
+                            android:textSize="@dimen/text_size_13"
+                            android:visibility="invisible" />
 
                         <ImageView
-                            android:visibility="invisible"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:layout_marginRight="@dimen/margin_10"
-                            android:src="@drawable/ic_arrow_right_blue" />
+                            android:src="@drawable/ic_arrow_right_blue"
+                            android:visibility="invisible" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -565,29 +571,30 @@
                     android:layout_height="@dimen/action_bar_h"
                     android:layout_marginTop="@dimen/common_margin"
                     android:background="@drawable/bg_item_lv_common">
+
                     <ImageView
                         android:id="@+id/img_search"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/margin_15"
-                        android:src="@drawable/ic_search_blue"/>
+                        android:src="@drawable/ic_search_blue" />
 
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/img_search"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/margin_10"
-                        android:textSize="@dimen/text_size_13"
+                        android:layout_toRightOf="@id/img_search"
+                        android:text="@string/check_your_profile_page"
                         android:textColor="@color/colorPrimary"
-                        android:text="@string/check_your_profile_page"/>
+                        android:textSize="@dimen/text_size_13" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/margin_10"
                         android:src="@drawable/ic_arrow_right_blue" />
                 </RelativeLayout>
@@ -596,12 +603,12 @@
                     android:id="@+id/btn_logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:background="@color/colorPrimary"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/margin_15"
                     android:layout_marginBottom="@dimen/action_bar_h"
-                    android:text="@string/logout"/>
+                    android:layout_marginTop="@dimen/margin_15"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/logout"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

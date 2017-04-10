@@ -216,6 +216,7 @@ public final class Constant {
         private static final String DEVELOPMENT_IP = "52.199.112.26";
 //                        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
+
         public static final String GET_PROFILE = "profile";
 
         public static String BASE_URL;

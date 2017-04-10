@@ -172,7 +172,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     };
 
     public static ProfileDetailItemFragment newInstance(UserItem data, boolean needShowActionBarInGiftFragment) {
-       return ProfileDetailItemFragment.newInstance(data, needShowActionBarInGiftFragment, true);
+        return ProfileDetailItemFragment.newInstance(data, needShowActionBarInGiftFragment, true);
     }
 
     public static ProfileDetailItemFragment newInstance(UserItem data, boolean needShowActionBarInGiftFragment, boolean selected) {
@@ -295,8 +295,11 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         StringBuilder content = new StringBuilder();
         content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
         String positiveTitle = getString(R.string.send_a_give);
-        TextDialog.openTextDialog(this, CONFIRM_SEND_GIFT_DIALOG, getFragmentManager(),
-                content.toString(), title, positiveTitle);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .setPositiveTitle(positiveTitle)
+                .build(this, content.toString(), CONFIRM_SEND_GIFT_DIALOG);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
         btnFollow.setText(getString(R.string.un_follow));
     }
 

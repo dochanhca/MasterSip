@@ -4,7 +4,9 @@
     android:id="@+id/image_container"
     android:layout_width="@dimen/small_user_image_size"
     android:layout_height="@dimen/small_user_image_size"
-    app:cardCornerRadius="@dimen/corner_5">
+    app:cardCornerRadius="@dimen/corner_5"
+    app:cardElevation="0dp"
+    >
 
     <RelativeLayout
         android:layout_width="@dimen/small_user_image_size"

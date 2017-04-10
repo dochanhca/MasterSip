@@ -148,7 +148,10 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         this.currentGiftSelected = giftItem;
         String title = getString(R.string.title_send_gift);
         String content = String.format(getString(R.string.confirm_send_gift), userItem.getUsername(), giftItem.getName());
-        TextDialog.openTextDialog(this, REQUEST_SEND_GIFT, getFragmentManager(), content, title);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .build(this, content, REQUEST_SEND_GIFT);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     @Override
@@ -175,7 +178,11 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         String currentPoint = currentUser.getCoin() + "pt";
         String content = String.format(getString(R.string.content_not_enough_point_male), giftPrice, currentPoint);
         String positiveButton = getString(R.string.buy_point);
-        TextDialog.openTextDialog(this, REQUEST_BUY_POINT, getFragmentManager(), content, title, positiveButton);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .setPositiveTitle(positiveButton)
+                .build(this, content, REQUEST_BUY_POINT);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     private void showDialogNotEnoughPointForFemale(UserItem currentUser) {
@@ -189,7 +196,11 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     private void showDialogSendGiftSuccess() {
         String title = getString(R.string.title_send_gift_success);
         String content = String.format(getString(R.string.content_send_gift_success), userItem.getUsername(), currentGiftSelected.getName());
-        TextDialog.openTextDialog(this, REQUEST_NOTIFY_SEND_GIFT_SUCESS, getFragmentManager(), content, title, true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .hideNegativeButton(true)
+                .build(this, content, REQUEST_NOTIFY_SEND_GIFT_SUCESS);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     private String getDescription() {

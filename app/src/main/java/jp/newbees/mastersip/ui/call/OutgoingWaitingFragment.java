@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -52,6 +53,8 @@ public class OutgoingWaitingFragment extends BaseFragment {
     protected ToggleButton btnOnOffSpeaker;
     @BindView(R.id.btn_cancel_call)
     protected ImageView btnCancelCall;
+    @BindView(R.id.txt_cancel_call)
+    protected TextView txtCancelCall;
     @BindView(R.id.ll_point)
     protected LinearLayout llPoint;
     @BindView(R.id.txt_point)
@@ -134,7 +137,6 @@ public class OutgoingWaitingFragment extends BaseFragment {
                 .into(imgLoading);
 
         txtTimer.setText(titleCall);
-
         txtUserName.setText(callee.getUsername());
         int imageID = ConfigManager.getInstance().getImageCalleeDefault();
         if (callee.getAvatarItem() != null) {
@@ -224,6 +226,7 @@ public class OutgoingWaitingFragment extends BaseFragment {
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+        txtCancelCall.setText(getString(R.string.end));
     }
 
     public void onCallPaused() {

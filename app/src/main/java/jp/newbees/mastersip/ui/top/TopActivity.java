@@ -255,8 +255,11 @@ public class TopActivity extends CallActivity implements
         String positiveTitle = getString(R.string.check);
         String negativeTitle = getString(R.string.do_not_check);
 
-        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_OPEN_CALLER_PROFILE,
-                content.toString(), "", positiveTitle, negativeTitle, false);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setRequestCode(REQUEST_OPEN_CALLER_PROFILE)
+                .setPositiveTitle(positiveTitle).setNegativeTitle(negativeTitle)
+                .build(content.toString());
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
@@ -322,8 +325,10 @@ public class TopActivity extends CallActivity implements
     @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         super.didSendMsgRequestEnableSettingCall(type);
-        TextDialog.openTextDialog(getSupportFragmentManager(),
-                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), getCurrentCallee(), type), "", "", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .hideNegativeButton(true)
+                .build(CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), getCurrentCallee(), type));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     @Override

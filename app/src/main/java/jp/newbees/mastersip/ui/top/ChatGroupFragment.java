@@ -145,15 +145,13 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
                 ((TopActivity) getActivity()).showSearchFragment();
                 break;
             case R.id.txt_read_all:
-                TextDialog.openTextDialog(this, REQUEST_CONFIRM_MARK_ALL_MESSAGE_AS_READ,
-                        getFragmentManager(), getString(R.string.would_you_like_mark_all_message_as_read), "");
+                openTextDialog(REQUEST_CONFIRM_MARK_ALL_MESSAGE_AS_READ, getString(R.string.would_you_like_mark_all_message_as_read));
                 break;
             case R.id.txt_edit:
                 updateViewWithMode();
                 break;
             case R.id.txt_delete_chat_room:
-                TextDialog.openTextDialog(this, REQUEST_CONFIRM_DELETE_MESSAGE,
-                        getFragmentManager(), getString(R.string.delete_selected_message), "");
+                openTextDialog(REQUEST_CONFIRM_DELETE_MESSAGE, getString(R.string.delete_selected_message));
                 break;
             case R.id.cb_select_all:
                 if (!cbSelectAll.isChecked()) {
@@ -266,6 +264,11 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         }
     }
 
+    private void openTextDialog(int requestCode, String content) {
+        TextDialog textDialog = new TextDialog.Builder().build(this, content, requestCode);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
+    }
+
     private void updateUI() {
         boolean isFirstTimeChatting = ConfigManager.getInstance().getFirstTimeChattingFlag();
 
@@ -305,9 +308,9 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
         } else {
             message = new SpannableString(getString(R.string.mess_chat_room_for_girl));
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
-                    , 15, 19, 0);
+                    , 15, 21, 0);
             message.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.sip_red))
-                    , 20, 22, 0);
+                    , 22, 25, 0);
 
             btnGo.setText(getString(R.string.i_will_go_looking_for_a_man));
         }

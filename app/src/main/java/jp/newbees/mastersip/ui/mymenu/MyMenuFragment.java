@@ -344,7 +344,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         this.galleryItem = galleryItem;
         galleryAdapter.clearData();
         galleryAdapter.setPhotos(galleryItem.getPhotos());
-        Logger.e(TAG, "load Gallery: "+galleryAdapter.getItemCount());
+        Logger.e(TAG, "load Gallery: " + galleryAdapter.getItemCount());
     }
 
     @Override
@@ -458,7 +458,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         EventBus.getDefault().removeStickyEvent(paymentSuccessEvent);
     }
 
-    @Subscribe(sticky =  true)
+    @Subscribe(sticky = true)
     public void onReloadProfileEvent(ReLoadProfileEvent event) {
         presenter.requestMyMenuInfo();
         EventBus.getDefault().removeStickyEvent(event);
@@ -524,8 +524,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onDeleteImageClick() {
         String confirmDeleteAvatar = getString(R.string.confirm_delete_avatar);
-        TextDialog.openTextDialog(this, CONFIRM_DELETE_AVATAR, getFragmentManager(),
-                confirmDeleteAvatar, "");
+        TextDialog textDialog = new TextDialog.Builder()
+                .build(this, confirmDeleteAvatar, CONFIRM_DELETE_AVATAR);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     /**

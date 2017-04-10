@@ -12,9 +12,10 @@
 
     <jp.newbees.mastersip.customviews.HackyViewPager
         android:id="@+id/view_pager_gallery"
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
     </jp.newbees.mastersip.customviews.HackyViewPager>
 
     <com.pnikosis.materialishprogress.ProgressWheel

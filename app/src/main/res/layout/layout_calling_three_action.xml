@@ -45,10 +45,11 @@
             android:src="@drawable/bg_ic_cancel_call" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_cancel_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10"
-            android:text="@string/end"
+            android:text="@string/cancel"
             android:textColor="@color/red"
             android:textSize="@dimen/text_size_15" />
     </LinearLayout>

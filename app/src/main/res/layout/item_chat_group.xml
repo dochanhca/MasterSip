@@ -30,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/normal_margin"
-            app:cardCornerRadius="@dimen/corner_5">
+            app:cardCornerRadius="@dimen/corner_5"
+            app:cardElevation="0dp">
 
             <ImageView
                 android:id="@+id/img_avatar"

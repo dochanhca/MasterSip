@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -125,7 +126,7 @@ public class ChatActivity extends CallActivity implements
     private Animation slideDown;
     private Animation slideUp;
 
-    private volatile boolean donotHideSoftKeyboard = true;
+    private volatile boolean doNotHideSoftKeyboard = true;
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
@@ -205,7 +206,6 @@ public class ChatActivity extends CallActivity implements
         }
     };
 
-
     private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
         @Override
         public void didSendChatToServer(BaseChatItem baseChatItem) {
@@ -218,7 +218,7 @@ public class ChatActivity extends CallActivity implements
 
         @Override
         public void didChatError(int errorCode, String errorMessage) {
-            donotHideSoftKeyboard = true;
+            doNotHideSoftKeyboard = true;
             if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
                 showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
             } else {
@@ -261,7 +261,6 @@ public class ChatActivity extends CallActivity implements
         @Override
         public void didLoadChatHistoryError(int errorCode, String errorMessage) {
             showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-
         }
 
         @Override
@@ -292,8 +291,12 @@ public class ChatActivity extends CallActivity implements
             StringBuilder content = new StringBuilder();
             content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
             String positiveTitle = getString(R.string.send_a_give);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_SEND_GIFT_DIALOG,
-                    content.toString(), title, positiveTitle, false);
+            TextDialog textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_SEND_GIFT_DIALOG)
+                    .setTitle(title)
+                    .setPositiveTitle(positiveTitle)
+                    .build(content.toString());
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
 
         @Override
@@ -348,8 +351,10 @@ public class ChatActivity extends CallActivity implements
                     .append(minPoint).append(getString(R.string.pt)).append(getString(R.string.is_required))
                     .append("\n").append(getString(R.string.do_you_want_to_add_point));
 
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content.toString()
-                    , title, positiveTitle, false);
+            TextDialog textDialog = new TextDialog.Builder().setRequestCode(REQUEST_BUY_POINT)
+                    .setTitle(title).setPositiveTitle(positiveTitle)
+                    .build(content.toString());
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
     };
 
@@ -375,26 +380,24 @@ public class ChatActivity extends CallActivity implements
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (!donotHideSoftKeyboard && dy != 0) {
+                if (dy != 0) {
                     if (scrollDown(dy)) {
                         Logger.e(TAG, "onScrollStateChanged   -> slide down");
                         slideDownCustomActionHeaderInChat();
-                    } else {
+                    } else if (scrollUp(dy)) {
                         Logger.e(TAG, "onScrollStateChanged   -> slide up");
                         slideUpCustomActionHeaderInChat();
                     }
-                }
-                if (donotHideSoftKeyboard) {
-                    donotHideSoftKeyboard = false;
-                } else {
-                    Logger.e(TAG, "onScrollStateChanged   -> hide soft keyboard");
-                    hideSoftKeyboard();
                 }
             }
         }
 
         private boolean scrollDown(int dy) {
             return dy < 0;
+        }
+
+        private boolean scrollUp(int dy) {
+            return dy > 0;
         }
     };
 
@@ -404,7 +407,6 @@ public class ChatActivity extends CallActivity implements
             gotoProfileDetailActivity();
         }
     };
-
 
     @Override
     protected int layoutId() {
@@ -480,10 +482,10 @@ public class ChatActivity extends CallActivity implements
     protected void onResume() {
         super.onResume();
         isResume = true;
-        updateStateLastMessage();
         if (isShowDialogForHandleImage) {
             showLoading();
         }
+        updateStateLastMessage();
     }
 
     @Subscribe()
@@ -491,7 +493,7 @@ public class ChatActivity extends CallActivity implements
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
                 || chatItem.isOwner()) {
-            donotHideSoftKeyboard = true;
+            doNotHideSoftKeyboard = true;
             chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             if (isResume) {
@@ -533,16 +535,24 @@ public class ChatActivity extends CallActivity implements
         }
     }
 
+    private long startClickTime;
+
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {
         if (isSoftKeyboardOpened) {
-            Logger.e(TAG, "onTouch -> hide soft keboard");
-            donotHideSoftKeyboard = true;
-            hideSoftKeyboard();
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                startClickTime = System.currentTimeMillis();
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (System.currentTimeMillis() - startClickTime < ViewConfiguration.getTapTimeout()) {
+                    // Touch was a simple tap. Do whatever.
+                    hideSoftKeyboard();
+                } else {
+                    // Touch was a not a simple tap.
+                }
+            }
             return false;
         }
         return super.onTouchEvent(event);
-
     }
 
     @Override
@@ -569,7 +579,7 @@ public class ChatActivity extends CallActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        donotHideSoftKeyboard = true;
+        doNotHideSoftKeyboard = true;
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
     }
@@ -594,8 +604,7 @@ public class ChatActivity extends CallActivity implements
     public void onTextDialogOkClick(int requestCode) {
         super.onTextDialogOkClick(requestCode);
         if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
-                gotoListGiftActivity();
-
+            gotoListGiftActivity();
         }
     }
 
@@ -658,7 +667,7 @@ public class ChatActivity extends CallActivity implements
     private void doSendMessage() {
         String newMessage = edtChat.getText().toString();
         if (!"".equalsIgnoreCase(newMessage)) {
-            donotHideSoftKeyboard = true;
+            doNotHideSoftKeyboard = true;
             edtChat.setText("");
             presenter.sendText(newMessage, userItem);
         }
@@ -701,7 +710,6 @@ public class ChatActivity extends CallActivity implements
         }
         InputStream file = ImageUtils.convertToInputStream(bitmap);
 
-        showLoading();
         presenter.sendFile(userItem.getSipItem().getExtension(), Constant.API.TYPE_UPLOAD_IMAGE,
                 file);
     }
@@ -764,8 +772,10 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
         super.didSendMsgRequestEnableSettingCall(type);
-        TextDialog.openTextDialog(getSupportFragmentManager(), -1,
-                CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type), "", "", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .hideNegativeButton(true)
+                .build(CallPresenter.getMessageSendRequestSuccess(getApplicationContext(), userItem, type));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
     }
