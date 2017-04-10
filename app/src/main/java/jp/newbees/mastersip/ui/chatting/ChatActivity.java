@@ -24,9 +24,6 @@ import android.widget.Toast;
 
 import com.tonicartos.superslim.LayoutManager;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,7 +49,8 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallPresenter;
-import jp.newbees.mastersip.presenter.top.ChatPresenter;
+import jp.newbees.mastersip.presenter.chatting.ChatListener;
+import jp.newbees.mastersip.presenter.chatting.ChatPresenter;
 import jp.newbees.mastersip.ui.CallActivity;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
@@ -75,7 +73,7 @@ import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLE
 public class ChatActivity extends CallActivity implements
         ChatAdapter.OnItemClickListener,
         TextDialog.OnTextDialogPositiveClick,
-        OneButtonDialog.OneButtonDialogClickListener {
+        OneButtonDialog.OneButtonDialogClickListener, ChatListener {
 
     private static final String USER = "USER";
     public static final String TAG = "ChatActivity";
@@ -189,10 +187,8 @@ public class ChatActivity extends CallActivity implements
         @Override
         public void onSoftKeyboardShow() {
             isSoftKeyboardOpened = true;
-            Logger.e(TAG, "onSoftKeyboardShow   -> slide up");
             slideUpCustomActionHeaderInChat();
             if (uiMode == UIMode.SELECT_IMAGE_MODE) {
-                Logger.e(TAG, "onSoftKeyboardShow   -> switch ui mode");
                 switchUIMode();
             }
         }
@@ -200,158 +196,154 @@ public class ChatActivity extends CallActivity implements
         @Override
         public void onSoftKeyboardHide() {
             isSoftKeyboardOpened = false;
-            Logger.e(TAG, "onSoftKeyboardShow   -> slide down");
             slideDownCustomActionHeaderInChat();
         }
     };
 
 
-    private ChatPresenter.ChatPresenterListener mOnChatListener = new ChatPresenter.ChatPresenterListener() {
-        @Override
-        public void didSendChatToServer(BaseChatItem baseChatItem) {
-            Logger.e(TAG, "sending message to server success");
-            chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
-            edtChat.setEnabled(true);
-            txtSend.setEnabled(true);
+    @Override
+    public void didSendChatToServer(BaseChatItem baseChatItem) {
+        Logger.e(TAG, "sending message to server success");
+        chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
+        edtChat.setEnabled(true);
+        txtSend.setEnabled(true);
+        recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void didChatError(int errorCode, String errorMessage) {
+        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+            showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
+        } else {
+            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        }
+    }
+
+    @Override
+    public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
+        chatAdapter.updateSendeeLastMessageStateToRead();
+        presenter.sendingReadMessageUsingLinPhone(baseChatItem, userItem);
+    }
+
+    @Override
+    public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void didLoadChatHistory(LoadChatHistoryResultItem resultItem) {
+        boolean needScrollToTheEnd = false;
+        members = resultItem.getMembers();
+        if (chatAdapter.getItemCount() == 0) {
+            needScrollToTheEnd = true;
+            updateFollowView(presenter
+                    .getUserHasRelationShipItem(userItem, members)
+                    .getRelationshipItem());
+        }
+        chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
+
+        if (needScrollToTheEnd) {
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
+        userItem = members.get(userItem.getUserId());
+        initActionCalls(members.get(userItem.getUserId()));
+        updateStateLastMessage();
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
-        @Override
-        public void didChatError(int errorCode, String errorMessage) {
-            donotHideSoftKeyboard = true;
-            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-                showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
-            } else {
-                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-            }
+    @Override
+    public void didLoadChatHistoryError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+
+    }
+
+    @Override
+    public void didUploadImageToServer(ImageChatItem imageChatItem) {
+        disMissLoading();
+        isShowDialogForHandleImage = false;
+
+        chatAdapter.addItemAndHeaderIfNeed(imageChatItem);
+        recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void didUploadImageToServerError(int errorCode, String errorMessage) {
+        disMissLoading();
+        isShowDialogForHandleImage = false;
+        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
+            showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_IMAGE, 20);
+        } else {
+            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        }
+    }
+
+    @Override
+    public void didFollowUser() {
+        disMissLoading();
+        updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.FOLLOW));
+        String title = getString(R.string.mess_followed);
+        StringBuilder content = new StringBuilder();
+        content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
+        String positiveTitle = getString(R.string.send_a_give);
+        TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_SEND_GIFT_DIALOG,
+                content.toString(), title, positiveTitle, false);
+    }
+
+    @Override
+    public void didFollowUserError(String errorMessage, int errorCode) {
+        disMissLoading();
+        showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void didUnFollowUser() {
+        disMissLoading();
+        updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.UN_FOLLOW));
+
+        StringBuilder content = new StringBuilder();
+        content.append(userItem.getUsername()).append(getString(R.string.notify_un_follow_user_success));
+
+        showMessageDialog(getString(R.string.mess_un_followed), content.toString(), "", false);
+    }
+
+    @Override
+    public void didUnFollowUserError(String errorMessage, int errorCode) {
+        disMissLoading();
+        showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+    }
+
+    private void initActionCalls(UserItem userItem) {
+        if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
+            actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
         }
 
-        @Override
-        public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
-            chatAdapter.updateSendeeLastMessageStateToRead();
-            presenter.sendingReadMessageUsingLinPhone(baseChatItem, userItem);
+        if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
+            actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
+            imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
+        }
+    }
+
+    private void showDialogNotifyNotEnoughPointForChat(int chatType, int minPoint) {
+        String title = getString(R.string.point_are_missing);
+        String positiveTitle = getString(R.string.add_point);
+        StringBuilder content = new StringBuilder();
+        String message = "";
+
+        if (chatType == BaseChatItem.ChatType.CHAT_TEXT) {
+            message = getString(R.string.to_send_a_message);
+        } else if (chatType == BaseChatItem.ChatType.CHAT_IMAGE) {
+            message = getString(R.string.to_send_an_image);
         }
 
-        @Override
-        public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
+        content.append(message).append("\n")
+                .append(getString(R.string.the_lowest))
+                .append(minPoint).append(getString(R.string.pt)).append(getString(R.string.is_required))
+                .append("\n").append(getString(R.string.do_you_want_to_add_point));
 
-        @Override
-        public void didLoadChatHistory(LoadChatHistoryResultItem resultItem) {
-            boolean needScrollToTheEnd = false;
-            members = resultItem.getMembers();
-            if (chatAdapter.getItemCount() == 0) {
-                needScrollToTheEnd = true;
-                updateFollowView(presenter
-                        .getUserHasRelationShipItem(userItem, members)
-                        .getRelationshipItem());
-            }
-            chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
-
-            if (needScrollToTheEnd) {
-                recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-            }
-            userItem = members.get(userItem.getUserId());
-            initActionCalls(members.get(userItem.getUserId()));
-            updateStateLastMessage();
-            swipeRefreshLayout.setRefreshing(false);
-        }
-
-        @Override
-        public void didLoadChatHistoryError(int errorCode, String errorMessage) {
-            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-
-        }
-
-        @Override
-        public void didUploadImageToServer(ImageChatItem imageChatItem) {
-            disMissLoading();
-            isShowDialogForHandleImage = false;
-
-            chatAdapter.addItemAndHeaderIfNeed(imageChatItem);
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-        }
-
-        @Override
-        public void didUploadImageToServerError(int errorCode, String errorMessage) {
-            disMissLoading();
-            isShowDialogForHandleImage = false;
-            if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-                showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_IMAGE, 20);
-            } else {
-                showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
-            }
-        }
-
-        @Override
-        public void didFollowUser() {
-            disMissLoading();
-            updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.FOLLOW));
-            String title = getString(R.string.mess_followed);
-            StringBuilder content = new StringBuilder();
-            content.append(userItem.getUsername()).append(getString(R.string.notify_follow_user_success));
-            String positiveTitle = getString(R.string.send_a_give);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_SEND_GIFT_DIALOG,
-                    content.toString(), title, positiveTitle, false);
-        }
-
-        @Override
-        public void didFollowUserError(String errorMessage, int errorCode) {
-            disMissLoading();
-            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-        }
-
-        @Override
-        public void didUnFollowUser() {
-            disMissLoading();
-            updateFollowView(presenter.setUserHasRelationShipItem(userItem, members, RelationshipItem.UN_FOLLOW));
-
-            StringBuilder content = new StringBuilder();
-            content.append(userItem.getUsername()).append(getString(R.string.notify_un_follow_user_success));
-
-            showMessageDialog(getString(R.string.mess_un_followed), content.toString(), "", false);
-        }
-
-        @Override
-        public void didUnFollowUserError(String errorMessage, int errorCode) {
-            disMissLoading();
-            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-        }
-
-        private void initActionCalls(UserItem userItem) {
-            if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
-                actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-                imgAvailableVideo.setImageResource(R.drawable.ic_video_call_off);
-            }
-
-            if (userItem.getSettings().getVoiceCall() == SettingItem.OFF) {
-                actionPhone.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
-                imgAvailableCall.setImageResource(R.drawable.ic_voice_call_off);
-            }
-        }
-
-        private void showDialogNotifyNotEnoughPointForChat(int chatType, int minPoint) {
-            String title = getString(R.string.point_are_missing);
-            String positiveTitle = getString(R.string.add_point);
-            StringBuilder content = new StringBuilder();
-            String message = "";
-
-            if (chatType == BaseChatItem.ChatType.CHAT_TEXT) {
-                message = getString(R.string.to_send_a_message);
-            } else if (chatType == BaseChatItem.ChatType.CHAT_IMAGE) {
-                message = getString(R.string.to_send_an_image);
-            }
-
-            content.append(message).append("\n")
-                    .append(getString(R.string.the_lowest))
-                    .append(minPoint).append(getString(R.string.pt)).append(getString(R.string.is_required))
-                    .append("\n").append(getString(R.string.do_you_want_to_add_point));
-
-            TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content.toString()
-                    , title, positiveTitle, false);
-        }
-    };
+        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content.toString()
+                , title, positiveTitle, false);
+    }
 
     private TextView.OnEditorActionListener mOnChatEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
@@ -377,17 +369,14 @@ public class ChatActivity extends CallActivity implements
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (!donotHideSoftKeyboard && dy != 0) {
                     if (scrollDown(dy)) {
-                        Logger.e(TAG, "onScrollStateChanged   -> slide down");
                         slideDownCustomActionHeaderInChat();
                     } else {
-                        Logger.e(TAG, "onScrollStateChanged   -> slide up");
                         slideUpCustomActionHeaderInChat();
                     }
                 }
                 if (donotHideSoftKeyboard) {
                     donotHideSoftKeyboard = false;
                 } else {
-                    Logger.e(TAG, "onScrollStateChanged   -> hide soft keyboard");
                     hideSoftKeyboard();
                 }
             }
@@ -441,7 +430,7 @@ public class ChatActivity extends CallActivity implements
         slideDown = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down_to_show);
         slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_to_hide);
 
-        presenter = new ChatPresenter(this, mOnChatListener);
+        presenter = new ChatPresenter(this, this);
         userItem = getIntent().getParcelableExtra(USER);
 
         initHeader(userItem.getUsername(), mOnHeaderClickListener);
@@ -461,13 +450,13 @@ public class ChatActivity extends CallActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        presenter.registerCallEvent();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        presenter.unregisterCallEvent();
     }
 
     @Override
@@ -486,7 +475,7 @@ public class ChatActivity extends CallActivity implements
         }
     }
 
-    @Subscribe()
+    @Override
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
@@ -500,7 +489,7 @@ public class ChatActivity extends CallActivity implements
         }
     }
 
-    @Subscribe()
+    @Override
     public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
         chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
     }
@@ -519,7 +508,6 @@ public class ChatActivity extends CallActivity implements
                 doSendMessage();
                 break;
             case R.id.img_left_bottom_action:
-                Logger.e(TAG, "img_left_bottom_action   -> switch ui mode");
                 switchUIMode();
                 break;
             case R.id.rl_open_gallery:
@@ -536,7 +524,6 @@ public class ChatActivity extends CallActivity implements
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {
         if (isSoftKeyboardOpened) {
-            Logger.e(TAG, "onTouch -> hide soft keboard");
             donotHideSoftKeyboard = true;
             hideSoftKeyboard();
             return false;
@@ -594,7 +581,7 @@ public class ChatActivity extends CallActivity implements
     public void onTextDialogOkClick(int requestCode) {
         super.onTextDialogOkClick(requestCode);
         if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
-                gotoListGiftActivity();
+            gotoListGiftActivity();
 
         }
     }
@@ -733,7 +720,6 @@ public class ChatActivity extends CallActivity implements
             hideSoftKeyboard();
             uiMode = UIMode.SELECT_IMAGE_MODE;
 
-            Logger.e(TAG, "switchUIMode   -> hide soft keyboard");
         } else if (uiMode == UIMode.SELECT_IMAGE_MODE) {
             imgLeftBottomAction.setImageResource(R.drawable.img_capture);
             edtChat.requestFocus();
@@ -741,7 +727,6 @@ public class ChatActivity extends CallActivity implements
             showSoftKeyboard();
             uiMode = UIMode.INPUT_TEXT_MODE;
 
-            Logger.e(TAG, "switchUIMode   -> show soft keyboard");
         }
     }
 

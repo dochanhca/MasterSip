@@ -32,14 +32,14 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
     }
 
     @Override
-    public void onCallConnected() {
-
+    public void onStreamingConnected() {
+        startIncomingVideoCall();
+        showVideoChatFragment();
     }
 
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoChatActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         intent.putExtras(getBundle(competitor,callID));
         context.startActivity(intent);
     }

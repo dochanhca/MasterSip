@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/video_frame"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <org.linphone.mediastream.video.display.GL2JNIView
+            android:id="@+id/videoSurface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_low_signal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/low_signal"
+            android:textColor="@color/white"
+            android:visibility="invisible" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_name"
+            style="@style/origin_style_content_text_view_large"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:gravity="center"
+            android:text="ThangLH"
+            android:textColor="@color/white" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_time"
+            style="@style/origin_style_content_text_view_small"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:gravity="center"
+            android:text="00:02"
+            android:textColor="@color/white" />
+
+        <include
+            android:id="@+id/layout_video_chat_call_action"
+            layout="@layout/layout_video_chat_call_action" />
+
+        <View
+            android:id="@+id/divider"
+            style="@style/divider"
+            android:layout_below="@id/ll_point"
+            android:background="@color/colorPrimaryDark" />
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/rl_chat_input"
+        layout="@layout/layout_video_chat_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/video_frame"
+        android:layout_above="@id/rl_chat_input"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/xnormal_margin" />
+</RelativeLayout>

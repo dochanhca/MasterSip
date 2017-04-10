@@ -56,8 +56,8 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         LinphoneHandler.getInstance().enableSpeaker(enable);
     }
 
-    public final void muteMicrophone(boolean mute) {
-        LinphoneHandler.getInstance().muteMicrophone(mute);
+    public final void enableMicrophone(boolean enable) {
+        LinphoneHandler.getInstance().enableMic(enable);
     }
 
     public final void switchCamera(SurfaceView mCaptureView) {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -115,17 +116,21 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
             if (getCompetitor().getGender() == UserItem.MALE) {
                 llOnOffMic.setVisibility(View.GONE);
+                btnOnOffMic.setChecked(false);
+                btnOnOffSpeaker.setChecked(true);
             } else {
                 llOnOffSpeaker.setVisibility(View.GONE);
+                btnOnOffSpeaker.setChecked(false);
+                btnOnOffMic.setChecked(true);
             }
         } else {
             inflateViewAction(R.layout.layout_calling_three_action);
-
             if (getCallType() == Constant.API.VOICE_CALL) {
-                enableSpeaker(false);
+                btnOnOffSpeaker.setChecked(false);
+                btnOnOffMic.setChecked(true);
             } else if (getCallType() == Constant.API.VIDEO_CALL) {
                 btnOnOffSpeaker.setChecked(true);
-                enableSpeaker(true);
+                btnOnOffMic.setChecked(true);
             }
         }
     }
@@ -147,7 +152,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_on_off_mic:
-                muteMicrophone(btnOnOffMic.isChecked());
+                enableMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
                 terminalCall(getCallId());
@@ -161,10 +166,10 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     }
 
     public boolean isSpeakerEnable() {
-        return !btnOnOffSpeaker.isChecked();
+        return btnOnOffSpeaker.isChecked();
     }
 
-    public boolean muteMic() {
+    public boolean isMicEnable() {
         return btnOnOffMic.isChecked();
     }
 
@@ -174,12 +179,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     }
 
     @Override
-    public void onCoinChanged(int coin) {
-        StringBuilder point = new StringBuilder();
-        point.append(" ")
-                .append(String.valueOf(coin))
-                .append(getString(R.string.pt));
-        txtPoint.setText(point.toString());
+    public TextView getTxtPoint() {
+        return txtPoint;
     }
 
     private void countWaitingTime() {
@@ -204,13 +205,18 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+
+        enableSpeaker(btnOnOffSpeaker.isChecked());
+        enableMicrophone(btnOnOffMic.isChecked());
     }
 
+    @Override
     public void onCallPaused() {
         txtTimer.setVisibility(View.INVISIBLE);
         txtNotifyLowSignal.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public final void onCallResume() {
         txtTimer.setVisibility(View.VISIBLE);
         txtNotifyLowSignal.setVisibility(View.INVISIBLE);

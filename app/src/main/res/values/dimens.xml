@@ -113,7 +113,7 @@
     <dimen name="height_select_call_tittle">55dp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="width_preview_video">90dp</dimen>
-    <dimen name="height_preview_video">109dp</dimen>
+    <dimen name="height_preview_video">131dp</dimen>
     <dimen name="video_call_action_size">70dp</dimen>
     <dimen name="text_size_9">9sp</dimen>
     <dimen name="chat_call_history_w">85dp</dimen>
@@ -126,4 +126,5 @@
     <dimen name="xxlarge_margin">30dp</dimen>
     <dimen name="huge_margin">40dp</dimen>
     <dimen name="normal_spacing_extra">4dp</dimen>
+    <dimen name="video_chat_call_action_size">60dp</dimen>
 </resources>

@@ -38,7 +38,7 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-        showVideoCallFragment();
+        showVideoChatFragment();
         useFrontCamera();
     }
 }

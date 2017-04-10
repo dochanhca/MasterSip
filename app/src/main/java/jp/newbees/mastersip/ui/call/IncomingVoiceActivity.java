@@ -32,7 +32,6 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
     @Override
     public void onCallConnected() {
         countingCallDuration();
-        updateSpeakerInWaitingFragment();
         updateViewWhenVoiceConnected();
     }
 

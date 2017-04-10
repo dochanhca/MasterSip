@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:lineSpacingExtra="@dimen/normal_spacing_extra"
+        android:gravity="center"
         android:text="@string/in_coming_voice_call"
         android:textColor="@color/text_color_gray_light"
         android:textSize="@dimen/text_size_15"

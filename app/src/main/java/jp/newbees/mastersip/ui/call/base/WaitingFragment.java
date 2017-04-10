@@ -49,23 +49,23 @@ public abstract class WaitingFragment extends CallingFragment{
         return args;
     }
 
-    public UserItem getCompetitor() {
+    protected UserItem getCompetitor() {
         return competitor;
     }
 
-    public String getCallId() {
+    protected String getCallId() {
         return callId;
     }
 
-    public String getTitleCall() {
+    protected String getTitleCall() {
         return titleCall;
     }
 
-    public int getCallType() {
+    protected int getCallType() {
         return callType;
     }
 
-    public int getAcceptCallImage() {
+    protected int getAcceptCallImage() {
         return acceptCallImage;
     }
 }

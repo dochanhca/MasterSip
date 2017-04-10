@@ -30,7 +30,7 @@
         android:orientation="vertical">
 
         <ToggleButton
-            android:id="@+id/two_action_btn_on_off_mic"
+            android:id="@+id/btn_on_off_mic"
             android:layout_width="@dimen/video_call_action_size"
             android:layout_height="@dimen/video_call_action_size"
             android:background="@drawable/bg_ic_mic_state"
@@ -48,7 +48,7 @@
         android:orientation="vertical">
 
         <ToggleButton
-            android:id="@+id/two_action_btn_on_off_speaker"
+            android:id="@+id/btn_on_off_speaker"
             android:layout_width="@dimen/video_call_action_size"
             android:layout_height="@dimen/video_call_action_size"
             android:background="@drawable/bg_ic_speaker_state_video_call"
@@ -67,6 +67,7 @@
             android:id="@+id/btn_on_off_camera"
             android:layout_width="@dimen/video_call_action_size"
             android:layout_height="@dimen/video_call_action_size"
+            android:checked="true"
             android:background="@drawable/bg_ic_camera_state_video_call"
             android:textOff=""
             android:textOn="" />

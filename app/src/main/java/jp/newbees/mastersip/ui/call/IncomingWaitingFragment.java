@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -20,7 +21,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
 import jp.newbees.mastersip.ui.call.base.WaitingFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
@@ -84,22 +84,21 @@ public class IncomingWaitingFragment extends WaitingFragment {
     @OnClick({R.id.btn_reject_call, R.id.btn_accept_call, R.id.btn_on_off_mic, R.id.btn_cancel_call, R.id.btn_on_off_speaker})
     public void onClick(View view) {
         try {
-            BaseHandleCallActivity activity = getCallActivity();
             switch (view.getId()) {
                 case R.id.btn_reject_call:
-                    activity.declineCall(getCallId());
+                    terminalCall(getCallId());
                     break;
                 case R.id.btn_accept_call:
-                    activity.acceptCall(getCallId());
+                    acceptCall(getCallId());
                     break;
                 case R.id.btn_on_off_mic:
-                    activity.muteMicrophone(btnOnOffMic.isChecked());
+                    enableMicrophone(btnOnOffMic.isChecked());
                     break;
                 case R.id.btn_cancel_call:
-                    activity.terminalCall(getCallId());
+                    terminalCall(getCallId());
                     break;
                 case R.id.btn_on_off_speaker:
-                    activity.enableSpeaker(btnOnOffSpeaker.isChecked());
+                    enableSpeaker(btnOnOffSpeaker.isChecked());
                     break;
             }
         } catch (LinphoneCoreException e) {
@@ -133,6 +132,11 @@ public class IncomingWaitingFragment extends WaitingFragment {
     }
 
     @Override
+    public TextView getTxtPoint() {
+        return txtPoint;
+    }
+
+    @Override
     public void updateViewWhenVoiceConnected() {
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
@@ -142,30 +146,23 @@ public class IncomingWaitingFragment extends WaitingFragment {
         layoutVoiceCallingAction.setVisibility(View.VISIBLE);
         layoutReceivingCallAction.setVisibility(View.GONE);
         imgLoading.setVisibility(View.GONE);
+
+        // setup default mic, speaker
+        enableSpeaker(false);
+        btnOnOffSpeaker.setChecked(false);
+        enableMicrophone(true);
+        btnOnOffMic.setChecked(true);
     }
 
+    @Override
     public void onCallPaused() {
         txtTimer.setVisibility(View.INVISIBLE);
         txtNotifyLowSignal.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public final void onCallResume() {
         txtTimer.setVisibility(View.VISIBLE);
         txtNotifyLowSignal.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void onCoinChanged(int coin) {
-        if (isDetached()) {
-            return;
-        }
-
-        StringBuilder point = new StringBuilder();
-        point.append(String.valueOf(coin)).append(getString(R.string.pt));
-        txtPoint.setText(point);
-    }
-
-    public boolean isEnableSpeaker() {
-        return btnOnOffSpeaker.isChecked();
     }
 }

@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.presenter.top;
+package jp.newbees.mastersip.presenter.chatting;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

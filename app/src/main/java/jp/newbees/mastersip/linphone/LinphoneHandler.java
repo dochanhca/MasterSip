@@ -471,20 +471,21 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void handleVoiceCall(String roomId) {
         enableSpeaker(false);
-        muteMicrophone(false);
+        enableMic(false);
         call(roomId, false);
     }
 
     private void handleVideoVideoCall(String roomId) {
         enableSpeaker(false);
-        muteMicrophone(false);
+        enableMic(false);
         userFrontCamera(false);
         call(roomId, true);
     }
 
     private void handleVideoChatCall(String roomId) {
-        enableSpeaker(true);
-        muteMicrophone(false);
+        enableSpeaker(false);
+        enableMic(false);
+        userFrontCamera(false);
         call(roomId, true);
     }
 
@@ -509,10 +510,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     /**
-     * @param mute
+     * @param enable
      */
-    public final void muteMicrophone(boolean mute) {
-        linphoneCore.muteMic(mute);
+    public final void enableMic(boolean enable) {
+        linphoneCore.muteMic(!enable);
     }
 
     /**
@@ -754,12 +755,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
         task.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
-                Logger.e("LinphoneService", "End call success ");
+                Logger.e("LinphoneHandler", "End call success ");
             }
         }, new BaseTask.ErrorListener() {
             @Override
             public void onError(int errorCode, String errorMessage) {
-                Logger.e("LinphoneService", "End call error " + errorMessage);
+                Logger.e("LinphoneHandler", "End call error " + errorMessage);
             }
         });
     }

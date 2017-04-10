@@ -7,6 +7,7 @@ import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
@@ -19,6 +20,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     private BaseHandleIncomingCallPresenter presenter;
 
     protected abstract int getAcceptCallImage();
+
     protected abstract String getTitleCall();
 
     @Override
@@ -44,13 +46,14 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     protected void showVideoCallFragment() {
-        showVideoCallFragment(getCompetitor(),getCallId(),getCallType(),
-                false,false);
+        showVideoCallFragment(true, true);
     }
 
-    protected final void updateSpeakerInWaitingFragment() {
-        if (getVisibleFragment() instanceof IncomingWaitingFragment) {
-            enableSpeaker(((IncomingWaitingFragment) getVisibleFragment()).isEnableSpeaker());
+    protected void showVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            showVideoChatFragmentForFemale(false);
+        } else {
+            showVideoChatFragmentForMale(true);
         }
     }
 
@@ -61,7 +64,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     @Override
     public void onCallEnd() {
         if (MyLifecycleHandler.getNumberOfActivity() == 1) {
-            Logger.e(TAG,"we have only calling activity, stop service and destroy app");
+            Logger.e(TAG, "we have only calling activity, stop service and destroy app");
             LinphoneService.stopLinphone(this);
         }
         super.onCallEnd();

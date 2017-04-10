@@ -6,6 +6,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
 import jp.newbees.mastersip.ui.call.OutgoingWaitingFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/11/17.
@@ -34,15 +35,22 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
         showOutgoingWaitingFragment(getCompetitor(), getTextTitleInWaitingFragment(), getCallType(), getCallId());
     }
 
+    private void showOutgoingWaitingFragment(UserItem callee, String titleCall, int callType, String callId) {
+        showWaitingFragment(OutgoingWaitingFragment.newInstance(callee, callId, titleCall, callType));
+    }
+
     protected void showVideoCallFragment() {
         if (getVisibleFragment() instanceof OutgoingWaitingFragment) {
-            showVideoCallFragment(getCompetitor(),getCallId(),getCallType(),
-                    ((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable(),
-                    ((OutgoingWaitingFragment) getVisibleFragment()).muteMic());
+            showVideoCallFragment(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable(),
+                    ((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
         }
     }
 
-    private void showOutgoingWaitingFragment(UserItem callee, String titleCall, int callType, String callId) {
-        showWaitingFragment(OutgoingWaitingFragment.newInstance(callee, callId, titleCall, callType));
+    protected void showVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
+        } else {
+            showVideoChatFragmentForMale(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable());
+        }
     }
 }

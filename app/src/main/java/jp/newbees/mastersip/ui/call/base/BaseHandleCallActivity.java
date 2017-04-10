@@ -16,6 +16,8 @@ import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.call.VideoCallFragment;
+import jp.newbees.mastersip.ui.call.VideoChatForFemaleFragment;
+import jp.newbees.mastersip.ui.call.VideoChatForMaleFragment;
 import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -67,8 +69,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.enableSpeaker(enable);
     }
 
-    public final void muteMicrophone(boolean mute) {
-        this.presenter.muteMicrophone(mute);
+    public final void enableMicrophone(boolean enable) {
+        this.presenter.enableMicrophone(enable);
     }
 
     public void switchCamera(SurfaceView mCaptureView) {
@@ -153,19 +155,45 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     protected final void showWaitingFragment(WaitingFragment waitingFragment) {
-        this.visibleFragment = waitingFragment;
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container, waitingFragment,
-                WaitingFragment.class.getName()).commit();
+        addFragment(waitingFragment, WaitingFragment.class.getName());
     }
 
-    protected final void showVideoCallFragment(UserItem competitor, String callID, int callType,
-                                         boolean enableSpeaker, boolean enableMic) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        visibleFragment = VideoCallFragment.newInstance(competitor, callID, callType, enableSpeaker, enableMic);
-        transaction.replace(R.id.fragment_container, visibleFragment,
-                VideoCallFragment.class.getName()).commit();
+    protected final void showVideoCallFragment(boolean enableSpeaker, boolean muteMic) {
+        visibleFragment = VideoCallFragment.newInstance(competitor, getCallId(), enableSpeaker, muteMic);
+        replaceFragment(visibleFragment, VideoCallFragment.class.getName());
     }
+
+    protected final void showVideoChatFragmentForMale(boolean enableSpeaker) {
+        visibleFragment = VideoChatForMaleFragment.newInstance(competitor, getCallId(), enableSpeaker);
+        replaceFragment(visibleFragment, VideoChatForMaleFragment.class.getName());
+    }
+
+    protected final void showVideoChatFragmentForFemale(boolean muteMic) {
+        visibleFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId(), muteMic);
+        replaceFragment(visibleFragment, VideoChatForFemaleFragment.class.getName());
+    }
+
+    private final void showFragment(CallingFragment fragment, String TAG, boolean isAdd) {
+        this.visibleFragment = fragment;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (isAdd) {
+            transaction.add(R.id.fragment_container, fragment,
+                    TAG).commit();
+        } else {
+            transaction.replace(R.id.fragment_container, fragment,
+                    TAG).commit();
+        }
+
+    }
+
+    private final void addFragment(CallingFragment fragment, String tag) {
+        showFragment(fragment, tag, true);
+    }
+
+    private final void replaceFragment(CallingFragment fragment, String tag) {
+        showFragment(fragment, tag, false);
+    }
+
 
     private IabHelper getIabHelper() {
         if (topPresenter == null) {
@@ -237,7 +265,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     protected void updateViewWhenVoiceConnected() {
         if (visibleFragment instanceof WaitingFragment) {
-            ((WaitingFragment)visibleFragment).updateViewWhenVoiceConnected();
+            ((WaitingFragment) visibleFragment).updateViewWhenVoiceConnected();
         }
     }
 
