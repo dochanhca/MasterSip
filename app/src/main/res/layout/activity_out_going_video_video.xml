@@ -63,5 +63,5 @@
             android:layout_marginRight="@dimen/margin_10"/>
     </LinearLayout>
 
-    <include layout="@layout/layout_voice_calling_action" />
+    <include layout="@layout/layout_calling_three_action" />
 </RelativeLayout>

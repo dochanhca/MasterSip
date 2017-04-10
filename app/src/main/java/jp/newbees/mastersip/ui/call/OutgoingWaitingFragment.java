@@ -57,6 +57,10 @@ public class OutgoingWaitingFragment extends BaseFragment {
     protected LinearLayout llPoint;
     @BindView(R.id.txt_point)
     protected HiraginoTextView txtPoint;
+    @BindView(R.id.layout_calling_three_action)
+    LinearLayout layoutCallingThreeAction;
+    @BindView(R.id.layout_calling_two_action)
+    LinearLayout layoutCallingTwoAction;
 
     private UserItem callee;
     private String titleCall;
@@ -140,11 +144,25 @@ public class OutgoingWaitingFragment extends BaseFragment {
                     .into(profileImage);
         }
         profileImage.setImageResource(imageID);
-        if (callType != Constant.API.VOICE_CALL) {
-            btnOnOffSpeaker.setChecked(true);
-            enableSpeaker(true);
+
+        if (callType == Constant.API.VIDEO_CHAT_CALL) {
+            layoutCallingTwoAction.setVisibility(View.VISIBLE);
+            layoutCallingThreeAction.setVisibility(View.GONE);
+
+            if (callee.getGender() == UserItem.MALE) {
+                btnOnOffMic.setVisibility(View.GONE);
+            } else {
+                btnOnOffSpeaker.setVisibility(View.GONE);
+            }
         } else {
-            enableSpeaker(false);
+            layoutCallingTwoAction.setVisibility(View.GONE);
+            layoutCallingThreeAction.setVisibility(View.VISIBLE);
+            if (callType == Constant.API.VOICE_CALL) {
+                enableSpeaker(false);
+            } else if (callType == Constant.API.VIDEO_CALL) {
+                btnOnOffSpeaker.setChecked(true);
+                enableSpeaker(true);
+            }
         }
     }
 

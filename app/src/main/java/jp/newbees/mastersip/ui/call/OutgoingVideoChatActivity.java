@@ -17,7 +17,7 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     protected String getTextTitle() {
-        return "need update";
+        return getResources().getString(R.string.title_outgoing_call_video_chat);
     }
 
     @Override
@@ -41,6 +41,7 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-
+        showVideoCallFragment();
+        useFrontCamera();
     }
 }
