@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/layout_profile"
+    android:orientation="vertical">
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:lineSpacingExtra="@dimen/normal_spacing_extra"
+        android:text="@string/in_coming_voice_call"
+        android:textColor="@color/text_color_gray_light"
+        android:textSize="@dimen/text_size_15"
+        android:visibility="visible" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_notify_low_signal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/low_signal"
+        android:textColor="@color/sip_red"
+        android:textSize="@dimen/text_size_15"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/img_loading"
+        android:layout_width="@dimen/loading_image_w"
+        android:layout_height="@dimen/loading_image_h"
+        android:layout_below="@id/txt_timer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_15"
+        android:src="@drawable/pinpoint" />
+
+    <LinearLayout
+        android:id="@+id/ll_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_timer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_point_call"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10"
+        android:visibility="gone">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:text="@string/current_point"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/text_size_15" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10"
+            android:text=" 0pt"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/text_size_15" />
+    </LinearLayout>
+</RelativeLayout>

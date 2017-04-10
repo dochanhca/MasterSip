@@ -138,6 +138,19 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         }
     }
 
+    @Override
+    public void onCallPaused() {
+        if (visibleFragment != null) {
+            visibleFragment.onCallPaused();
+        }
+    }
+
+    @Override
+    public void onCallResuming() {
+        if (visibleFragment != null) {
+            visibleFragment.onCallResume();
+        }
+    }
 
     protected final void showWaitingFragment(WaitingFragment waitingFragment) {
         this.visibleFragment = waitingFragment;

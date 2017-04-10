@@ -39,6 +39,10 @@ public abstract class CallingFragment extends BaseFragment{
 
     public abstract void onCoinChanged(int coin);
 
+    public abstract void onCallResume();
+
+    public abstract void onCallPaused();
+
     public final void muteMicrophone(boolean mute) {
         getCallActivity().muteMicrophone(mute);
     }

@@ -5,8 +5,11 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.view.SurfaceView;
 
+import com.android.volley.Response;
+
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.linphone.core.LinphoneAddress;
 import org.linphone.core.LinphoneAuthInfo;
 import org.linphone.core.LinphoneCall;
@@ -34,16 +37,24 @@ import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.GSMCallEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.SipItem;
+import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
+import jp.newbees.mastersip.network.api.SendDirectMessageTask;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -60,6 +71,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private String basePath;
     private String mRingSoundFile;
+    private SipItem sipAccount;
+    private LinphoneCall currentPausedCall;
+    private boolean waitingGSMCall;
+    private TimerTask timerWaitingCallTask;
+    private static final long TIMEOUT = 45000;
+    private static final long FIRST_SHOOT = 45000;
 
     /**
      * @param notifier
@@ -116,12 +133,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void globalState(LinphoneCore lc, LinphoneCore.GlobalState state, String message) {
-        //NOTE 2
         Logger.e(TAG, message + " - " + state.toString());
-
         if (state == LinphoneCore.GlobalState.GlobalOn) {
             try {
-                initLiblinphone(lc);
+                this.initLiblinphone(lc);
             } catch (LinphoneCoreException e) {
                 Logger.e(TAG, e.getMessage());
             }
@@ -135,14 +150,29 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        Logger.e(TAG, msg + " - " + cstate.toString() + " - "+cstate.value());
+        Logger.e(TAG, "CallState " + msg + " - " + cstate.toString() + " - "+cstate.value());
         int state = cstate.value();
-        if (cstate == LinphoneCall.State.CallReleased || cstate == LinphoneCall.State.CallEnd) {
+        if (cstate == LinphoneCall.State.CallReleased
+                || cstate == LinphoneCall.State.CallEnd
+                || cstate == LinphoneCall.State.Error
+                ) {
             resetDefaultSpeaker();
+            notifyEndCallToServer();
+        }else if(cstate == LinphoneCall.State.Pausing) {
+            notifyPauseCallToServer();
+        }else if(cstate == LinphoneCall.State.Resuming) {
+            handleCallResuming();
         }
         String callId = ConfigManager.getInstance().getCallId();
         ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, callId);
         EventBus.getDefault().post(receivingCallEvent);
+    }
+
+    private void handleCallResuming() {
+        this.currentPausedCall = null;
+        this.waitingGSMCall = false;
+        this.timerWaitingCallTask.cancel();
+        this.notifyResumeCallToServer();
     }
 
     /**
@@ -207,6 +237,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             mRingSoundFile = basePath + "/oldphone_mono.wav";
             copyAssetsFromPackage(basePath);
             linphoneCore = LinphoneCoreFactory.instance().createLinphoneCore(this, basePath + "/.linphonerc", basePath + "/linphonerc", null, context);
+            this.tryToLoginVoIP();
         } catch (LinphoneCoreException | IOException e) {
             e.printStackTrace();
         }
@@ -224,7 +255,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void initLiblinphone(LinphoneCore lc) throws LinphoneCoreException {
         linphoneCore = lc;
-
         linphoneCore.setContext(context);
         linphoneCore.setPlayLevel(1);
         linphoneCore.enableSpeaker(true);
@@ -240,7 +270,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
         linphoneCore.setPreferredFramerate(0);
         setBandwidthLimit(1024 + 128);
-        linphoneCore.setNetworkReachable(true); // Let's assume it's true
+    }
+
+    private void tryToLoginVoIP() {
+        if (this.sipAccount != null ) {
+            this.loginVoIPServer(this.sipAccount);
+        }
     }
 
     private void setBandwidthLimit(int bandwidth) {
@@ -261,7 +296,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public synchronized void loginVoIPServer(final SipItem sipItem) {
         try {
-            loginVoIPServer(
+            this.sipAccount = sipItem;
+            this.loginVoIPServer(
                     sipItem.getExtension(), sipItem.getSecret());
         } catch (LinphoneCoreException e) {
             Logger.e(TAG, e.getMessage());
@@ -292,41 +328,43 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
 
     /**
-     * Login to VoIP Server (such as Aterisk, FreeSWITCH ...)
+     * Login to VoIP Server (such as Asterisk, FreeSWITCH ...)
      *
-     * @param extension 10001
-     * @param password  abcxzy
+     * @param extension extension
+     * @param password  password
      * @throws LinphoneCoreException
      */
     private synchronized void loginVoIPServer(String extension, String password) throws LinphoneCoreException {
         String sipAddress = this.genSipAddressByExtension(extension);
-        LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
-        createLinphoneCore();
-        try {
-            LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
-            String username = address.getUserName();
-            String domain = address.getDomain();
-            address.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
+        if (linphoneCore != null) {
+            try {
+                LinphoneCoreFactory lcFactory = LinphoneCoreFactory.instance();
+                LinphoneAddress address = lcFactory.createLinphoneAddress(sipAddress);
+                String username = address.getUserName();
+                String domain = address.getDomain();
+                address.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
 
-            if (password != null) {
-                linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String) null, domain));
+                if (password != null) {
+                    linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String) null, domain));
+                }
+
+                LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, address.asStringUriOnly(), address.asStringUriOnly(), true);
+                linphoneCore.addProxyConfig(proxyCfg);
+                linphoneCore.setDefaultProxyConfig(proxyCfg);
+                linphoneCore.setNetworkReachable(true);
+                this.running = true;
+                while (this.running) {
+                    linphoneCore.iterate();
+                    this.sleep(20);
+                }
+            } catch (NullPointerException e) {
+                this.running = false;
+                Logger.e(TAG, "linphoneCore is " + linphoneCore);
+            } finally {
+                destroy();
             }
-
-            LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, address.asStringUriOnly(), address.asStringUriOnly(), true);
-            proxyCfg.setExpires(2000);
-            linphoneCore.addProxyConfig(proxyCfg);
-            linphoneCore.setDefaultProxyConfig(proxyCfg);
-            this.running = true;
-
-            while (this.running) {
-                linphoneCore.iterate();
-                this.sleep(50);
-            }
-        } catch (NullPointerException e) {
-            this.running = false;
-            Logger.e(TAG, "linphoneCore is " + linphoneCore);
-        } finally {
-            destroy();
+        }else {
+            createLinphoneCore();
         }
     }
 
@@ -456,9 +494,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public final void terminalCall() {
-        Logger.e(TAG,"Terminal Call");
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
-        linphoneCore.terminateCall(currentCall);
+        if (currentCall != null) {
+            linphoneCore.terminateCall(currentCall);
+        }
     }
 
     public final void declineCall() {
@@ -599,5 +638,129 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public void setPreviewWindow(SurfaceView captureView) {
         linphoneCore.setPreviewWindow(captureView);
+    }
+
+    public final void pauseCurrentCall() {
+        currentPausedCall = linphoneCore.getCurrentCall();
+        if (currentPausedCall != null) {
+            this.waitingGSMCall = true;
+            this.linphoneCore.pauseCall(currentPausedCall);
+        }
+    }
+
+    private void startTimerWaitingCall() {
+        Timer timer = new Timer();
+        timerWaitingCallTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (LinphoneHandler.this.waitingGSMCall) {
+                    LinphoneHandler.this.waitingGSMCall = false;
+                    LinphoneHandler.this.endWaitingCall();
+                }
+            }
+        };
+        timer.schedule(timerWaitingCallTask, FIRST_SHOOT , TIMEOUT);
+    }
+
+    private void endWaitingCall() {
+        this.terminalCall();
+    }
+
+    public final void resumeCurrentCall() {
+        if (currentPausedCall != null && this.waitingGSMCall) {
+            this.waitingGSMCall = false;
+            this.linphoneCore.resumeCall(currentPausedCall);
+        }
+    }
+
+    public void handleIncomingCallGSM() {
+        if (this.isCalling()) {
+            pauseCurrentCall();
+        }
+    }
+
+    public void handleIdleCallGSM() {
+        if (this.waitingGSMCall) {
+            this.resumeCurrentCall();
+        }
+    }
+
+    public void handleOutgoingCallGSM() {
+
+    }
+
+    private void notifyPauseCallToServer() {
+        try {
+            String roomId = ConfigManager.getInstance().getCallId();
+            String toExtension = ConfigManager.getInstance().getCalleeByRoomId(roomId).getSipItem().getExtension();
+            String message = genMessageGSM(GSMCallEvent.PAUSED_GSM_CALL_EVENT);
+            Logger.e("LinphoneService", message);
+            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(),toExtension, message);
+            messageTask.request(new Response.Listener<Boolean>() {
+                @Override
+                public void onResponse(Boolean response) {
+                    Logger.e(TAG, "Sent Pause call");
+                    startTimerWaitingCall();
+                }
+            }, new BaseTask.ErrorListener() {
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    Logger.e(TAG, "Sent Pause call failure " + errorMessage);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyResumeCallToServer() {
+        try {
+            String message = genMessageGSM(GSMCallEvent.RESUME_GSM_CALL_EVENT);
+            String roomId = ConfigManager.getInstance().getCallId();
+            String toExtension = ConfigManager.getInstance().getCalleeByRoomId(roomId).getSipItem().getExtension();
+            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(),toExtension, message);
+            messageTask.request(new Response.Listener<Boolean>() {
+                @Override
+                public void onResponse(Boolean response) {
+                    Logger.e(TAG, "Sent Resume call");
+                }
+            }, null);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String genMessageGSM(int state) throws JSONException{
+        String extension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        JSONObject jMessage = new JSONObject();
+        jMessage.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_GSM_CALL_STATE);
+        jMessage.put(Constant.JSON.MESSAGE, "");
+
+        JSONObject jResponse = new JSONObject();
+        jResponse.put(Constant.JSON.EXTENSION, extension);
+        jResponse.put(Constant.JSON.GSM_STATE, state);
+
+        jMessage.put(Constant.JSON.RESPONSE, jResponse);
+        return jMessage.toString();
+    }
+
+    private void notifyEndCallToServer() {
+        String callId = ConfigManager.getInstance().getCallId();
+        CancelCallTask task = new CancelCallTask(getApplicationContext(), callId);
+        task.request(new Response.Listener<Void>() {
+            @Override
+            public void onResponse(Void response) {
+                Logger.e("LinphoneService", "End call success ");
+            }
+        }, new BaseTask.ErrorListener() {
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                Logger.e("LinphoneService", "End call error " + errorMessage);
+            }
+        });
     }
 }

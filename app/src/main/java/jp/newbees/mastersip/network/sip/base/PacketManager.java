@@ -16,10 +16,11 @@ import jp.newbees.mastersip.network.sip.AdminHangUpProcessor;
 import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
-import jp.newbees.mastersip.network.sip.HangUpForGirlProcessor;
-import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
+import jp.newbees.mastersip.network.sip.HangUpForGirlProcessor;
+import jp.newbees.mastersip.network.sip.PauseCallProcessor;
+import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
 import jp.newbees.mastersip.network.sip.RunOutOfCoinProcessor;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
@@ -94,6 +95,9 @@ public class PacketManager {
                 break;
             case Constant.SOCKET.ACTION_ADMIN_HANG_UP:
                 processor = new AdminHangUpProcessor();
+                break;
+            case Constant.SOCKET.ACTION_GSM_CALL_STATE:
+                processor = new PauseCallProcessor();
                 break;
             default:
                 break;

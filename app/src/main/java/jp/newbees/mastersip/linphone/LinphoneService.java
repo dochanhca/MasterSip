@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import jp.newbees.mastersip.model.SipItem;
@@ -20,6 +22,10 @@ import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
+
+import static android.telephony.TelephonyManager.EXTRA_STATE_IDLE;
+import static android.telephony.TelephonyManager.EXTRA_STATE_OFFHOOK;
+import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
 
 /**
  * Created by vietbq on 1/9/17.
@@ -34,6 +40,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     private CenterIncomingCallPresenter incomingCallPresenter;
 
     private static LinphoneService instance;
+    private BroadcastReceiver callStateChangeReceiver;
 
     public static void startLinphone(Context context) {
         Intent intent = new Intent(context, LinphoneService.class);
@@ -80,13 +87,13 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
         loginToVoIP(sipItem);
         registerReceiverRingerModeChanged();
+        registerGSMCallBroadcastReceiver();
         instance = this;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.e(TAG, "OnStartCommand");
-
         return START_NOT_STICKY;
     }
 
@@ -116,6 +123,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         }
         instance = null;
         unregisterReceiver(receiverRingerModeChanged);
+        unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
         linphoneHandler.destroy();
         super.onDestroy();
@@ -159,5 +167,28 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         };
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(receiverRingerModeChanged, filter);
+    }
+
+    private void registerGSMCallBroadcastReceiver() {
+
+        callStateChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    String state = extras.getString(TelephonyManager.EXTRA_STATE);
+                    if (state.equals(EXTRA_STATE_RINGING)) {
+                        linphoneHandler.handleIncomingCallGSM();
+                    }else if(state.equals(EXTRA_STATE_IDLE)) {
+                        linphoneHandler.handleIdleCallGSM();
+                    }else if(state.equals(EXTRA_STATE_OFFHOOK)) {
+                        linphoneHandler.handleOutgoingCallGSM();
+                    }
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        registerReceiver(callStateChangeReceiver, filter);
     }
 }

@@ -7,6 +7,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -50,10 +51,8 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
             case ReceivingCallEvent.STREAMING_CALL:
                 view.onStreamingConnected();
                 break;
-            case ReceivingCallEvent.LINPHONE_ERROR:
-                performCancelCall(receivingCallEvent.getCallId());
-                break;
             default:
+                Logger.e(TAG, "Do not handle this event" + receivingCallEvent.getCallEvent());
                 break;
         }
     }

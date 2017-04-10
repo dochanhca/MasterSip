@@ -37,6 +37,8 @@ public class IncomingWaitingFragment extends WaitingFragment {
     protected HiraginoTextView txtUserName;
     @BindView(R.id.txt_timer)
     protected HiraginoTextView txtTimer;
+    @BindView(R.id.txt_notify_low_signal)
+    protected HiraginoTextView txtNotifyLowSignal;
     @BindView(R.id.img_loading)
     protected ImageView imgLoading;
     @BindView(R.id.btn_reject_call)
@@ -140,6 +142,16 @@ public class IncomingWaitingFragment extends WaitingFragment {
         layoutVoiceCallingAction.setVisibility(View.VISIBLE);
         layoutReceivingCallAction.setVisibility(View.GONE);
         imgLoading.setVisibility(View.GONE);
+    }
+
+    public void onCallPaused() {
+        txtTimer.setVisibility(View.INVISIBLE);
+        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    public final void onCallResume() {
+        txtTimer.setVisibility(View.VISIBLE);
+        txtNotifyLowSignal.setVisibility(View.INVISIBLE);
     }
 
     @Override

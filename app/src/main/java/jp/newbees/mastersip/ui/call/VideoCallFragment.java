@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
@@ -48,6 +49,8 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     private static final String ID_TIMER_HIDE_ACTION = "ID_TIMER_HIDE_ACTION";
     private static final String ID_COUNTING_CALL_DURATION = "ID_COUNTING_CALL_DURATION";
 
+    @BindView(R.id.txt_low_signal)
+    TextView txtLowSignal;
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
@@ -349,5 +352,14 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         StringBuilder point = new StringBuilder();
         point.append(String.valueOf(coin)).append(getString(R.string.pt));
         txtPoint.setText(point.toString());
+    }
+
+    public void onCallPaused() {
+        txtLowSignal.setVisibility(View.VISIBLE);
+
+    }
+
+    public final void onCallResume() {
+        txtLowSignal.setVisibility(View.INVISIBLE);
     }
 }

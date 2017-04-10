@@ -36,6 +36,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     HiraginoTextView txtUserName;
     @BindView(R.id.txt_timer)
     HiraginoTextView txtTimer;
+    @BindView(R.id.txt_notify_low_signal)
+    HiraginoTextView txtNotifyLowSignal;
     @BindView(R.id.img_loading)
     ImageView imgLoading;
     @BindView(R.id.ll_point)
@@ -202,5 +204,15 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
             llPoint.setVisibility(View.VISIBLE);
         }
         imgLoading.setVisibility(View.GONE);
+    }
+
+    public void onCallPaused() {
+        txtTimer.setVisibility(View.INVISIBLE);
+        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    public final void onCallResume() {
+        txtTimer.setVisibility(View.VISIBLE);
+        txtNotifyLowSignal.setVisibility(View.INVISIBLE);
     }
 }
