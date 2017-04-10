@@ -77,6 +77,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private TimerTask timerWaitingCallTask;
     private static final long TIMEOUT = 45000;
     private static final long FIRST_SHOOT = 45000;
+    private boolean cancelingCall;
 
     /**
      * @param notifier
@@ -750,15 +751,20 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void notifyEndCallToServer() {
         String callId = ConfigManager.getInstance().getCallId();
+        if (callId == null || cancelingCall) return;
+        cancelingCall = true;
         CancelCallTask task = new CancelCallTask(getApplicationContext(), callId);
         task.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
+                ConfigManager.getInstance().setCallId(null);
+                cancelingCall = false;
                 Logger.e("LinphoneService", "End call success ");
             }
         }, new BaseTask.ErrorListener() {
             @Override
             public void onError(int errorCode, String errorMessage) {
+                cancelingCall = false;
                 Logger.e("LinphoneService", "End call error " + errorMessage);
             }
         });

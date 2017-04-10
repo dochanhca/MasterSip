@@ -62,20 +62,20 @@ public class StartPresenter extends RegisterPresenterBase {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Logger.e(TAG, "Login FB success");
+                        Logger.e(tag, "Login FB success");
                         handleLoginResult(loginResult);
                     }
 
                     @Override
                     public void onCancel() {
-                        Logger.e(TAG, "Login FB cancel");
+                        Logger.e(tag, "Login FB cancel");
                         startView.didLoadFacebookFailure("User cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         startView.didLoadFacebookFailure(exception.toString());
-                        Logger.e(TAG, "Login FB error " + exception.getLocalizedMessage());
+                        Logger.e(tag, "Login FB error " + exception.getLocalizedMessage());
                     }
                 });
 
@@ -190,7 +190,7 @@ public class StartPresenter extends RegisterPresenterBase {
         } else if (task instanceof LoginFacebookTask) {
             startView.didLoadFacebookFailure(errorMessage);
         } else {
-            Logger.e(TAG, errorMessage);
+            Logger.e(tag, errorMessage);
         }
     }
 

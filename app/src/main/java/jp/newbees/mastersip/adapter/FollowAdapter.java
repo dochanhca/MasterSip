@@ -8,18 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.bumptech.glide.Glide;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.model.FootprintItem;
+import jp.newbees.mastersip.model.FollowItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -29,144 +26,84 @@ import jp.newbees.mastersip.utils.Utils;
 import static jp.newbees.mastersip.utils.DateTimeUtils.convertStringToDate;
 
 /**
- * Created by vietbq on 3/29/17.
+ * Created by vietbq on 4/10/17.
  */
 
-public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdapter.FootprintViewHolder> {
-    /**
-     * Context
-     */
+public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowViewHolder> {
+
+    private FollowViewHolder.OnFollowItemClickListener followItemListener;
     private final Context context;
-    /**
-     * Data for footprint
-     */
-    private List<FootprintItem> data;
-    /**
-     * Footprint listener
-     */
-    private FootprintViewHolder.OnFootprintClickListener footPrintListener;
+    private FollowItem followList;
+    private int quitImage;
 
-    /**
-     * Adapter for foot print
-     * @param context
-     * @param data Non-null, must be an instance of List
-     */
-    public FootprintAdapter(Context context, List<FootprintItem> data) {
+    public FollowAdapter(Context context, FollowItem followList) {
         this.context = context;
-        this.data = data;
+        this.followList = followList;
     }
 
-    /**
-     * Get number of sections
-     * @return
-     */
-    @Override
-    public int getSectionCount() {
-        return this.data.size();
+    public void setOnItemFollowClickListener(FollowViewHolder.OnFollowItemClickListener listener) {
+        this.followItemListener = listener;
     }
 
-    /**
-     * Get number of item in  section
-     * @param section
-     * @return
-     */
-    @Override
-    public int getItemCount(int section) {
-        return this.data.get(section).getUserItems().size();
-    }
-
-
-    @Override
-    public void onBindHeaderViewHolder(FootprintViewHolder holder, int section) {
-        FootprintItem footprintItem = data.get(section);
-        Date groupDate = DateTimeUtils.convertStringToDate(footprintItem.getDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
-        String sectionTitle = DateTimeUtils.getHeaderDisplayDateInChatHistory(groupDate, context);
-        holder.headerHolder.txtSection.setText(sectionTitle);
-    }
-
-    @Override
-    public void onBindViewHolder(FootprintViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        FootprintItem footprintItem = data.get(section);
-        holder.itemHolder.updateView(footprintItem.getUserItems().get(relativePosition), context);
-        holder.itemHolder.setOnFootprintClickListener(footPrintListener);
-    }
-
-    @Override
-    public FootprintViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(viewType == VIEW_TYPE_HEADER ? R.layout.section_day_item : R.layout.item_footprint, parent, false);
-        return new FootprintViewHolder(view, viewType);
-    }
-
-    public void setData(List<FootprintItem> data) {
-        this.data = data;
-    }
-
-    public List<FootprintItem> getData() {
-        return data;
-    }
-
-    /**
-     * Clear all data footprint
-     */
     public void clearData() {
-        this.data.clear();
+        this.followList.getFollowers().clear();
     }
 
-    public void setOnItemClickListener(FootprintViewHolder.OnFootprintClickListener footPrintListener) {
-        this.footPrintListener = footPrintListener;
+    public void setData(FollowItem data) {
+        this.followList = data;
+    }
+
+    @Override
+    public FollowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_follow, parent, false);
+        return new FollowViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(FollowViewHolder holder, int position) {
+        UserItem follower = followList.getFollowers().get(position);
+        holder.itemHolder.updateView(follower, context);
+        holder.itemHolder.setOnItemFollowClickListener(followItemListener);
+    }
+
+    @Override
+    public int getItemCount() {
+        return this.followList.getTotal();
     }
 
     /**
      * Footprint ViewHolder
      */
-    public static class FootprintViewHolder extends RecyclerView.ViewHolder{
-        private HeaderHolder headerHolder;
+    public static class FollowViewHolder extends RecyclerView.ViewHolder{
         private ItemHolder itemHolder;
 
         /**
          * Constructor
-         * @param itemView View for holder Item or Header
-         * @param viewType @VIEW_TYPE_HEADER or @VIEW_TYPE_ITEM
+         * @param itemView View for holder Item
          */
-        public FootprintViewHolder(View itemView,int viewType) {
+        public FollowViewHolder(View itemView) {
             super(itemView);
-            if (viewType == VIEW_TYPE_HEADER) {
-                headerHolder = new HeaderHolder(itemView);
-            }else {
-                itemHolder = new ItemHolder(itemView);
-            }
-        }
-
-        class HeaderHolder {
-            /**
-             * Title for Section
-             */
-            public HiraginoTextView txtSection;
-            HeaderHolder(View view) {
-                this.txtSection = (HiraginoTextView) view;
-            }
+            itemHolder = new ItemHolder(itemView);
         }
 
         class ItemHolder implements View.OnClickListener {
             public HiraginoTextView txtUserNameAge;
             public HiraginoTextView txtCallSetting;
-            public HiraginoTextView txtLastFootprint;
             public Button btnVoiceCall;
             public Button btnVideoCall;
             public Button btnChat;
             public ImageView imgAvatar;
             public View separateView;
-            private OnFootprintClickListener footPrintListener;
+            public View groupAction;
+            private OnFollowItemClickListener followItemListener;
             private UserItem userItem;
             private View rootView;
-            private View groupAction;
 
             ItemHolder(View view) {
                 this.txtUserNameAge = (HiraginoTextView) view.findViewById(R.id.txt_user_name_age);
                 this.txtCallSetting = (HiraginoTextView) view.findViewById(R.id.txt_call_setting);
                 this.imgAvatar = (ImageView) view.findViewById(R.id.img_avatar);
-                this.txtLastFootprint =  (HiraginoTextView) view.findViewById(R.id.txt_last_footprint);
                 this.separateView =  view.findViewById(R.id.separate_view);
                 this.btnVideoCall = (Button) view.findViewById(R.id.btn_video_call);
                 this.btnVoiceCall = (Button) view.findViewById(R.id.btn_voice_call);
@@ -180,13 +117,12 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
              * @param userItem
              * @param context
              */
-            public void updateView(UserItem userItem, Context context) {
+            public final void updateView(UserItem userItem, Context context) {
                 this.userItem = userItem;
-                String lastFootprint = DateTimeUtils.getShortTimeJapanese(userItem.getFootprintTime());
-                this.txtLastFootprint.setText(lastFootprint);
+                this.txtUserNameAge.setText(userItem.getUsername());
                 updateCallSetting(context, userItem.getSettings());
                 updateDescriptionSettingCall(context, userItem.getLastLogin(), userItem.getSettings());
-                updateStatusUser(userItem.getStatus(), context);
+                this.updateStatusUser(this.userItem.getStatus(), context);
             }
 
             private void updateStatusUser(int status, Context context) {
@@ -198,7 +134,6 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
             }
 
             private void handleViewForQuitUser(Context context) {
-                this.txtUserNameAge.setText(userItem.getUsername());
                 int defaultAvatar = getQuitImage();
                 this.imgAvatar.setImageResource(getQuitImage());
                 Glide.with(context).load("").placeholder(defaultAvatar).error(defaultAvatar).into(this.imgAvatar);
@@ -212,9 +147,6 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
             }
 
             private void handleViewForActiveUser(Context context) {
-                int age = DateTimeUtils.getAgeFromBirthDayServer(userItem.getDateOfBirth());
-                String usernameAge = userItem.getUsername() + age + context.getString(R.string.year_old);
-                this.txtUserNameAge.setText(usernameAge);
                 this.groupAction.setVisibility(View.VISIBLE);
                 this.txtCallSetting.setVisibility(View.VISIBLE);
                 int deafaultAvatar = ConfigManager.getInstance().getImageCalleeDefault();
@@ -275,22 +207,22 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
             /**
              * Register listener on each item footprint
-             * @param footPrintListener
+             * @param followItemListener
              */
-            public void setOnFootprintClickListener(OnFootprintClickListener footPrintListener) {
-                this.footPrintListener = footPrintListener;
+            public void setOnItemFollowClickListener(OnFollowItemClickListener followItemListener) {
+                this.followItemListener = followItemListener;
             }
 
             @Override
             public void onClick(View view) {
                 if (view == btnChat) {
-                    this.footPrintListener.onChatClickListener(this.userItem);
+                    this.followItemListener.onChatClickListener(this.userItem);
                 }else if(view == btnVoiceCall) {
-                    this.footPrintListener.onVoiceClickListener(this.userItem);
+                    this.followItemListener.onVoiceClickListener(this.userItem);
                 }else if (view == btnVideoCall) {
-                    this.footPrintListener.onVideoClickListener(this.userItem);
+                    this.followItemListener.onVideoClickListener(this.userItem);
                 }else {
-                    this.footPrintListener.onProfileClickListener(this.userItem);
+                    this.followItemListener.onProfileClickListener(this.userItem);
                 }
             }
 
@@ -307,7 +239,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
         /**
          * Listener for each item in Footprint
          */
-        public interface OnFootprintClickListener {
+        public interface OnFollowItemClickListener {
             /**
              * Callback when user clicks on Chat Button
              * @param userItem

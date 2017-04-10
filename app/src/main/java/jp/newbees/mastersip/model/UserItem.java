@@ -19,6 +19,7 @@ public class UserItem implements Serializable, Parcelable {
     // status
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
+    public static final int ACTIVE = 1;
 
     private String userId;
     private String lastLogin;

@@ -88,7 +88,7 @@ public class CallPresenter extends BasePresenter {
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof ReconnectCallTask) {
-            Logger.e(TAG, "Reconnect call task successful");
+            Logger.e(tag, "Reconnect call task successful");
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
         } else if (task instanceof SendMessageRequestEnableCallTask) {

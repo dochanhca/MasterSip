@@ -58,6 +58,8 @@ public final class Constant {
         public static final String TIMESTAMP = "timestamp";
         public static final String SETTING_CALL = "setting_call";
         public static final String GSM_STATE = "gsm_state";
+        public static final String FOLLOWER_LIST = "follower_list";
+        public static final String FOLLOW_LIST = "follow_list";
 
         private JSON() {
             //Prevent init constructor
@@ -192,7 +194,6 @@ public final class Constant {
     }
 
     public static final class API {
-
         private API() {
             //Prevent init constructor
         }
@@ -269,6 +270,8 @@ public final class Constant {
         public static final String LIST_FOOTPRINT_VIEWED_BY_ME = "footprint_list_by_me";
         public static final String LIST_FOOTPRINT_VIEWED_BY_OTHER = "footprint_list_by_someone";
         public static final String SEND_DIRECT_MESSAGE = "message/send";
+        public static final String LIST_FOLLOWERS = "follower_list";
+        public static final String LIST_FOLLOWING = "follow_list";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
