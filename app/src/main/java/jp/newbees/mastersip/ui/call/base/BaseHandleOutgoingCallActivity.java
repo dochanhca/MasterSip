@@ -75,6 +75,24 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
         }
     }
 
+    @Override
+    public void onCallPaused() {
+        if (outgoingWaitingFragment == null) {
+            videoCallFragment.onCallPaused();
+        } else {
+            outgoingWaitingFragment.onCallPaused();
+        }
+    }
+
+    @Override
+    public void onCallResuming() {
+        if (outgoingWaitingFragment == null) {
+            videoCallFragment.onCallResume();
+        } else {
+            outgoingWaitingFragment.onCallResume();
+        }
+    }
+
     protected void showVideoCallFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         videoCallFragment = VideoCallFragment.newInstance(getCompetitor(), callId, getCallType(),

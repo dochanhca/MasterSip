@@ -57,6 +57,7 @@ public final class Constant {
         public static final String USER_NAME = "user_name";
         public static final String TIMESTAMP = "timestamp";
         public static final String SETTING_CALL = "setting_call";
+        public static final String GSM_STATE = "gsm_state";
 
         private JSON() {
             //Prevent init constructor
@@ -267,6 +268,7 @@ public final class Constant {
         public static final String PAYMENT_PACKAGE_LIST = "payment/list_package";
         public static final String LIST_FOOTPRINT_VIEWED_BY_ME = "footprint_list_by_me";
         public static final String LIST_FOOTPRINT_VIEWED_BY_OTHER = "footprint_list_by_someone";
+        public static final String SEND_DIRECT_MESSAGE = "message/send";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -360,10 +362,10 @@ public final class Constant {
 
     public class SOCKET {
 
+
         private SOCKET() {
             //Prevent init object
         }
-
         public static final String ACTION_BUSY_CALL = "BUSY_CALL";
         public static final String ACTION_CANCEL_CALL = "CANCEL_CALL";
         public static final String ACTION_CHANGE_CALLING_STATUS = "CHANGE_CALLING_STATUS";
@@ -374,6 +376,7 @@ public final class Constant {
         public static final String ACTION_CHANGE_MESSAGE_STATE = "update_message_status";
         public static final String ACTION_HANG_UP_FOR_GIRL_BLOCK_ZERO = "Hangup_for_girl_block_zero";
         public static final String ACTION_ADMIN_HANG_UP = "ADMIN_HANG_UP";
+        public static final String ACTION_GSM_CALL_STATE = "gsm_call_state";
 
         public static final int STATUS_CALLING_WAITING = 1;
         public static final int STATUS_CALLING_CANCELED = 2;

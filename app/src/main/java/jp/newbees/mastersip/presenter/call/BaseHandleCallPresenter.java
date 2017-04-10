@@ -8,10 +8,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.GSMCallEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 
@@ -38,10 +38,19 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         view.onRunningOutOfCoin();
     }
 
-    protected void performCancelCall(String calId) {
-        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
-        requestToServer(cancelCallTask);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGSMCallStateChanged(GSMCallEvent event) {
+        if (event.getCallEvent() == GSMCallEvent.PAUSED_GSM_CALL_EVENT) {
+            view.onCallPaused();
+        }else if(event.getCallEvent() == GSMCallEvent.RESUME_GSM_CALL_EVENT) {
+            view.onCallResuming();
+        }
     }
+
+//    protected void performCancelCall(String calId) {
+//        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
+//        requestToServer(cancelCallTask);
+//    }
 
     public final void enableSpeaker(boolean enable) {
         LinphoneHandler.getInstance().enableSpeaker(enable);
@@ -74,7 +83,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
             return;
         }
         LinphoneHandler.getInstance().declineCall();
-        performCancelCall(calId);
+//        performCancelCall(calId);
     }
 
     public void terminalCall(String calId) {
@@ -82,7 +91,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
             return;
         }
         LinphoneHandler.getInstance().terminalCall();
-        performCancelCall(calId);
+//        performCancelCall(calId);
     }
 
     protected void handleCallEnd() {
@@ -109,5 +118,9 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         void onCoinChanged(int coin);
 
         void onRunningOutOfCoin();
+
+        void onCallPaused();
+
+        void onCallResuming();
     }
 }
