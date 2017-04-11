@@ -159,7 +159,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
             @Override
             public void onRefresh() {
                 presenter.filterUser(currentTypeSearch);
-                listener.resetState();
+//                listener.resetState();
             }
         });
 
