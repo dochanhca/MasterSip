@@ -56,7 +56,6 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
                handleLoginUser();
             }
         }, TIME_DELAY);
-
     }
 
     private void handleLoginUser() {

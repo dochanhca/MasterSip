@@ -1,11 +1,17 @@
 package jp.newbees.mastersip.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
@@ -46,10 +52,12 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private UserItem callee;
     private UserItem currentProfileShowing;
     private boolean fromProfileDetail;
+    private BroadcastReceiver wifiBroadcastReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.registerWifiStateChange();
         presenter = new CallPresenter(this.getApplicationContext(), this);
     }
 
@@ -57,12 +65,34 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     protected void onStart() {
         super.onStart();
         presenter.registerCallEvent();
+        LinphoneService.startLinphone(getApplicationContext());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unregisterCallEvent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(wifiBroadcastReceiver);
+    }
+
+    private void registerWifiStateChange() {
+        wifiBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if(info != null && info.isConnected()) {
+                    LinphoneService.startLinphone(getApplicationContext());
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(wifiBroadcastReceiver, intentFilter);
     }
 
     /**
