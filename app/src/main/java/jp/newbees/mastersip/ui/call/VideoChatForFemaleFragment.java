@@ -67,10 +67,10 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     private BasicChatPresenter basicChatPresenter;
 
     public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID,
-                                                boolean muteMic) {
+                                                boolean enableMic) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(MIC, muteMic);
+        args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
         VideoChatForFemaleFragment fragment = new VideoChatForFemaleFragment();
         fragment.setArguments(args);

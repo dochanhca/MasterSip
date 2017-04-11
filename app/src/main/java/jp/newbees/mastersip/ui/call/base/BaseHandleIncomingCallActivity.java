@@ -51,9 +51,9 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     protected void showVideoChatFragment() {
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-            showVideoChatFragmentForFemale(false);
-        } else {
             showVideoChatFragmentForMale(true);
+        } else {
+            showVideoChatFragmentForFemale(true);
         }
     }
 

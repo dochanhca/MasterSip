@@ -114,13 +114,13 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         if (getCallType() == Constant.API.VIDEO_CHAT_CALL) {
             inflateViewAction(R.layout.layout_calling_two_action);
 
-            if (getCompetitor().getGender() == UserItem.MALE) {
-                llOnOffMic.setVisibility(View.GONE);
+            if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
                 btnOnOffMic.setChecked(false);
+                llOnOffMic.setVisibility(View.GONE);
                 btnOnOffSpeaker.setChecked(true);
             } else {
-                llOnOffSpeaker.setVisibility(View.GONE);
                 btnOnOffSpeaker.setChecked(false);
+                llOnOffSpeaker.setVisibility(View.GONE);
                 btnOnOffMic.setChecked(true);
             }
         } else {

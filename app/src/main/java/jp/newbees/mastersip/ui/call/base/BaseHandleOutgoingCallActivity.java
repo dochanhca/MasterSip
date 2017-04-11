@@ -48,9 +48,9 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
     protected void showVideoChatFragment() {
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
-        } else {
             showVideoChatFragmentForMale(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable());
+        } else {
+            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
         }
     }
 }

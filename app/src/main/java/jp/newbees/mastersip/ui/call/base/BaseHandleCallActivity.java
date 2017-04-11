@@ -168,8 +168,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         replaceFragment(visibleFragment, VideoChatForMaleFragment.class.getName());
     }
 
-    protected final void showVideoChatFragmentForFemale(boolean muteMic) {
-        visibleFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId(), muteMic);
+    protected final void showVideoChatFragmentForFemale(boolean enableMic) {
+        visibleFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId(), enableMic);
         replaceFragment(visibleFragment, VideoChatForFemaleFragment.class.getName());
     }
 
