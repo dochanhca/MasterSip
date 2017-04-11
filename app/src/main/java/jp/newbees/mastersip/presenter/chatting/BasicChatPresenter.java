@@ -17,7 +17,6 @@ import jp.newbees.mastersip.network.api.SendTextMessageTask;
 import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 4/10/17.
@@ -100,18 +99,6 @@ public class BasicChatPresenter extends BasePresenter{
 
     public void sendingReadMessageUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
         UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        if (LinphoneHandler.getInstance() == null) {
-            Logger.e("BasicChatPresenter", "LinphoneHandler.getInstance() = null");
-        } else if (baseChatItem == null) {
-            Logger.e("BasicChatPresenter", "baseChatItem = null");
-        }else if (currentUser == null) {
-            Logger.e("BasicChatPresenter", "currentUser = null");
-        }else if (currentUser.getSipItem() == null) {
-            Logger.e("BasicChatPresenter", "getSipItem = null");
-        }else if (currentUser.getSipItem().getExtension() == null) {
-            Logger.e("BasicChatPresenter", "getExtension = null");
-        }
-
         LinphoneHandler.getInstance().sendReadMessageEvent(currentUser.getSipItem().getExtension(),
                 sender.getSipItem().getExtension(), baseChatItem);
     }

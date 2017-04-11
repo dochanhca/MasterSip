@@ -446,4 +446,5 @@
     <string name="title_incoming_call_video_chat_for_male">お相手(ビデオ)+自分(チャット)で\n着信中...</string>
     <string name="title_outgoing_call_video_chat">お相手(チャット)+自分(ビデオ)で 呼び出し中...</string>
     <string name="low_signal">お相手の回線が不安定です</string>
+    <string name="hide_chat_box">チャット画面を閉じる</string>
 </resources>
