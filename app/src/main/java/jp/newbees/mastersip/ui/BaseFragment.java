@@ -103,29 +103,7 @@ public abstract class BaseFragment extends Fragment {
 
     public final void showMessageDialog(String title, String content, String note,
                                         boolean isHideActionButton) {
-
-        if (null == messageDialog) {
-            messageDialog = new MessageDialog();
-        }
-
-        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
-            return;
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putString(MessageDialog.MESSAGE_DIALOG_TITLE, title);
-        bundle.putString(MessageDialog.MESSAGE_DIALOG_CONTENT, content);
-        bundle.putString(MessageDialog.MESSAGE_DIALOG_NOTE, note);
-        bundle.putBoolean(MessageDialog.IS_HIDE_ACTION_BUTTON, isHideActionButton);
-
-        messageDialog.setArguments(bundle);
-        messageDialog.show(getActivity().getFragmentManager(), "MessageDialog");
-    }
-
-    protected void disMissMessageDialog() {
-        if (null != messageDialog) {
-            messageDialog.dismiss();
-        }
+        ((BaseActivity) getActivity()).showMessageDialog(title, content, note, isHideActionButton);
     }
 
     public final void showMessageDialog(String message) {

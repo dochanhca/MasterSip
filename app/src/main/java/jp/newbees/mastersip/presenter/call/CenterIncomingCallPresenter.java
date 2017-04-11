@@ -40,9 +40,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
-
             ConfigManager.getInstance().setCurrentCallUser(caller, callID);
-
             handleIncomingCallType(callType, caller, callID);
         }
     }

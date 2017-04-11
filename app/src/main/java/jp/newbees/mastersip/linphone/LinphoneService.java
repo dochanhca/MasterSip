@@ -33,7 +33,7 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
 
 public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener {
 
-    private LinphoneHandler linphoneHandler;
+//    private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
     private BroadcastReceiver receiverRingerModeChanged;
 
@@ -58,10 +58,10 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     }
 
     public static boolean isRunning() {
-        if (instance == null || instance.linphoneHandler == null) {
+        if (instance == null || LinphoneHandler.getInstance() == null) {
             return false;
         }
-        return instance.linphoneHandler.isRunning();
+        return LinphoneHandler.getInstance().isRunning();
     }
 
     /**
@@ -84,13 +84,13 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.e(TAG, "onCreate");
+        Logger.e(TAG, "Linphone Service onCreate");
         incomingCallPresenter = new CenterIncomingCallPresenter(getApplicationContext(), this);
         incomingCallPresenter.registerCallEvent();
 
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
-        linphoneHandler = LinphoneHandler.createAndStart(notifier, getApplicationContext());
+        LinphoneHandler.createAndStart(getApplicationContext(), notifier);
         SipItem sipItem = ConfigManager.getInstance().getCurrentUser().getSipItem();
         loginToVoIP(sipItem);
         registerReceiverRingerModeChanged();
@@ -105,12 +105,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     }
 
     private void loginToVoIP(final SipItem sipItem) {
-        new Thread(){
-            public void run() {
-                Logger.e(TAG, "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
-                linphoneHandler.loginVoIPServer(sipItem);
-            }
-        }.start();
+        LinphoneHandler.getInstance().loginVoIPServer(sipItem);
     }
 
     @Nullable
@@ -121,12 +116,13 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void onDestroy() {
-        LinphoneService.destroyLinphoneService();
-        unregisterReceiver(callStateChangeReceiver);
-        incomingCallPresenter.unRegisterCallEvent();
-        linphoneHandler.destroy();
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
+        LinphoneService.destroyLinphoneService();
+        unregisterReceiver(receiverRingerModeChanged);
+        unregisterReceiver(callStateChangeReceiver);
+        incomingCallPresenter.unRegisterCallEvent();
+        LinphoneHandler.getInstance().destroy();
     }
 
     @Override
@@ -153,9 +149,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         receiverRingerModeChanged = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (LinphoneHandler.getLinphoneCore() != null) {
-                    linphoneHandler.updateLocalRing();
-                }
+                LinphoneHandler.getInstance().updateLocalRing();
             }
         };
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
@@ -171,11 +165,11 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
                 if (extras != null) {
                     String state = extras.getString(TelephonyManager.EXTRA_STATE);
                     if (state.equals(EXTRA_STATE_RINGING)) {
-                        linphoneHandler.handleIncomingCallGSM();
-                    } else if (state.equals(EXTRA_STATE_IDLE)) {
-                        linphoneHandler.handleIdleCallGSM();
-                    } else if (state.equals(EXTRA_STATE_OFFHOOK)) {
-                        linphoneHandler.handleOutgoingCallGSM();
+                        LinphoneHandler.getInstance().handleIncomingCallGSM();
+                    }else if(state.equals(EXTRA_STATE_IDLE)) {
+                        LinphoneHandler.getInstance().handleIdleCallGSM();
+                    }else if(state.equals(EXTRA_STATE_OFFHOOK)) {
+                        LinphoneHandler.getInstance().handleOutgoingCallGSM();
                     }
                 }
             }

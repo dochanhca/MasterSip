@@ -33,8 +33,9 @@ import jp.newbees.mastersip.utils.MyContextWrapper;
  * Created by vietbq on 12/6/16.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements MessageDialog.OnMessageDialogClickListener {
 
+    private boolean mIsMessageDialogShowing;
     private boolean mIsDialogShowing;
     private boolean mInterrupted;
     private LoadingDialog loadingDialog;
@@ -117,6 +118,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             loadingDialog.dismissDialog();
             loadingDialog = null;
         }
+    }
+
+    @Override
+    public void onMessageDialogOkClick() {
+        disMissMessageDialog();
     }
 
     protected abstract int layoutId();
@@ -227,11 +233,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (null == messageDialog) {
             messageDialog = new MessageDialog();
         }
-
-        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
+        if (mIsMessageDialogShowing) {
             return;
         }
 
+        mIsMessageDialogShowing = true;
         Bundle bundle = new Bundle();
         bundle.putString(MessageDialog.MESSAGE_DIALOG_TITLE, title);
         bundle.putString(MessageDialog.MESSAGE_DIALOG_CONTENT, content);
@@ -247,8 +253,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void disMissMessageDialog() {
+        mIsMessageDialogShowing = false;
         if (null != messageDialog) {
             messageDialog.dismiss();
+            messageDialog = null;
         }
     }
 
