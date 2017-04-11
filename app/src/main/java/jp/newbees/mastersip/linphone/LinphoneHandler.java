@@ -62,6 +62,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class LinphoneHandler implements LinphoneCoreListener {
     private static final String TAG = "LinphoneHandler";
+    private final AudioManager mAudioManager;
     private Context context;
     private boolean running;
     private LinphoneNotifier notifier;
@@ -86,6 +87,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private LinphoneHandler(LinphoneNotifier notifier, Context context) {
         this.notifier = notifier;
         this.context = context;
+        mAudioManager = ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE));
     }
 
     public static final synchronized LinphoneHandler createAndStart(LinphoneNotifier notifier, Context context) {
@@ -151,7 +153,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
-        Logger.e(TAG, "CallState " + msg + " - " + cstate.toString() + " - "+cstate.value());
+        Logger.e(TAG, "CallState " + msg + " - " + cstate.toString() + " - " + cstate.value());
         int state = cstate.value();
         if (cstate == LinphoneCall.State.CallReleased
                 || cstate == LinphoneCall.State.CallEnd
@@ -159,9 +161,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 ) {
             resetDefaultSpeaker();
             notifyEndCallToServer();
-        }else if(cstate == LinphoneCall.State.Pausing) {
+        } else if (cstate == LinphoneCall.State.Pausing) {
             notifyPauseCallToServer();
-        }else if(cstate == LinphoneCall.State.Resuming) {
+        } else if (cstate == LinphoneCall.State.Resuming) {
             handleCallResuming();
         }
         String callId = ConfigManager.getInstance().getCallId();
@@ -257,9 +259,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void initLiblinphone(LinphoneCore lc) throws LinphoneCoreException {
         linphoneCore = lc;
         linphoneCore.setContext(context);
-        linphoneCore.setPlayLevel(1);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                mAudioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL), 0);
 
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
@@ -274,7 +277,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void tryToLoginVoIP() {
-        if (this.sipAccount != null ) {
+        if (this.sipAccount != null) {
             this.loginVoIPServer(this.sipAccount);
         }
     }
@@ -327,6 +330,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
+    public void adjustVolume(int i) {
+            // starting from ICS, volume must be adjusted by the application, at least for STREAM_VOICE_CALL volume stream
+            mAudioManager.adjustStreamVolume(AudioManager.STREAM_VOICE_CALL, i < 0
+                    ? AudioManager.ADJUST_LOWER : AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+    }
 
     /**
      * Login to VoIP Server (such as Asterisk, FreeSWITCH ...)
@@ -364,7 +372,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             } finally {
                 destroy();
             }
-        }else {
+        } else {
             createLinphoneCore();
         }
     }
@@ -502,7 +510,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public final void declineCall() {
-        Logger.e(TAG,"Decline Call");
+        Logger.e(TAG, "Decline Call");
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
         if (null != currentCall) {
             linphoneCore.declineCall(currentCall, Reason.Busy);
@@ -660,7 +668,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 }
             }
         };
-        timer.schedule(timerWaitingCallTask, FIRST_SHOOT , TIMEOUT);
+        timer.schedule(timerWaitingCallTask, FIRST_SHOOT, TIMEOUT);
     }
 
     private void endWaitingCall() {
@@ -690,13 +698,18 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     }
 
+    public void handleVolumeChanged(int volume) {
+        linphoneCore.setPlayLevel(volume);
+        updateCall();
+    }
+
     private void notifyPauseCallToServer() {
         try {
             String roomId = ConfigManager.getInstance().getCallId();
             String toExtension = ConfigManager.getInstance().getCalleeByRoomId(roomId).getSipItem().getExtension();
             String message = genMessageGSM(GSMCallEvent.PAUSED_GSM_CALL_EVENT);
             Logger.e("LinphoneService", message);
-            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(),toExtension, message);
+            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(), toExtension, message);
             messageTask.request(new Response.Listener<Boolean>() {
                 @Override
                 public void onResponse(Boolean response) {
@@ -711,7 +724,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             });
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -721,7 +734,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             String message = genMessageGSM(GSMCallEvent.RESUME_GSM_CALL_EVENT);
             String roomId = ConfigManager.getInstance().getCallId();
             String toExtension = ConfigManager.getInstance().getCalleeByRoomId(roomId).getSipItem().getExtension();
-            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(),toExtension, message);
+            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(), toExtension, message);
             messageTask.request(new Response.Listener<Boolean>() {
                 @Override
                 public void onResponse(Boolean response) {
@@ -735,7 +748,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    private String genMessageGSM(int state) throws JSONException{
+    private String genMessageGSM(int state) throws JSONException {
         String extension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
         JSONObject jMessage = new JSONObject();
         jMessage.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_GSM_CALL_STATE);

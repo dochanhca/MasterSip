@@ -31,7 +31,7 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener{
+public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener {
 
     private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
@@ -67,7 +67,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     /**
      * @throws RuntimeException service not instantiated
      */
-    public static LinphoneService instance()  {
+    public static LinphoneService instance() {
         if (isReady()) return instance;
 
         throw new RuntimeException("LinphoneService not instantiated yet");
@@ -122,7 +122,6 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     @Override
     public void onDestroy() {
         LinphoneService.destroyLinphoneService();
-        unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
         linphoneHandler.destroy();
@@ -147,7 +146,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void didCheckCallError(int errorCode, String errorMessage) {
-        Toast.makeText(this, "Error "+errorCode+" when check call : "+errorMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Error " + errorCode + " when check call : " + errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     private void registerReceiverRingerModeChanged() {
@@ -173,9 +172,9 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
                     String state = extras.getString(TelephonyManager.EXTRA_STATE);
                     if (state.equals(EXTRA_STATE_RINGING)) {
                         linphoneHandler.handleIncomingCallGSM();
-                    }else if(state.equals(EXTRA_STATE_IDLE)) {
+                    } else if (state.equals(EXTRA_STATE_IDLE)) {
                         linphoneHandler.handleIdleCallGSM();
-                    }else if(state.equals(EXTRA_STATE_OFFHOOK)) {
+                    } else if (state.equals(EXTRA_STATE_OFFHOOK)) {
                         linphoneHandler.handleOutgoingCallGSM();
                     }
                 }
