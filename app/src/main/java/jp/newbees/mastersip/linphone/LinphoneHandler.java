@@ -270,6 +270,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         setUserAgent();
         userFrontCamera(false);
         updateLocalRing();
+        linphoneCore.setPlayLevel(30);
         linphoneCore.setVideoPreset("default");
         linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
         linphoneCore.setPreferredFramerate(0);
