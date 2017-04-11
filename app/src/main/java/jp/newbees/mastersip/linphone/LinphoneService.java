@@ -73,6 +73,13 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         throw new RuntimeException("LinphoneService not instantiated yet");
     }
 
+    private static void destroyLinphoneService() {
+        LinphoneService.instance = null;
+    }
+
+    private static void initInstance(LinphoneService instance) {
+        LinphoneService.instance = instance;
+    }
 
     @Override
     public void onCreate() {
@@ -88,7 +95,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
         loginToVoIP(sipItem);
         registerReceiverRingerModeChanged();
         registerGSMCallBroadcastReceiver();
-        instance = this;
+        LinphoneService.initInstance(this);
     }
 
     @Override
@@ -98,13 +105,12 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     }
 
     private void loginToVoIP(final SipItem sipItem) {
-        new Thread(new Runnable() {
-            @Override
+        new Thread(){
             public void run() {
                 Logger.e(TAG, "Logging " + sipItem.getExtension() + " - " + sipItem.getSecret());
                 linphoneHandler.loginVoIPServer(sipItem);
             }
-        }).start();
+        }.start();
     }
 
     @Nullable
@@ -115,7 +121,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void onDestroy() {
-        instance = null;
+        LinphoneService.destroyLinphoneService();
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();

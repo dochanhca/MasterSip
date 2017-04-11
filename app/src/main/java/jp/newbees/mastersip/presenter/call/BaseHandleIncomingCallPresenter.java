@@ -52,7 +52,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
                 view.onStreamingConnected();
                 break;
             default:
-                Logger.e(TAG, "Do not handle this event" + receivingCallEvent.getCallEvent());
+                Logger.e(tag, "Do not handle this event" + receivingCallEvent.getCallEvent());
                 break;
         }
     }

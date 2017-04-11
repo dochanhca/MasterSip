@@ -58,7 +58,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract int layoutId();
 
-    protected abstract void init(View mRoot, Bundle savedInstanceState);
+    protected abstract void init(View rootView, Bundle savedInstanceState);
 
     protected void setFragmentTitle(String title) {
         txtActionBarTitle = (TextView) mRoot.findViewById(R.id.txt_action_bar_title);

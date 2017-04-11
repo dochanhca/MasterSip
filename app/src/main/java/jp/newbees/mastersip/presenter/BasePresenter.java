@@ -18,11 +18,11 @@ import jp.newbees.mastersip.utils.Logger;
 public abstract class BasePresenter {
 
     protected Context context;
-    protected String TAG;
+    protected String tag;
 
     public BasePresenter(Context context) {
         this.context = context;
-        this.TAG = this.getClass().getSimpleName();
+        this.tag = this.getClass().getSimpleName();
     }
 
     protected void requestToServer(final BaseTask task) {
@@ -38,7 +38,7 @@ public abstract class BasePresenter {
                 if (errorCode == Constant.Error.INVALID_TOKEN) {
                     handleInvalidToken();
                 } else {
-                    Logger.e(TAG, errorCode + " : " + errorMessage);
+                    Logger.e(tag, errorCode + " : " + errorMessage);
                     didErrorRequestTask(task, errorCode, errorMessage);
                 }
             }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvImage"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="@dimen/_10dp"
+        android:layout_marginLeft="@dimen/_8dp"
+        android:layout_marginTop="@dimen/_8dp"
+        android:layout_width="@dimen/_70dp"
+        android:layout_height="@dimen/_70dp" >
+        <ImageView
+            android:id="@+id/img_avatar"
+            android:src="@drawable/ic_boy_default"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v7.widget.CardView>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_user_name_age"
+        android:text="たくみ"
+        android:layout_alignTop="@id/cvImage"
+        android:paddingTop="@dimen/_11dp"
+        android:layout_marginLeft="@dimen/_11dp"
+        android:layout_toRightOf="@id/cvImage"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/_14sp"
+        android:paddingBottom="@dimen/_2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_call_setting"
+        android:textColor="@color/text_color_light_gray"
+        android:layout_alignLeft="@id/txt_user_name_age"
+        android:layout_marginTop="@dimen/_5dp"
+        android:text="ビデオ通話できます"
+        android:layout_below="@id/txt_user_name_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/group_action"
+        android:background="@drawable/bg_segment_action"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_8dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_alignLeft="@id/txt_call_setting"
+        android:layout_below="@id/txt_call_setting"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_height="35dp">
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_chat"
+            android:drawableTop="@drawable/ic_small_green_chat"
+            android:text="@string/chat"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="@style/style_action_button_in_cell"
+            />
+
+        <View
+            android:background="@color/colorPrimary"
+            android:layout_width="@dimen/_1dp"
+            android:layout_height="match_parent">
+
+        </View>
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_voice_call"
+            android:text="@string/voice_call"
+            android:drawableTop="@drawable/ic_small_green_voice"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            style="@style/style_action_button_in_cell"
+            />
+        <View
+            android:background="@color/colorPrimary"
+            android:layout_width="@dimen/_1dp"
+            android:layout_height="match_parent">
+
+        </View>
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_video_call"
+            android:text="@string/video_call"
+            android:drawableTop="@drawable/ic_small_green_video"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/style_action_button_in_cell"
+            />
+    </LinearLayout>
+    <View
+        android:id="@+id/separate_view"
+        android:layout_below="@id/group_action"
+        android:background="@color/bg_line_footprint"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0.5dp"/>
+</RelativeLayout>

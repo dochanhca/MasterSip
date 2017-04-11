@@ -70,7 +70,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
-        Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
+        Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
             if (!MyLifecycleHandler.isApplicationVisible()) {
                 saveLoginState(true);
