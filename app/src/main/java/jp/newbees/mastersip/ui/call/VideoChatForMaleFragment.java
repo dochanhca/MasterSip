@@ -169,7 +169,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         });
     }
 
-    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_speaker})
+    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_speaker, R.id.txt_send})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel_call:
@@ -216,7 +216,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
     @Override
     public void didSendChatToServer(BaseChatItem baseChatItem) {
-        chatAdapter.addItemAndHeaderIfNeed(baseChatItem);
+        chatAdapter.add(baseChatItem);
         edtChat.setEnabled(true);
         txtSend.setEnabled(true);
         recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);

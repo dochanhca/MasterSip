@@ -104,17 +104,17 @@
 
     <View
         android:id="@+id/divider"
-        android:background="@color/colorPrimaryDark"
+        style="@style/divider"
         android:layout_below="@id/ll_point"
-        style="@style/divider" />
+        android:background="@color/colorPrimaryDark" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_chat"
-        android:layout_below="@id/divider"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/divider"
+        android:background="@color/bg_green_normal"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/xnormal_margin">
-    </android.support.v7.widget.RecyclerView>
+        android:paddingBottom="@dimen/xnormal_margin"></android.support.v7.widget.RecyclerView>
 </RelativeLayout>

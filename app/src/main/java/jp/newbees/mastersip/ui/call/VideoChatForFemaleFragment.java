@@ -235,7 +235,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (basicChatPresenter.isMessageOfCurrentUser(chatItem.getOwner(), competitor)
                 || chatItem.isOwner()) {
-            chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
+            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             if (isResume) {
                 basicChatPresenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());

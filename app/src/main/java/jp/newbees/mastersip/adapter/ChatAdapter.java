@@ -175,7 +175,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return data;
     }
 
-    private void add(BaseChatItem item) {
+    public void add(BaseChatItem item) {
         data.add(item);
     }
 

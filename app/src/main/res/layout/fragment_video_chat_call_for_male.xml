@@ -63,8 +63,9 @@
         android:id="@+id/recycler_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/video_frame"
         android:layout_above="@id/rl_chat_input"
+        android:layout_below="@id/video_frame"
+        android:background="@color/bg_green_normal"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="@dimen/xnormal_margin" />
