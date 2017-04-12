@@ -160,7 +160,9 @@ public class Utils {
     public static ImageItem calculateChatImageSize(Context context, ImageItem imageItem) {
         int halfWidth = getScreenWidth(context) / 2;
         int halfHeight = getScreenHeight(context) / 2;
-        while (imageItem.getWidth() > halfWidth || imageItem.getHeight() > halfHeight) {
+        while (imageItem.getWidth() > Constant.Application.MAX_CHAT_IMAGE_WIDTH
+                || imageItem.getHeight() > Constant.Application.MAX_CHAT_IMAGE_HEIGHT
+                || imageItem.getWidth() > halfWidth || imageItem.getHeight() > halfHeight) {
             imageItem.setWidth(getChatImageWidth(imageItem.getWidth() * 2 / 3));
             imageItem.setHeight(getChatImageHeight(imageItem.getHeight() * 2 / 3));
         }
@@ -176,22 +178,28 @@ public class Utils {
 
     public static int getChatImageWidth(int width) {
         if (width <= 150) {
-            return 150;
+            width = 150;
         } else if (width <= 300) {
-            return 300;
-        } else if (width <= 600) {
-            return 450;
+            width = 300;
+        } else if (width <= 450) {
+            width = 450;
+        } else if (width <= Constant.Application.MAX_CHAT_IMAGE_WIDTH) {
+            width = Constant.Application.MAX_CHAT_IMAGE_WIDTH;
         }
         return width;
     }
 
     public static int getChatImageHeight(int height) {
         if (height <= 150) {
-            return 150;
+            height = 150;
         } else if (height <= 300) {
-            return 300;
+            height = 300;
+        } else if (height <= 450) {
+            height = 450;
         } else if (height <= 600) {
-            return 450;
+            height = 600;
+        } else if (height <= Constant.Application.MAX_CHAT_IMAGE_HEIGHT) {
+            height = Constant.Application.MAX_CHAT_IMAGE_HEIGHT;
         }
         return height;
     }
