@@ -30,9 +30,11 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:paddingLeft="@dimen/_15dp"
+            android:layout_toRightOf="@+id/txt_read_all"
+            android:layout_toLeftOf="@+id/txt_edit"
+            android:paddingLeft="@dimen/small_margin"
             android:paddingRight="@dimen/small_margin"
-            android:text="Title"
+            android:text="チャットリスト"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_action_bar" />
 
