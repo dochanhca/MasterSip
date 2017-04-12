@@ -102,8 +102,8 @@ public abstract class CallingFragment extends BaseFragment {
         getCallActivity().enableMicrophone(enable);
     }
 
-    public final void terminalCall(String calId) {
-        getCallActivity().terminalCall(calId);
+    public final void terminalCall() {
+        getCallActivity().terminalCall();
     }
 
     public final void acceptCall(String callId) throws LinphoneCoreException {

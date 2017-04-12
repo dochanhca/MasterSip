@@ -37,8 +37,15 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
 
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoVideoActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(getBundle(competitor,callID));
+        context.startActivity(intent);
+    }
+
+    public static void startActivityWithNewTask(Context context, UserItem caller, String callID) {
+        Intent intent = new Intent(context, IncomingVideoVideoActivity.class);
+        intent.putExtras(getBundle(caller,callID));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(RUN_FROM, RUN_FROM_BG);
         context.startActivity(intent);
     }
 }

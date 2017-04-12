@@ -37,7 +37,14 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVoiceActivity.class);
+        intent.putExtras(getBundle(competitor,callID));
+        context.startActivity(intent);
+    }
+
+    public static void startActivityWithNewTask(Context context, UserItem competitor, String callID) {
+        Intent intent = new Intent(context, IncomingVoiceActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(RUN_FROM, RUN_FROM_BG);
         intent.putExtras(getBundle(competitor,callID));
         context.startActivity(intent);
     }

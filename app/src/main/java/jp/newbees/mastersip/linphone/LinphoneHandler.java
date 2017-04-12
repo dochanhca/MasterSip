@@ -139,7 +139,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
             } catch (LinphoneCoreException e) {
                 Logger.e(TAG, e.getMessage());
             }
+        }else if(state == LinphoneCore.GlobalState.GlobalShutdown) {
+            handleLinphoneShutdown();
         }
+    }
+
+    private void handleLinphoneShutdown() {
+        String callId = ConfigManager.getInstance().getCallId();
+        ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(ReceivingCallEvent.LINPHONE_ERROR, callId);
+        EventBus.getDefault().post(receivingCallEvent);
     }
 
     public void newSubscriptionRequest(LinphoneCore lc, LinphoneFriend lf, String url) {
@@ -315,18 +323,17 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public static synchronized void destroy() {
         Logger.e(TAG, "Shutting down linphone...");
-        if (getInstance() == null) {
-            return;
-        }
         try {
+            getInstance().notifyEndCallToServer();
             getInstance().context = null;
             getInstance().setVideoWindow(null);
+            getInstance().linphoneCore.clearAuthInfos();
+            getInstance().linphoneCore.clearProxyConfigs();
             getInstance().running = false;
             getInstance().linphoneCore.destroy();
+            LinphoneHandler.instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
-        } finally {
-            instance = null;
         }
     }
 
@@ -353,9 +360,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 String domain = address.getDomain();
                 address.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
 
-                if (password != null) {
-                    linphoneCore.addAuthInfo(lcFactory.createAuthInfo(username, password, (String) null, domain));
-                }
+                tryToRemoveLastAuthInfo();
+                tryToRemoveLastProxyConfig();
+
+                LinphoneAuthInfo authInfo = lcFactory.createAuthInfo(username, password, null, domain);
+                linphoneCore.addAuthInfo(authInfo);
 
                 LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, address.asStringUriOnly(), address.asStringUriOnly(), true);
                 linphoneCore.addProxyConfig(proxyCfg);
@@ -368,12 +377,31 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 }
             } catch (NullPointerException e) {
                 this.running = false;
-                Logger.e(TAG, "linphoneCore is " + linphoneCore);
             } finally {
                 destroy();
             }
         } else {
             createLinphoneCore();
+        }
+    }
+
+    private void tryToRemoveLastAuthInfo() {
+        LinphoneAuthInfo[] authInfos = linphoneCore.getAuthInfosList();
+        if (authInfos != null) {
+            Logger.e("LinphoneHandler","trying to remove AuthInfo");
+            for (LinphoneAuthInfo linphoneAuthInfo : authInfos) {
+                linphoneCore.removeAuthInfo(linphoneAuthInfo);
+            }
+        }
+    }
+
+    private void tryToRemoveLastProxyConfig() {
+        LinphoneProxyConfig[] configList = linphoneCore.getProxyConfigList();
+        if (configList != null) {
+            Logger.e("LinphoneHandler","trying to remove ProxyConfig");
+            for (LinphoneProxyConfig proxyConfig : configList) {
+                linphoneCore.removeProxyConfig(proxyConfig);
+            }
         }
     }
 
@@ -773,7 +801,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         task.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
-                ConfigManager.getInstance().setCallId(null);
+                ConfigManager.getInstance().removeCurrentCall();
                 cancelingCall = false;
                 Logger.e("LinphoneService", "End call success ");
             }

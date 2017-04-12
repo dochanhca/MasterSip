@@ -118,10 +118,6 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     public void onDestroy() {
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
-        if (ConfigManager.getInstance().inCall()) {
-            Logger.e(TAG, "try to cancel current call");
-            incomingCallPresenter.cancelCall();
-        }
         LinphoneService.destroyLinphoneService();
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
@@ -137,17 +133,17 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
 
     @Override
     public void incomingVoiceCall(UserItem caller, String callID) {
-        IncomingVoiceActivity.startActivity(this, caller, callID);
+        IncomingVoiceActivity.startActivityWithNewTask(this, caller, callID);
     }
 
     @Override
     public void incomingVideoCall(UserItem caller, String callID) {
-        IncomingVideoVideoActivity.startActivity(this, caller, callID);
+        IncomingVideoVideoActivity.startActivityWithNewTask(this, caller, callID);
     }
 
     @Override
     public void incomingVideoChatCall(UserItem caller, String callID) {
-        IncomingVideoChatActivity.startActivity(this, caller, callID);
+        IncomingVideoChatActivity.startActivityWithNewTask(this, caller, callID);
     }
 
     @Override

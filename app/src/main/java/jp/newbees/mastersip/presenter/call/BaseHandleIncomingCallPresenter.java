@@ -7,7 +7,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -39,20 +38,15 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
-    public void onReceivingCallEvent(ReceivingCallEvent receivingCallEvent) {
+    public void onReceivingIncomingCallEvent(ReceivingCallEvent receivingCallEvent) {
         switch (receivingCallEvent.getCallEvent()) {
             case ReceivingCallEvent.INCOMING_CONNECTED_CALL:
                 handleCallConnected();
-                break;
-            case ReceivingCallEvent.RELEASE_CALL:
-            case ReceivingCallEvent.END_CALL:
-                handleCallEnd();
                 break;
             case ReceivingCallEvent.STREAMING_CALL:
                 view.onStreamingConnected();
                 break;
             default:
-                Logger.e(tag, "Do not handle this event" + receivingCallEvent.getCallEvent());
                 break;
         }
     }
