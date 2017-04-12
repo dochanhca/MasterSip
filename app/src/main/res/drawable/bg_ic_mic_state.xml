@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/ic_off_mic"/>
+    <item android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/ic_on_mic"/>
     <!--currently pressed turning the toggle on-->
-    <item android:state_pressed="true" android:drawable="@drawable/ic_on_mic"/>
+    <item android:state_pressed="true" android:drawable="@drawable/ic_off_mic"/>
     <!--currently pressed turning the toggle off-->
-    <item android:state_checked="true" android:drawable="@drawable/ic_off_mic" />
+    <item android:state_checked="true" android:drawable="@drawable/ic_on_mic" />
     <!--not pressed default selected state-->
-    <item android:drawable="@drawable/ic_on_mic"/>
+    <item android:drawable="@drawable/ic_off_mic"/>
     <!--default non-pressed non-selected-->
 </selector>

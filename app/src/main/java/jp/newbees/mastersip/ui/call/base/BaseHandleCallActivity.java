@@ -1,6 +1,8 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.SurfaceView;
 
@@ -13,6 +15,9 @@ import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.call.VideoCallFragment;
+import jp.newbees.mastersip.ui.call.VideoChatForFemaleFragment;
+import jp.newbees.mastersip.ui.call.VideoChatForMaleFragment;
 import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -22,6 +27,12 @@ import jp.newbees.mastersip.utils.Constant;
 
 public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
         PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
+    protected static final String COMPETITOR = "COMPETITOR";
+    protected static final String CALL_ID = "CALL_ID";
+
+    private UserItem competitor;
+    private String callId;
+
     /**
      * use for handle call
      */
@@ -31,6 +42,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
      * use for in-app purchase
      */
     private TopPresenter topPresenter;
+
+    private CallingFragment visibleFragment;
 
     public void setPresenter(BaseHandleCallPresenter presenter) {
         this.presenter = presenter;
@@ -56,8 +69,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.enableSpeaker(enable);
     }
 
-    public final void muteMicrophone(boolean mute) {
-        this.presenter.muteMicrophone(mute);
+    public final void enableMicrophone(boolean enable) {
+        this.presenter.enableMicrophone(enable);
     }
 
     public void switchCamera(SurfaceView mCaptureView) {
@@ -72,9 +85,23 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         presenter.enableCamera(enable);
     }
 
-    public abstract UserItem getCompetitor();
-
     public abstract int getCallType();
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_calling;
+    }
+
+    @Override
+    protected void initViews(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected void initVariables(Bundle savedInstanceState) {
+        competitor = getIntent().getExtras().getParcelable(COMPETITOR);
+        callId = getIntent().getExtras().getString(CALL_ID);
+    }
 
     @Override
     protected void onDestroy() {
@@ -103,6 +130,70 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
             Log.e("PaymentDialog:", "onActivityResult handled by IABUtil.");
         }
     }
+
+    @Override
+    public void onCoinChanged(int coin) {
+        if (competitor.getGender() == UserItem.MALE) {
+            if (visibleFragment != null) {
+                visibleFragment.onCoinChanged(coin);
+            }
+        }
+    }
+
+    @Override
+    public void onCallPaused() {
+        if (visibleFragment != null) {
+            visibleFragment.onCallPaused();
+        }
+    }
+
+    @Override
+    public void onCallResuming() {
+        if (visibleFragment != null) {
+            visibleFragment.onCallResume();
+        }
+    }
+
+    protected final void showWaitingFragment(WaitingFragment waitingFragment) {
+        addFragment(waitingFragment, WaitingFragment.class.getName());
+    }
+
+    protected final void showVideoCallFragment(boolean enableSpeaker, boolean muteMic) {
+        visibleFragment = VideoCallFragment.newInstance(competitor, getCallId(), enableSpeaker, muteMic);
+        replaceFragment(visibleFragment, VideoCallFragment.class.getName());
+    }
+
+    protected final void showVideoChatFragmentForMale(boolean enableSpeaker) {
+        visibleFragment = VideoChatForMaleFragment.newInstance(competitor, getCallId(), enableSpeaker);
+        replaceFragment(visibleFragment, VideoChatForMaleFragment.class.getName());
+    }
+
+    protected final void showVideoChatFragmentForFemale(boolean enableMic) {
+        visibleFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId(), enableMic);
+        replaceFragment(visibleFragment, VideoChatForFemaleFragment.class.getName());
+    }
+
+    private final void showFragment(CallingFragment fragment, String TAG, boolean isAdd) {
+        this.visibleFragment = fragment;
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (isAdd) {
+            transaction.add(R.id.fragment_container, fragment,
+                    TAG).commit();
+        } else {
+            transaction.replace(R.id.fragment_container, fragment,
+                    TAG).commit();
+        }
+
+    }
+
+    private final void addFragment(CallingFragment fragment, String tag) {
+        showFragment(fragment, tag, true);
+    }
+
+    private final void replaceFragment(CallingFragment fragment, String tag) {
+        showFragment(fragment, tag, false);
+    }
+
 
     private IabHelper getIabHelper() {
         if (topPresenter == null) {
@@ -154,5 +245,39 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     public void onSendPurchaseResultToServerError(int errorCode, String errorMessage) {
         // Send Payment Result to server error
         disMissLoading();
+    }
+
+    @Override
+    public void onCallEnd() {
+        this.finish();
+    }
+
+    protected static Bundle getBundle(UserItem competitor, String callID) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(COMPETITOR, competitor);
+        bundle.putString(CALL_ID, callID);
+        return bundle;
+    }
+
+    protected void countingCallDuration() {
+        visibleFragment.countingCallDuration();
+    }
+
+    protected void updateViewWhenVoiceConnected() {
+        if (visibleFragment instanceof WaitingFragment) {
+            ((WaitingFragment) visibleFragment).updateViewWhenVoiceConnected();
+        }
+    }
+
+    public UserItem getCompetitor() {
+        return competitor;
+    }
+
+    public String getCallId() {
+        return callId;
+    }
+
+    public CallingFragment getVisibleFragment() {
+        return visibleFragment;
     }
 }

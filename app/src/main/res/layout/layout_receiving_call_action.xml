@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/huge_margin"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -31,6 +32,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/huge_margin"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -39,8 +41,7 @@
             android:id="@+id/btn_accept_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bg_ic_accept_call"
-            />
+            android:src="@drawable/bg_ic_accept_call" />
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:layout_width="wrap_content"

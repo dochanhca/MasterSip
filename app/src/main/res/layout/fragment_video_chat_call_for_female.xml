@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SurfaceView
+        android:id="@+id/videoCaptureSurface"
+        android:layout_width="@dimen/width_preview_video"
+        android:layout_height="@dimen/height_preview_video"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/xnormal_margin"
+        android:layout_marginTop="@dimen/xnormal_margin" />
+
+    <org.linphone.mediastream.video.display.GL2JNIView
+        android:id="@+id/videoSurface"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_low_signal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/low_signal"
+        android:textColor="@color/white"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/img_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:src="@drawable/ic_switch_camera_blue" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_name"
+        style="@style/origin_style_content_text_view_large"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_toLeftOf="@id/img_switch_camera"
+        android:layout_toRightOf="@id/videoCaptureSurface"
+        android:gravity="center"
+        android:text="ThangLH"
+        android:textColor="@color/text_color_gray" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_time"
+        style="@style/origin_style_content_text_view_small"
+        android:layout_below="@id/txt_name"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_toLeftOf="@id/img_switch_camera"
+        android:layout_toRightOf="@id/videoCaptureSurface"
+        android:gravity="center"
+        android:text="00:02"
+        android:textColor="@color/text_color_gray_light" />
+
+    <LinearLayout
+        android:id="@+id/ll_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/videoCaptureSurface"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/xnormal_margin"
+        android:layout_marginTop="@dimen/xnormal_margin"
+        android:background="@drawable/bg_point_video_call"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10"
+        android:visibility="visible">
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_10"
+            android:text="@string/current_point"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10"
+            android:text=" 0pt"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/layout_video_chat_call_action"
+        layout="@layout/layout_video_chat_call_action_for_female"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ll_point"
+        android:layout_marginLeft="@dimen/xlarge_margin"
+        android:layout_marginRight="@dimen/xlarge_margin"
+        android:layout_toLeftOf="@id/img_switch_camera"
+        android:layout_toRightOf="@id/videoCaptureSurface"
+        android:gravity="center" />
+
+    <View
+        android:id="@+id/divider"
+        style="@style/divider"
+        android:layout_below="@id/ll_point"
+        android:background="@color/colorPrimaryDark" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider"
+        android:background="@color/bg_green_normal"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/xnormal_margin"></android.support.v7.widget.RecyclerView>
+</RelativeLayout>

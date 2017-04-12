@@ -1,0 +1,56 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minHeight="@dimen/height_footer_chat">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider"
+        android:background="@color/colorPrimary" />
+
+    <ImageView
+        android:id="@+id/img_left_bottom_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/normal_margin"
+        android:src="@drawable/img_capture" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_send"
+        style="@style/origin_style_content_text_view_with_padding_LR"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_footer_chat_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:background="@drawable/bg_blue_dark"
+        android:gravity="center"
+        android:text="@string/send"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_15"/>
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <jp.newbees.mastersip.customviews.HiraginoEditText
+        android:id="@+id/edt_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/normal_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:layout_toLeftOf="@id/txt_send"
+        android:layout_toRightOf="@id/img_left_bottom_action"
+        android:background="@drawable/bg_white_blue_stroke"
+        android:minHeight="@dimen/height_footer_chat_content"
+        android:nextFocusLeft="@id/edt_chat"
+        android:nextFocusUp="@id/edt_chat"
+        android:paddingLeft="@dimen/normal_margin"
+        android:paddingRight="@dimen/normal_margin" />
+</RelativeLayout>

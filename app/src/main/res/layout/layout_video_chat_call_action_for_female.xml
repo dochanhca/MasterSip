@@ -1,0 +1,37 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/btn_cancel_call"
+            android:layout_width="@dimen/video_chat_call_action_size"
+            android:layout_height="@dimen/video_chat_call_action_size"
+            android:src="@drawable/bg_ic_cancel_video_call" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ToggleButton
+            android:id="@+id/btn_on_off_mic"
+            android:layout_width="@dimen/video_chat_call_action_size"
+            android:layout_height="@dimen/video_chat_call_action_size"
+            android:background="@drawable/bg_ic_mic_state"
+            android:textOff=""
+            android:textOn="" />
+
+    </LinearLayout>
+</LinearLayout>

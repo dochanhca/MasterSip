@@ -40,7 +40,6 @@ final public class ConfigManager {
     private int imageDrawableCalleeId = -1;
     private HashMap<String, UserItem> callUsers;
     private int currentCallType;
-    private String callId;
     private int imageDrawableCallerId = -1;
 
     private int unReadMessage;
@@ -172,7 +171,7 @@ final public class ConfigManager {
         editor.commit();
     }
 
-    public final void removeUser(){
+    public final void removeUser() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.USER_ITEM, null);
         editor.commit();
@@ -237,6 +236,20 @@ final public class ConfigManager {
 
     public void setCallId(String callId) {
         this.currentCallId = callId;
+    }
+
+    public void removeCurrentCall() {
+        if (inCall()) {
+            callUsers.remove(getCallId());
+        }
+        this.currentCallId = null;
+    }
+
+    public boolean inCall() {
+        if (this.currentCallId == null) {
+            return false;
+        }
+        return true;
     }
 
     public void setCurrentCallType(int callType) {

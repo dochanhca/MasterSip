@@ -1,14 +1,13 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
-import jp.newbees.mastersip.ui.call.VideoCallFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
@@ -18,19 +17,10 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity implements
         BaseHandleIncomingCallPresenter.IncomingCallView {
-
-    protected static final String CALLER = "CALLER";
-    protected static final String CALL_ID = "CALL_ID";
-
     private BaseHandleIncomingCallPresenter presenter;
 
-    private UserItem caller;
-    private String callId;
-
-    private IncomingWaitingFragment incomingWaitingFragment;
-    private VideoCallFragment videoCallFragment;
-
     protected abstract int getAcceptCallImage();
+
     protected abstract String getTitleCall();
 
     @Override
@@ -44,101 +34,40 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     @Override
-    protected int layoutId() {
-        return R.layout.activity_in_coming_voice;
-    }
-
-    @Override
-    protected void initViews(Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initVariables(Bundle savedInstanceState) {
-        caller = getIntent().getExtras().getParcelable(CALLER);
-        callId = getIntent().getExtras().getString(CALL_ID);
+        super.initVariables(savedInstanceState);
 
-        showIncomingWaitingFragment(caller, callId, getAcceptCallImage(), getTitleCall(), getCallType());
-    }
-
-    @Override
-    public UserItem getCompetitor() {
-        return caller;
-    }
-
-    @Override
-    public void onCoinChanged(int coin) {
-        if (caller.getGender() == UserItem.MALE) {
-            if (incomingWaitingFragment == null) {
-                videoCallFragment.onCoinChanged(coin);
-            } else {
-                incomingWaitingFragment.onCoinChanged(coin);
-            }
-        }
-    }
-
-    @Override
-    public void onCallPaused() {
-        if (incomingWaitingFragment == null) {
-            videoCallFragment.onCallPaused();
-        } else {
-            incomingWaitingFragment.onCallPaused();
-        }
-    }
-
-    @Override
-    public void onCallResuming() {
-        if (incomingWaitingFragment == null) {
-            videoCallFragment.onCallResume();
-        } else {
-            incomingWaitingFragment.onCallResume();
-        }
+        showIncomingWaitingFragment(getCompetitor(), getCallId(), getAcceptCallImage(), getTitleCall(), getCallType());
     }
 
     private void showIncomingWaitingFragment(UserItem caller, String callId,
                                              int acceptCallImage, String titleCall, int callType) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        incomingWaitingFragment = IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType);
-        transaction.add(R.id.fragment_container, incomingWaitingFragment,
-                IncomingWaitingFragment.class.getName()).commit();
+        showWaitingFragment(IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType));
     }
 
     protected void showVideoCallFragment() {
-        incomingWaitingFragment = null;
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        videoCallFragment = VideoCallFragment.newInstance(getCompetitor(), callId, getCallType(), false, false);
-        transaction.replace(R.id.fragment_container, videoCallFragment,
-                VideoCallFragment.class.getName()).commit();
+        showVideoCallFragment(true, true);
     }
 
-    protected void showCallingViewOnVoiceCall() {
-        incomingWaitingFragment.showCallingViewOnVoiceCall();
-    }
-
-    protected void countingCallDuration() {
-        incomingWaitingFragment.countingCallDuration();
-    }
-
-    protected final void updateSpeaker() {
-        enableSpeaker(incomingWaitingFragment.isEnableSpeaker());
+    protected void showVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            showVideoChatFragmentForMale(true);
+        } else {
+            showVideoChatFragmentForFemale(true);
+        }
     }
 
     protected final void startIncomingVideoCall() {
         presenter.startIncomingVideoCall();
     }
 
-    public UserItem getCaller() {
-        return caller;
-    }
-
     @Override
     public void onCallEnd() {
         if (MyLifecycleHandler.getNumberOfActivity() == 1) {
-            Logger.e(TAG,"we have only calling activity, stop service and destroy app");
+            Logger.e(TAG, "we have only calling activity, stop service and destroy app");
             LinphoneService.stopLinphone(this);
         }
-        this.finish();
+        super.onCallEnd();
     }
 
     @Override

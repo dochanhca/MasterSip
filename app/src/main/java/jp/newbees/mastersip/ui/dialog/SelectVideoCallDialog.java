@@ -69,18 +69,17 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_chat_video:
-                // selected video chat
+                listener.onSelectedVideoCall(VideoCall.CHAT_VIDEO);
                 break;
             case R.id.ll_video_video:
                 listener.onSelectedVideoCall(VideoCall.VIDEO_VIDEO);
-                this.dismiss();
                 break;
             case R.id.ic_close:
-                this.dismiss();
                 break;
             default:
                 break;
         }
+        this.dismiss();
     }
 
     @Override

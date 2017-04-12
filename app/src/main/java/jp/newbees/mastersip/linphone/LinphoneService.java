@@ -118,11 +118,21 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     public void onDestroy() {
         super.onDestroy();
         Logger.e(TAG, "Stop Linphone Service");
+        if (ConfigManager.getInstance().inCall()) {
+            Logger.e(TAG, "try to cancel current call");
+            incomingCallPresenter.cancelCall();
+        }
         LinphoneService.destroyLinphoneService();
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
         LinphoneHandler.getInstance().destroy();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        this.stopSelf();
+        super.onTaskRemoved(rootIntent);
     }
 
     @Override

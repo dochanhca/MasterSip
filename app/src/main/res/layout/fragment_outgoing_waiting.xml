@@ -13,10 +13,10 @@
     <include layout="@layout/layout_call_info" />
 
 
-    <include
-        android:visibility="gone"
-        layout="@layout/layout_calling_three_action" />
-
-    <include
-        layout="@layout/layout_calling_two_action" />
+    <ViewStub
+        android:id="@+id/view_stub_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_25" />
 </RelativeLayout>

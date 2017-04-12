@@ -30,7 +30,7 @@ import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.top.ChatGroupPresenter;
+import jp.newbees.mastersip.presenter.chatting.ChatGroupPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;

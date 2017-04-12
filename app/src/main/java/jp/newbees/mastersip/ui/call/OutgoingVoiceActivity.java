@@ -16,7 +16,7 @@ import jp.newbees.mastersip.utils.Constant;
 public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
-    protected String getTextTitle() {
+    protected String getTextTitleInWaitingFragment() {
         return getResources().getString(R.string.during_a_voice_call);
     }
 

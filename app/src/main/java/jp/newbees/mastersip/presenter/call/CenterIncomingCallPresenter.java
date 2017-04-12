@@ -13,6 +13,7 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -121,6 +122,12 @@ public class CenterIncomingCallPresenter extends BasePresenter {
 
     public void unRegisterCallEvent() {
         EventBus.getDefault().unregister(this);
+    }
+
+    public void cancelCall() {
+        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),
+                ConfigManager.getInstance().getCallId());
+        requestToServer(cancelCallTask);
     }
 
     public interface IncomingCallListener {

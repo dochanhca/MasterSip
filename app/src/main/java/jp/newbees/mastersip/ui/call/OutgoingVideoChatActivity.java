@@ -7,6 +7,7 @@ import android.os.Bundle;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.BaseHandleOutgoingCallActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -16,18 +17,14 @@ import jp.newbees.mastersip.utils.Constant;
 public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
-    protected String getTextTitle() {
-        return getResources().getString(R.string.title_outgoing_call_video_chat);
-    }
-
-    @Override
-    protected int layoutId() {
-        return R.layout.activity_out_going_video_chat;
+    protected String getTextTitleInWaitingFragment() {
+        return getResources().getString(ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE ?
+                R.string.title_outgoing_call_video_chat_for_male : R.string.title_outgoing_call_video_chat_for_female);
     }
 
     @Override
     public int getCallType() {
-        return Constant.API.VIDEO_CALL;
+        return Constant.API.VIDEO_CHAT_CALL;
     }
 
     public static void startActivity(Context context, UserItem callee, String callID) {
@@ -41,7 +38,7 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-        showVideoCallFragment();
+        showVideoChatFragment();
         useFrontCamera();
     }
 }

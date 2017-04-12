@@ -1,0 +1,256 @@
+package jp.newbees.mastersip.ui.call;
+
+import android.os.Bundle;
+import android.os.Message;
+import android.support.v7.widget.RecyclerView;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import com.tonicartos.superslim.LayoutManager;
+
+import org.linphone.mediastream.video.AndroidVideoWindowImpl;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.adapter.ChatAdapter;
+import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
+import jp.newbees.mastersip.model.BaseChatItem;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.chatting.BasicChatPresenter;
+import jp.newbees.mastersip.presenter.chatting.ReadChatTextListener;
+import jp.newbees.mastersip.ui.call.base.CallingFragment;
+import jp.newbees.mastersip.utils.DateTimeUtils;
+
+/**
+ * Created by thangit14 on 4/10/17.
+ */
+
+public class VideoChatForFemaleFragment extends CallingFragment implements ReadChatTextListener {
+
+    @BindView(R.id.recycler_chat)
+    RecyclerView recyclerChat;
+    @BindView(R.id.txt_low_signal)
+    TextView txtLowSignal;
+    @BindView(R.id.videoCaptureSurface)
+    SurfaceView mCaptureView;
+    @BindView(R.id.btn_on_off_mic)
+    ToggleButton btnOnOffMic;
+    @BindView(R.id.txt_name)
+    HiraginoTextView txtName;
+    @BindView(R.id.txt_time)
+    HiraginoTextView txtTime;
+    @BindView(R.id.img_switch_camera)
+    ImageView imgSwitchCamera;
+    @BindView(R.id.txt_point)
+    HiraginoTextView txtPoint;
+
+    @BindView(R.id.videoSurface)
+    SurfaceView mVideoView;
+
+    private boolean isResume = false;
+    private AndroidVideoWindowImpl androidVideoWindow;
+
+    private UserItem competitor;
+    private String callId;
+
+    private ChatAdapter chatAdapter;
+    private BasicChatPresenter basicChatPresenter;
+
+    public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID,
+                                                boolean enableMic) {
+        Bundle args = new Bundle();
+        args.putParcelable(COMPETITOR, competitor);
+        args.putBoolean(MIC, enableMic);
+        args.putString(CALL_ID, callID);
+        VideoChatForFemaleFragment fragment = new VideoChatForFemaleFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.fragment_video_chat_call_for_female;
+    }
+
+    @Override
+    protected void init(View mRoot, Bundle savedInstanceState) {
+        ButterKnife.bind(this, mRoot);
+
+        competitor = getArguments().getParcelable(COMPETITOR);
+        callId = getArguments().getString(CALL_ID);
+
+        basicChatPresenter = new BasicChatPresenter(getContext(), this);
+        chatAdapter = new ChatAdapter(getContext(), new ArrayList<BaseChatItem>());
+
+        LayoutManager layoutManager = new LayoutManager(getContext());
+        recyclerChat.setLayoutManager(layoutManager);
+        recyclerChat.setAdapter(chatAdapter);
+
+        setupView();
+        fixZOrder(mCaptureView);
+        startCountingToHideAction();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (androidVideoWindow != null) {
+            synchronized (androidVideoWindow) {
+                setVideoWindow(androidVideoWindow);
+            }
+        }
+        isResume = true;
+        basicChatPresenter.registerCallEvent();
+    }
+
+    @Override
+    public void onPause() {
+        if (androidVideoWindow != null) {
+            synchronized (androidVideoWindow) {
+                /*
+                 * this call will destroy native opengl renderer which is used by
+				 * androidVideoWindowImpl
+				 */
+                setVideoWindow(null);
+            }
+        }
+        super.onPause();
+        isResume = false;
+        basicChatPresenter.unregisterCallEvent();
+    }
+
+    @Override
+    public void onDestroy() {
+        mCaptureView = null;
+        if (androidVideoWindow != null) {
+            androidVideoWindow.release();
+            androidVideoWindow = null;
+        }
+        super.onDestroy();
+    }
+
+    private void setupView() {
+        bindVideoViewToLinphone();
+        mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        txtName.setText(competitor.getUsername());
+        countingCallDuration();
+        boolean enableMic = getArguments().getBoolean(MIC);
+
+        btnOnOffMic.setChecked(enableMic);
+        enableMicrophone(enableMic);
+        enableSpeaker(false);
+    }
+
+    private void bindVideoViewToLinphone() {
+        androidVideoWindow = new AndroidVideoWindowImpl(mVideoView, mCaptureView, new AndroidVideoWindowImpl.VideoWindowListener() {
+
+            @Override
+            public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                setVideoWindow(androidVideoWindow);
+            }
+
+            @Override
+            public void onVideoRenderingSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
+
+            }
+
+            @Override
+            public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                mCaptureView = surfaceView;
+                bindingCaptureView(mCaptureView);
+            }
+
+            @Override
+            public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
+
+            }
+        });
+    }
+
+    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_mic,R.id.img_switch_camera})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_cancel_call:
+                terminalCall(callId);
+                break;
+            case R.id.btn_on_off_mic:
+                enableMicrophone(btnOnOffMic.isChecked());
+                break;
+            case R.id.img_switch_camera:
+                switchCamera(mCaptureView);
+                break;
+        }
+    }
+
+    private void bindingCaptureView(SurfaceView mCaptureView) {
+        LinphoneHandler.getInstance().setPreviewWindow(mCaptureView);
+    }
+
+
+    private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
+        if (LinphoneHandler.getInstance() != null) {
+            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        }
+    }
+
+    private void fixZOrder(SurfaceView preview) {
+        preview.setZOrderOnTop(true);
+        preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
+    }
+
+    @Override
+    protected void onCallingBreakTime(Message msg) {
+        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+    }
+
+    @Override
+    public TextView getTxtPoint() {
+        return txtPoint;
+    }
+
+    @Override
+    public void onCallPaused() {
+        txtLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public final void onCallResume() {
+        txtLowSignal.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
+        BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
+        if (basicChatPresenter.isMessageOfCurrentUser(chatItem.getOwner(), competitor)
+                || chatItem.isOwner()) {
+            chatAdapter.add(newChatMessageEvent.getBaseChatItem());
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            if (isResume) {
+                basicChatPresenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
+            }
+        }
+    }
+
+    @Override
+    public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
+        chatAdapter.updateSendeeLastMessageStateToRead();
+        basicChatPresenter.sendingReadMessageUsingLinPhone(baseChatItem, competitor);
+    }
+
+    @Override
+    public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+}

@@ -1,8 +1,6 @@
 package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,28 +25,15 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.thread.MyCountingTimerThread;
-import jp.newbees.mastersip.ui.BaseFragment;
-import jp.newbees.mastersip.ui.call.base.BaseHandleCallActivity;
+import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 
 /**
  * Created by thangit14 on 3/14/17.
+ * use for both incoming and outgoing video call
  */
 
-public class VideoCallFragment extends BaseFragment implements View.OnTouchListener {
-    private static final String COMPETITOR = "USER ITEM";
-    private static final String CALL_TYPE = "CALL TYPE";
-    private static final String SPEAKER = "SPEAKER";
-    private static final String MIC = "MIC";
-    private static final String CALL_ID = "CALL_ID";
-
-    private static final int BREAK_TIME_TO_HIDE_ACTION = 5;
-    private static final int BREAK_TIME_OF_COUNTING_CALL_DURATION = 1;
-
-    private static final String ID_TIMER_HIDE_ACTION = "ID_TIMER_HIDE_ACTION";
-    private static final String ID_COUNTING_CALL_DURATION = "ID_COUNTING_CALL_DURATION";
-
+public class VideoCallFragment extends CallingFragment implements View.OnTouchListener,CallingFragment.CountableToHideAction {
     @BindView(R.id.txt_low_signal)
     TextView txtLowSignal;
     @BindView(R.id.videoSurface)
@@ -81,9 +66,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private UserItem competitor;
     private String callId;
 
-    private MyCountingTimerThread myCountingThreadToHideAction;
-    private MyCountingTimerThread myCountingTimer;
-
     private Animation moveUpTxtTime;
     private Animation moveDownTxtTime;
     private Animation moveUpTxtPoint;
@@ -92,23 +74,10 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     private Animation fadeOut;
     private boolean isShowingView = true;
 
-    private Handler handler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.obj.toString().equalsIgnoreCase(ID_TIMER_HIDE_ACTION)) {
-                hideView();
-                myCountingThreadToHideAction.reset();
-            } else if (msg.obj.toString().equalsIgnoreCase(ID_COUNTING_CALL_DURATION)) {
-                txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
-            }
-        }
-    };
-
-    public static VideoCallFragment newInstance(UserItem competitor, String callID, int callType,
+    public static VideoCallFragment newInstance(UserItem competitor, String callID,
                                                 boolean enableSpeaker, boolean enableMic) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putInt(CALL_TYPE, callType);
         args.putBoolean(SPEAKER, enableSpeaker);
         args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
@@ -173,13 +142,6 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             androidVideoWindow.release();
             androidVideoWindow = null;
         }
-        if (myCountingThreadToHideAction != null) {
-            myCountingThreadToHideAction.turnOffCounting();
-        }
-
-        if (myCountingTimer != null) {
-            myCountingTimer.turnOffCounting();
-        }
         super.onDestroy();
     }
 
@@ -190,13 +152,15 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         llPoint.setVisibility(competitor.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(competitor.getUsername());
-        startCountingCallDuration();
+        countingCallDuration();
 
         boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
-        boolean muteMic = getArguments().getBoolean(MIC);
+        boolean enableMic = getArguments().getBoolean(MIC);
 
         btnOnOffSpeaker.setChecked(enableSpeaker);
-        btnOnOffMic.setChecked(muteMic);
+        btnOnOffMic.setChecked(enableMic);
+        enableSpeaker(enableSpeaker);
+        enableMicrophone(enableMic);
     }
 
     private void bindVideoViewToLinphone() {
@@ -229,24 +193,24 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
     @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_mic, R.id.btn_on_off_speaker,
             R.id.btn_on_off_camera, R.id.img_switch_camera})
     public void onClick(View view) {
-        BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
+
         resetCountingToHideAction();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
-                activity.terminalCall(callId);
+                terminalCall(callId);
                 break;
             case R.id.btn_on_off_mic:
-                activity.muteMicrophone(btnOnOffMic.isChecked());
+                enableMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_on_off_speaker:
-                activity.enableSpeaker(!btnOnOffSpeaker.isChecked());
+                enableSpeaker(btnOnOffSpeaker.isChecked());
                 break;
             case R.id.btn_on_off_camera:
-                activity.enableCamera(!btnOnOffCamera.isChecked());
+                enableCamera(btnOnOffCamera.isChecked());
                 updateVideoView();
                 break;
             case R.id.img_switch_camera:
-                activity.switchCamera(mCaptureView);
+                switchCamera(mCaptureView);
                 break;
         }
     }
@@ -257,18 +221,12 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
             case R.id.videoSurface:
             case R.id.videoCaptureSurface:
                 resetCountingToHideAction();
+                showView();
                 break;
             default:
                 break;
         }
         return true;
-    }
-
-    private void resetCountingToHideAction() {
-        showView();
-        if (myCountingThreadToHideAction != null) {
-            myCountingThreadToHideAction.reset();
-        }
     }
 
     private void updateVideoView() {
@@ -339,32 +297,29 @@ public class VideoCallFragment extends BaseFragment implements View.OnTouchListe
         }
     }
 
-    private void startCountingToHideAction() {
-        myCountingThreadToHideAction = new MyCountingTimerThread(handler, ID_TIMER_HIDE_ACTION, BREAK_TIME_TO_HIDE_ACTION);
-        new Thread(myCountingThreadToHideAction).start();
+    @Override
+    protected void onCallingBreakTime(Message msg) {
+        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
-    private void startCountingCallDuration() {
-        myCountingTimer = new MyCountingTimerThread(handler, ID_COUNTING_CALL_DURATION, BREAK_TIME_OF_COUNTING_CALL_DURATION);
-        new Thread(myCountingTimer).start();
+    @Override
+    public TextView getTxtPoint() {
+        return txtPoint;
     }
 
-    public void onCoinChanged(int coin) {
-        if (isDetached()) {
-            return;
-        }
-
-        StringBuilder point = new StringBuilder();
-        point.append(String.valueOf(coin)).append(getString(R.string.pt));
-        txtPoint.setText(point.toString());
-    }
-
+    @Override
     public void onCallPaused() {
         txtLowSignal.setVisibility(View.VISIBLE);
 
     }
 
+    @Override
     public final void onCallResume() {
         txtLowSignal.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onBreakTimeToHide() {
+        hideView();
     }
 }

@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -51,6 +52,7 @@ public final class CancelCallTask extends BaseTask<Void> {
 
     @Override
     protected Void didResponse(JSONObject data) throws JSONException {
+        ConfigManager.getInstance().removeCurrentCall();
         Logger.e("CancelCallTask", "cancel call Successfully");
         return null;
     }
