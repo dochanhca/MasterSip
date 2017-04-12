@@ -67,7 +67,6 @@
             android:id="@+id/btn_on_off_camera"
             android:layout_width="@dimen/video_call_action_size"
             android:layout_height="@dimen/video_call_action_size"
-            android:checked="true"
             android:background="@drawable/bg_ic_camera_state_video_call"
             android:textOff=""
             android:textOn="" />

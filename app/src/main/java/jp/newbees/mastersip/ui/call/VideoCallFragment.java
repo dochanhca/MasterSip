@@ -35,7 +35,7 @@ import jp.newbees.mastersip.utils.Logger;
  * use for both incoming and outgoing video call
  */
 
-public class VideoCallFragment extends CallingFragment implements View.OnTouchListener,CallingFragment.CountableToHideAction {
+public class VideoCallFragment extends CallingFragment implements View.OnTouchListener, CallingFragment.CountableToHideAction {
     @BindView(R.id.txt_low_signal)
     TextView txtLowSignal;
     @BindView(R.id.videoSurface)
@@ -166,6 +166,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
         btnOnOffSpeaker.setChecked(enableSpeaker);
         btnOnOffMic.setChecked(enableMic);
+        btnOnOffCamera.setChecked(true);
         enableSpeaker(enableSpeaker);
         enableMicrophone(enableMic);
     }
@@ -214,35 +215,31 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
                 break;
             case R.id.btn_on_off_camera:
                 enableCamera(btnOnOffCamera.isChecked());
-                updateVideoView();
+                updateVideoView(!btnOnOffCamera.isChecked());
                 break;
             case R.id.img_switch_camera:
                 switchCamera(mCaptureView);
                 break;
+            default:break;
         }
     }
 
     @OnTouch({R.id.videoSurface, R.id.videoCaptureSurface})
     public boolean onTouch(View v, MotionEvent event) {
-        switch (v.getId()) {
-            case R.id.videoSurface:
-            case R.id.videoCaptureSurface:
-                resetCountingToHideAction();
-                showView();
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.videoSurface || v.getId() == R.id.videoCaptureSurface) {
+            resetCountingToHideAction();
+            showView();
         }
         return true;
     }
 
-    private void updateVideoView() {
-        if (btnOnOffCamera.isChecked()) {
+    private void updateVideoView(boolean enable) {
+        if (enable) {
             mCaptureView.setVisibility(View.GONE);
             bindingCaptureView(null);
         } else {
-            bindingCaptureView(mCaptureView);
             mCaptureView.setVisibility(View.VISIBLE);
+            bindingCaptureView(mCaptureView);
         }
     }
 
