@@ -1,11 +1,17 @@
 package jp.newbees.mastersip.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
@@ -46,10 +52,12 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private UserItem callee;
     private UserItem currentProfileShowing;
     private boolean fromProfileDetail;
+    private BroadcastReceiver wifiBroadcastReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.registerWifiStateChange();
         presenter = new CallPresenter(this.getApplicationContext(), this);
     }
 
@@ -57,12 +65,34 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     protected void onStart() {
         super.onStart();
         presenter.registerCallEvent();
+        LinphoneService.startLinphone(getApplicationContext());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unregisterCallEvent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(wifiBroadcastReceiver);
+    }
+
+    private void registerWifiStateChange() {
+        wifiBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if(info != null && info.isConnected()) {
+                    LinphoneService.startLinphone(getApplicationContext());
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        registerReceiver(wifiBroadcastReceiver, intentFilter);
     }
 
     /**
@@ -180,7 +210,12 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             content = callee.getUsername() + getString(R.string.mess_suggest_missing_point_for_girl);
             positiveTitle = getString(R.string.to_attack);
         }
-        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_BUY_POINT, content, title, positiveTitle, false);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setRequestCode(REQUEST_BUY_POINT)
+                .setPositiveTitle(positiveTitle)
+                .setTitle(title)
+                .build(content);
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     @Override
@@ -218,8 +253,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     @Override
     public final void didAdminHangUpCall() {
         Logger.e(TAG, "did Admin Hangup Call");
-        TextDialog.openTextDialog(getSupportFragmentManager(), REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL,
-                getString(R.string.mess_admin_hang_up_ca), "", "", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setRequestCode(REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL)
+                .hideNegativeButton(true)
+                .build(getString(R.string.mess_admin_hang_up_ca));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         isMessageDialogShowing = true;
     }
 
@@ -235,15 +273,21 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     public final void callVideo(UserItem callee, boolean fromProfileDetail) {
         this.callee = callee;
         this.fromProfileDetail = fromProfileDetail;
+        TextDialog textDialog;
         if (callee.getSettings().getVideoCall() == SettingItem.OFF) {
             String content = callee.getUsername() + getString(R.string.mr)
                     + getString(R.string.confirm_request_enable_video_call);
             String positive = getResources().getString(R.string.confirm_request_enable_video_call_positive);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VIDEO_CALL,
-                    content, "", positive, false);
+            textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_REQUEST_ENABLE_VIDEO_CALL)
+                    .setPositiveTitle(positive)
+                    .build(content);
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         } else {
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_MAKE_VIDEO_CALL,
-                    getString(R.string.are_you_sure_make_a_video_call), "", "", false);
+            textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_MAKE_VIDEO_CALL)
+                    .build(getString(R.string.are_you_sure_make_a_video_call));
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
     }
 
@@ -251,15 +295,23 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     public final void callVoice(UserItem callee, boolean fromProfileDetail) {
         this.callee = callee;
         this.fromProfileDetail = fromProfileDetail;
+        TextDialog textDialog;
         if (callee.getSettings().getVoiceCall() == SettingItem.OFF) {
             String content = callee.getUsername() + getString(R.string.mr)
                     + getResources().getString(R.string.confirm_request_enable_voice_call);
             String positive = getResources().getString(R.string.confirm_request_enable_voice_call_positive);
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_REQUEST_ENABLE_VOICE_CALL, content, "", positive, false);
+            textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_REQUEST_ENABLE_VOICE_CALL)
+                    .setPositiveTitle(positive)
+                    .build(content);
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         } else {
-            TextDialog.openTextDialog(getSupportFragmentManager(), CONFIRM_MAKE_VOICE_CALL,
-                    getString(R.string.are_you_sure_make_a_voice_call), "", "", false);
+           textDialog = new TextDialog.Builder()
+                    .setRequestCode(CONFIRM_MAKE_VOICE_CALL)
+                    .build(getString(R.string.are_you_sure_make_a_voice_call));
+            textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         }
+
     }
 
     @Override

@@ -87,7 +87,7 @@ public class ProfileDetailItemPresenter extends BasePresenter {
 
     @Subscribe(sticky = true)
     public void onReloadProfileEvent(ReLoadProfileEvent event) {
-        Logger.e(TAG, "" + event.isNeedReload());
+        Logger.e(tag, "" + event.isNeedReload());
         view.didEditProfileImage();
     }
 

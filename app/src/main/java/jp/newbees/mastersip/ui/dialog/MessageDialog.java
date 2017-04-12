@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.dialog;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -33,6 +34,22 @@ public class MessageDialog extends DialogFragment {
     private String content;
     private String note;
     private boolean isHideActionButton;
+
+    private OnMessageDialogClickListener onMessageDialogClickListener;
+
+    public interface OnMessageDialogClickListener {
+        void onMessageDialogOkClick();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.onMessageDialogClickListener = (OnMessageDialogClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(e.getMessage());
+        }
+    }
 
     @Nullable
     @Override
@@ -68,7 +85,7 @@ public class MessageDialog extends DialogFragment {
         imgOKButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                onMessageDialogClickListener.onMessageDialogOkClick();
             }
         });
     }

@@ -51,6 +51,8 @@ public class IncomingWaitingFragment extends WaitingFragment {
     protected ImageView btnCancelCall;
     @BindView(R.id.btn_on_off_speaker)
     protected ToggleButton btnOnOffSpeaker;
+    @BindView(R.id.txt_cancel_call)
+    protected TextView txtCancelCall;
     @BindView(R.id.ll_point)
     protected LinearLayout llPoint;
     @BindView(R.id.txt_point)
@@ -67,7 +69,6 @@ public class IncomingWaitingFragment extends WaitingFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     protected int layoutId() {
@@ -143,6 +144,7 @@ public class IncomingWaitingFragment extends WaitingFragment {
             llPoint.setVisibility(View.VISIBLE);
         }
 
+        txtCancelCall.setText(getString(R.string.end));
         layoutVoiceCallingAction.setVisibility(View.VISIBLE);
         layoutReceivingCallAction.setVisibility(View.GONE);
         imgLoading.setVisibility(View.GONE);

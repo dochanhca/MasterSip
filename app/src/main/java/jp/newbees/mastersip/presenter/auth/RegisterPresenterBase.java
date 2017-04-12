@@ -14,7 +14,6 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.RegisterFCMTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -39,14 +38,14 @@ public abstract class RegisterPresenterBase extends BasePresenter {
 
     public void loginVoIP() {
         if (LinphoneService.isRunning()) {
-            Logger.e(TAG, "Linphone Service is ready");
+            Logger.e(tag, "Linphone Service is ready");
             handleLoginVoIPSuccess();
             return;
         }
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        Logger.e(TAG, "Start Linphone Service");
+        Logger.e(tag, "Start Linphone Service");
         LinphoneService.startLinphone(context);
     }
 
@@ -55,13 +54,8 @@ public abstract class RegisterPresenterBase extends BasePresenter {
      */
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
-        Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
-        if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            handleLoginVoIPSuccess();
-        } else {
-            stopLinphoneService();
-            onDidRegisterVoIPError(Constant.Error.VOIP_ERROR, "Error RegisterVoIP");
-        }
+        Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
+        handleLoginVoIPSuccess();
         EventBus.getDefault().unregister(this);
     }
 

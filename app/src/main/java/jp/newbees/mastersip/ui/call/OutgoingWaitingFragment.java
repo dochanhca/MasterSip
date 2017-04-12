@@ -53,6 +53,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     private LinearLayout llOnOffSpeaker;
     private LinearLayout llOnOffMic;
     private ImageView btnCancelCall;
+    private TextView txtCancelCall;
 
     private Handler waitingTimeHandler = new Handler() {
         @Override
@@ -143,6 +144,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         btnOnOffMic = (ToggleButton) view.findViewById(R.id.btn_on_off_mic);
         btnOnOffSpeaker = (ToggleButton) view.findViewById(R.id.btn_on_off_speaker);
         btnCancelCall = (ImageView) view.findViewById(R.id.btn_cancel_call);
+        txtCancelCall = (TextView) view.findViewById(R.id.txt_cancel_call);
         btnCancelCall.setOnClickListener(this);
         btnOnOffMic.setOnClickListener(this);
         btnOnOffSpeaker.setOnClickListener(this);
@@ -208,6 +210,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
         enableSpeaker(btnOnOffSpeaker.isChecked());
         enableMicrophone(btnOnOffMic.isChecked());
+        txtCancelCall.setText(getString(R.string.end));
     }
 
     @Override

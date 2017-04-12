@@ -208,6 +208,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         BaseChatItem header = getHeaderChatItem(
                 DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT),
                 getItemCount());
+        header.setOwner(item.getOwner());
         add(header);
     }
 
@@ -294,8 +295,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
             if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
-                    !baseChatItem.isOwner() &&
-                    baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+                    !baseChatItem.isOwner()) {
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
                 return;
             }
@@ -307,7 +307,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
             if (hasReadChatItem) {
-                if (baseChatItem.isOwner()) {
+                if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER && baseChatItem.isOwner()) {
                     if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
                         notifyDataSetChanged();
                         return;

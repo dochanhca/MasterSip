@@ -19,7 +19,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.AdapterSearchUserModeList;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FilterByNamePresenter;
-import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.ui.top.TopActivity;
@@ -41,14 +40,12 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
     private ImageView imgBack;
 
     private AdapterSearchUserModeList adapterSearchUserModeList;
-    private ArrayList<UserItem> userItems;
+    private List<UserItem> userItems;
 
     private FilterByNamePresenter filterUserPresenter;
 
     private boolean isLoading;
-
     private boolean firstTimeLoadData = true;
-
     private boolean isShowFilterAndNavigationBar = true;
 
     private TextWatcher onTextChangedListener = new TextWatcher() {
@@ -64,6 +61,8 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
                 isLoading = true;
             } else {
                 adapterSearchUserModeList.clearData();
+                imgClose.setVisibility(View.GONE);
+                txtNote.setVisibility(View.VISIBLE);
             }
         }
 
@@ -178,23 +177,19 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void didFilterUser(List<UserItem> datas) {
+    public void didFilterUser(List<UserItem> data) {
         userItems.clear();
-        userItems.addAll(datas);
+        userItems.addAll(data);
         adapterSearchUserModeList.notifyDataSetChanged();
         imgClose.setVisibility(View.VISIBLE);
-        if (datas.isEmpty()) {
-            txtNote.setVisibility(View.GONE);
-        }
-
+        txtNote.setVisibility(data.isEmpty() ? View.VISIBLE : View.GONE);
         isLoading = false;
     }
 
     @Override
     public void didFilterUserError(int errorCode, String errorMessage) {
         isLoading = false;
-        ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
-                errorCode, errorMessage);
+        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
     @Override

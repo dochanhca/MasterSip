@@ -41,9 +41,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
             int callType = (int) result.get(CheckIncomingCallTask.INCOMING_CALL_TYPE);
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
-
             ConfigManager.getInstance().setCurrentCallUser(caller, callID);
-
             handleIncomingCallType(callType, caller, callID);
         }
     }
@@ -71,7 +69,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
-        Logger.e(TAG, "onRegisterVoIPEvent receive: " + event.getResponseCode());
+        Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
             if (!MyLifecycleHandler.isApplicationVisible()) {
                 saveLoginState(true);

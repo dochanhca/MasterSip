@@ -17,7 +17,11 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class FirebaseUtils {
 
-    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException {
+    private FirebaseUtils() {
+        //TODO : Prevent instance object
+    }
+
+    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException, NullPointerException {
         if (data.containsKey(Constant.JSON.CALLER)) {
             return parseDataForCallMessage(data);
         }

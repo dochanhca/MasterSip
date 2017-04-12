@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,6 +19,8 @@ import com.google.gson.Gson;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
+import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
@@ -30,8 +33,9 @@ import jp.newbees.mastersip.utils.MyContextWrapper;
  * Created by vietbq on 12/6/16.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements MessageDialog.OnMessageDialogClickListener {
 
+    private boolean mIsMessageDialogShowing;
     private boolean mIsDialogShowing;
     private boolean mInterrupted;
     private LoadingDialog loadingDialog;
@@ -116,6 +120,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onMessageDialogOkClick() {
+        disMissMessageDialog();
+    }
+
     protected abstract int layoutId();
 
     protected abstract void initViews(Bundle savedInstanceState);
@@ -150,6 +159,21 @@ public abstract class BaseActivity extends AppCompatActivity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!LinphoneService.isRunning()) {
+            return super.onKeyDown(keyCode, event);
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            LinphoneHandler.getInstance().adjustVolume(-1);
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            LinphoneHandler.getInstance().adjustVolume(1);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void changeHeaderText(String title) {
@@ -209,11 +233,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (null == messageDialog) {
             messageDialog = new MessageDialog();
         }
-
-        if (messageDialog.getDialog() != null && messageDialog.getDialog().isShowing()) {
+        if (mIsMessageDialogShowing) {
             return;
         }
 
+        mIsMessageDialogShowing = true;
         Bundle bundle = new Bundle();
         bundle.putString(MessageDialog.MESSAGE_DIALOG_TITLE, title);
         bundle.putString(MessageDialog.MESSAGE_DIALOG_CONTENT, content);
@@ -229,8 +253,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void disMissMessageDialog() {
+        mIsMessageDialogShowing = false;
         if (null != messageDialog) {
             messageDialog.dismiss();
+            messageDialog = null;
         }
     }
 

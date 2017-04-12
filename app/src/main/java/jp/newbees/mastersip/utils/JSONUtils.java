@@ -17,6 +17,7 @@ import jp.newbees.mastersip.model.CallChatItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.EmailBackupItem;
+import jp.newbees.mastersip.model.FollowItem;
 import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.GiftChatItem;
@@ -919,5 +920,51 @@ public class JSONUtils {
         userItem.setSipItem(sipItem);
         userItem.setSettings(settingItem);
         return userItem;
+    }
+
+    public static FollowItem parseFollowerItem(JSONObject jData) throws JSONException{
+
+        int total = jData.getInt(Constant.JSON.TOTAL);
+        JSONArray jFollowers = jData.getJSONArray(Constant.JSON.FOLLOWER_LIST);
+        ArrayList<UserItem> followers = parseFollower(jFollowers);
+        FollowItem result = new FollowItem(total, followers);
+        return result;
+    }
+
+    public static FollowItem parseFollowingItem(JSONObject jData) throws JSONException{
+        int total = jData.getInt(Constant.JSON.TOTAL);
+        JSONArray jFollowers = jData.getJSONArray(Constant.JSON.FOLLOW_LIST);
+        ArrayList<UserItem> followers = parseFollower(jFollowers);
+        FollowItem result = new FollowItem(total, followers);
+        return result;
+    }
+
+    private static ArrayList<UserItem> parseFollower( JSONArray jFollowers) throws JSONException {
+        ArrayList<UserItem> followers= new ArrayList<>();
+        for (int i = 0, n = jFollowers.length() ;i <n ;i++) {
+            JSONObject jFollower = jFollowers.getJSONObject(i);
+            UserItem follower = new UserItem();
+            follower.setUserId(jFollower.getString(Constant.JSON.USER_ID));
+            SipItem sipItem = new SipItem();
+            sipItem.setExtension(jFollower.getString(Constant.JSON.EXTENSION));
+            follower.setSipItem(sipItem);
+            follower.setUsername(jFollower.getString(Constant.JSON.USER_NAME));
+            follower.setMemo(jFollower.getString(Constant.JSON.SLOGAN));
+            ImageItem avatar = new ImageItem();
+            avatar.setOriginUrl(jFollower.getString(Constant.JSON.AVATAR));
+            follower.setAvatarItem(avatar);
+            follower.setStatus(jFollower.getInt(Constant.JSON.STATUS));
+            follower.setLastLogin(jFollower.getString(Constant.JSON.LAST_LOGIN));
+
+            int videoSettingCall = jFollower.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VIDEO_CALL_SET);
+            int voiceSettingCall = jFollower.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VOICE_CALL_SET);
+            SettingItem settingItem = new SettingItem();
+            settingItem.setVideoCall(videoSettingCall);
+            settingItem.setVoiceCall(voiceSettingCall);
+            follower.setSettings(settingItem);
+
+            followers.add(follower);
+        }
+        return followers;
     }
 }

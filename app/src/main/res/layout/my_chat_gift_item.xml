@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/max_chat_item_width"
-            android:lineSpacingMultiplier="1.2"
+            android:lineSpacingMultiplier="1.4"
             android:padding="@dimen/normal_margin"
             android:text="ちあきさんがたくみさんへ
 「スイーツ」ギフト(10pts)

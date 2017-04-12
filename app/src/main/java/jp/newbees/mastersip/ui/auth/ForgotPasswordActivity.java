@@ -75,7 +75,11 @@ public class ForgotPasswordActivity extends BaseActivity implements ResetPassPre
     private void showDialogRegisterSuccess() {
         String title = getResources().getString(R.string.title_send_confirm_email_backup);
         String content = getResources().getString(R.string.content_send_confirm_email_backup_error);
-        TextDialog.openTextDialog(getSupportFragmentManager(), content, title, "", true);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(title)
+                .hideNegativeButton(true)
+                .build(content);
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     /**

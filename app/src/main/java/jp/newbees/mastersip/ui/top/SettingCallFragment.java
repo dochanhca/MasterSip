@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +31,11 @@ public class SettingCallFragment extends BaseFragment implements CompoundButton.
     @BindView(R.id.btn_confirm_setting_call)
     HiraginoButton btnConfirmSettingCall;
 
+    public static SettingCallFragment newInstance() {
+        SettingCallFragment settingCallFragment = new SettingCallFragment();
+        return settingCallFragment;
+    }
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_setting_call;
@@ -41,22 +45,11 @@ public class SettingCallFragment extends BaseFragment implements CompoundButton.
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
         setFragmentTitle(getString(R.string.title_setting_call));
-        updateSettingCallView();
         chkVoiceSetting.setOnCheckedChangeListener(this);
         chkVideoSetting.setOnCheckedChangeListener(this);
-        settingCall = new SettingItem();
+        settingCall = ConfigManager.getInstance().getCurrentUser().getSettings();
         settingCallPresenter = new SettingCallPresenter(getContext(), this);
-    }
-
-    private void updateSettingCallView(){
-        SettingItem settingCall = ConfigManager.getInstance().getCurrentUser().getSettings();
-        chkVideoSetting.setChecked(settingCall.getVideoCall() > 0 ? true : false);
-        chkVoiceSetting.setChecked(settingCall.getVoiceCall() > 0 ? true : false);
-    }
-
-    public static SettingCallFragment newInstance() {
-        SettingCallFragment settingCallFragment = new SettingCallFragment();
-        return settingCallFragment;
+        updateSettingCallView();
     }
 
     @OnClick(R.id.btn_confirm_setting_call)
@@ -66,8 +59,8 @@ public class SettingCallFragment extends BaseFragment implements CompoundButton.
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        int state = b ? SettingItem.ON : SettingItem.OFF;
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        int state = isChecked ? SettingItem.ON : SettingItem.OFF;
         if (compoundButton == chkVoiceSetting){
             settingCall.setVoiceCall(state);
         }else if(compoundButton == chkVideoSetting) {
@@ -83,8 +76,13 @@ public class SettingCallFragment extends BaseFragment implements CompoundButton.
     }
 
     @Override
-    public void didUpdateSettingCallFailure(String messageError) {
+    public void didUpdateSettingCallFailure(int errorCode, String messageError) {
         disMissLoading();
-        Toast.makeText(getContext(),messageError, Toast.LENGTH_SHORT).show();
+        showToastExceptionVolleyError(errorCode, messageError);
+    }
+
+    private void updateSettingCallView(){
+        chkVideoSetting.setChecked(settingCall.getVideoCall() > 0 ? true : false);
+        chkVoiceSetting.setChecked(settingCall.getVoiceCall() > 0 ? true : false);
     }
 }

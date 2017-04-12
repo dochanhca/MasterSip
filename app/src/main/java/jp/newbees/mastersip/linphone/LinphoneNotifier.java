@@ -3,7 +3,6 @@ package jp.newbees.mastersip.linphone;
 import android.os.Handler;
 
 import org.greenrobot.eventbus.EventBus;
-import org.linphone.core.tutorials.TutorialNotifier;
 
 import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.utils.Logger;
@@ -12,7 +11,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 1/4/17.
  */
 
-public class LinphoneNotifier extends TutorialNotifier {
+public class LinphoneNotifier {
 
     private Handler mHandler;
     private static final String TAG = "LinphoneNotifier";
@@ -25,15 +24,6 @@ public class LinphoneNotifier extends TutorialNotifier {
         this.mHandler = mHandler;
     }
 
-    @Override
-    public void notify(final String s) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                // do something
-            }
-        });
-    }
 
     public void registerVoIPSuccess() {
         mHandler.post(new Runnable() {
