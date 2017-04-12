@@ -173,7 +173,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel_call:
-                terminalCall(callId);
+                terminalCall();
                 break;
             case R.id.btn_on_off_speaker:
                 enableSpeaker(btnOnOffSpeaker.isChecked());

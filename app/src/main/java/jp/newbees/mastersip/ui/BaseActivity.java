@@ -245,7 +245,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         bundle.putBoolean(MessageDialog.IS_HIDE_ACTION_BUTTON, isHideActionButton);
 
         messageDialog.setArguments(bundle);
-        messageDialog.show(getFragmentManager(), "MessageDialog");
+        messageDialog.show(getSupportFragmentManager(), "MessageDialog");
     }
 
     protected void showMessageDialog(String content) {

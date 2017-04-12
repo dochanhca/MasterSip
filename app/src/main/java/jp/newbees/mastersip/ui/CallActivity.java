@@ -17,6 +17,9 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallMaker;
 import jp.newbees.mastersip.presenter.CallPresenter;
+import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
+import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
+import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.OutgoingVoiceActivity;
@@ -259,6 +262,21 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 .build(getString(R.string.mess_admin_hang_up_ca));
         textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         isMessageDialogShowing = true;
+    }
+
+    @Override
+    public void didCheckedIncomingVoiceCall(UserItem callUser, String callId) {
+        IncomingVoiceActivity.startActivity(this, callUser, callId);
+    }
+
+    @Override
+    public void didCheckedIncomingVideoCall(UserItem callUser, String callId) {
+        IncomingVideoVideoActivity.startActivity(this, callUser, callId);
+    }
+
+    @Override
+    public void didCheckedIncomingVideoChatCall(UserItem callUser, String callId) {
+        IncomingVideoChatActivity.startActivity(this, callUser, callId);
     }
 
     @Override

@@ -235,6 +235,7 @@ final public class ConfigManager {
     }
 
     public void setCallId(String callId) {
+        Logger.e("ConfigManager", "Call ID saved : " + callId);
         this.currentCallId = callId;
     }
 

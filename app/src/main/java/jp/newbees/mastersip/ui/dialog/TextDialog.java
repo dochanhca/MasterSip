@@ -27,7 +27,6 @@ public class TextDialog extends BaseDialog implements View.OnClickListener {
     private int requestCode;
     private OnTextDialogPositiveClick onTextDialogPositiveClick;
 
-    @FunctionalInterface
     public interface OnTextDialogPositiveClick {
         void onTextDialogOkClick(int requestCode);
     }

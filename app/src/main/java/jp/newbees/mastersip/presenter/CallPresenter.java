@@ -59,6 +59,12 @@ public class CallPresenter extends BasePresenter {
         void didRunOutOfCoin();
 
         void didAdminHangUpCall();
+
+        void didCheckedIncomingVoiceCall(UserItem callUser, String callId);
+
+        void didCheckedIncomingVideoCall(UserItem callUser, String callId);
+
+        void didCheckedIncomingVideoChatCall(UserItem callUser, String callId);
     }
 
     public CallPresenter(Context context, CallView callView) {
@@ -192,11 +198,20 @@ public class CallPresenter extends BasePresenter {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
-        switch (receivingCallEvent.getCallEvent()) {
+    public void onCallEvent(ReceivingCallEvent event) {
+        switch (event.getCallEvent()) {
             case ReceivingCallEvent.OUTGOING_CALL:
-                notifyCallerJoinedRoom(receivingCallEvent.getCallId());
-                handleOutgoingCall(receivingCallEvent.getCallId());
+                notifyCallerJoinedRoom(event.getCallId());
+                handleOutgoingCall(event.getCallId());
+                break;
+            case ReceivingCallEvent.CHECKED_INCOMING_VOICE_CALL:
+                callView.didCheckedIncomingVoiceCall(event.getCallUser(), event.getCallId());
+                break;
+            case ReceivingCallEvent.CHECKED_INCOMING_VIDEO_CALL:
+                callView.didCheckedIncomingVideoCall(event.getCallUser(), event.getCallId());
+                break;
+            case ReceivingCallEvent.CHECKED_INCOMING_VIDEO_CHAT_CALL:
+                callView.didCheckedIncomingVideoChatCall(event.getCallUser(), event.getCallId());
                 break;
             default:
                 break;

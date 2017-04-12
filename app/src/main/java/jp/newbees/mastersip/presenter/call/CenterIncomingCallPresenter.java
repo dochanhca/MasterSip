@@ -13,7 +13,6 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
@@ -95,6 +94,15 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     }
 
     private void handleIncomingCallType(int callType, UserItem caller, String callID) {
+        if (MyLifecycleHandler.isApplicationVisible()) {
+            ReceivingCallEvent event = new ReceivingCallEvent(this.getEventCall(callType), caller, callID);
+            EventBus.getDefault().post(event);
+        }else {
+            handleIncomingCallFromBackground(callType, caller, callID);
+        }
+    }
+
+    private void handleIncomingCallFromBackground(int callType,UserItem caller,String callID) {
         switch (callType) {
             case Constant.API.VOICE_CALL:
                 incomingCallListener.incomingVoiceCall(caller, callID);
@@ -110,6 +118,17 @@ public class CenterIncomingCallPresenter extends BasePresenter {
         }
     }
 
+    private int getEventCall(int callType) {
+        switch (callType) {
+            case Constant.API.VOICE_CALL:
+                return ReceivingCallEvent.CHECKED_INCOMING_VOICE_CALL;
+            case Constant.API.VIDEO_CALL:
+                return ReceivingCallEvent.CHECKED_INCOMING_VIDEO_CALL;
+            default:
+                return ReceivingCallEvent.CHECKED_INCOMING_VIDEO_CHAT_CALL;
+        }
+    }
+
     private void onIncomingCall() {
         String calleeExtension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
         CheckIncomingCallTask checkCallTask = new CheckIncomingCallTask(context, calleeExtension);
@@ -122,12 +141,6 @@ public class CenterIncomingCallPresenter extends BasePresenter {
 
     public void unRegisterCallEvent() {
         EventBus.getDefault().unregister(this);
-    }
-
-    public void cancelCall() {
-        CancelCallTask cancelCallTask = new CancelCallTask(getContext(),
-                ConfigManager.getInstance().getCallId());
-        requestToServer(cancelCallTask);
     }
 
     public interface IncomingCallListener {

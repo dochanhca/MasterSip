@@ -15,11 +15,13 @@ import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.ExitActivity;
 import jp.newbees.mastersip.ui.call.VideoCallFragment;
 import jp.newbees.mastersip.ui.call.VideoChatForFemaleFragment;
 import jp.newbees.mastersip.ui.call.VideoChatForMaleFragment;
 import jp.newbees.mastersip.ui.dialog.PaymentDialog;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
  * Created by thangit14 on 3/16/17.
@@ -29,6 +31,9 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
     protected static final String COMPETITOR = "COMPETITOR";
     protected static final String CALL_ID = "CALL_ID";
+    protected static final String RUN_FROM = "RUN_FROM";
+    public static final int RUN_FROM_BG = 1;
+    public static final int RUN_FROM_FG = 2;
 
     private UserItem competitor;
     private String callId;
@@ -44,6 +49,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     private TopPresenter topPresenter;
 
     private CallingFragment visibleFragment;
+    private int runFrom;
 
     public void setPresenter(BaseHandleCallPresenter presenter) {
         this.presenter = presenter;
@@ -53,16 +59,16 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         return presenter;
     }
 
-    public final void declineCall(String calId) {
-        this.presenter.declineCall(calId);
+    public final void declineCall() {
+        this.presenter.declineCall();
     }
 
     public final void acceptCall(String calId) throws LinphoneCoreException {
         this.presenter.acceptCall(calId);
     }
 
-    public final void terminalCall(String calId) {
-        this.presenter.terminalCall(calId);
+    public final void terminalCall() {
+        this.presenter.terminalCall();
     }
 
     public final void enableSpeaker(boolean enable) {
@@ -101,6 +107,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     protected void initVariables(Bundle savedInstanceState) {
         competitor = getIntent().getExtras().getParcelable(COMPETITOR);
         callId = getIntent().getExtras().getString(CALL_ID);
+        runFrom = getIntent().getExtras().getInt(RUN_FROM, RUN_FROM_FG);
     }
 
     @Override
@@ -249,7 +256,11 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCallEnd() {
-        this.finish();
+        if (MyLifecycleHandler.getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
+            ExitActivity.exitApplication(this);
+        }else {
+            this.finish();
+        }
     }
 
     protected static Bundle getBundle(UserItem competitor, String callID) {

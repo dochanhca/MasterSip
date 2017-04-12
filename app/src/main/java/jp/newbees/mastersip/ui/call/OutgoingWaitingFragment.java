@@ -59,7 +59,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         @Override
         public void handleMessage(Message msg) {
             if (getCallActivity() != null) {
-                terminalCall(getCallId());
+                terminalCall();
             }
         }
     };
@@ -157,7 +157,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
                 enableMicrophone(btnOnOffMic.isChecked());
                 break;
             case R.id.btn_cancel_call:
-                terminalCall(getCallId());
+                terminalCall();
                 break;
             case R.id.btn_on_off_speaker:
                 enableSpeaker(btnOnOffSpeaker.isChecked());

@@ -190,26 +190,20 @@
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:taskAffinity=".NotificationActivity"></activity>
+            ></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
             android:configChanges="orientation"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:taskAffinity=".NotificationActivity"></activity>
+            ></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:taskAffinity=".NotificationActivity"></activity>
+            ></activity>
 
         <activity
             android:name=".ui.profile.ProfileDetailItemActivity"
@@ -257,6 +251,10 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
+        <activity android:name=".ui.ExitActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:autoRemoveFromRecents="true"
+            />
     </application>
 
 </manifest>

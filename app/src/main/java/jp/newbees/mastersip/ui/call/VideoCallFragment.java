@@ -197,7 +197,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         resetCountingToHideAction();
         switch (view.getId()) {
             case R.id.btn_cancel_call:
-                terminalCall(callId);
+                terminalCall();
                 break;
             case R.id.btn_on_off_mic:
                 enableMicrophone(btnOnOffMic.isChecked());

@@ -10,6 +10,7 @@ import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.event.GSMCallEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
+import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.network.api.JoinCallTask;
@@ -47,10 +48,16 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         }
     }
 
-//    protected void performCancelCall(String calId) {
-//        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
-//        requestToServer(cancelCallTask);
-//    }
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onReceivingEndCallEvent(ReceivingCallEvent receivingCallEvent) {
+        int event = receivingCallEvent.getCallEvent();
+        if (event == ReceivingCallEvent.RELEASE_CALL
+                || event == ReceivingCallEvent.END_CALL
+                || event == ReceivingCallEvent.LINPHONE_ERROR
+                ) {
+                handleCallEnd();
+        }
+    }
 
     public final void enableSpeaker(boolean enable) {
         LinphoneHandler.getInstance().enableSpeaker(enable);
@@ -78,20 +85,18 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         LinphoneHandler.getInstance().acceptCall();
     }
 
-    public final void declineCall(String calId) {
+    public final void declineCall() {
         if (LinphoneHandler.getInstance() == null) {
             return;
         }
         LinphoneHandler.getInstance().declineCall();
-//        performCancelCall(calId);
     }
 
-    public void terminalCall(String calId) {
+    public void terminalCall() {
         if (LinphoneHandler.getInstance() == null) {
             return;
         }
         LinphoneHandler.getInstance().terminalCall();
-//        performCancelCall(calId);
     }
 
     protected void handleCallEnd() {
