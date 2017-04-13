@@ -179,7 +179,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         initViewWithGender(userItem);
         initMailBackupView(userItem);
 
-        galleryAdapter = new GalleryAdapter(getContext(), new ArrayList<ImageItem>());
+        galleryAdapter = new GalleryAdapter(getActivity().getApplicationContext(),
+                new ArrayList<ImageItem>());
         galleryAdapter.setOnItemClickListener(this);
         rcvListPhoto.setAdapter(galleryAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rcvListPhoto.getContext(),

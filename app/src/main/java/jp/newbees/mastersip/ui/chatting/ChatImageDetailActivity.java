@@ -15,7 +15,6 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageChatItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.ui.CallActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 

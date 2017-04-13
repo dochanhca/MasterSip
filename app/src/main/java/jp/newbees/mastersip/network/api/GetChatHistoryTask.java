@@ -9,8 +9,8 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -64,8 +64,8 @@ public class GetChatHistoryTask extends BaseTask<LoadChatHistoryResultItem> {
     @Override
     protected LoadChatHistoryResultItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        HashMap<String, UserItem> members = getMembers(jData.getJSONArray(Constant.JSON.MEMBERS));
-        ArrayList<BaseChatItem> baseChatItems = JSONUtils.parseChatHistory(jData, members, context);
+        Map<String, UserItem> members = getMembers(jData.getJSONArray(Constant.JSON.MEMBERS));
+        List<BaseChatItem> baseChatItems = JSONUtils.parseChatHistory(jData, members, context);
         return new LoadChatHistoryResultItem(members, baseChatItems);
     }
 }

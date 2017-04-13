@@ -10,12 +10,14 @@
         android:id="@+id/image_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:cardPreventCornerOverlap="false"
         app:cardCornerRadius="@dimen/corner_5"
         app:cardElevation="0dp">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_user"
             android:scaleType="centerCrop"
+            app:riv_corner_radius="@dimen/_5dp"
             android:layout_width="@dimen/small_user_image_size"
             android:layout_height="@dimen/small_user_image_size" />
 

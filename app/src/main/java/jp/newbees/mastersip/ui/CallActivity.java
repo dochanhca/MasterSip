@@ -14,7 +14,6 @@ import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallMaker;
 import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
@@ -108,11 +107,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         switch (requestCode) {
             case CONFIRM_REQUEST_ENABLE_VOICE_CALL:
                 showLoading();
-                presenter.sendMessageRequestEnableSettingCall(callee, SendMessageRequestEnableCallTask.Type.VOICE);
+                presenter.sendMessageRequestEnableSettingCall(callee, Constant.API.VOICE_CALL);
                 break;
             case CONFIRM_REQUEST_ENABLE_VIDEO_CALL:
                 showLoading();
-                presenter.sendMessageRequestEnableSettingCall(callee, SendMessageRequestEnableCallTask.Type.VIDEO);
+                presenter.sendMessageRequestEnableSettingCall(callee, Constant.API.VIDEO_CALL);
                 break;
             case CONFIRM_MAKE_VIDEO_CALL:
                 SelectVideoCallDialog.openDialog(getSupportFragmentManager());
@@ -368,7 +367,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(int type) {
         disMissLoading();
     }
 

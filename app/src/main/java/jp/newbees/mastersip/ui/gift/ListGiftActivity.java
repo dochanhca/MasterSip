@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 
 /**

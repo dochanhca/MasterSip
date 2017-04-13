@@ -64,7 +64,7 @@ public class FootPrintFragment extends BaseCallFragment implements
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFootprintGroup.setOnCheckedChangeListener(this);
-        this.adapterFootprint = new FootprintAdapter(getContext(), new ArrayList<FootprintItem>());
+        this.adapterFootprint = new FootprintAdapter(getActivity().getApplicationContext(), new ArrayList<FootprintItem>());
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
         this.presenter = new FootprintPresenter(getContext(), this);

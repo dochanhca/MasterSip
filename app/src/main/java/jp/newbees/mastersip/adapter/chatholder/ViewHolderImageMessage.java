@@ -54,7 +54,6 @@ public class ViewHolderImageMessage extends BaseChatViewHolder {
         ImageItem imageItem = Utils.calculateChatImageSize(getContext(), imageChatItem.getImageItem());
         Utils.setChatImageSize(imgChat, imageItem.getWidth(), imageItem.getHeight());
 
-
         Glide.with(getContext()).load(imageChatItem.getImageItem().getOriginUrl())
                 .override(imageItem.getWidth(), imageItem.getHeight())
                 .placeholder(defaultImageId)

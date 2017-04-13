@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -41,7 +40,7 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(int type) {
         super.didSendMsgRequestEnableSettingCall(type);
         TextDialog textDialog = new TextDialog.Builder()
                 .hideNegativeButton(true)

@@ -543,8 +543,8 @@ public class JSONUtils {
         return imageItem;
     }
 
-    public static ArrayList<BaseChatItem> parseChatHistory(JSONObject data, HashMap<String, UserItem> members, Context context) throws JSONException {
-        ArrayList<BaseChatItem> result = new ArrayList<>();
+    public static List<BaseChatItem> parseChatHistory(JSONObject data, Map<String, UserItem> members, Context context) throws JSONException {
+        List<BaseChatItem> result = new ArrayList<>();
 
         JSONArray jListMessages = data.getJSONArray(Constant.JSON.LIST_MESSAGES);
         int sectionFirstPosition = 0;
@@ -597,7 +597,7 @@ public class JSONUtils {
     }
 
     private static BaseChatItem getBaseChatItemInHistory(JSONObject jMessage, int sectionFirstPosition,
-                                                         HashMap<String, UserItem> members) throws JSONException {
+                                                         Map<String, UserItem> members) throws JSONException {
 
         BaseChatItem baseChatItem;
         int type = jMessage.getInt(Constant.JSON.TYPE);
@@ -641,7 +641,7 @@ public class JSONUtils {
         return callChatItem;
     }
 
-    private static BaseChatItem parseGiftChatItem(JSONObject jMessage, HashMap<String, UserItem> members) throws JSONException {
+    private static BaseChatItem parseGiftChatItem(JSONObject jMessage, Map<String, UserItem> members) throws JSONException {
         GiftChatItem giftChatItem = new GiftChatItem();
         String sendId = jMessage.getJSONObject(Constant.JSON.SENDER).getString(Constant.JSON.ID);
         giftChatItem.setOwner(members.get(sendId));

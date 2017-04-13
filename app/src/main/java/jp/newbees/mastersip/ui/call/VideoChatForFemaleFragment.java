@@ -90,7 +90,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         callId = getArguments().getString(CALL_ID);
 
         basicChatPresenter = new BasicChatPresenter(getContext(), this);
-        chatAdapter = new ChatAdapter(getContext(), new ArrayList<BaseChatItem>());
+        chatAdapter = new ChatAdapter(getActivity().getApplicationContext(), new ArrayList<BaseChatItem>());
 
         LayoutManager layoutManager = new LayoutManager(getContext());
         recyclerChat.setLayoutManager(layoutManager);

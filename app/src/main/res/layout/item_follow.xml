@@ -7,16 +7,17 @@
         android:id="@+id/cvImage"
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/_10dp"
+        app:cardPreventCornerOverlap="false"
         android:layout_marginLeft="@dimen/_8dp"
         android:layout_marginTop="@dimen/_8dp"
         android:layout_width="@dimen/_70dp"
         android:layout_height="@dimen/_70dp" >
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_avatar"
+            app:riv_corner_radius="@dimen/_10dp"
             android:src="@drawable/ic_boy_default"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </android.support.v7.widget.CardView>
 
     <jp.newbees.mastersip.customviews.HiraginoTextView

@@ -17,15 +17,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/normal_margin"
             app:cardCornerRadius="@dimen/corner_5"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false">
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <ImageView
+                <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/img_avatar"
                     android:layout_width="@dimen/size_avatar_mode_list"
                     android:layout_height="@dimen/size_avatar_mode_list"
-                    android:src="@drawable/ic_boy_default" />
+                    android:src="@drawable/ic_boy_default"
+                    app:riv_corner_radius="@dimen/corner_5"/>
 
                 <ImageView
                     android:id="@+id/img_available_call"

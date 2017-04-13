@@ -48,7 +48,6 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.chatting.ChatListener;
 import jp.newbees.mastersip.presenter.chatting.ChatPresenter;
@@ -240,6 +239,8 @@ public class ChatActivity extends CallActivity implements
             updateFollowView(presenter
                     .getUserHasRelationShipItem(userItem, members)
                     .getRelationshipItem());
+        } else {
+            chatAdapter.removeHeaderItemIfDuplicated(resultItem.getBaseChatItems());
         }
         chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
 
@@ -440,7 +441,7 @@ public class ChatActivity extends CallActivity implements
 
         initHeader(userItem.getUsername(), mOnHeaderClickListener);
 
-        chatAdapter = new ChatAdapter(this, new ArrayList<BaseChatItem>());
+        chatAdapter = new ChatAdapter(getApplicationContext(), new ArrayList<BaseChatItem>());
         chatAdapter.setOnItemClickListener(this);
         LayoutManager layoutManager = new LayoutManager(ChatActivity.this);
 
@@ -759,7 +760,7 @@ public class ChatActivity extends CallActivity implements
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(int type) {
         super.didSendMsgRequestEnableSettingCall(type);
         TextDialog textDialog = new TextDialog.Builder()
                 .hideNegativeButton(true)

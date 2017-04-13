@@ -273,7 +273,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private void setupListViewWithModeList() {
         if (adapterSearUserModeList == null) {
-            adapterSearUserModeList = new AdapterSearchUserModeList(getContext(), userItems);
+            adapterSearUserModeList = new AdapterSearchUserModeList(getActivity().getApplicationContext(), userItems);
             adapterSearUserModeList.setOnItemClickListener(this);
         } else {
             adapterSearUserModeList.addAll(userItems);
@@ -286,7 +286,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private void setupListViewWithModeTwo() {
         if (adapterSearchUserModeTwo == null) {
-            adapterSearchUserModeTwo = new AdapterSearchUserModeTwo(getContext(), userItems);
+            adapterSearchUserModeTwo = new AdapterSearchUserModeTwo(getActivity().getApplicationContext(), userItems);
             adapterSearchUserModeTwo.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeTwo.addAll(userItems);
@@ -300,7 +300,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private void setupListViewWithModeFour() {
         if (adapterSearchUserModeFour == null) {
-            adapterSearchUserModeFour = new AdapterSearchUserModeFour(getContext(), userItems);
+            adapterSearchUserModeFour = new AdapterSearchUserModeFour(getActivity().getApplicationContext(), userItems);
             adapterSearchUserModeFour.setOnItemClickListener(this);
         } else {
             adapterSearchUserModeFour.addAll(userItems);
