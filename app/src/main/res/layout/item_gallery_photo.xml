@@ -6,6 +6,7 @@
     android:layout_height="@dimen/small_user_image_size"
     app:cardCornerRadius="@dimen/corner_5"
     app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
     >
 
     <RelativeLayout
@@ -13,17 +14,19 @@
         android:layout_height="@dimen/small_user_image_size"
         android:layout_marginRight="@dimen/_10dp"
         >
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            app:riv_corner_radius="@dimen/_5dp"
             android:src="@drawable/ic_boy_default" />
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_mask_approving"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:riv_corner_radius="@dimen/_5dp"
             android:background="@color/black_transparent_50" />
 
         <TextView

@@ -48,7 +48,7 @@ public class CallPresenter extends BasePresenter {
 
         void didUserNotEnoughPoint();
 
-        void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type);
+        void didSendMsgRequestEnableSettingCall(int type);
 
         void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode);
 
@@ -98,7 +98,7 @@ public class CallPresenter extends BasePresenter {
         } else if (task instanceof CheckCallTask) {
             handleResponseCheckCall(task);
         } else if (task instanceof SendMessageRequestEnableCallTask) {
-            SendMessageRequestEnableCallTask.Type type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
+            int type = ((SendMessageRequestEnableCallTask) task).getDataResponse();
             callView.didSendMsgRequestEnableSettingCall(type);
         }
     }
@@ -252,31 +252,21 @@ public class CallPresenter extends BasePresenter {
         }
     }
 
-//    /**
-//     * Cancel call
-//     *
-//     * @param calId
-//     */
-//    private void cancelCall(String calId) {
-//        CancelCallTask cancelCallTask = new CancelCallTask(context, calId);
-//        requestToServer(cancelCallTask);
-//    }
-
-    public final void sendMessageRequestEnableSettingCall(UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
+    public final void sendMessageRequestEnableSettingCall(UserItem userItem, int type) {
         SendMessageRequestEnableCallTask task = new SendMessageRequestEnableCallTask(context, userItem, type);
         requestToServer(task);
     }
 
-    public final static String getMessageSendRequestSuccess(Context context, UserItem userItem, SendMessageRequestEnableCallTask.Type type) {
+    public final static String getMessageSendRequestSuccess(Context context, UserItem userItem, int type) {
         String message = "";
         switch (type) {
-            case VOICE:
+            case Constant.API.VOICE_CALL:
                 message = String.format(context.getString(R.string.message_request_enable_voice_success), userItem.getUsername());
                 break;
-            case VIDEO:
+            case Constant.API.VIDEO_CALL:
                 message = String.format(context.getString(R.string.message_request_enable_video_success), userItem.getUsername());
                 break;
-            case VIDEO_CHAT:
+            case Constant.API.VIDEO_CHAT_CALL:
                 message = String.format(context.getString(R.string.message_request_enable_video_chat_success), userItem.getUsername());
                 break;
             default:

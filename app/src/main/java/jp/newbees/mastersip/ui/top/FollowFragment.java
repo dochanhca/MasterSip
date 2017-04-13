@@ -70,7 +70,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFollowGroup.setOnCheckedChangeListener(this);
-        this.adapterFollow = new FollowAdapter(getContext(), new FollowItem());
+        this.adapterFollow = new FollowAdapter(getActivity().getApplicationContext(), new FollowItem());
         this.rcvFollow.setAdapter(adapterFollow);
         this.setFragmentTitle(getString(R.string.follower));
         this.presenter = new FollowPresenter(getContext(), this);

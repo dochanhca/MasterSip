@@ -7,21 +7,24 @@
     android:layout_height="wrap_content"
     android:background="@color/color_gray_bg"
     app:cardCornerRadius="@dimen/corner_5"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:riv_corner_radius="@dimen/_5dp"/>
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_mask_approving"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:riv_corner_radius="@dimen/_5dp"
             android:background="@color/black_transparent_50" />
 
         <TextView

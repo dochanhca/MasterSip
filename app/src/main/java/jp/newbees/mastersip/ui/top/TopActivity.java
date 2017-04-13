@@ -18,7 +18,6 @@ import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.TopPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
@@ -323,7 +322,7 @@ public class TopActivity extends CallActivity implements
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(int type) {
         super.didSendMsgRequestEnableSettingCall(type);
         TextDialog textDialog = new TextDialog.Builder()
                 .hideNegativeButton(true)

@@ -85,7 +85,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
         userItem = getArguments().getParcelable(ListGiftFragment.USER_ITEM);
         openFrom = getArguments().getInt(ListGiftFragment.OPEN_FROM);
         txtGiftsDescription.setText(getDescription());
-        adapterGiftsList = new AdapterGiftsList(getContext(), new ArrayList<GiftItem>());
+        adapterGiftsList = new AdapterGiftsList(getActivity().getApplicationContext(), new ArrayList<GiftItem>());
         rcvGiftsList.setAdapter(adapterGiftsList);
         adapterGiftsList.setGiftItemSelectListener(this);
         giftListPresenter = new GiftListPresenter(getContext(), this);

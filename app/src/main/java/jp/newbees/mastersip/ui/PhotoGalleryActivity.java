@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import jp.newbees.mastersip.adapter.GalleryModeFourAdapter;
 import jp.newbees.mastersip.model.GalleryItem;
-import jp.newbees.mastersip.network.api.SendMessageRequestEnableCallTask;
 import jp.newbees.mastersip.presenter.PhotoGalleryPresenter;
 
 /**
@@ -68,7 +67,7 @@ PhotoGalleryPresenter.PhotoGalleryView {
     }
 
     @Override
-    public void didSendMsgRequestEnableSettingCall(SendMessageRequestEnableCallTask.Type type) {
+    public void didSendMsgRequestEnableSettingCall(int type) {
 
     }
 

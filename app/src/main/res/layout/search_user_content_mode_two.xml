@@ -6,24 +6,28 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/corner_item_search_user"
     app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/view_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/bg_layout_list_user_mode_two">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_boy_default"/>
+                android:src="@drawable/ic_boy_default"
+                app:riv_corner_radius_top_left="@dimen/corner_item_search_user"
+                app:riv_corner_radius_top_right="@dimen/corner_item_search_user"/>
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
                 android:id="@+id/txt_name"

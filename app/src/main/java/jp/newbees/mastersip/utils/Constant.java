@@ -252,7 +252,7 @@ public final class Constant {
         public static final String GIFTS_LIST = "gifts";
         public static final String SEND_GIFT = "gift/send";
         public static final String UPDATE_IMAGE = "image/update";
-        public static final String REQUEST_ENABLE_VOICE_CALL = "putmess";
+        public static final String REQUEST_ENABLE_VOICE_CALL = "request-on-call-setting";
         public static final String CHATTING_PHOTO = "chatting/photos";
         public static final String UPDATE_USER_PASS = "adduserpass/update-user-pass";
         public static final String CHECK_CODE = "adduserpass/check-code";
