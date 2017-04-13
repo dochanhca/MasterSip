@@ -263,10 +263,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addDataFromBeginning(List<BaseChatItem> data) {
-        ArrayList<BaseChatItem> newData = new ArrayList<>();
+        List<BaseChatItem> newData = new ArrayList<>();
+
         newData.addAll(data);
         newData.addAll(this.data);
         clearAndAddNewData(newData);
+    }
+
+    public void removeHeaderItemIfDuplicated(List<BaseChatItem> data) {
+        BaseChatItem currentHeader = this.data.get(0);
+        for (BaseChatItem item : data) {
+            if (item.getChatType() == BaseChatItem.ChatType.HEADER &&
+                    item.getDisplayDate().equals(currentHeader.getDisplayDate())) {
+                this.data.remove(0);
+            }
+        }
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {

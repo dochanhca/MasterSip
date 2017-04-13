@@ -239,6 +239,8 @@ public class ChatActivity extends CallActivity implements
             updateFollowView(presenter
                     .getUserHasRelationShipItem(userItem, members)
                     .getRelationshipItem());
+        } else {
+            chatAdapter.removeHeaderItemIfDuplicated(resultItem.getBaseChatItems());
         }
         chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
 
