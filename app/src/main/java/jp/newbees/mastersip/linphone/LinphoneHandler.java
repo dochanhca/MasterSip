@@ -315,23 +315,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }.start();
     }
 
-    public static final synchronized void restart(SipItem sipItem) {
-        destroy();
-        Logger.e(TAG, "Restart linphone...");
-        getInstance().loginVoIPServer(sipItem);
-    }
-
     public static synchronized void destroy() {
         Logger.e(TAG, "Shutting down linphone...");
         try {
-            getInstance().notifyEndCallToServer();
-            getInstance().context = null;
-            getInstance().setVideoWindow(null);
-            getInstance().linphoneCore.clearAuthInfos();
-            getInstance().linphoneCore.clearProxyConfigs();
             getInstance().running = false;
-            getInstance().linphoneCore.destroy();
-            LinphoneHandler.instance = null;
         } catch (RuntimeException e) {
             Logger.e(TAG, e.getMessage());
         }
@@ -370,18 +357,34 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 linphoneCore.addProxyConfig(proxyCfg);
                 linphoneCore.setDefaultProxyConfig(proxyCfg);
                 linphoneCore.setNetworkReachable(true);
+                Logger.e("LinphoneHandler", "Version " + linphoneCore.getVersion());
                 this.running = true;
                 while (this.running) {
                     linphoneCore.iterate();
                     this.sleep(20);
                 }
+                this.clearAll();
             } catch (NullPointerException e) {
                 this.running = false;
-            } finally {
-                destroy();
             }
         } else {
             createLinphoneCore();
+        }
+    }
+
+    private void clearAll() {
+        try {
+            Logger.e("LinphoneHandler","Clear all proxy and auth");
+            getInstance().notifyEndCallToServer();
+            getInstance().context = null;
+            getInstance().setVideoWindow(null);
+            getInstance().linphoneCore.clearAuthInfos();
+            getInstance().linphoneCore.clearProxyConfigs();
+            getInstance().linphoneCore.destroy();
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }finally {
+            instance = null;
         }
     }
 
