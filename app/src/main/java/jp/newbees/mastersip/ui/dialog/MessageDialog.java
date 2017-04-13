@@ -42,6 +42,11 @@ public class MessageDialog extends DialogFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Remove super() to prevent crash
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {

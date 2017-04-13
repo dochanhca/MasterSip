@@ -272,6 +272,7 @@ public final class Constant {
         public static final String SEND_DIRECT_MESSAGE = "message/send";
         public static final String LIST_FOLLOWERS = "follower_list";
         public static final String LIST_FOLLOWING = "follow_list";
+        public static final String UPDATE_CALL_WHEN_ONLINE = "calls/update-call-when-online-again";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

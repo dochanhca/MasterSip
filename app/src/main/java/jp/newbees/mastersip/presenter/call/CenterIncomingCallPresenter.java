@@ -15,6 +15,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
+import jp.newbees.mastersip.network.api.UpdateCallWhenOnlineTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -70,6 +71,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
+            this.notifyToServer();
             if (!MyLifecycleHandler.isApplicationVisible()) {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());
@@ -77,6 +79,11 @@ public class CenterIncomingCallPresenter extends BasePresenter {
         } else {
             stopLinphoneService();
         }
+    }
+
+    private void notifyToServer() {
+        UpdateCallWhenOnlineTask task = new UpdateCallWhenOnlineTask(context);
+        requestToServer(task);
     }
 
     private void reconnectRoom(String callId) {

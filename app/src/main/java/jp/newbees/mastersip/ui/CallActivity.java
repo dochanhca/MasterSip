@@ -59,7 +59,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.registerWifiStateChange();
         presenter = new CallPresenter(this.getApplicationContext(), this);
     }
 
@@ -67,18 +66,13 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     protected void onStart() {
         super.onStart();
         presenter.registerCallEvent();
-        LinphoneService.startLinphone(getApplicationContext());
+        this.registerWifiStateChange();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unregisterCallEvent();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         this.unregisterReceiver(wifiBroadcastReceiver);
     }
 
@@ -88,6 +82,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             public void onReceive(Context context, Intent intent) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if(info != null && info.isConnected()) {
+                    Logger.e(CallActivity.this.getClass().getSimpleName(),"Start Service");
                     LinphoneService.startLinphone(getApplicationContext());
                 }
             }
