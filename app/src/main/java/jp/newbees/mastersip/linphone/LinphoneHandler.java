@@ -285,9 +285,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
         setBandwidthLimit(1024 + 128);
     }
 
-    private void tryToLoginVoIP() {
+    private void tryToLoginVoIP() throws LinphoneCoreException {
         if (this.sipAccount != null) {
-            this.loginVoIPServer(this.sipAccount);
+            loginVoIPServer(this.sipAccount.getExtension(), this.sipAccount.getSecret());
+//            this.loginVoIPServer(this.sipAccount);
         }
     }
 
