@@ -80,6 +80,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private static final long FIRST_SHOOT = 15000;
     private boolean cancelingCall;
     private LinphoneNotifier notifier;
+    private boolean globalOff;
+    private boolean stopLinphoneCore;
 
     /**
      * @param context
@@ -142,6 +144,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
             }
         }else if(state == LinphoneCore.GlobalState.GlobalShutdown) {
             handleLinphoneShutdown();
+        }else if(state == LinphoneCore.GlobalState.GlobalOff) {
+            globalOff = true;
+            removeInstance();
         }
     }
 
@@ -243,12 +248,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void createLinphoneCore() {
         try {
+            Logger.e("LinphoneHandler", "Create a new linphone core");
             basePath = context.getFilesDir().getAbsolutePath();
             mRingSoundFile = basePath + "/oldphone_mono.wav";
             copyAssetsFromPackage(basePath);
             linphoneCore = LinphoneCoreFactory.instance().createLinphoneCore(this, basePath + "/.linphonerc", basePath + "/linphonerc", null, context);
             this.tryToLoginVoIP();
-        } catch (LinphoneCoreException | IOException e) {
+        } catch (LinphoneCoreException | IOException e ) {
+            e.printStackTrace();
+        }catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -298,8 +306,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setDownloadBandwidth(bandwidth);
     }
 
-    public static final synchronized LinphoneHandler getInstance() {
-        return instance;
+    public static final synchronized LinphoneHandler getInstance() throws NullPointerException{
+        if (instance == null){
+            throw new NullPointerException();
+        }else {
+            return instance;
+        }
     }
 
     public synchronized void loginVoIPServer(final SipItem sipItem) {
@@ -310,6 +322,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     LinphoneHandler.this.sipAccount = sipItem;
                     LinphoneHandler.this.loginVoIPServer(
                             sipItem.getExtension(), sipItem.getSecret());
+                    Logger.e(TAG, "Everything DONE");
                 } catch (LinphoneCoreException e) {
                     Logger.e(TAG, e.getMessage());
                 }
@@ -318,7 +331,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static synchronized void destroy() {
-        Logger.e(TAG, "Shutting down linphone...");
         try {
             getInstance().running = false;
         } catch (RuntimeException e) {
@@ -366,6 +378,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     linphoneCore.iterate();
                     this.sleep(20);
                 }
+                Logger.e("LinphoneHandler", "Linphone Handler shutting down...");
                 this.clearAll();
             } catch (NullPointerException e) {
                 this.running = false;
@@ -379,15 +392,26 @@ public class LinphoneHandler implements LinphoneCoreListener {
         try {
             Logger.e("LinphoneHandler","Clear all proxy and auth");
             getInstance().notifyEndCallToServer();
-            getInstance().context = null;
-            getInstance().setVideoWindow(null);
+            getInstance().terminalCall();
+//            getInstance().linphoneCore.setVideoWindow(null);
+//            getInstance().linphoneCore.setPreviewWindow(null);
+//            getInstance().linphoneCore.terminateAllCalls();
             getInstance().linphoneCore.clearAuthInfos();
             getInstance().linphoneCore.clearProxyConfigs();
             getInstance().linphoneCore.destroy();
+            getInstance().context = null;
+            stopLinphoneCore = true;
         }catch (NullPointerException e){
             e.printStackTrace();
         }finally {
+            removeInstance();
+        }
+    }
+
+    private synchronized void removeInstance() {
+        if (stopLinphoneCore && globalOff) {
             instance = null;
+            Logger.e("LinphoneHandler" , "Removed instance");
         }
     }
 

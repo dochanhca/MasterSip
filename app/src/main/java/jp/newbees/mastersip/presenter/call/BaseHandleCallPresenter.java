@@ -100,6 +100,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
     }
 
     protected void handleCallEnd() {
+        unregisterEvents();
         view.onCallEnd();
     }
 

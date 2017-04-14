@@ -19,6 +19,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public abstract class CallingFragment extends BaseFragment {
+
     protected static final String COMPETITOR = "USER ITEM";
     protected static final String SPEAKER = "SPEAKER";
     protected static final String MIC = "MIC";
@@ -60,7 +61,6 @@ public abstract class CallingFragment extends BaseFragment {
         if (myCountingThreadToHideAction != null) {
             myCountingThreadToHideAction.turnOffCounting();
         }
-
     }
 
     protected void startCountingToHideAction() {

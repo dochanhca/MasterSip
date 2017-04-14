@@ -71,10 +71,6 @@ public abstract class RegisterPresenterBase extends BasePresenter {
         requestToServer(registerFCMTask);
     }
 
-    private void stopLinphoneService() {
-        LinphoneService.stopLinphone(context);
-    }
-
     private void saveLoginState(boolean loginState) {
         ConfigManager.getInstance().saveLoginFlag(loginState);
 

@@ -26,10 +26,10 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  * Created by thangit14 on 3/29/17.
  */
 
-public class CenterIncomingCallPresenter extends BasePresenter {
+public class LinphoneServicePresenter extends BasePresenter {
     private IncomingCallListener incomingCallListener;
 
-    public CenterIncomingCallPresenter(Context context, IncomingCallListener incomingCallListener) {
+    public LinphoneServicePresenter(Context context, IncomingCallListener incomingCallListener) {
         super(context);
         this.incomingCallListener = incomingCallListener;
     }
@@ -81,7 +81,7 @@ public class CenterIncomingCallPresenter extends BasePresenter {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());
             }
-        } else {
+        } else if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_FAILED){
             stopLinphoneService();
         }
     }

@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.call.CenterIncomingCallPresenter;
+import jp.newbees.mastersip.presenter.call.LinphoneServicePresenter;
 import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
@@ -31,13 +31,12 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service implements CenterIncomingCallPresenter.IncomingCallListener {
+public class LinphoneService extends Service implements LinphoneServicePresenter.IncomingCallListener {
 
-//    private LinphoneHandler linphoneHandler;
     private static final String TAG = "LinphoneService";
     private BroadcastReceiver receiverRingerModeChanged;
 
-    private CenterIncomingCallPresenter incomingCallPresenter;
+    private LinphoneServicePresenter incomingCallPresenter;
 
     private static LinphoneService instance;
     private BroadcastReceiver callStateChangeReceiver;
@@ -48,9 +47,9 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     }
 
     public static void stopLinphone(Context context) {
+        Logger.e("LinphoneService", "Stopping service");
         Intent intent = new Intent(context, LinphoneService.class);
         context.stopService(intent);
-//        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public static boolean isReady() {
@@ -85,7 +84,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG, "Linphone Service onCreate");
-        incomingCallPresenter = new CenterIncomingCallPresenter(getApplicationContext(), this);
+        incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this);
         incomingCallPresenter.registerCallEvent();
 
         Handler mHandler = new Handler(Looper.getMainLooper());
@@ -117,7 +116,7 @@ public class LinphoneService extends Service implements CenterIncomingCallPresen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.e(TAG, "onDestroy");
+        Logger.e(TAG, "LinphoneService onDestroy");
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();

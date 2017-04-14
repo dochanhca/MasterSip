@@ -259,7 +259,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         if (MyLifecycleHandler.getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
             ExitActivity.exitApplication(this);
         }else {
-            this.finish();
+            BaseHandleCallActivity.this.finish();
         }
     }
 

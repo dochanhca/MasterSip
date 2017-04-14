@@ -27,6 +27,7 @@ import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 3/14/17.
@@ -185,7 +186,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
             @Override
             public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl androidVideoWindow) {
-
+                Logger.e("VideoCallFragment", "SurfaceDestroyed");
             }
         });
     }
@@ -240,13 +241,18 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     }
 
     private void bindingCaptureView(SurfaceView mCaptureView) {
-        LinphoneHandler.getInstance().setPreviewWindow(mCaptureView);
+        try {
+            LinphoneHandler.getInstance().setPreviewWindow(mCaptureView);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
-
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        if (LinphoneHandler.getInstance() != null) {
+        try {
             LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        }catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
