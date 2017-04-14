@@ -459,6 +459,7 @@
     ]]>
     </string>
     <string name="hide_chat_box">チャット画面を閉じる</string>
+    <string name="show_chat_box">チャット画面を開く</string>
     <string name="history_incoming_call">着信履歴</string>
     <string name="history_outgoing_call">発信履歴</string>
     <string name="history_call">通話履歴</string>

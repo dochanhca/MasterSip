@@ -680,6 +680,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
      */
     public final void enableVideo(boolean enable) {
         LinphoneCall call = linphoneCore.getCurrentCall();
+        if (call == null) {
+            return;
+        }
         call.enableCamera(enable);
         if (enable) {
             reInviteWithVideo();
@@ -790,6 +793,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     public void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
         linphoneCore.setVideoWindow(androidVideoWindow);
+    }
+
+    public void zoomVideo(float zoomFactor, float zoomCenterX, float zoomCenterY) {
+        LinphoneCall linphoneCall = linphoneCore.getCurrentCall();
+        if (linphoneCall != null) {
+            linphoneCall.zoomVideo(zoomFactor, zoomCenterX, zoomCenterY);
+            updateCall();
+        }
     }
 
     public void setPreviewWindow(SurfaceView captureView) {

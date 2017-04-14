@@ -200,20 +200,18 @@
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            ></activity>
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.profile.ProfileDetailItemActivity"
@@ -261,10 +259,10 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.ExitActivity"
-            android:theme="@android:style/Theme.NoDisplay"
+        <activity
+            android:name=".ui.ExitActivity"
             android:autoRemoveFromRecents="true"
-            />
+            android:theme="@android:style/Theme.NoDisplay" />
     </application>
 
 </manifest>
