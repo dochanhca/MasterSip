@@ -25,12 +25,12 @@ public class LinphoneNotifier {
     }
 
 
-    public void registerVoIPSuccess() {
+    public void registerVoIPSuccess(final boolean registrationProgress) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 Logger.e(TAG, "registerVoIPSuccess");
-                EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS));
+                EventBus.getDefault().post(new RegisterVoIPEvent(RegisterVoIPEvent.REGISTER_SUCCESS, registrationProgress));
             }
         });
     }

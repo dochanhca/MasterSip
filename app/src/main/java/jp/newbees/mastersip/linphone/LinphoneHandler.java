@@ -62,6 +62,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class LinphoneHandler implements LinphoneCoreListener {
     private static final String TAG = "LinphoneHandler";
+    private static final int INCOMING_CALL_TIMEOUT = 60;
     private final AudioManager mAudioManager;
     private Context context;
     private boolean running;
@@ -75,8 +76,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private LinphoneCall currentPausedCall;
     private boolean waitingGSMCall;
     private TimerTask timerWaitingCallTask;
-    private static final long TIMEOUT = 45000;
-    private static final long FIRST_SHOOT = 45000;
+    private static final long TIMEOUT = 15000;
+    private static final long FIRST_SHOOT = 15000;
     private boolean cancelingCall;
     private LinphoneNotifier notifier;
 
@@ -267,6 +268,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setContext(context);
         linphoneCore.enableSpeaker(true);
         linphoneCore.muteMic(false);
+        linphoneCore.setIncomingTimeout(INCOMING_CALL_TIMEOUT);
         mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,
                 mAudioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL), 0);
 
@@ -288,7 +290,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void tryToLoginVoIP() throws LinphoneCoreException {
         if (this.sipAccount != null) {
             loginVoIPServer(this.sipAccount.getExtension(), this.sipAccount.getSecret());
-//            this.loginVoIPServer(this.sipAccount);
         }
     }
 
@@ -355,6 +356,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 linphoneCore.addAuthInfo(authInfo);
 
                 LinphoneProxyConfig proxyCfg = linphoneCore.createProxyConfig(sipAddress, address.asStringUriOnly(), address.asStringUriOnly(), true);
+                Logger.e("LinphoneHandler", "Expires is " + proxyCfg.getExpires());
                 linphoneCore.addProxyConfig(proxyCfg);
                 linphoneCore.setDefaultProxyConfig(proxyCfg);
                 linphoneCore.setNetworkReachable(true);

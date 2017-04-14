@@ -29,7 +29,7 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  */
 
 public class OutgoingWaitingFragment extends WaitingFragment implements View.OnClickListener {
-    private static final int MAX_WAITING_TIME = 15;
+    private static final int MAX_WAITING_TIME = 60;
 
     @BindView(R.id.profile_image)
     CircleImageView profileImage;

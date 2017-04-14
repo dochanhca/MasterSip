@@ -71,7 +71,12 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            this.notifyToServer();
+            if (event.isInProgress()) {
+                Logger.e("LinphoneHandler", "Notify to server that the client is online");
+                this.notifyToServer();
+            }else {
+                Logger.e("LinphoneHandler", "Do not notify to server that the client is online");
+            }
             if (!MyLifecycleHandler.isApplicationVisible()) {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());

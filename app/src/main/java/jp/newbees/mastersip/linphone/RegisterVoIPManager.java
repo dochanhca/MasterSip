@@ -8,6 +8,7 @@ import org.linphone.core.LinphoneCore;
  */
 public class RegisterVoIPManager {
     private static RegisterVoIPManager instance = null;
+    private boolean registrationPrgress;
 
     private RegisterVoIPManager() {
     }
@@ -21,7 +22,10 @@ public class RegisterVoIPManager {
 
     public void registrationStateChanged(LinphoneCore.RegistrationState state, LinphoneNotifier notifier) {
         if (state == LinphoneCore.RegistrationState.RegistrationOk) {
-            notifier.registerVoIPSuccess();
+            notifier.registerVoIPSuccess(this.registrationPrgress);
+            this.registrationPrgress = false;
+        }else if(state == LinphoneCore.RegistrationState.RegistrationProgress) {
+            this.registrationPrgress = true;
         } else if (state == LinphoneCore.RegistrationState.RegistrationFailed){
             notifier.registerVoIPFailed();
         } else if (state == LinphoneCore.RegistrationState.RegistrationCleared) {
