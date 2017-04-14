@@ -123,7 +123,6 @@ public class ChatActivity extends CallActivity implements
     private Animation slideDown;
     private Animation slideUp;
 
-    private volatile boolean doNotHideSoftKeyboard = true;
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
@@ -239,7 +238,7 @@ public class ChatActivity extends CallActivity implements
             updateFollowView(presenter
                     .getUserHasRelationShipItem(userItem, members)
                     .getRelationshipItem());
-        } else {
+        } else if (resultItem.getBaseChatItems().size() > 0) {
             chatAdapter.removeHeaderItemIfDuplicated(resultItem.getBaseChatItems());
         }
         chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
@@ -486,7 +485,6 @@ public class ChatActivity extends CallActivity implements
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
         if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
                 || chatItem.isOwner()) {
-            doNotHideSoftKeyboard = true;
             chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
             if (isResume) {
@@ -571,7 +569,6 @@ public class ChatActivity extends CallActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        doNotHideSoftKeyboard = true;
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
     }
@@ -659,7 +656,6 @@ public class ChatActivity extends CallActivity implements
     private void doSendMessage() {
         String newMessage = edtChat.getText().toString();
         if (!"".equalsIgnoreCase(newMessage)) {
-            doNotHideSoftKeyboard = true;
             edtChat.setText("");
             presenter.sendText(newMessage, userItem);
         }

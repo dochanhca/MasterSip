@@ -267,7 +267,29 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         newData.addAll(data);
         newData.addAll(this.data);
+        newData = updateSelectionFirstPosition(newData);
         clearAndAddNewData(newData);
+    }
+
+    /**
+     * When load more items, new items added from first position
+     * So old header position was changed -> need update old item's header position
+     *
+     * @param newData
+     * @return
+     */
+    private List<BaseChatItem> updateSelectionFirstPosition(List<BaseChatItem> newData) {
+        int headerPosition = 0;
+        for (int i = 1; i < newData.size(); i++) {
+            BaseChatItem item = newData.get(i);
+            if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
+                item.setSectionFirstPosition(i);
+                headerPosition = i;
+            } else {
+                item.setSectionFirstPosition(headerPosition);
+            }
+        }
+        return newData;
     }
 
     public void removeHeaderItemIfDuplicated(List<BaseChatItem> data) {
@@ -283,7 +305,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-
 
     public interface OnItemClickListener {
         void onImageClick(int position);
