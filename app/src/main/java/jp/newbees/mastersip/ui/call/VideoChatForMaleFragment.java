@@ -3,8 +3,13 @@ package jp.newbees.mastersip.ui.call;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -17,6 +22,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
@@ -34,8 +40,13 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  * Created by thangit14 on 4/10/17.
  */
 
-public class VideoChatForMaleFragment extends CallingFragment implements SendChatTextListener {
+public class VideoChatForMaleFragment extends CallingFragment implements SendChatTextListener,
+        CallingFragment.CountableToHideAction {
 
+    @BindView(R.id.layout_video_chat_call_action)
+    ViewGroup layoutActionButton;
+    @BindView(R.id.video_frame)
+    ViewGroup videoFrame;
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
     @BindView(R.id.txt_low_signal)
@@ -52,17 +63,22 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     TextView txtSend;
     @BindView(R.id.btn_on_off_speaker)
     ToggleButton btnOnOffSpeaker;
+    @BindView(R.id.btn_cancel_call)
+    ImageView btnCancelCall;
 
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem competitor;
-    private String callId;
 
     private ChatAdapter chatAdapter;
     private BasicChatPresenter basicChatPresenter;
+    private Animation fadeOut;
+    private Animation fadeIn;
+    private boolean isShowingView = true;
+
 
     public static VideoChatForMaleFragment newInstance(UserItem competitor, String callID,
-                                                boolean enableSpeaker) {
+                                                       boolean enableSpeaker) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
         args.putBoolean(SPEAKER, enableSpeaker);
@@ -80,10 +96,10 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         ButterKnife.bind(this, mRoot);
+        fadeOut = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+        fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
 
         competitor = getArguments().getParcelable(COMPETITOR);
-        callId = getArguments().getString(CALL_ID);
-
         basicChatPresenter = new BasicChatPresenter(getContext(), this);
         chatAdapter = new ChatAdapter(getContext(), new ArrayList<BaseChatItem>());
 
@@ -137,7 +153,6 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
         txtName.setText(competitor.getUsername());
         countingCallDuration();
-
         boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
         btnOnOffSpeaker.setChecked(enableSpeaker);
         enableSpeaker(enableSpeaker);
@@ -184,14 +199,11 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         }
     }
 
-    private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        if (LinphoneHandler.getInstance() != null) {
-            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
-        }
-    }
-
-    private void fixZOrder(SurfaceView video) {
-        video.setZOrderOnTop(false);
+    @OnTouch(R.id.video_frame)
+    public boolean onTouch(View v, MotionEvent event) {
+        resetCountingToHideAction();
+        showView();
+        return true;
     }
 
     @Override
@@ -224,17 +236,46 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
     @Override
     public void didChatError(int errorCode, String errorMessage) {
-        // TODO: 4/10/17
-//        if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
-//            showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
-//        } else {
-            showToastExceptionVolleyError(errorCode, errorMessage);
-//        }
+        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
     @Override
     public void onStateMessageChange(ReceivingReadMessageEvent receivingReadMessageEvent) {
         chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
+    }
+
+    @Override
+    public void onBreakTimeToHide() {
+        hideView();
+    }
+
+    private void showView() {
+        if (!isShowingView) {
+            isShowingView = true;
+            layoutActionButton.startAnimation(fadeIn);
+            txtName.startAnimation(fadeIn);
+            setViewsClickable(true);
+        }
+    }
+
+    private void hideView() {
+        if (isShowingView) {
+            isShowingView = false;
+            layoutActionButton.startAnimation(fadeOut);
+            txtName.startAnimation(fadeOut);
+            setViewsClickable(false);
+        }
+    }
+
+    private void setViewsClickable(boolean clickable) {
+        btnCancelCall.setClickable(clickable);
+        btnOnOffSpeaker.setClickable(clickable);
+    }
+
+    private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
+        if (LinphoneHandler.getInstance() != null) {
+            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        }
     }
 
     private void doSendMessage() {
@@ -245,5 +286,9 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
             txtSend.setEnabled(false);
             basicChatPresenter.sendText(newMessage, competitor);
         }
+    }
+
+    private void fixZOrder(SurfaceView video) {
+        video.setZOrderOnTop(false);
     }
 }

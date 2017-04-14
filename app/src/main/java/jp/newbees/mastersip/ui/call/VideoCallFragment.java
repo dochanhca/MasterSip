@@ -46,6 +46,8 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     ToggleButton btnOnOffSpeaker;
     @BindView(R.id.btn_on_off_camera)
     ToggleButton btnOnOffCamera;
+    @BindView(R.id.btn_cancel_call)
+    ImageView btnCancelCall;
     @BindView(R.id.txt_name)
     HiraginoTextView txtName;
     @BindView(R.id.txt_time)
@@ -64,7 +66,6 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem competitor;
-    private String callId;
 
     private Animation moveUpTxtTime;
     private Animation moveDownTxtTime;
@@ -96,7 +97,6 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         ButterKnife.bind(this, mRoot);
 
         competitor = getArguments().getParcelable(COMPETITOR);
-        callId = getArguments().getString(CALL_ID);
 
         moveUpTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_up_txt_time);
         moveDownTxtTime = AnimationUtils.loadAnimation(getContext(), R.anim.move_down_txt_time);
@@ -269,11 +269,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         if (llPoint.getVisibility() == View.VISIBLE) {
             llPoint.startAnimation(moveDownTxtPoint);
         }
-
-        layoutVideoCallAction.setClickable(false);
-        llPoint.setClickable(false);
-        txtName.setClickable(false);
-        imgSwitchCamera.setClickable(false);
+        setViewsClickable(false);
     }
 
     private void showView() {
@@ -281,11 +277,6 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
             return;
         }
         isShowingView = true;
-
-        layoutVideoCallAction.setClickable(true);
-        llPoint.setClickable(true);
-        txtName.setClickable(true);
-        imgSwitchCamera.setClickable(true);
 
         layoutVideoCallAction.startAnimation(fadeIn);
         llPoint.startAnimation(fadeIn);
@@ -295,6 +286,17 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         if (llPoint.getVisibility() == View.VISIBLE) {
             llPoint.startAnimation(moveUpTxtPoint);
         }
+        setViewsClickable(true);
+    }
+
+    private void setViewsClickable(boolean clickable) {
+        btnCancelCall.setClickable(clickable);
+        btnOnOffCamera.setClickable(clickable);
+        btnOnOffMic.setClickable(clickable);
+        btnOnOffSpeaker.setClickable(clickable);
+        llPoint.setClickable(clickable);
+        txtName.setClickable(clickable);
+        imgSwitchCamera.setClickable(clickable);
     }
 
     @Override

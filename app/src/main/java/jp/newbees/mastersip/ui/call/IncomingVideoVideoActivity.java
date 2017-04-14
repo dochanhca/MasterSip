@@ -35,6 +35,10 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
         showVideoCallFragment();
     }
 
+    private void showVideoCallFragment() {
+        showVideoCallFragment(true, true);
+    }
+
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoVideoActivity.class);
         intent.putExtras(getBundle(competitor,callID));

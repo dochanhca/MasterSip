@@ -16,7 +16,6 @@
         android:id="@+id/ll_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/chat_call_history_w"
         android:layout_marginRight="@dimen/offset_comma"
         android:layout_toLeftOf="@+id/comma"
         android:padding="@dimen/_5dp"
@@ -25,8 +24,9 @@
         android:background="@drawable/bg_blue_with_xlarge_radius">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:minWidth="@dimen/chat_call_history_w"
             android:orientation="vertical"
             android:padding="@dimen/_3dp"
             android:background="@drawable/bg_blue_with_top_radius">
@@ -39,7 +39,7 @@
                 android:textColor="@color/blue_dark"
                 android:gravity="center_horizontal"
                 android:layout_gravity="center_horizontal"
-                android:text="ビデオ通話"/>
+                android:text="ビデオ通話aaaaaaa"/>
             <ImageView
                 android:id="@+id/img_call"
                 android:layout_width="wrap_content"

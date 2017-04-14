@@ -28,6 +28,7 @@
             style="@style/origin_style_content_text_view_large"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/normal_margin"
+            android:paddingBottom="@dimen/_2dp"
             android:gravity="center"
             android:text="ThangLH"
             android:textColor="@color/white" />

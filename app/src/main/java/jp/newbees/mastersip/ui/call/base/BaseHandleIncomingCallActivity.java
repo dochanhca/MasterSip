@@ -7,7 +7,6 @@ import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
@@ -45,17 +44,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         showWaitingFragment(IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType));
     }
 
-    protected void showVideoCallFragment() {
-        showVideoCallFragment(true, true);
-    }
-
-    protected void showVideoChatFragment() {
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-            showVideoChatFragmentForMale(true);
-        } else {
-            showVideoChatFragmentForFemale(true);
-        }
-    }
 
     protected final void startIncomingVideoCall() {
         presenter.startIncomingVideoCall();

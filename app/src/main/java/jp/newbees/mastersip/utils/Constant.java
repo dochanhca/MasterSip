@@ -214,8 +214,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-//                        private static final String DEVELOPMENT_IP = "52.197.138.1";
+                private static final String DEVELOPMENT_IP = "52.199.112.26";
+//        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
@@ -372,6 +372,7 @@ public final class Constant {
         private SOCKET() {
             //Prevent init object
         }
+
         public static final String ACTION_BUSY_CALL = "BUSY_CALL";
         public static final String ACTION_CANCEL_CALL = "CANCEL_CALL";
         public static final String ACTION_CHANGE_CALLING_STATUS = "CHANGE_CALLING_STATUS";

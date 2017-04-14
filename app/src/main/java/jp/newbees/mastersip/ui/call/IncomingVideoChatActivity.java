@@ -37,6 +37,14 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
         showVideoChatFragment();
     }
 
+    private void showVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            showVideoChatFragmentForMale(true);
+        } else {
+            showVideoChatFragmentForFemale(true);
+        }
+    }
+
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoChatActivity.class);
         intent.putExtras(getBundle(competitor,callID));
