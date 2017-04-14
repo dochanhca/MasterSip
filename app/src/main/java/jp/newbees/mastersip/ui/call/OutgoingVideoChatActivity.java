@@ -41,4 +41,12 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
         showVideoChatFragment();
         useFrontCamera();
     }
+
+    private void showVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            showVideoChatFragmentForMale(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable());
+        } else {
+            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
+        }
+    }
 }

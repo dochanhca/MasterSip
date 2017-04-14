@@ -61,7 +61,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem competitor;
-    private String callId;
 
     private ChatAdapter chatAdapter;
     private BasicChatPresenter basicChatPresenter;
@@ -87,7 +86,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         ButterKnife.bind(this, mRoot);
 
         competitor = getArguments().getParcelable(COMPETITOR);
-        callId = getArguments().getString(CALL_ID);
 
         basicChatPresenter = new BasicChatPresenter(getContext(), this);
         chatAdapter = new ChatAdapter(getActivity().getApplicationContext(), new ArrayList<BaseChatItem>());
@@ -95,10 +93,8 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         LayoutManager layoutManager = new LayoutManager(getContext());
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setAdapter(chatAdapter);
-
         setupView();
         fixZOrder(mCaptureView);
-        startCountingToHideAction();
     }
 
     @Override

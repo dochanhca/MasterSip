@@ -25,6 +25,19 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
         return Constant.API.VIDEO_CALL;
     }
 
+    @Override
+    public void onCallConnected() {
+        showVideoCallFragment();
+        useFrontCamera();
+    }
+
+    private void showVideoCallFragment() {
+        if (getVisibleFragment() instanceof OutgoingWaitingFragment) {
+            showVideoCallFragment(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable(),
+                    ((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
+        }
+    }
+
     public static void startActivity(Context context, UserItem callee, String callID) {
         Intent intent = new Intent(context, OutgoingVideoVideoActivity.class);
         Bundle bundle = new Bundle();
@@ -32,11 +45,5 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
         bundle.putString(CALL_ID, callID);
         intent.putExtras(bundle);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void onCallConnected() {
-        showVideoCallFragment();
-        useFrontCamera();
     }
 }

@@ -7,10 +7,10 @@ import jp.newbees.mastersip.model.UserItem;
 
 /**
  * Created by thangit14 on 4/7/17.
- *  inherited by incoming and outgoing waiting fragment
+ * inherited by incoming and outgoing waiting fragment
  */
 
-public abstract class WaitingFragment extends CallingFragment{
+public abstract class WaitingFragment extends CallingFragment {
     private static final String COMPETITOR = "COMPETITOR";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String CALL_ID = "CALL_ID";

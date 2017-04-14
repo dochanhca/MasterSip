@@ -29,7 +29,7 @@ public class MyCountingTimerThread implements Runnable {
     }
 
     public MyCountingTimerThread(Handler handler) {
-        this(handler, "No ID", 1);
+        this(handler, "No ID", 0);
     }
 
     public MyCountingTimerThread(Handler handler, int breakTime) {
