@@ -116,6 +116,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleIncomingCall(String callId) {
+        ConfigManager.getInstance().updateEndCallStatus(true);
         ConfigManager.getInstance().setCallId(callId);
         if (!LinphoneService.isRunning()) {
             LinphoneService.startLinphone(getApplicationContext());

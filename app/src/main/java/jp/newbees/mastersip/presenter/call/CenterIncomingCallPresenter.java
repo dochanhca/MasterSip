@@ -82,8 +82,10 @@ public class CenterIncomingCallPresenter extends BasePresenter {
     }
 
     private void notifyToServer() {
-        UpdateCallWhenOnlineTask task = new UpdateCallWhenOnlineTask(context);
-        requestToServer(task);
+        if (!ConfigManager.getInstance().getEndCallStatus()) {
+            UpdateCallWhenOnlineTask task = new UpdateCallWhenOnlineTask(context);
+            requestToServer(task);
+        }
     }
 
     private void reconnectRoom(String callId) {

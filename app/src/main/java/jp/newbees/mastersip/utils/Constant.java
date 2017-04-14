@@ -333,6 +333,8 @@ public final class Constant {
 
     public final class Application {
 
+        public static final String LAST_STATUS_END_CALL = "LAST_STATUS_END_CALL";
+
         private Application() {
             //Prevent init object
         }

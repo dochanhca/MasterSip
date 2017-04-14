@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
@@ -24,6 +28,7 @@ import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ExceptionVolleyHelper;
 import jp.newbees.mastersip.utils.Logger;
@@ -283,13 +288,34 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
 
     public void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
         Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
-
-        ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
-        if (showCommonErrorDialog(errorCode)) {
-            return;
-        } else if (!exceptionVolleyHelper.showCommonError()) {
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        if (errorCode == Constant.Error.INVALID_TOKEN) {
+            handleInvalidToken();
+        } else{
+            ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
+            if (showCommonErrorDialog(errorCode)) {
+                return;
+            } else if (!exceptionVolleyHelper.showCommonError()) {
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    private void handleInvalidToken() {
+        disMissLoading();
+        ConfigManager.getInstance().resetSettings();
+
+        Intent intentService = new Intent(getApplicationContext(), LinphoneService.class);
+        getApplicationContext().stopService(intentService);
+
+        Intent intent = new Intent(this, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        try {
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finish();
     }
 
     public boolean showCommonErrorDialog(int errorCode) {

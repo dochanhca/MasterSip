@@ -807,6 +807,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             public void onResponse(Void response) {
                 ConfigManager.getInstance().removeCurrentCall();
                 cancelingCall = false;
+                ConfigManager.getInstance().updateEndCallStatus(true);
                 Logger.e("LinphoneService", "End call success ");
             }
         }, new BaseTask.ErrorListener() {
@@ -814,6 +815,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             public void onError(int errorCode, String errorMessage) {
                 cancelingCall = false;
                 Logger.e("LinphoneService", "End call error " + errorMessage);
+                ConfigManager.getInstance().updateEndCallStatus(false);
             }
         });
     }

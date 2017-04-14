@@ -246,6 +246,16 @@ final public class ConfigManager {
         this.currentCallId = null;
     }
 
+    public final void updateEndCallStatus(boolean status) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.LAST_STATUS_END_CALL, status);
+        editor.commit();
+    }
+
+    public final boolean getEndCallStatus() {
+        return sharedPreferences.getBoolean(Constant.Application.LAST_STATUS_END_CALL, true);
+    }
+
     public boolean inCall() {
         if (this.currentCallId == null) {
             return false;

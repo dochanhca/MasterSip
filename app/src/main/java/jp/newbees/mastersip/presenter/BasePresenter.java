@@ -8,7 +8,6 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.TaskManager;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -19,6 +18,7 @@ public abstract class BasePresenter {
 
     protected Context context;
     protected String tag;
+    private BaseView view;
 
     public BasePresenter(Context context) {
         this.context = context;
@@ -35,19 +35,10 @@ public abstract class BasePresenter {
         }, new BaseTask.ErrorListener() {
             @Override
             public void onError(int errorCode, String errorMessage) {
-                if (errorCode == Constant.Error.INVALID_TOKEN) {
-                    handleInvalidToken();
-                } else {
-                    Logger.e(tag, errorCode + " : " + errorMessage);
-                    didErrorRequestTask(task, errorCode, errorMessage);
-                }
+                Logger.e(tag, errorCode + " : " + errorMessage);
+                didErrorRequestTask(task, errorCode, errorMessage);
             }
         });
-    }
-
-
-    private void handleInvalidToken() {
-
     }
 
     protected final Context getContext() {
