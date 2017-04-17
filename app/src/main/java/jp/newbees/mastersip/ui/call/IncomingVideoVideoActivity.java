@@ -31,7 +31,8 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     public void onStreamingConnected() {
-        startIncomingVideoCall();
+        getPresenter().useFrontCamera();
+        getPresenter().enableCamera(true);
         showVideoCallFragment();
     }
 

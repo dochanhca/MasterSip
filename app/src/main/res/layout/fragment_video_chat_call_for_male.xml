@@ -1,56 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/rl_chat_input"
-        layout="@layout/layout_video_chat_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_chat"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_above="@id/rl_chat_input"
-        android:background="@color/bg_green_normal"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/xnormal_margin" />
-
-    <LinearLayout
-        android:id="@+id/ll_show_hide_chat_box"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_text_show_hide_chat_box"
-        android:layout_above="@id/recycler_chat"
-        android:background="@color/blue_dark"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/ic_arrow"
-            android:src="@drawable/ic_arrow_down"
-            android:layout_marginRight="@dimen/small_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <jp.newbees.mastersip.customviews.HiraginoTextView
-            android:id="@+id/txt_show_hide_chat_box"
-            style="@style/origin_style_content_text_view_small"
-            android:textSize="@dimen/text_size_13"
-            android:text="@string/hide_chat_box"
-            android:textColor="@color/white" />
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/video_frame"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_above="@id/ll_show_hide_chat_box"
         android:layout_height="@dimen/height_chat_box_in_video_chat">
+
+        <SurfaceView
+            android:id="@+id/videoCaptureSurface"
+            android:layout_width="@dimen/width_preview_video"
+            android:layout_height="@dimen/height_preview_video"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/xnormal_margin"
+            android:layout_marginTop="@dimen/xnormal_margin" />
 
         <org.linphone.mediastream.video.display.GL2JNIView
             android:id="@+id/videoSurface"
@@ -96,4 +64,45 @@
             android:layout_below="@id/ll_point"
             android:background="@color/colorPrimaryDark" />
     </RelativeLayout>
-</RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_show_hide_chat_box"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_text_show_hide_chat_box"
+        android:layout_below="@id/video_frame"
+        android:background="@color/blue_dark"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/ic_arrow"
+            android:src="@drawable/ic_arrow_down"
+            android:layout_marginRight="@dimen/small_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <jp.newbees.mastersip.customviews.HiraginoTextView
+            android:id="@+id/txt_show_hide_chat_box"
+            style="@style/origin_style_content_text_view_small"
+            android:textSize="@dimen/text_size_13"
+            android:text="@string/hide_chat_box"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/rl_chat_input"
+        layout="@layout/layout_video_chat_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_chat_input"
+        android:layout_below="@id/ll_show_hide_chat_box"
+        android:background="@color/bg_green_normal"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/xnormal_margin" />
+</jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout>

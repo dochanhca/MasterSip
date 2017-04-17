@@ -72,8 +72,12 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         LinphoneHandler.getInstance().switchCamera(mCaptureView);
     }
 
-    public final void useFrontCamera(boolean needUpdateCall) {
-        LinphoneHandler.getInstance().userFrontCamera(needUpdateCall);
+    public final void useFrontCamera() {
+        LinphoneHandler.getInstance().useFrontCamera();
+    }
+
+    public final void useFrontCameraAndUpdateCall() {
+        LinphoneHandler.getInstance().useFrontCameraAndUpdateCall();
     }
 
     public final void enableCamera(boolean enable) {

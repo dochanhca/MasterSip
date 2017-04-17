@@ -53,7 +53,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     ImageView imgSwitchCamera;
     @BindView(R.id.txt_point)
     HiraginoTextView txtPoint;
-
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
 
@@ -94,7 +93,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setAdapter(chatAdapter);
         setupView();
-        fixZOrder(mCaptureView);
+        fixZOrder(mVideoView, mCaptureView);
     }
 
     @Override
@@ -154,6 +153,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
 
             @Override
             public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                mVideoView = surfaceView;
                 setVideoWindow(androidVideoWindow);
             }
 
@@ -201,7 +201,8 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         }
     }
 
-    private void fixZOrder(SurfaceView preview) {
+    private void fixZOrder(SurfaceView video, SurfaceView preview) {
+        video.setZOrderOnTop(false);
         preview.setZOrderOnTop(true);
         preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
     }

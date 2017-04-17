@@ -127,7 +127,7 @@
     <dimen name="huge_margin">40dp</dimen>
     <dimen name="normal_spacing_extra">4dp</dimen>
     <dimen name="video_chat_call_action_size">60dp</dimen>
-    <dimen name="height_chat_box_in_video_chat">200dp</dimen>
+    <dimen name="height_chat_box_in_video_chat">250dp</dimen>
     <dimen name="height_text_show_hide_chat_box">40dp</dimen>
     <dimen name="avatar_size_normal">150dp</dimen>
 </resources>

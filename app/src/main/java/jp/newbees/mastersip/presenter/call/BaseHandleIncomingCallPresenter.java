@@ -21,11 +21,6 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         this.view = view;
     }
 
-    public void startIncomingVideoCall() {
-//        useFrontCamera(false);
-//        enableCamera(true);
-    }
-
     @Override
     protected void didResponseTask(BaseTask task) {
         // handle response task
@@ -51,7 +46,7 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         }
     }
 
-    public interface IncomingCallView extends CallView{
+    public interface IncomingCallView extends CallView {
         void onStreamingConnected();
     }
 }

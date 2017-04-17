@@ -85,11 +85,19 @@ public class BasicChatPresenter extends BasePresenter{
         return currentUser.getSipItem().getExtension().equalsIgnoreCase(user.getSipItem().getExtension());
     }
 
-    public final void sendText(String content, UserItem sendee) {
+    private final void sendText(String content, UserItem sendee, int roomType) {
         UserItem sender = ConfigManager.getInstance().getCurrentUser();
-        TextChatItem textChatItem = new TextChatItem(content, BaseChatItem.RoomType.ROOM_CHAT_CHAT, sender, sendee);
+        TextChatItem textChatItem = new TextChatItem(content, roomType, sender, sendee);
         SendTextMessageTask messageTask = new SendTextMessageTask(context, textChatItem);
         requestToServer(messageTask);
+    }
+
+    public final void sendChatText(String content, UserItem sendee) {
+        sendText(content, sendee, BaseChatItem.RoomType.ROOM_CHAT_CHAT);
+    }
+
+    public final void sendVideoChatText(String content, UserItem sendee) {
+        sendText(content, sendee, BaseChatItem.RoomType.ROOM_VIDEO_CHAT);
     }
 
     public final void sendingReadMessageToServer(BaseChatItem baseChatItem) {

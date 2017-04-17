@@ -15,9 +15,10 @@
 
     <org.linphone.mediastream.video.display.GL2JNIView
         android:id="@+id/videoSurface"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:visibility="visible" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_low_signal"

@@ -33,14 +33,18 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     public void onStreamingConnected() {
-        startIncomingVideoCall();
         showVideoChatFragment();
     }
 
     private void showVideoChatFragment() {
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+//            getPresenter().enableCamera(false);
+            getPresenter().enableCamera(true);
             showVideoChatFragmentForMale(true);
         } else {
+//            getPresenter().enableCamera(true);
+            getPresenter().useFrontCamera();
+            getPresenter().enableCamera(true);
             showVideoChatFragmentForFemale(true);
         }
     }

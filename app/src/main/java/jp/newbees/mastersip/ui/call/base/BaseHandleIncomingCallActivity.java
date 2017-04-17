@@ -44,11 +44,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
         showWaitingFragment(IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType));
     }
 
-
-    protected final void startIncomingVideoCall() {
-        presenter.startIncomingVideoCall();
-    }
-
     @Override
     public void onCallEnd() {
         if (MyLifecycleHandler.getNumberOfActivity() == 1) {
