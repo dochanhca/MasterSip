@@ -21,6 +21,11 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
         this.view = view;
     }
 
+    public void startIncomingVideoCall() {
+//        useFrontCamera(false);
+//        enableCamera(true);
+    }
+
     @Override
     protected void didResponseTask(BaseTask task) {
         // handle response task
