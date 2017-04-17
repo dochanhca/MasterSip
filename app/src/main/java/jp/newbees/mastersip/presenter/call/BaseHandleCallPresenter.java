@@ -15,6 +15,7 @@ import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by ducpv on 3/10/17.
@@ -79,10 +80,11 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         LinphoneHandler.getInstance().enableVideo(enable);
     }
 
-    public final void acceptCall(String calId) throws LinphoneCoreException {
+    public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
         JoinCallTask joinCallTask = new JoinCallTask(context, calId);
         requestToServer(joinCallTask);
-        LinphoneHandler.getInstance().acceptCall();
+        boolean video = callType == Constant.API.VOICE_CALL ? false : true;
+        LinphoneHandler.getInstance().acceptCall(video);
     }
 
     public final void declineCall() {

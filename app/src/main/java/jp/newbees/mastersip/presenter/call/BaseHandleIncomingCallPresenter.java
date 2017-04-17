@@ -22,8 +22,8 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     }
 
     public void startIncomingVideoCall() {
-        useFrontCamera(false);
-        enableCamera(true);
+//        useFrontCamera(false);
+//        enableCamera(true);
     }
 
     @Override

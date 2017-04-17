@@ -1,1 +1,1 @@
-include ':app', ':slideDateTimePicker', ':rippleview'
+include ':app', ':slideDateTimePicker', ':rippleview', ':linphone-android-sdk'

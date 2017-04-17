@@ -464,6 +464,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         PacketManager.getInstance().processData(raw);
     }
 
+    @Override
+    public void messageReceivedUnableToDecrypted(LinphoneCore linphoneCore, LinphoneChatRoom linphoneChatRoom, LinphoneChatMessage linphoneChatMessage) {
+
+    }
+
     public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State newCallState) {
     }
 
@@ -507,6 +512,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
     }
 
+    @Override
+    public void networkReachableChanged(LinphoneCore linphoneCore, boolean b) {
+
+    }
+
     public void sendPacket(String raw, String callee) {
         try {
             String addressSip = genSipAddressByExtension(callee);
@@ -516,7 +526,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         } catch (LinphoneCoreException e) {
             e.printStackTrace();
         }
-
     }
 
     public final void makeCall(int callType, String roomId) {
@@ -556,9 +565,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
         call(roomId, true);
     }
 
-    public final void acceptCall() throws LinphoneCoreException {
+    public final void acceptCall(boolean video) throws LinphoneCoreException {
         LinphoneCall currentCall = linphoneCore.getCurrentCall();
-        linphoneCore.acceptCall(currentCall);
+        LinphoneCallParams params = currentCall.getCurrentParams();
+        params.setVideoEnabled(video);
+        linphoneCore.acceptCallWithParams(currentCall, params);
     }
 
     public final void terminalCall() {
