@@ -63,8 +63,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         this.presenter.declineCall();
     }
 
-    public final void acceptCall(String calId) throws LinphoneCoreException {
-        this.presenter.acceptCall(calId);
+    public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
+        this.presenter.acceptCall(calId,  callType);
     }
 
     public final void terminalCall() {

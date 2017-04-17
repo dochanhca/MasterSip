@@ -90,7 +90,7 @@ public class IncomingWaitingFragment extends WaitingFragment {
                     terminalCall();
                     break;
                 case R.id.btn_accept_call:
-                    acceptCall(getCallId());
+                    acceptCall(getCallId(), getCallType());
                     break;
                 case R.id.btn_on_off_mic:
                     enableMicrophone(btnOnOffMic.isChecked());

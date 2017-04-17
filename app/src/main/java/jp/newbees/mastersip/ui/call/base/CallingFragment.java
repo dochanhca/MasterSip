@@ -25,6 +25,7 @@ public abstract class CallingFragment extends BaseFragment {
     protected static final String SPEAKER = "SPEAKER";
     protected static final String MIC = "MIC";
     protected static final String CALL_ID = "CALL_ID";
+    protected static final String CALL_TYPE = "CALL TYPE";
 
     private static final int BREAK_TIME_TO_HIDE_ACTION = 5;
     private static final String ID_TIMER_HIDE_ACTION = "ID_TIMER_HIDE_ACTION";
@@ -114,8 +115,8 @@ public abstract class CallingFragment extends BaseFragment {
         getCallActivity().terminalCall();
     }
 
-    public final void acceptCall(String callId) throws LinphoneCoreException {
-        getCallActivity().acceptCall(callId);
+    public final void acceptCall(String callId, int callType) throws LinphoneCoreException {
+        getCallActivity().acceptCall(callId, callType);
     }
 
     public final void enableSpeaker(boolean enable) {
