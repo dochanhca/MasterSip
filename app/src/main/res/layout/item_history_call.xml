@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvImage"
+        app:cardPreventCornerOverlap="false"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="@dimen/_10dp"
+        android:layout_marginLeft="@dimen/_8dp"
+        android:layout_marginTop="@dimen/_8dp"
+        android:layout_width="@dimen/_70dp"
+        android:layout_height="@dimen/_70dp" >
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/img_avatar"
+            android:src="@drawable/ic_boy_default"
+            app:riv_corner_radius="@dimen/_10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v7.widget.CardView>
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_user_name"
+        android:layout_alignTop="@id/cvImage"
+        android:paddingTop="@dimen/_11dp"
+        android:layout_marginLeft="@dimen/_11dp"
+        android:layout_toRightOf="@id/cvImage"
+        android:textColor="@color/text_color_gray"
+        android:textSize="@dimen/_14sp"
+        android:paddingBottom="@dimen/_2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_call_duration"
+        android:textColor="@color/text_color_light_gray"
+        android:layout_alignLeft="@id/txt_user_name"
+        android:layout_marginTop="@dimen/_5dp"
+        android:text="通話時間：1時間12分35秒"
+        android:layout_below="@id/txt_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <jp.newbees.mastersip.customviews.HiraginoTextView
+        android:id="@+id/txt_last_time_call"
+        android:layout_alignTop="@id/cvImage"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_8dp"
+        android:text="21時52分28秒"
+        android:textSize="@dimen/_11sp"
+        android:textColor="@color/text_color_light_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/img_call_type"
+        android:layout_marginRight="@dimen/_3dp"
+        android:layout_alignTop="@id/txt_last_time_call"
+        android:layout_toLeftOf="@id/txt_last_time_call"
+        android:src="@drawable/ic_gray_small_video_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/group_action"
+        android:background="@drawable/bg_segment_action"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_8dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:layout_alignLeft="@id/txt_call_duration"
+        android:layout_below="@id/txt_call_duration"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:layout_height="35dp">
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_voice_call"
+            android:text="@string/voice_call"
+            android:drawableTop="@drawable/ic_small_green_voice"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            style="@style/style_action_button_in_cell"
+            />
+        <View
+            android:background="@color/colorPrimary"
+            android:layout_width="@dimen/_1dp"
+            android:layout_height="match_parent">
+
+        </View>
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_video_call"
+            android:text="@string/video_call"
+            android:drawableTop="@drawable/ic_small_green_video"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/style_action_button_in_cell"
+            />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separate_view"
+        android:layout_below="@id/group_action"
+        android:background="@color/bg_line_footprint"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_0.5dp"/>
+
+</RelativeLayout>

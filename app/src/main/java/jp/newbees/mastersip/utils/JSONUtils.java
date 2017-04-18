@@ -14,6 +14,7 @@ import java.util.Map;
 
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.CallChatItem;
+import jp.newbees.mastersip.model.CallLogItem;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.DeletedChatItem;
 import jp.newbees.mastersip.model.EmailBackupItem;
@@ -22,6 +23,7 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.GiftChatItem;
 import jp.newbees.mastersip.model.GiftItem;
+import jp.newbees.mastersip.model.HistoryCallItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.PacketItem;
@@ -888,12 +890,12 @@ public class JSONUtils {
         String userId = jUser.getString(Constant.JSON.USER_ID);
         String extension = jUser.getString(Constant.JSON.EXTENSION);
         String userName = jUser.getString(Constant.JSON.USER_NAME);
-        String slogan = jUser.getString(Constant.JSON.SLOGAN);
+        String slogan = jUser.optString(Constant.JSON.SLOGAN, "");
         String avatarUrl = jUser.getString(Constant.JSON.AVATAR);
-        String footprintTime = jUser.getString(Constant.JSON.TIMESTAMP);
-        String birthDay = jUser.getString(Constant.JSON.BIRTHDAY);
+        String footprintTime = jUser.optString(Constant.JSON.TIMESTAMP, "");
+        String birthDay = jUser.optString(Constant.JSON.BIRTHDAY, "");
         int status = jUser.getInt(Constant.JSON.STATUS);
-        String lastLogin = jUser.getString(Constant.JSON.LAST_LOGIN);
+        String lastLogin = jUser.optString(Constant.JSON.LAST_LOGIN, "");
 
         int videoSettingCall = jUser.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VIDEO_CALL_SET);
         int voiceSettingCall = jUser.getJSONObject(Constant.JSON.SETTING_CALL).getInt(Constant.JSON.VOICE_CALL_SET);
@@ -966,5 +968,40 @@ public class JSONUtils {
             followers.add(follower);
         }
         return followers;
+    }
+
+    public static Map<String, Object> parseCallLogs(JSONObject jData) throws JSONException{
+        JSONArray jListGroupDate = jData.getJSONArray(Constant.JSON.GROUP_BY_DAY);
+        int total = jData.getInt(Constant.JSON.TOTAL);
+
+        ArrayList<CallLogItem> callLogs = new ArrayList<>();
+
+        for (int j = 0, m = jListGroupDate.length(); j < m; j++) {
+            JSONObject jGroup = jListGroupDate.getJSONObject(j);
+            JSONArray jCallLogs = jGroup.getJSONArray(Constant.JSON.CALL_LOGS);
+            String groupDate = jGroup.getString(Constant.JSON.DATE);
+
+            CallLogItem callLogItem = new CallLogItem();
+
+            for (int i = 0, n = jCallLogs.length(); i < n; i++) {
+                JSONObject jCallLog = jCallLogs.getJSONObject(i);
+                UserItem userItem = parseUserForFootprint(jCallLog.getJSONObject(Constant.JSON.USER));
+                int duration =  jCallLog.getInt(Constant.JSON.DURATION);
+                int resultType = jCallLog.getInt(Constant.JSON.RESULT_TYPE);
+                String lastTimeCallLog = jCallLog.getString(Constant.JSON.LAST_TIME_CALL_LOG);
+                HistoryCallItem historyCallItem = new HistoryCallItem();
+                historyCallItem.setUserItem(userItem);
+                historyCallItem.setDuration(duration);
+                historyCallItem.setCallLogResultType(resultType);
+                historyCallItem.setLastTimeCallLog(lastTimeCallLog);
+                callLogItem.addHistoryCall(historyCallItem);
+            }
+            callLogItem.setDate(groupDate);
+            callLogs.add(callLogItem);
+        }
+        HashMap result = new HashMap();
+        result.put(Constant.JSON.LIST, callLogs);
+        result.put(Constant.JSON.TOTAL, total);
+        return result;
     }
 }
