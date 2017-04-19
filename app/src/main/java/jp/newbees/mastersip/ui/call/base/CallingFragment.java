@@ -11,6 +11,7 @@ import org.linphone.core.LinphoneCoreException;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -51,6 +52,13 @@ public abstract class CallingFragment extends BaseFragment {
             }
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int coin = ConfigManager.getInstance().getCurrentUser().getCoin();
+        onCoinChanged(coin);
+    }
 
     @Override
     public void onDestroyView() {
