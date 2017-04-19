@@ -182,7 +182,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
              */
             public void updateView(UserItem userItem, Context context) {
                 this.userItem = userItem;
-                String lastFootprint = DateTimeUtils.getShortTimeJapanese(userItem.getFootprintTime());
+                String lastFootprint = DateTimeUtils.getShorterTimeJapanese(userItem.getFootprintTime());
                 this.txtLastFootprint.setText(lastFootprint);
                 updateCallSetting(context, userItem.getSettings());
                 updateDescriptionSettingCall(context, userItem.getLastLogin(), userItem.getSettings());
