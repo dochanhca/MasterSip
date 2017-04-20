@@ -126,10 +126,12 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
     }
 
-    private void handleBuyPoint() {
+    protected void handleBuyPoint() {
         int gender = ConfigManager.getInstance().getCurrentUser().getGender();
         if (gender == UserItem.MALE) {
             PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
+        } else {
+            ChatActivity.startChatActivity(this, callee);
         }
     }
 

@@ -38,8 +38,8 @@ public class ViewHolderCallMessageReply extends BaseChatReplyViewHolder<CallChat
     @Override
     public void bindView(CallChatItem callChatItem) {
         txtTime.setText(callChatItem.getShortDate());
-        txtDuration.setText(!"".equals(callChatItem.getDuration()) ?
-                callChatItem.getDuration() : getContext().getString(R.string.missed_call));
+        txtDuration.setText("".equals(getCallDuration(callChatItem))
+                ? getContext().getString(R.string.cancel) : getCallDuration(callChatItem));
         txtCallType.setText(getCallType(callChatItem.getChatType()));
 
         int drawableId = callChatItem.getCallType() == BaseChatItem.CallType.END_CALL
@@ -49,21 +49,23 @@ public class ViewHolderCallMessageReply extends BaseChatReplyViewHolder<CallChat
         setUserAvatar(imgAvatar, callChatItem);
     }
 
-    private String getCallType(int chatType) {
-        String result = "";
-        switch (chatType) {
-            case BaseChatItem.ChatType.CHAT_VOICE_CALL:
-                result = getContext().getString(R.string.voice_call);
+    private String getCallDuration(CallChatItem callChatItem) {
+        String text = "";
+        switch (callChatItem.getCallType()) {
+            case BaseChatItem.CallType.MISS_CALL:
+                text = getContext().getString(R.string.missed_call);
                 break;
-            case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
-                result = getContext().getString(R.string.video_call);
+            case BaseChatItem.CallType.CANCEL_CALL:
+                text = getContext().getString(R.string.missed_call);
                 break;
-            case BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL:
-                result = getContext().getString(R.string.video_chat_call);
+            case BaseChatItem.CallType.BUSY_CALL:
+                text = getContext().getString(R.string.cancel);
                 break;
             default:
+                text = callChatItem.getDuration();
                 break;
         }
-        return result;
+        return text;
     }
+
 }

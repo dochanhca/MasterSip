@@ -473,4 +473,5 @@
     <string name="format_duration_shorter">%1$d分%2$d秒</string>
     <string name="format_duration_shortest">%1$d秒</string>
     <string name="format_duration_call">通話時間：%1$s</string>
+    <string name="no_answer">応答なし</string>
 </resources>

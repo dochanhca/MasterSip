@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
 
 /**
@@ -25,5 +26,23 @@ public abstract class BaseChatViewHolder<T extends BaseChatItem>  extends Recycl
 
     public Context getContext() {
         return context;
+    }
+
+    protected String getCallType(int chatType) {
+        String result = "";
+        switch (chatType) {
+            case BaseChatItem.ChatType.CHAT_VOICE_CALL:
+                result = getContext().getString(R.string.voice_call);
+                break;
+            case BaseChatItem.ChatType.CHAT_VIDEO_CALL:
+                result = getContext().getString(R.string.video_call);
+                break;
+            case BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL:
+                result = getContext().getString(R.string.video_chat_call);
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 }

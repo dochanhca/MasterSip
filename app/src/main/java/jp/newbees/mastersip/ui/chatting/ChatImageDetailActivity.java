@@ -54,6 +54,7 @@ public class ChatImageDetailActivity extends CallActivity {
         }
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imgPhoto, true);
         Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl())
+                .thumbnail(0.1f)
                 .into(imgPhoto);
     }
 
