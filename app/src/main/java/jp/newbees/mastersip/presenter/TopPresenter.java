@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
+import jp.newbees.mastersip.linphone.OpenH264DownloadHelper;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.SendPurchaseResultToServerTask;
 import jp.newbees.mastersip.purchase.IabHelper;
@@ -37,7 +38,6 @@ public class TopPresenter extends BasePresenter {
     private IabHelper iabHelper;
     private volatile int numberOfItemNeedConsume = 0;
     private boolean needPurchaseWithServer = false;
-
     private TopPresenterListener listener;
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -134,6 +134,8 @@ public class TopPresenter extends BasePresenter {
             needPurchaseWithServer = false;
         }
     };
+
+
 
     public interface TopPresenterListener {
         void onInAppBillingSuccess(String sku, String token);
