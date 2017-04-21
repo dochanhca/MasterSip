@@ -66,9 +66,9 @@ public class SettingOnlineFragment extends BaseFragment implements
 
         currentUser = getArguments().getParcelable(USER_ITEM);
         loadAvatar();
-        cbOnlineSetting.setChecked(
-                currentUser.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
-                        ? true : false);
+        isFollowing = currentUser.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
+                ? true : false;
+        cbOnlineSetting.setChecked(isFollowing);
         StringBuilder description = new StringBuilder(currentUser.getUsername())
                 .append(getString(R.string.when_user_online)).append("\n")
                 .append(getString(R.string.you_can_receiev_push_notify_every_time)).append("\n")
