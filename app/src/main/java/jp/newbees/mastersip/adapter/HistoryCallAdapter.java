@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,7 +78,7 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
         this.data.clear();
     }
 
-    public void setData(ArrayList<CallLogItem> data) {
+    public void setData(List<CallLogItem> data) {
         this.data = data;
     }
 

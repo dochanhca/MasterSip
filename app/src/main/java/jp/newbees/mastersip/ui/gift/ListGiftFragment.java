@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -55,8 +54,8 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     private GiftItem currentGiftSelected;
     private int openFrom;
 
-    public static final Fragment newInstance(UserItem userItem, int openFrom, boolean showFragmentActionBar) {
-        Fragment fragment = new ListGiftFragment();
+    public static final BaseFragment newInstance(UserItem userItem, int openFrom, boolean showFragmentActionBar) {
+        BaseFragment fragment = new ListGiftFragment();
         Bundle argument = new Bundle();
         argument.putParcelable(ListGiftFragment.USER_ITEM, userItem);
         argument.putInt(ListGiftFragment.OPEN_FROM, openFrom);

@@ -64,6 +64,7 @@ public final class Constant {
         public static final String RESULT_TYPE = "result_type";
         public static final String LAST_TIME_CALL_LOG = "last_time_call_log";
         public static final String CALL_LOGS = "call_logs";
+        public static final String ONLINE_LIST = "online_list";
 
         private JSON() {
             //Prevent init constructor
@@ -219,8 +220,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
 
-                private static final String DEVELOPMENT_IP = "52.199.112.26";
-//        private static final String DEVELOPMENT_IP = "52.197.138.1";
+//                private static final String DEVELOPMENT_IP = "52.199.112.26";
+        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
@@ -280,6 +281,9 @@ public final class Constant {
         public static final String UPDATE_CALL_WHEN_ONLINE = "calls/update-call-when-online-again";
         public static final String INCOMING_CALL_LOG = "incoming_call_log";
         public static final String OUTGOING_CALL_LOG = "outgoing_call_log";
+        public static final String SUBSCRIBE_ONLINE_NOTIFY = "online/subscribe";
+        public static final String UNSUBSCRIBE_ONLINE_NOTIFY = "online/unsubscribe";
+        public static final String ONLINE_LIST = "online/list";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -367,7 +371,7 @@ public final class Constant {
         public static final int MAX_CHAT_IMAGE_WIDTH = 540;
         public static final int MAX_IMAGE_HEIGHT = 1920;
         public static final int MAX_CHAT_IMAGE_HEIGHT = 780;
-        public static final int ANDROID = 2;
+        public static final int ANDROID = 1;
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
         public static final String PURCHASE = "Purchase";

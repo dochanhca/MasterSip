@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cvImage"
+        android:id="@+id/cv_avatar"
         app:cardPreventCornerOverlap="false"
         app:cardElevation="0dp"
         app:cardCornerRadius="@dimen/_10dp"
@@ -25,10 +25,10 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_user_name"
-        android:layout_alignTop="@id/cvImage"
+        android:layout_alignTop="@id/cv_avatar"
         android:paddingTop="@dimen/_11dp"
         android:layout_marginLeft="@dimen/_11dp"
-        android:layout_toRightOf="@id/cvImage"
+        android:layout_toRightOf="@id/cv_avatar"
         android:textColor="@color/text_color_gray"
         android:textSize="@dimen/_14sp"
         android:paddingBottom="@dimen/_2dp"
@@ -47,7 +47,7 @@
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_last_time_call"
-        android:layout_alignTop="@id/cvImage"
+        android:layout_alignTop="@id/cv_avatar"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/_8dp"
         android:text="21時52分28秒"

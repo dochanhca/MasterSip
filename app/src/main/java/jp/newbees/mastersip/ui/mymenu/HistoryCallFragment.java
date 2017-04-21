@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,7 +139,7 @@ public class HistoryCallFragment extends BaseCallFragment implements RadioGroup.
     }
 
     @Override
-    public void didLoadCallLogs(ArrayList<CallLogItem> data, int totalCallLog) {
+    public void didLoadCallLogs(List<CallLogItem> data, int totalCallLog) {
         disMissLoading();
         swipeRefreshLayout.setRefreshing(false);
         adapterHistoryCall.clearData();
