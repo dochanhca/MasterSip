@@ -474,4 +474,14 @@
     <string name="format_duration_shortest">%1$d秒</string>
     <string name="format_duration_call">通話時間：%1$s</string>
     <string name="no_answer">応答なし</string>
+    <string name="online_notify_setting">オンライン通知設定</string>
+    <string name="save_setting">設定を保存する</string>
+    <string name="when_user_online">さんがオンライン状態になると、</string>
+    <string name="you_can_receiev_push_notify_every_time">毎回PUSH通知を受け取ることができます。</string>
+    <string name="turn_on_notify_and_free_to_check">通知をONにして気軽にチェックしよう！</string>
+    <string name="user_is_online">さんがオンラインになる度に</string>
+    <string name="do_you_want_to_on_online_notify">通知が届くように設定しますか？</string>
+    <string name="do_you_want_to_off_online_notify">オンライン通知設定を解除しますか？</string>
+    <string name="setting_online_notify_done">オンライン通知を設定しました</string>
+    <string name="we_will_notify_you_with_push_notice">PUSH通知でお知らせします。</string>
 </resources>

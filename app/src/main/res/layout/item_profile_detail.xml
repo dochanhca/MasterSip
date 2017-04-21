@@ -150,7 +150,7 @@
                             style="@style/custom_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_btn_on_off_notify"
+                            android:background="@drawable/bg_btn_off_notify"
                             android:drawableTop="@drawable/ic_notify_off"
                             android:paddingRight="@dimen/_10dp"
                             android:text="@string/online_notify"

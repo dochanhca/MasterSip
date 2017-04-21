@@ -50,6 +50,7 @@ public class RegisterTask extends BaseTask<UserItem> {
         jParam.put(Constant.JSON.OS_VERSION,osVersion);
         jParam.put(Constant.JSON.APP_VERSION,appVersion);
         jParam.put(Constant.JSON.DEVICE_INFO,deviceInfo);
+        jParam.put(Constant.JSON.PLATFORM, Constant.Application.ANDROID);
 
         return jParam;
     }

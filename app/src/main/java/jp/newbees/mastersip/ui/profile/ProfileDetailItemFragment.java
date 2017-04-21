@@ -1,8 +1,6 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +41,7 @@ import jp.newbees.mastersip.ui.BaseCallFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.top.SearchContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
@@ -213,17 +212,19 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     @Override
     public void onPause() {
         super.onPause();
-        if (isCurrentUser()) {
-            profileDetailItemPresenter.unRegisterEvent();
-        }
+        profileDetailItemPresenter.unRegisterEvent();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isCurrentUser()) {
-            profileDetailItemPresenter.registerEvent();
-        }
+        profileDetailItemPresenter.registerEvent();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        super.setShowingProfile(null);
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
@@ -237,6 +238,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                 showGiftFragment();
                 break;
             case R.id.btn_on_off_notify:
+                SearchContainerFragment.showSettingOnlineFragment(getActivity(), userItem);
                 break;
             case R.id.layout_chat:
                 chatWithUser(userItem);
@@ -327,6 +329,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     @Override
     public void didEditProfileImage() {
+        profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
         profileDetailItemPresenter.getListPhotos(userItem.getUserId());
     }
 
@@ -336,6 +339,13 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
             ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
         } else {
             ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
+        }
+    }
+
+    @Override
+    public void onTextDialogOkClick(int requestCode) {
+        if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
+            showGiftFragment();
         }
     }
 
@@ -450,6 +460,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                     ? true : false;
             btnFollow.setChecked(isFollowed);
             btnFollow.setText(isFollowed ? getString(R.string.un_follow) : getString(R.string.follow));
+            updateBtnOnOffNotify();
         }
 
         txtNameContent.setText(userItem.getUsername());
@@ -461,6 +472,17 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         if (userItem.getGender() == UserItem.FEMALE) {
             fillProfileForFemale();
         }
+    }
+
+    private void updateBtnOnOffNotify() {
+        boolean notifySetting = userItem.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
+                ? true : false;
+        btnOnOffNotify.setBackgroundResource(notifySetting
+                ? R.drawable.bg_btn_on_notify : R.drawable.bg_btn_off_notify);
+        btnOnOffNotify.setTextColor(getResources().getColor(notifySetting
+                ? R.color.white : R.color.colorPrimaryDark));
+        btnOnOffNotify.setCompoundDrawablesWithIntrinsicBounds(0, notifySetting
+                ? R.drawable.ic_notify_on : R.drawable.ic_notify_off, 0, 0);
     }
 
     private void fillProfileForFemale() {
@@ -517,28 +539,11 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     private void showGiftFragment() {
         boolean needShowActionBar = getArguments().getBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT);
-        Fragment giftFragment = ListGiftFragment.newInstance(userItem, ListGiftFragment.OPEN_FROM_PROFILE_DETAILS, needShowActionBar);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        setTransitionAnimation(transaction);
-        transaction.addToBackStack(null);
-        transaction.add(R.id.fragment_search_container, giftFragment,
-                ListGiftFragment.class.getName()).commit();
-    }
-
-    @Override
-    public void onTextDialogOkClick(int requestCode) {
-        if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
-            showGiftFragment();
-        }
+        SearchContainerFragment.showGiftFragment(getActivity(), userItem,
+                ListGiftFragment.OPEN_FROM_PROFILE_DETAILS, needShowActionBar);
     }
 
     public final void onPageSelected() {
         super.setShowingProfile(userItem);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        super.setShowingProfile(null);
     }
 }
