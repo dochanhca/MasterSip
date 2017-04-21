@@ -7,6 +7,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -109,6 +110,11 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         setupView();
         fixZOrder(mVideoView, mCaptureView);
         startCountingToHideAction();
+        keepScreenAwake();
+    }
+
+    private void keepScreenAwake() {
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override

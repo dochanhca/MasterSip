@@ -27,7 +27,6 @@ import org.linphone.core.LinphoneEvent;
 import org.linphone.core.LinphoneFriend;
 import org.linphone.core.LinphoneFriendList;
 import org.linphone.core.LinphoneInfoMessage;
-import org.linphone.core.LinphoneNatPolicy;
 import org.linphone.core.LinphoneProxyConfig;
 import org.linphone.core.OpenH264DownloadHelperListener;
 import org.linphone.core.PayloadType;
@@ -35,7 +34,6 @@ import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
 import org.linphone.core.SubscriptionState;
 import org.linphone.core.VideoSize;
-import org.linphone.mediastream.Log;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.mediastream.video.capture.hwconf.AndroidCameraConfiguration;
 
@@ -226,7 +224,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void enableDeviceRingtone(boolean enable) {
-        if (LinphoneHandler.isRunning()) {
+        if (linphoneCore!=null) {
             linphoneCore.setRing(enable ? mRingSoundFile : null);
         }
     }
@@ -271,7 +269,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
             mUserCertificatePath = basePath;
             mRingSoundFile = basePath + "/oldphone_mono.wav";
             copyAssetsFromPackage(basePath);
-
+            String fileDir = context.getFilesDir().getAbsolutePath();
+            Logger.e("LinphoneHandler", "FileDir " + fileDir);
             linphoneCore = LinphoneCoreFactory.instance().createLinphoneCore(this, basePath + "/.linphonerc", basePath + "/linphonerc", null, context);
             TimerTask lTask = new TimerTask() {
                 @Override
@@ -328,16 +327,18 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
         int availableCores = Runtime.getRuntime().availableProcessors();
         linphoneCore.setCpuCount(availableCores);
-        linphoneCore.enableEchoCancellation(true);
-        linphoneCore.enableKeepAlive(true);
+//        linphoneCore.enableEchoCancellation(true);
+//        linphoneCore.enableKeepAlive(true);
         linphoneCore.enableIpv6(true);
-        LinphoneNatPolicy natPolicy = linphoneCore.getNatPolicy();
-        natPolicy.enableIce(true);
-        linphoneCore.setNatPolicy(natPolicy);
+        linphoneCore.enableVideo(true, true);
+//        LinphoneNatPolicy natPolicy = linphoneCore.getNatPolicy();
+//        natPolicy.enableIce(true);
+//        linphoneCore.setNatPolicy(natPolicy);
+
         setUserAgent();
         userFrontCamera(false);
         updateLocalRing();
-        linphoneCore.setVideoPreset(null);
+        linphoneCore.setVideoPreset("high-fps");
         linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
         linphoneCore.setPreferredFramerate(0);
         linphoneCore.setRootCA(mLinphoneRootCaFile);
@@ -362,12 +363,17 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void updateFilterNameForH264() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Logger.e("LinphoneHandler","uses Openh264 for H264");
-            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC , false);
-            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC , false);
             linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_OPENH264_DEC , true);
             linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_OPENH264_ENC , true);
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC , false);
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC , false);
+        }else {
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_OPENH264_DEC , false);
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_OPENH264_ENC , false);
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC , true);
+            linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC , true);
         }
     }
 
@@ -430,11 +436,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
                 LinphoneAddress proxyAddress = LinphoneCoreFactory.instance().createLinphoneAddress(proxy);
                 proxyAddress.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
                 LinphoneProxyConfig prxCfg = linphoneCore.createProxyConfig(identityAddress.asString(), proxyAddress.asStringUriOnly(), null, true);
-//                prxCfg.enableAvpf(false);
-//                prxCfg.setAvpfRRInterval(0);
-//                prxCfg.enableQualityReporting(false);
-//                prxCfg.setQualityReportingCollector(null);
-//                prxCfg.setQualityReportingInterval(0);
+                prxCfg.enableAvpf(false);
+                prxCfg.setAvpfRRInterval(0);
+                prxCfg.enableQualityReporting(false);
+                prxCfg.setQualityReportingCollector(null);
+                prxCfg.setQualityReportingInterval(0);
 
                 linphoneCore.addProxyConfig(prxCfg);
                 LinphoneAuthInfo authInfo = LinphoneCoreFactory.instance().createAuthInfo(extension, null, password, null, null, domain);
@@ -446,29 +452,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
             }
         } else {
             createLinphoneCore();
-        }
-    }
-
-    public void saveCreatedAccount(String username, String password, String prefix, String domain, LinphoneAddress.TransportType transport) {
-
-        String identity = "sip:" + username + "@" + domain;
-        LinphoneAddress address;
-        try {
-            address = LinphoneCoreFactory.instance().createLinphoneAddress(identity);
-        } catch (LinphoneCoreException e) {
-            Log.e(e);
-        }
-
-        AccountBuilder builder = new AccountBuilder(linphoneCore)
-                .setUsername(username)
-                .setDomain(domain)
-                .setPassword(password);
-
-        builder.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
-        try {
-            builder.saveNewAccount();
-        } catch (LinphoneCoreException e) {
-            Log.e(e);
         }
     }
 
@@ -954,9 +937,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.enableDownloadOpenH264(false);
             return;
         }
-        else{
-            linphoneCore.enableDownloadOpenH264(true);
-        }
 
         mCodecDownloader = LinphoneCoreFactory.instance().createOpenH264DownloadHelper();
         mCodecListener = new OpenH264DownloadHelperListener() {
@@ -969,7 +949,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
                         if (current == -1 && max == -1){
                             linphoneCore.reloadMsPlugins(context.getApplicationInfo().nativeLibraryDir);
                             Logger.e("LinphoneHandler", "ReLoad OpenH264 OK !!!");
-                            LinphoneHandler.this.updateFilterNameForH264();
                         }
                     }
                 });

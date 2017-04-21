@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.linphone.mediastream.Version;
+import org.linphone.tools.OpenH264DownloadHelper;
 
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.linphone.LinphoneService;
-import jp.newbees.mastersip.linphone.OpenH264DownloadHelper;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
@@ -79,7 +79,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             if (event.isInProgress()) {
                 Logger.e("LinphoneHandler", "Notify to server that the client is online");
                 this.notifyToServer();
-                this.checkOpenH264();
+                this.checkDownloadOpenH264();
             }else {
                 Logger.e("LinphoneHandler", "Do not notify to server that the client is online");
             }
@@ -92,14 +92,17 @@ public class LinphoneServicePresenter extends BasePresenter {
         }
     }
 
-    public final void checkOpenH264() {
+    private final void checkDownloadOpenH264() {
         if (Version.getCpuAbis().contains("armeabi-v7a")
                 && !Version.getCpuAbis().contains("x86")
                 && !mCodecDownloader.isCodecFound()
                 && LinphoneHandler.getInstance().enableDownloadOpenH264()
                 ) {
+            Logger.e("LinphoneServicePresenter", "We will download OpenH264");
             mCodecDownloader.setOpenH264HelperListener(LinphoneHandler.getInstance().getOpenH264HelperListener());
             mCodecDownloader.downloadCodec();
+        }else {
+            Logger.e("LinphoneServicePresenter", "No need download OpenH264");
         }
     }
 

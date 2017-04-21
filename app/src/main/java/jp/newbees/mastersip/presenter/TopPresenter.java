@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import jp.newbees.mastersip.linphone.OpenH264DownloadHelper;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.SendPurchaseResultToServerTask;
 import jp.newbees.mastersip.purchase.IabHelper;
