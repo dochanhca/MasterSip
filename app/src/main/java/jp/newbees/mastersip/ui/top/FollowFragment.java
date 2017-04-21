@@ -62,7 +62,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
 
     @Override
     protected int layoutId() {
-        return R.layout.flow_fragment;
+        return R.layout.fragment_flow;
     }
 
     @Override

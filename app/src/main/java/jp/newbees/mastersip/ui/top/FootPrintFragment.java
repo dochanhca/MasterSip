@@ -56,7 +56,7 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     @Override
     protected int layoutId() {
-        return R.layout.foot_print_fragment;
+        return R.layout.fragment_foot_print;
     }
 
     @Override

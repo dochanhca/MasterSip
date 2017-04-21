@@ -16,7 +16,7 @@ import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.event.ReLoadProfileEvent;
+import jp.newbees.mastersip.event.SettingOnlineChangedEvent;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.SettingOnlinePresenter;
@@ -41,8 +41,9 @@ public class SettingOnlineFragment extends BaseFragment implements
     CheckBox cbOnlineSetting;
     Unbinder unbinder;
 
+    private boolean notifyChangeSetting;
+    private boolean isFollowing;
     private UserItem currentUser;
-
     private SettingOnlinePresenter settingOnlinePresenter;
 
     public static BaseFragment newInstance(UserItem userItem) {
@@ -65,9 +66,9 @@ public class SettingOnlineFragment extends BaseFragment implements
 
         currentUser = getArguments().getParcelable(USER_ITEM);
         loadAvatar();
-        cbOnlineSetting.setChecked(
-                currentUser.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
-                        ? true : false);
+        isFollowing = currentUser.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
+                ? true : false;
+        cbOnlineSetting.setChecked(isFollowing);
         StringBuilder description = new StringBuilder(currentUser.getUsername())
                 .append(getString(R.string.when_user_online)).append("\n")
                 .append(getString(R.string.you_can_receiev_push_notify_every_time)).append("\n")
@@ -107,11 +108,15 @@ public class SettingOnlineFragment extends BaseFragment implements
                 .append("さんがオンラインになる度に").append("\n")
                 .append(getString(R.string.we_will_notify_you_with_push_notice));
         showMessageDialog(getString(R.string.setting_online_notify_done), message.toString(), "", false);
+        notifyChangeSetting = true;
+        isFollowing = true;
     }
 
     @Override
     public void didOffOnlineNotifySuccess() {
         disMissLoading();
+        notifyChangeSetting = true;
+        isFollowing = false;
     }
 
     @Override
@@ -133,10 +138,9 @@ public class SettingOnlineFragment extends BaseFragment implements
     @Override
     protected void onImageBackPressed() {
         super.onImageBackPressed();
-        boolean notifySetting = currentUser.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
-                ? true : false;
-        if (notifySetting != cbOnlineSetting.isChecked()) {
-            EventBus.getDefault().postSticky(new ReLoadProfileEvent(true));
+        if (notifyChangeSetting) {
+            EventBus.getDefault().postSticky(new SettingOnlineChangedEvent(isFollowing,
+                    currentUser.getUserId()));
         }
     }
 

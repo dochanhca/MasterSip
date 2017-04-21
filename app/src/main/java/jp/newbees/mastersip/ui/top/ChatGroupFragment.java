@@ -91,7 +91,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
 
     @Override
     protected int layoutId() {
-        return R.layout.chat_group_fragment;
+        return R.layout.fragment_chat_group;
     }
 
     @Override

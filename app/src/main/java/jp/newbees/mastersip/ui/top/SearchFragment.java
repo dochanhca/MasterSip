@@ -137,7 +137,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     @Override
     protected int layoutId() {
-        return R.layout.search_fragment;
+        return R.layout.fragment_search;
     }
 
     @Override

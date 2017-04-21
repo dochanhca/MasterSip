@@ -4,6 +4,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
+import jp.newbees.mastersip.event.SettingOnlineChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -45,6 +46,8 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         void didUnFollowUserError(String errorMessage, int errorCode);
 
         void didEditProfileImage();
+
+        void didSettingOnlineChanged(boolean isFollowing, String userId);
     }
 
     public ProfileDetailItemPresenter(BaseActivity context, ProfileDetailItemView view) {
@@ -89,6 +92,11 @@ public class ProfileDetailItemPresenter extends BasePresenter {
     public void onReloadProfileEvent(ReLoadProfileEvent event) {
         Logger.e(tag, "" + event.isNeedReload());
         view.didEditProfileImage();
+    }
+
+    @Subscribe(sticky =  true)
+    public void onSettingOnlineChangedEvent(SettingOnlineChangedEvent event) {
+        view.didSettingOnlineChanged(event.isFollowing(), event.getUserId());
     }
 
     public final void registerEvent() {
