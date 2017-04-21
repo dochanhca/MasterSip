@@ -33,9 +33,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     @Override
-    protected void initVariables(Bundle savedInstanceState) {
-        super.initVariables(savedInstanceState);
-
+    protected void onShowWaitingFragment() {
         showIncomingWaitingFragment(getCompetitor(), getCallId(), getAcceptCallImage(), getTitleCall(), getCallType());
     }
 

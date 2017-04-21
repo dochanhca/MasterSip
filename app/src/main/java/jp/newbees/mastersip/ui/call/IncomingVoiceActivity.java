@@ -31,8 +31,7 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
 
     @Override
     public void onCallConnected() {
-        countingCallDuration();
-        updateViewWhenVoiceConnected();
+        updateUIWhenInCall();
     }
 
     public static void startActivity(Context context, UserItem competitor, String callID) {

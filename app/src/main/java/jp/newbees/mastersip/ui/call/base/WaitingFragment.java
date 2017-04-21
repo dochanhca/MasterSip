@@ -23,8 +23,6 @@ public abstract class WaitingFragment extends CallingFragment {
     private int callType;
     private int acceptCallImage;
 
-    public abstract void updateViewWhenVoiceConnected();
-
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {
         getArgs();

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -22,8 +23,6 @@ import jp.newbees.mastersip.utils.Logger;
 public abstract class CallingFragment extends BaseFragment {
 
     protected static final String COMPETITOR = "USER ITEM";
-    protected static final String SPEAKER = "SPEAKER";
-    protected static final String MIC = "MIC";
     protected static final String CALL_ID = "CALL_ID";
     protected static final String CALL_TYPE = "CALL TYPE";
 
@@ -107,31 +106,49 @@ public abstract class CallingFragment extends BaseFragment {
 
     protected abstract void onCallPaused();
 
-    public final void enableMicrophone(boolean enable) {
+    protected abstract void updateUIWhenStartCalling();
+
+    protected final void enableMicrophone(boolean enable) {
         getCallActivity().enableMicrophone(enable);
     }
 
-    public final void terminalCall() {
+    protected final void terminalCall() {
         getCallActivity().terminalCall();
     }
 
-    public final void acceptCall(String callId, int callType) throws LinphoneCoreException {
+    protected final void declineCall() {
+        getCallActivity().declineCall();
+    }
+
+    protected final void acceptCall(String callId, int callType) throws LinphoneCoreException {
         getCallActivity().acceptCall(callId, callType);
     }
 
-    public final void enableSpeaker(boolean enable) {
+    protected final void enableSpeaker(boolean enable) {
         getCallActivity().enableSpeaker(enable);
     }
 
-    public void switchCamera(SurfaceView mCaptureView) {
+    protected void switchCamera(SurfaceView mCaptureView) {
         getCallActivity().switchCamera(mCaptureView);
     }
 
-    public final void enableCamera(boolean enable) {
+    protected void useFrontCamera() {
+        getCallActivity().useFrontCamera();
+    }
+
+    protected final void enableCamera(boolean enable) {
         getCallActivity().enableCamera(enable);
     }
 
-    public final BaseHandleCallActivity getCallActivity() {
+    protected final boolean isSpeakerEnalbed() {
+        return LinphoneHandler.getInstance().isSpeakerEnalbed();
+    }
+
+    protected final boolean isMicEnalbed() {
+        return LinphoneHandler.getInstance().isMicEnabled();
+    }
+
+    protected final BaseHandleCallActivity getCallActivity() {
         if (getActivity() instanceof BaseHandleCallActivity) {
             BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
             return activity;

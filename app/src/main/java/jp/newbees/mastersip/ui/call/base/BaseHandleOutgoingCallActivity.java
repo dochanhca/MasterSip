@@ -28,9 +28,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
     protected abstract String getTextTitleInWaitingFragment();
 
     @Override
-    protected void initVariables(Bundle savedInstanceState) {
-        super.initVariables(savedInstanceState);
-
+    protected void onShowWaitingFragment() {
         showOutgoingWaitingFragment(getCompetitor(), getTextTitleInWaitingFragment(), getCallType(), getCallId());
     }
 

@@ -56,7 +56,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
 
-    private boolean isResume = false;
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem competitor;
@@ -64,11 +63,9 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     private ChatAdapter chatAdapter;
     private BasicChatPresenter basicChatPresenter;
 
-    public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID,
-                                                boolean enableMic) {
+    public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
         VideoChatForFemaleFragment fragment = new VideoChatForFemaleFragment();
         fragment.setArguments(args);
@@ -105,7 +102,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
                 setVideoWindow(androidVideoWindow);
             }
         }
-        isResume = true;
         basicChatPresenter.registerCallEvent();
     }
 
@@ -121,7 +117,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
             }
         }
         super.onPause();
-        isResume = false;
         basicChatPresenter.unregisterCallEvent();
     }
 
@@ -140,12 +135,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         txtName.setText(competitor.getUsername());
-        countingCallDuration();
-        boolean enableMic = getArguments().getBoolean(MIC);
-
-        btnOnOffMic.setChecked(enableMic);
-        enableMicrophone(enableMic);
-        enableSpeaker(false);
     }
 
     private void bindVideoViewToLinphone() {
@@ -223,6 +212,15 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     }
 
     @Override
+    protected void updateUIWhenStartCalling() {
+        countingCallDuration();
+
+        btnOnOffMic.setChecked(isMicEnalbed());
+        enableSpeaker(false);
+        useFrontCamera();
+    }
+
+    @Override
     public final void onCallResume() {
         txtLowSignal.setVisibility(View.INVISIBLE);
     }
@@ -234,20 +232,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
                 || chatItem.isOwner()) {
             chatAdapter.add(newChatMessageEvent.getBaseChatItem());
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-            if (isResume) {
-                basicChatPresenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
-            }
         }
-    }
-
-    @Override
-    public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
-        chatAdapter.updateSendeeLastMessageStateToRead();
-        basicChatPresenter.sendingReadMessageUsingLinPhone(baseChatItem, competitor);
-    }
-
-    @Override
-    public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 }

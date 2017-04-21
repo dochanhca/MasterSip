@@ -38,18 +38,6 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-        showVideoChatFragment();
-        useFrontCamera();
-    }
-
-    private void showVideoChatFragment() {
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-//            getPresenter().enableCamera(true);
-            showVideoChatFragmentForMale(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable());
-        } else {
-//            getPresenter().enableCamera(true);
-            getPresenter().useFrontCamera();
-            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
-        }
+        updateUIWhenInCall();
     }
 }

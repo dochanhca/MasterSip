@@ -661,6 +661,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
+    public final boolean isSpeakerEnalbed() {
+        return linphoneCore.isSpeakerEnabled();
+    }
+
+    public final boolean isMicEnabled() {
+        return !linphoneCore.isMicMuted();
+    }
+
     /**
      * @param enable
      */

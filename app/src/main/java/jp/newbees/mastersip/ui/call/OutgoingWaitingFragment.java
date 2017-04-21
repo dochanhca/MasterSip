@@ -134,6 +134,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
                 btnOnOffMic.setChecked(true);
             }
         }
+        enableSpeaker(btnOnOffSpeaker.isChecked());
+        enableMicrophone(btnOnOffMic.isChecked());
     }
 
     private void inflateViewAction(int layout) {
@@ -201,7 +203,13 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     }
 
     @Override
-    public void updateViewWhenVoiceConnected() {
+    public void onCallPaused() {
+        txtTimer.setVisibility(View.INVISIBLE);
+        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void updateUIWhenStartCalling() {
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -211,12 +219,6 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         enableSpeaker(btnOnOffSpeaker.isChecked());
         enableMicrophone(btnOnOffMic.isChecked());
         txtCancelCall.setText(getString(R.string.end));
-    }
-
-    @Override
-    public void onCallPaused() {
-        txtTimer.setVisibility(View.INVISIBLE);
-        txtNotifyLowSignal.setVisibility(View.VISIBLE);
     }
 
     @Override

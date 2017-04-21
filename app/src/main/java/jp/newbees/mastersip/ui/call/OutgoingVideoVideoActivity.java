@@ -27,15 +27,7 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-        showVideoCallFragment();
-        useFrontCamera();
-    }
-
-    private void showVideoCallFragment() {
-        if (getVisibleFragment() instanceof OutgoingWaitingFragment) {
-            showVideoCallFragment(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable(),
-                    ((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
-        }
+        updateUIWhenInCall();
     }
 
     public static void startActivity(Context context, UserItem callee, String callID) {

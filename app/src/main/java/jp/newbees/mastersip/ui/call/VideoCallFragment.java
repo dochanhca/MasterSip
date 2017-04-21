@@ -77,12 +77,9 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     private Animation fadeOut;
     private boolean isShowingView = true;
 
-    public static VideoCallFragment newInstance(UserItem competitor, String callID,
-                                                boolean enableSpeaker, boolean enableMic) {
+    public static VideoCallFragment newInstance(UserItem competitor, String callID) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(SPEAKER, enableSpeaker);
-        args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
         VideoCallFragment fragment = new VideoCallFragment();
         fragment.setArguments(args);
@@ -159,16 +156,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         llPoint.setVisibility(competitor.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(competitor.getUsername());
-        countingCallDuration();
 
-        boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
-        boolean enableMic = getArguments().getBoolean(MIC);
-
-        btnOnOffSpeaker.setChecked(enableSpeaker);
-        btnOnOffMic.setChecked(enableMic);
-        btnOnOffCamera.setChecked(true);
-        enableSpeaker(enableSpeaker);
-        enableMicrophone(enableMic);
     }
 
     private void bindVideoViewToLinphone() {
@@ -322,6 +310,16 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     public void onCallPaused() {
         txtLowSignal.setVisibility(View.VISIBLE);
 
+    }
+
+    @Override
+    protected void updateUIWhenStartCalling() {
+        countingCallDuration();
+
+        btnOnOffSpeaker.setChecked(isSpeakerEnalbed());
+        btnOnOffMic.setChecked(isMicEnalbed());
+        btnOnOffCamera.setChecked(true);
+        useFrontCamera();
     }
 
     @Override

@@ -36,7 +36,6 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
 
     @Override
     public void onCallConnected() {
-        countingCallDuration();
-        updateViewWhenVoiceConnected();
+        updateUIWhenInCall();
     }
 }
