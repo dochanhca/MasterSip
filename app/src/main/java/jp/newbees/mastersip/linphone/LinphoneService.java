@@ -5,10 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,8 +15,6 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import org.linphone.core.LinphoneCoreFactory;
-import org.linphone.core.LinphoneCoreFactoryImpl;
-import org.linphone.mediastream.Version;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.SipItem;
@@ -96,9 +91,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this);
         incomingCallPresenter.registerCallEvent();
 
-//        dumpDeviceInformation();
-//        dumpInstalledLinphoneInformation();
-
         LinphoneCoreFactory.instance().enableLogCollection(Constant.Application.DEBUG);
         LinphoneCoreFactory.instance().setDebugMode(Constant.Application.DEBUG, getApplication().getString(R.string.app_name));
 
@@ -110,36 +102,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         registerReceiverRingerModeChanged();
         registerGSMCallBroadcastReceiver();
         LinphoneService.initInstance(this);
-    }
-
-    private void dumpDeviceInformation() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("DEVICE=").append(Build.DEVICE).append("\n");
-        sb.append("MODEL=").append(Build.MODEL).append("\n");
-        sb.append("MANUFACTURER=").append(Build.MANUFACTURER).append("\n");
-        sb.append("SDK=").append(Build.VERSION.SDK_INT).append("\n");
-        sb.append("Supported ABIs=");
-        for (String abi : Version.getCpuAbis()) {
-            sb.append(abi + ", ");
-        }
-        sb.append("\n");
-        sb.append("Used ABI=").append(LinphoneCoreFactoryImpl.ABI).append("\n");
-        Logger.e("LinphoneService",sb.toString());
-    }
-
-    private void dumpInstalledLinphoneInformation() {
-        PackageInfo info = null;
-        try {
-            info = getPackageManager().getPackageInfo(getPackageName(),0);
-        } catch (PackageManager.NameNotFoundException nnfe) {
-
-        }
-
-        if (info != null) {
-            Logger.e("LinphoneService", "Linphone version is " + info.versionName + " (" + info.versionCode + ")");
-        } else {
-            Logger.e("LinphoneService", "Linphone version is unknown");
-        }
     }
 
     @Override
@@ -161,7 +123,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.e(TAG, "LinphoneService onDestroy");
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
