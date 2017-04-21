@@ -19,7 +19,10 @@ public class DateTimeUtils {
     public static final SimpleDateFormat JAPAN_DATE_FORMAT = new SimpleDateFormat("yyyy年MM月dd日",
             Locale.JAPAN);
 
-    public static final SimpleDateFormat JAPAN_SHORT_TIME = new SimpleDateFormat("HH時mm分",
+    public static final SimpleDateFormat JAPAN_SHORTER_TIME = new SimpleDateFormat("HH時mm分",
+            Locale.JAPAN);
+
+    public static final SimpleDateFormat JAPAN_SHORT_TIME = new SimpleDateFormat("HH時mm分ss秒",
             Locale.JAPAN);
 
     public static final SimpleDateFormat ENGLISH_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd",
@@ -73,6 +76,11 @@ public class DateTimeUtils {
     public static String getShortTime(String fullDate) {
         Date date = convertStringToDate(fullDate, SERVER_DATE_FORMAT);
         return SHORT_TIME_FORMAT.format(date);
+    }
+
+    public static String getShorterTimeJapanese(String fullDate) {
+        Date date = convertStringToDate(fullDate, SERVER_DATE_FORMAT);
+        return JAPAN_SHORTER_TIME.format(date);
     }
 
     public static String getShortTimeJapanese(String fullDate) {

@@ -276,6 +276,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 MyMenuContainerFragment.showOnlineListFragment(getActivity());
                 break;
             case R.id.txt_call_history:
+                MyMenuContainerFragment.showHistoryCallFragment(getActivity());
                 break;
             case R.id.txt_block_list:
                 break;

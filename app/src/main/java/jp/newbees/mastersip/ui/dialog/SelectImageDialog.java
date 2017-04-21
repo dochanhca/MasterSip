@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ import java.io.File;
 
 import jp.newbees.mastersip.R;
 
+import static android.os.Build.VERSION_CODES.M;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 /**
@@ -156,7 +158,7 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
      * Check use camera and write external storage permission real time
      */
     private void checkCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        if (Build.VERSION.SDK_INT >= M
                 && (checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED
                 || checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -176,7 +178,7 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
      * check use read external storage permission real time
      */
     private void checkStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+        if (Build.VERSION.SDK_INT >= M &&
                 checkSelfPermission(getActivity(),
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -220,7 +222,13 @@ public class SelectImageDialog extends BaseDialog implements View.OnClickListene
     private void openCamera() {
         String path = Environment.getExternalStorageDirectory() + AVATAR_NAME;
         File file = new File(path);
-        Uri outputFileUri = Uri.fromFile(file);
+        Uri outputFileUri;
+        if (Build.VERSION.SDK_INT > M) {
+             outputFileUri = FileProvider.getUriForFile(getActivity(),
+                     getActivity().getApplicationContext().getPackageName() + ".provider", file);
+        } else {
+             outputFileUri = Uri.fromFile(file);
+        }
 
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);

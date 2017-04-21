@@ -60,6 +60,10 @@ public final class Constant {
         public static final String GSM_STATE = "gsm_state";
         public static final String FOLLOWER_LIST = "follower_list";
         public static final String FOLLOW_LIST = "follow_list";
+        public static final String GROUP_BY_DAY = "group_by_day";
+        public static final String RESULT_TYPE = "result_type";
+        public static final String LAST_TIME_CALL_LOG = "last_time_call_log";
+        public static final String CALL_LOGS = "call_logs";
 
         private JSON() {
             //Prevent init constructor
@@ -194,6 +198,7 @@ public final class Constant {
     }
 
     public static final class API {
+
         private API() {
             //Prevent init constructor
         }
@@ -273,6 +278,8 @@ public final class Constant {
         public static final String LIST_FOLLOWERS = "follower_list";
         public static final String LIST_FOLLOWING = "follow_list";
         public static final String UPDATE_CALL_WHEN_ONLINE = "calls/update-call-when-online-again";
+        public static final String INCOMING_CALL_LOG = "incoming_call_log";
+        public static final String OUTGOING_CALL_LOG = "outgoing_call_log";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

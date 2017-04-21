@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -56,13 +58,16 @@ import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
+import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageFilePath;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
+import static android.os.Build.VERSION_CODES.M;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.AVATAR_NAME;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_CAMERA;
 import static jp.newbees.mastersip.ui.dialog.SelectImageDialog.PICK_AVATAR_GALLERY;
@@ -315,6 +320,14 @@ public class ChatActivity extends CallActivity implements
     public void didUnFollowUserError(String errorMessage, int errorCode) {
         disMissLoading();
         showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+    }
+
+    @Override
+    protected void handleBuyPoint() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        if (gender == UserItem.MALE) {
+            PaymentActivity.startActivityForResult(this, REQUEST_BUY_POINT);
+        }
     }
 
     private void initActionCalls(UserItem userItem) {
@@ -664,7 +677,13 @@ public class ChatActivity extends CallActivity implements
     private void openCamera() {
         String path = Environment.getExternalStorageDirectory() + AVATAR_NAME;
         File file = new File(path);
-        Uri outputFileUri = Uri.fromFile(file);
+        Uri outputFileUri;
+        if (Build.VERSION.SDK_INT > M) {
+            outputFileUri = FileProvider.getUriForFile(this,
+                    getApplicationContext().getPackageName() + ".provider", file);
+        } else {
+            outputFileUri = Uri.fromFile(file);
+        }
 
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);

@@ -92,6 +92,8 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
             SelectionItem selectionItem = new SelectionItem(i + 1, provinces[i]);
             provinceItems.add(selectionItem);
         }
+        SelectionItem other = new SelectionItem(provinces.length + 1, getString(R.string.foreign_country));
+        provinceItems.add(other);
 
         getProvincePresenter = new GetProvincePresenter(getApplicationContext(), this);
 
@@ -168,7 +170,8 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
     @Override
     public void onClick(View view) {
         if (view == layoutPosition) {
-            openSelectionDialog(getString(R.string.pick_location), provinceItems);
+            SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                    provinceItems, getString(R.string.pick_location), provinceItem);
         }
 
         if (view == imgBack) {
@@ -256,11 +259,6 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
         } else {
             callPlaceDetectionApi();
         }
-    }
-
-    private void openSelectionDialog(String title, ArrayList<SelectionItem> data) {
-        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                data, title, provinceItem);
     }
 
     private void putDataBack() {

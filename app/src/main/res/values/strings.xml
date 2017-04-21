@@ -456,6 +456,22 @@
     <string name="description_following">
          <![CDATA[
     お気に入りしてくれた最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
-    ]]></string>
+    ]]>
+    </string>
     <string name="hide_chat_box">チャット画面を閉じる</string>
+    <string name="history_incoming_call">着信履歴</string>
+    <string name="history_outgoing_call">発信履歴</string>
+    <string name="history_call">通話履歴</string>
+    <string name="description_incoming_call_logs">
+        <![CDATA[最新の着信履歴<font color=\'#fb5050\'>%1$d件</font>を表示しています。]]>
+     </string>
+    <string name="description_outgoing_call_logs">
+        <![CDATA[最新の発信履歴<font color=\'#fb5050\'>%1$d件</font>を表示しています。]]>
+    </string>
+    <string name="call_fail">通話失敗</string>
+    <string name="format_duration_full">%1$d時間%2$d分%3$d秒</string>
+    <string name="format_duration_shorter">%1$d分%2$d秒</string>
+    <string name="format_duration_shortest">%1$d秒</string>
+    <string name="format_duration_call">通話時間：%1$s</string>
+    <string name="no_answer">応答なし</string>
 </resources>
