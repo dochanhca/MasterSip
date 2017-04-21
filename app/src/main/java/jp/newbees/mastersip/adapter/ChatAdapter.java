@@ -316,6 +316,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
             if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
+                    baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VOICE_CALL &&
+                    baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VIDEO_CALL &&
+                    baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL &&
                     !baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 return baseChatItem;
             }

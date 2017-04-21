@@ -87,7 +87,7 @@ public class IncomingWaitingFragment extends WaitingFragment {
         try {
             switch (view.getId()) {
                 case R.id.btn_reject_call:
-                    terminalCall();
+                    declineCall();
                     break;
                 case R.id.btn_accept_call:
                     acceptCall(getCallId(), getCallType());
@@ -160,6 +160,8 @@ public class IncomingWaitingFragment extends WaitingFragment {
         btnOnOffSpeaker.setChecked(false);
         enableMicrophone(true);
         btnOnOffMic.setChecked(true);
+
+        countingCallDuration();
     }
 
     @Override

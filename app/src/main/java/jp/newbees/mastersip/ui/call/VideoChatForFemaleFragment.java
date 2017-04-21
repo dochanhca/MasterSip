@@ -27,7 +27,7 @@ import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.chatting.BasicChatPresenter;
-import jp.newbees.mastersip.presenter.chatting.ReadChatTextListener;
+import jp.newbees.mastersip.presenter.chatting.ReceiveChatTextListener;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 
@@ -35,7 +35,7 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  * Created by thangit14 on 4/10/17.
  */
 
-public class VideoChatForFemaleFragment extends CallingFragment implements ReadChatTextListener {
+public class VideoChatForFemaleFragment extends CallingFragment implements ReceiveChatTextListener {
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;

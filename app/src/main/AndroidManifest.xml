@@ -195,6 +195,7 @@
         <activity
             android:name=".ui.call.OutgoingVideoChatActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"></activity>
 
         <activity

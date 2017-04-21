@@ -27,26 +27,21 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     @Override
     public void onActivityStarted(Activity activity) {
         ++started;
-        Logger.e("MyLifecycleHandler","started = "+started);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         ++resumed;
-        Logger.e("MyLifecycleHandler","resumed = "+resumed);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         ++paused;
-        Logger.e("MyLifecycleHandler","paused = "+paused);
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         ++stopped;
-        Logger.e("MyLifecycleHandler","stopped = "+stopped);
-
     }
 
     @Override

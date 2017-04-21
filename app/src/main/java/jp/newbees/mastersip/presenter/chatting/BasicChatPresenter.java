@@ -7,14 +7,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
-import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
-import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.SendTextMessageTask;
-import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -25,12 +22,12 @@ import jp.newbees.mastersip.utils.ConfigManager;
 
 public class BasicChatPresenter extends BasePresenter{
     private SendChatTextListener sendChatTextListener;
-    private ReadChatTextListener readChatTextListener;
+    private ReceiveChatTextListener receiveChatTextListener;
 
-    public BasicChatPresenter(Context context, SendChatTextListener sendChatTextListener, ReadChatTextListener readChatTextListener) {
+    public BasicChatPresenter(Context context, SendChatTextListener sendChatTextListener, ReceiveChatTextListener receiveChatTextListener) {
         super(context);
         this.sendChatTextListener = sendChatTextListener;
-        this.readChatTextListener = readChatTextListener;
+        this.receiveChatTextListener = receiveChatTextListener;
     }
 
     public BasicChatPresenter(Context context, SendChatTextListener sendChatTextListener) {
@@ -38,9 +35,9 @@ public class BasicChatPresenter extends BasePresenter{
         this.sendChatTextListener = sendChatTextListener;
     }
 
-    public BasicChatPresenter(Context context, ReadChatTextListener readChatTextListener) {
+    public BasicChatPresenter(Context context, ReceiveChatTextListener receiveChatTextListener) {
         super(context);
-        this.readChatTextListener = readChatTextListener;
+        this.receiveChatTextListener = receiveChatTextListener;
     }
 
     @Override
@@ -48,9 +45,6 @@ public class BasicChatPresenter extends BasePresenter{
         if (task instanceof SendTextMessageTask) {
             BaseChatItem result = ((SendTextMessageTask) task).getDataResponse();
             sendChatTextListener.didSendChatToServer(result);
-        } else if (task instanceof UpdateStateMessageTask) {
-            BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
-            readChatTextListener.didSendingReadMessageToServer(result);
         }
     }
 
@@ -58,8 +52,6 @@ public class BasicChatPresenter extends BasePresenter{
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof SendTextMessageTask) {
             sendChatTextListener.didChatError(errorCode, errorMessage);
-        } else if (task instanceof UpdateStateMessageTask) {
-            readChatTextListener.didSendingReadMessageToServerError(errorCode, errorMessage);
         }
     }
 
@@ -73,12 +65,7 @@ public class BasicChatPresenter extends BasePresenter{
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
-        readChatTextListener.onChatMessageEvent(newChatMessageEvent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
-        sendChatTextListener.onStateMessageChange(receivingReadMessageEvent);
+        receiveChatTextListener.onChatMessageEvent(newChatMessageEvent);
     }
 
     public boolean isMessageOfCurrentUser(UserItem user, UserItem currentUser) {
@@ -98,16 +85,5 @@ public class BasicChatPresenter extends BasePresenter{
 
     public final void sendVideoChatText(String content, UserItem sendee) {
         sendText(content, sendee, BaseChatItem.RoomType.ROOM_VIDEO_CHAT);
-    }
-
-    public final void sendingReadMessageToServer(BaseChatItem baseChatItem) {
-        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, baseChatItem);
-        requestToServer(updateStateMessageTask);
-    }
-
-    public void sendingReadMessageUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        LinphoneHandler.getInstance().sendReadMessageEvent(currentUser.getSipItem().getExtension(),
-                sender.getSipItem().getExtension(), baseChatItem);
     }
 }

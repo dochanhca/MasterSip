@@ -23,6 +23,7 @@ import jp.newbees.mastersip.ui.call.base.WaitingFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 3/15/17.
@@ -59,7 +60,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         @Override
         public void handleMessage(Message msg) {
             if (getCallActivity() != null) {
-                terminalCall();
+                Logger.e(TAG,"decline call because out of waiting time");
+                declineCall();
             }
         }
     };
@@ -89,10 +91,16 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
     @Override
     public void onDestroy() {
-        if (countWaitingTimeThread != null) {
-            countWaitingTimeThread.turnOffCounting();
-        }
         super.onDestroy();
+        Logger.e(TAG,"onDestroy");
+        stopCountWaitingTimeThread();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Logger.e(TAG,"onDetach");
+        stopCountWaitingTimeThread();
     }
 
     private void updateView() {
@@ -169,14 +177,6 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         }
     }
 
-    public boolean isSpeakerEnable() {
-        return btnOnOffSpeaker.isChecked();
-    }
-
-    public boolean isMicEnable() {
-        return btnOnOffMic.isChecked();
-    }
-
     @Override
     protected void onCallingBreakTime(Message msg) {
         txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
@@ -192,16 +192,6 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         new Thread(countWaitingTimeThread).start();
     }
 
-
-    @Override
-    public void countingCallDuration() {
-        super.countingCallDuration();
-        if (countWaitingTimeThread != null) {
-            countWaitingTimeThread.turnOffCounting();
-            countWaitingTimeThread = null;
-        }
-    }
-
     @Override
     public void onCallPaused() {
         txtTimer.setVisibility(View.INVISIBLE);
@@ -210,6 +200,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
     @Override
     protected void updateUIWhenStartCalling() {
+        stopCountWaitingTimeThread();
+
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -219,6 +211,15 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         enableSpeaker(btnOnOffSpeaker.isChecked());
         enableMicrophone(btnOnOffMic.isChecked());
         txtCancelCall.setText(getString(R.string.end));
+
+        countingCallDuration();
+    }
+
+    public void stopCountWaitingTimeThread() {
+        if (countWaitingTimeThread != null) {
+            countWaitingTimeThread.turnOffCounting();
+            countWaitingTimeThread = null;
+        }
     }
 
     @Override

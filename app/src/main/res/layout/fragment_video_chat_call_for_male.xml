@@ -9,7 +9,7 @@
         android:id="@+id/video_frame"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_chat_box_in_video_chat">
+        android:layout_height="@dimen/height_video_in_video_chat">
 
         <org.linphone.mediastream.video.display.GL2JNIView
             android:id="@+id/videoSurface"

@@ -118,7 +118,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setAdapter(chatAdapter);
 
-        container.setSoftKeyboardListener(mOnSoftKeyboardListener);
+        container.setListener(mOnSoftKeyboardListener);
 
         setupView();
         fixZOrder(mVideoView);
@@ -182,7 +182,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
             params.removeRule(RelativeLayout.ABOVE);
 
             RelativeLayout.LayoutParams videoFrameLayoutParams = (RelativeLayout.LayoutParams) videoFrame.getLayoutParams();
-            videoFrameLayoutParams.height = getResources().getDimensionPixelSize(R.dimen.height_chat_box_in_video_chat);
+            videoFrameLayoutParams.height = getResources().getDimensionPixelSize(R.dimen.height_video_in_video_chat);
             videoFrameLayoutParams.removeRule(RelativeLayout.ABOVE);
 
         } else {

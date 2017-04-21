@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -224,8 +225,10 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     private void hideWaitingFragment() {
-//        ((ViewGroup) findViewById(R.id.container)).removeView();
-        findViewById(R.id.container_fragment_waiting).setVisibility(View.INVISIBLE);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(WaitingFragment.class.getName());
+        if(fragment != null){
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
     }
 
     protected final void showWaitingFragment(WaitingFragment waitingFragment) {

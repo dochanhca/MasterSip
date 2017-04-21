@@ -71,18 +71,18 @@ public abstract class CallingFragment extends BaseFragment {
         }
     }
 
-    protected void startCountingToHideAction() {
+    protected final void startCountingToHideAction() {
         myCountingThreadToHideAction = new MyCountingTimerThread(handler, ID_TIMER_HIDE_ACTION, BREAK_TIME_TO_HIDE_ACTION);
         new Thread(myCountingThreadToHideAction).start();
     }
 
-    protected void resetCountingToHideAction() {
+    protected final void resetCountingToHideAction() {
         if (myCountingThreadToHideAction != null) {
             myCountingThreadToHideAction.reset();
         }
     }
 
-    protected void countingCallDuration() {
+    protected final void countingCallDuration() {
         countingCallDurationThread = new MyCountingTimerThread(countingCallDurationHandler);
         new Thread(countingCallDurationThread).start();
     }
