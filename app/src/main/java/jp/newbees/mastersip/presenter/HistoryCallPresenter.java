@@ -2,7 +2,7 @@ package jp.newbees.mastersip.presenter;
 
 import android.content.Context;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jp.newbees.mastersip.model.CallLogItem;
@@ -18,7 +18,7 @@ import jp.newbees.mastersip.utils.Constant;
 public class HistoryCallPresenter extends BasePresenter {
 
     public interface HistoryCallPresenterView {
-        void didLoadCallLogs(ArrayList<CallLogItem> data, int totalCallLog);
+        void didLoadCallLogs(List<CallLogItem> data, int totalCallLog);
         void didLoadDataError(int errorCode, String errorMessage);
     }
 
@@ -43,7 +43,7 @@ public class HistoryCallPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         Map<String, Object> data = (Map<String, Object>) task.getDataResponse();
         int total = (int) data.get(Constant.JSON.TOTAL);
-        ArrayList<CallLogItem> list = (ArrayList<CallLogItem>) data.get(Constant.JSON.LIST);
+        List<CallLogItem> list = (List<CallLogItem>) data.get(Constant.JSON.LIST);
         historyCallPresenterView.didLoadCallLogs(list, total);
     }
 

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -133,6 +134,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private int visibleThreshold = 5;
     private boolean isFragmentRunning = false;
     private GalleryItem galleryItem;
+    private long mLastClickTime = 0;
 
     public static BaseFragment newInstance() {
         BaseFragment fragment = new MyMenuFragment();
@@ -261,6 +263,12 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
             R.id.layout_common_guide, R.id.layout_profile_detail, R.id.btn_logout, R.id.group_point})
     public void onClick(View view) {
+        // mis-clicking prevention, using threshold of 1000 ms
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+
         switch (view.getId()) {
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();

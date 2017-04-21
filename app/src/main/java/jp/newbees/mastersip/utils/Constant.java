@@ -64,6 +64,7 @@ public final class Constant {
         public static final String RESULT_TYPE = "result_type";
         public static final String LAST_TIME_CALL_LOG = "last_time_call_log";
         public static final String CALL_LOGS = "call_logs";
+        public static final String ONLINE_LIST = "online_list";
 
         private JSON() {
             //Prevent init constructor
@@ -282,6 +283,7 @@ public final class Constant {
         public static final String OUTGOING_CALL_LOG = "outgoing_call_log";
         public static final String SUBSCRIBE_ONLINE_NOTIFY = "online/subscribe";
         public static final String UNSUBSCRIBE_ONLINE_NOTIFY = "online/unsubscribe";
+        public static final String ONLINE_LIST = "online/list";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

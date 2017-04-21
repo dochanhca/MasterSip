@@ -4,18 +4,18 @@
         <layer-list>
             <item android:top="3dp">
                 <shape>
-                    <solid android:color="#55aaaf"/>
-                    <corners android:radius="@dimen/huge_radius" />
+                    <solid android:color="#388d92"/>
+                    <corners android:radius="@dimen/_25dp" />
                     <stroke android:width="0dp" android:color="@color/transparent" />
                 </shape>
             </item>
 
             <item android:bottom="3dp" >
                 <shape>
-                    <solid android:color="#388d92"></solid>
+                    <solid android:color="@color/selected_color"></solid>
                     <stroke android:width="0dp" android:color="@color/transparent" />
                     <padding android:bottom="2dp"/>
-                    <corners android:radius="@dimen/huge_radius" />
+                    <corners android:radius="@dimen/_25dp" />
                 </shape>
             </item>
 
@@ -26,20 +26,22 @@
         <layer-list>
             <item android:top="3dp">
                 <shape>
-                    <solid android:color="#388d92"/>
-                    <corners android:radius="@dimen/huge_radius" />
+                    <solid android:color="@color/selected_color"/>
+                    <corners android:radius="@dimen/_25dp" />
                     <stroke android:width="0dp" android:color="@color/transparent" />
                 </shape>
             </item>
 
             <item android:bottom="3dp" >
                 <shape>
-                    <solid android:color="#55aaaf"></solid>
+                    <solid android:color="@color/colorPrimary"></solid>
                     <stroke android:width="0dp" android:color="@color/transparent" />
-                    <corners android:radius="@dimen/huge_radius" />
+                    <corners android:radius="@dimen/_25dp" />
                 </shape>
             </item>
 
         </layer-list>
     </item>
+
+
 </selector>

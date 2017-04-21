@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -137,8 +138,9 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     private UserItem userItem;
     private GalleryItem galleryItem;
     private boolean isLoading;
-
     private UserPhotoAdapter userPhotoAdapter;
+
+    private long mLastClickTime = 0;
 
     private NestedScrollView.OnScrollChangeListener onViewScrollListener = new NestedScrollView.OnScrollChangeListener() {
 
@@ -230,6 +232,12 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
             R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
     public void onClick(View view) {
+        // mis-clicking prevention, using threshold of 1000 ms
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+
         switch (view.getId()) {
             case R.id.btn_follow:
                 doFollowUser();
@@ -331,6 +339,18 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     public void didEditProfileImage() {
         profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
         profileDetailItemPresenter.getListPhotos(userItem.getUserId());
+    }
+
+    @Override
+    public void didSettingOnlineChanged(boolean isFollowing, String userId) {
+        if (userId.equals(userItem.getUserId())) {
+            // Update following state after setting changed
+            RelationshipItem relationshipItem = userItem.getRelationshipItem();
+            relationshipItem.setIsNotification(isFollowing ? RelationshipItem.REGISTER
+                    : RelationshipItem.UN_REGISTER);
+            userItem.setRelationshipItem(relationshipItem);
+            updateBtnOnOffNotify(isFollowing);
+        }
     }
 
     @Override
@@ -460,7 +480,9 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                     ? true : false;
             btnFollow.setChecked(isFollowed);
             btnFollow.setText(isFollowed ? getString(R.string.un_follow) : getString(R.string.follow));
-            updateBtnOnOffNotify();
+            boolean isFollowing = userItem.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
+                    ? true : false;
+            updateBtnOnOffNotify(isFollowing);
         }
 
         txtNameContent.setText(userItem.getUsername());
@@ -474,14 +496,13 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         }
     }
 
-    private void updateBtnOnOffNotify() {
-        boolean notifySetting = userItem.getRelationshipItem().getIsNotification() == RelationshipItem.REGISTER
-                ? true : false;
-        btnOnOffNotify.setBackgroundResource(notifySetting
+    private void updateBtnOnOffNotify(boolean isFollowing) {
+
+        btnOnOffNotify.setBackgroundResource(isFollowing
                 ? R.drawable.bg_btn_on_notify : R.drawable.bg_btn_off_notify);
-        btnOnOffNotify.setTextColor(getResources().getColor(notifySetting
+        btnOnOffNotify.setTextColor(getResources().getColor(isFollowing
                 ? R.color.white : R.color.colorPrimaryDark));
-        btnOnOffNotify.setCompoundDrawablesWithIntrinsicBounds(0, notifySetting
+        btnOnOffNotify.setCompoundDrawablesWithIntrinsicBounds(0, isFollowing
                 ? R.drawable.ic_notify_on : R.drawable.ic_notify_off, 0, 0);
     }
 

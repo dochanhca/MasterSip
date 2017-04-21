@@ -36,6 +36,7 @@ import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.CheckCallTask;
+import jp.newbees.mastersip.network.api.GetOnlineListTask;
 import jp.newbees.mastersip.presenter.TopPresenter;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
@@ -924,7 +925,7 @@ public class JSONUtils {
         return userItem;
     }
 
-    public static FollowItem parseFollowerItem(JSONObject jData) throws JSONException{
+    public static FollowItem parseFollowerItem(JSONObject jData) throws JSONException {
 
         int total = jData.getInt(Constant.JSON.TOTAL);
         JSONArray jFollowers = jData.getJSONArray(Constant.JSON.FOLLOWER_LIST);
@@ -933,7 +934,7 @@ public class JSONUtils {
         return result;
     }
 
-    public static FollowItem parseFollowingItem(JSONObject jData) throws JSONException{
+    public static FollowItem parseFollowingItem(JSONObject jData) throws JSONException {
         int total = jData.getInt(Constant.JSON.TOTAL);
         JSONArray jFollowers = jData.getJSONArray(Constant.JSON.FOLLOW_LIST);
         ArrayList<UserItem> followers = parseFollower(jFollowers);
@@ -941,9 +942,9 @@ public class JSONUtils {
         return result;
     }
 
-    private static ArrayList<UserItem> parseFollower( JSONArray jFollowers) throws JSONException {
-        ArrayList<UserItem> followers= new ArrayList<>();
-        for (int i = 0, n = jFollowers.length() ;i <n ;i++) {
+    private static ArrayList<UserItem> parseFollower(JSONArray jFollowers) throws JSONException {
+        ArrayList<UserItem> followers = new ArrayList<>();
+        for (int i = 0, n = jFollowers.length(); i < n; i++) {
             JSONObject jFollower = jFollowers.getJSONObject(i);
             UserItem follower = new UserItem();
             follower.setUserId(jFollower.getString(Constant.JSON.USER_ID));
@@ -970,7 +971,7 @@ public class JSONUtils {
         return followers;
     }
 
-    public static Map<String, Object> parseCallLogs(JSONObject jData) throws JSONException{
+    public static Map<String, Object> parseCallLogs(JSONObject jData) throws JSONException {
         JSONArray jListGroupDate = jData.getJSONArray(Constant.JSON.GROUP_BY_DAY);
         int total = jData.getInt(Constant.JSON.TOTAL);
 
@@ -986,7 +987,7 @@ public class JSONUtils {
             for (int i = 0, n = jCallLogs.length(); i < n; i++) {
                 JSONObject jCallLog = jCallLogs.getJSONObject(i);
                 UserItem userItem = parseUserForFootprint(jCallLog.getJSONObject(Constant.JSON.USER));
-                int duration =  jCallLog.getInt(Constant.JSON.DURATION);
+                int duration = jCallLog.getInt(Constant.JSON.DURATION);
                 int resultType = jCallLog.getInt(Constant.JSON.RESULT_TYPE);
                 String lastTimeCallLog = jCallLog.getString(Constant.JSON.LAST_TIME_CALL_LOG);
                 HistoryCallItem historyCallItem = new HistoryCallItem();
@@ -1002,6 +1003,34 @@ public class JSONUtils {
         HashMap result = new HashMap();
         result.put(Constant.JSON.LIST, callLogs);
         result.put(Constant.JSON.TOTAL, total);
+        return result;
+    }
+
+    public static Map<String, Object> parseOnlineList(JSONObject jData) throws JSONException {
+        JSONArray jUsers = jData.getJSONArray(Constant.JSON.ONLINE_LIST);
+        List<UserItem> userItems = new ArrayList<>();
+        for (int i = 0; i < jUsers.length(); i++) {
+            JSONObject jUser = jUsers.getJSONObject(i);
+            UserItem userItem = new UserItem();
+            userItem.setUserId(jUser.getString(Constant.JSON.USER_ID));
+            userItem.setUsername(jUser.getString(Constant.JSON.USER_NAME));
+
+            String avatarUrl = jUser.getString(Constant.JSON.AVATAR);
+            ImageItem avatarItem = new ImageItem();
+            avatarItem.setOriginUrl(avatarUrl);
+            userItem.setAvatarItem(avatarItem);
+
+            RelationshipItem relationshipItem = new RelationshipItem();
+            relationshipItem.setIsNotification(RelationshipItem.REGISTER);
+            userItem.setRelationshipItem(relationshipItem);
+
+            userItems.add(userItem);
+        }
+        int next = jData.getInt(Constant.JSON.NEXT);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put(GetOnlineListTask.NEXT, next);
+        result.put(GetOnlineListTask.LIST_USER, userItems);
         return result;
     }
 }
