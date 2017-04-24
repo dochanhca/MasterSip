@@ -448,12 +448,12 @@
     <string name="low_signal">お相手の回線が不安定です</string>
     <string name="follower">フォロワー</string>
     <string name="following">フォロー</string>
-    <string name="description_followers">
+    <string name="description_followings">
         <![CDATA[
     自分がお気に入りした最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
     ]]>
     </string>
-    <string name="description_following">
+    <string name="description_followers">
          <![CDATA[
     お気に入りしてくれた最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
     ]]>

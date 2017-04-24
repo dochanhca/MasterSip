@@ -95,7 +95,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
             presenter.getListFollowers();
         } else {
             showLoading();
-            descriptionTotal = getString(R.string.description_following);
+            descriptionTotal = getString(R.string.description_followings);
             presenter.getListFollowing();
         }
     }
