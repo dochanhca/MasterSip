@@ -70,7 +70,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
-        this.presenter.acceptCall(calId, callType);
+        this.presenter.acceptCall(calId,  callType);
     }
 
     public final void terminalCall() {
