@@ -119,10 +119,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static final synchronized boolean isRunning() {
-        if (getInstance() == null) {
+        try {
+            if (getInstance() != null) {
+                return true;
+            }
+        } catch (NullPointerException e) {
             return false;
         }
-        return true;
+        return false;
     }
 
     public void registrationState(LinphoneCore lc, LinphoneProxyConfig cfg, LinphoneCore.RegistrationState state, String smessage) {
@@ -163,7 +167,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             }
         } else if (state == LinphoneCore.GlobalState.GlobalShutdown) {
             handleLinphoneShutdown();
-        }else if(state == LinphoneCore.GlobalState.GlobalOff) {
+        } else if (state == LinphoneCore.GlobalState.GlobalOff) {
             globalOff = true;
             removeInstance();
         }
@@ -237,7 +241,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     private void enableDeviceRingtone(boolean enable) {
-        if (linphoneCore!=null) {
+        if (linphoneCore != null) {
             linphoneCore.setRing(enable ? mRingSoundFile : null);
         }
     }
@@ -300,7 +304,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             mTimer.schedule(lTask, 0, 20);
         } catch (LinphoneCoreException | IOException e ) {
             e.printStackTrace();
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -315,13 +319,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
         copyFromPackage(R.raw.rootca, new File(mLinphoneRootCaFile).getName());
     }
 
-    public void copyFromPackage(int ressourceId, String target) throws IOException{
-        FileOutputStream lOutputStream = context.openFileOutput (target, 0);
+    public void copyFromPackage(int ressourceId, String target) throws IOException {
+        FileOutputStream lOutputStream = context.openFileOutput(target, 0);
         InputStream lInputStream = context.getResources().openRawResource(ressourceId);
         int readByte;
         byte[] buff = new byte[8048];
-        while (( readByte = lInputStream.read(buff)) != -1) {
-            lOutputStream.write(buff,0, readByte);
+        while ((readByte = lInputStream.read(buff)) != -1) {
+            lOutputStream.write(buff, 0, readByte);
         }
         lOutputStream.flush();
         lOutputStream.close();
@@ -400,10 +404,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setDownloadBandwidth(bandwidth);
     }
 
-    public static final synchronized LinphoneHandler getInstance() throws NullPointerException{
-        if (instance == null){
+    public static final synchronized LinphoneHandler getInstance() throws NullPointerException {
+        if (instance == null) {
             throw new NullPointerException();
-        }else {
+        } else {
             return instance;
         }
     }
@@ -473,7 +477,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void clearAll() {
         try {
-            Logger.e("LinphoneHandler","Clear all proxy and auth");
+            Logger.e("LinphoneHandler", "Clear all proxy and auth");
             getInstance().mTimer.cancel();
             getInstance().notifyEndCallToServer();
             getInstance().terminalCall();
@@ -482,9 +486,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
             getInstance().linphoneCore.destroy();
             getInstance().context = null;
             stopLinphoneCore = true;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             removeInstance();
         }
     }
@@ -493,14 +497,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         if (stopLinphoneCore && globalOff) {
             instance.linphoneCore = null;
             instance = null;
-            Logger.e("LinphoneHandler" , "Removed instance");
+            Logger.e("LinphoneHandler", "Removed instance");
         }
     }
 
     private void tryToRemoveLastAuthInfo() {
         LinphoneAuthInfo[] authInfos = linphoneCore.getAuthInfosList();
         if (authInfos != null) {
-            Logger.e("LinphoneHandler","trying to remove AuthInfo");
+            Logger.e("LinphoneHandler", "trying to remove AuthInfo");
             for (LinphoneAuthInfo linphoneAuthInfo : authInfos) {
                 linphoneCore.removeAuthInfo(linphoneAuthInfo);
             }
@@ -510,7 +514,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void tryToRemoveLastProxyConfig() {
         LinphoneProxyConfig[] configList = linphoneCore.getProxyConfigList();
         if (configList != null) {
-            Logger.e("LinphoneHandler","trying to remove ProxyConfig");
+            Logger.e("LinphoneHandler", "trying to remove ProxyConfig");
             for (LinphoneProxyConfig proxyConfig : configList) {
                 linphoneCore.removeProxyConfig(proxyConfig);
             }
@@ -594,11 +598,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void networkReachableChanged(LinphoneCore linphoneCore, boolean b) {
 
     }
-
-//    @Override
-//    public void networkReachableChanged(LinphoneCore linphoneCore, boolean b) {
-//
-//    }
 
     public void sendPacket(String raw, String callee) {
         try {

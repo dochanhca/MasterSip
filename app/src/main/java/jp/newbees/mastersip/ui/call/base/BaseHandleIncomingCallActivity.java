@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
@@ -25,6 +26,11 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
         presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
