@@ -20,6 +20,7 @@ import jp.newbees.mastersip.event.SettingOnlineChangedEvent;
 import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.SettingOnlinePresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 
@@ -28,7 +29,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
  */
 
 public class SettingOnlineFragment extends BaseFragment implements
-        SettingOnlinePresenter.SettingOnlineView, TextDialog.OnTextDialogPositiveClick {
+        SettingOnlinePresenter.SettingOnlineView, TextDialog.OnTextDialogPositiveClick, BaseActivity.OnBackPressed {
     private static final String USER_ITEM = "USER_ITEM";
     private static final int REQUEST_ON_ONLINE_NOTIFY = 1;
     private static final int REQUEST_OFF_ONLINE_NOTIFY = 2;
@@ -46,9 +47,10 @@ public class SettingOnlineFragment extends BaseFragment implements
     private UserItem currentUser;
     private SettingOnlinePresenter settingOnlinePresenter;
 
-    public static BaseFragment newInstance(UserItem userItem) {
+    public static BaseFragment newInstance(UserItem userItem, boolean showFragmentActionBar) {
         Bundle args = new Bundle();
         args.putParcelable(USER_ITEM, userItem);
+        args.putBoolean(SHOW_FRAGMENT_ACTION_BAR, showFragmentActionBar);
         BaseFragment fragment = new SettingOnlineFragment();
         fragment.setArguments(args);
         return fragment;
@@ -62,7 +64,14 @@ public class SettingOnlineFragment extends BaseFragment implements
     @Override
     protected void init(View rootView, Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, rootView);
-        setFragmentTitle(getString(R.string.online_notify_setting));
+        if (getArguments().getBoolean(SHOW_FRAGMENT_ACTION_BAR)) {
+            setFragmentTitle(getString(R.string.online_notify_setting));
+        } else {
+            hideFragmentActionBar();
+            ((BaseActivity) getActivity()).changeHeaderText(getString(R.string.online_notify_setting));
+        }
+
+        setOnBackPressed(this);
 
         currentUser = getArguments().getParcelable(USER_ITEM);
         loadAvatar();
@@ -138,10 +147,16 @@ public class SettingOnlineFragment extends BaseFragment implements
     @Override
     protected void onImageBackPressed() {
         super.onImageBackPressed();
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
         if (notifyChangeSetting) {
             EventBus.getDefault().postSticky(new SettingOnlineChangedEvent(isFollowing,
                     currentUser.getUserId()));
         }
+        getFragmentManager().popBackStackImmediate();
     }
 
     private void showConfirmDialog(String content, int requestCode) {
