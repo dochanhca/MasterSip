@@ -14,8 +14,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
  * Created by thangit14 on 2/7/17.
  */
 
-public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivity
-        {
+public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivity {
     private UserItem userItem;
     private ProfileDetailItemFragment fragment;
 
