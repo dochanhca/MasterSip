@@ -23,7 +23,6 @@ import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -158,7 +157,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
                 resetData();
                 break;
             case R.id.img_back:
-                hideSoftwareKeyboard();
+                hideSoftKeyboard();
                 restoreNavigationBarState();
                 getFragmentManager().popBackStack();
                 break;
@@ -199,7 +198,7 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
 
     private void resetDataAndView() {
         resetData();
-        hideSoftwareKeyboard();
+        hideSoftKeyboard();
         edtSearch.clearFocus();
         txtCancel.setVisibility(View.GONE);
     }
@@ -211,9 +210,9 @@ public class FilterByNameFragment extends BaseFragment implements View.OnClickLi
         adapterSearchUserModeList.clearData();
     }
 
-    private void hideSoftwareKeyboard() {
-        Utils.closeKeyboard(getActivity(), edtSearch.getWindowToken());
-    }
+//    private void hideSoftKeyboard() {
+//        Utils.closeKeyboard(getActivity(), edtSearch.getWindowToken());
+//    }
 
     private void showProfileDetailFragment(int position) {
         ProfileDetailFragment profileDetailFragment =
