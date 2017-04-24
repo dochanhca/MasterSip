@@ -64,8 +64,9 @@ public class SearchContainerFragment extends BaseFragment {
                 SearchFragment.class.getName()).commit();
     }
 
-    public static void showSettingOnlineFragment(FragmentActivity activity, UserItem userItem) {
-        BaseFragment settingOnlineFragment = SettingOnlineFragment.newInstance(userItem);
+    public static void showSettingOnlineFragment(FragmentActivity activity, UserItem userItem,
+                                                 boolean needShowActionBar) {
+        BaseFragment settingOnlineFragment = SettingOnlineFragment.newInstance(userItem, needShowActionBar);
         showFragment(activity, settingOnlineFragment);
     }
 

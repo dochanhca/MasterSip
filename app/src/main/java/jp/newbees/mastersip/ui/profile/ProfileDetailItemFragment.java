@@ -246,7 +246,8 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                 showGiftFragment();
                 break;
             case R.id.btn_on_off_notify:
-                SearchContainerFragment.showSettingOnlineFragment(getActivity(), userItem);
+                boolean needShowActionBar = getArguments().getBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT);
+                SearchContainerFragment.showSettingOnlineFragment(getActivity(), userItem, needShowActionBar);
                 break;
             case R.id.layout_chat:
                 chatWithUser(userItem);

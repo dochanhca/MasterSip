@@ -94,7 +94,7 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         view.didEditProfileImage();
     }
 
-    @Subscribe(sticky =  true)
+    @Subscribe(sticky = true)
     public void onSettingOnlineChangedEvent(SettingOnlineChangedEvent event) {
         view.didSettingOnlineChanged(event.isFollowing(), event.getUserId());
     }
