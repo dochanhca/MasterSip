@@ -201,7 +201,7 @@ public class CallPresenter extends BasePresenter {
     public void onCallEvent(ReceivingCallEvent event) {
         switch (event.getCallEvent()) {
             case ReceivingCallEvent.OUTGOING_CALL:
-                notifyCallerJoinedRoom(event.getCallId());
+//                notifyCallerJoinedRoom(event.getCallId());
                 handleOutgoingCall(event.getCallId());
                 break;
             case ReceivingCallEvent.CHECKED_INCOMING_VOICE_CALL:
