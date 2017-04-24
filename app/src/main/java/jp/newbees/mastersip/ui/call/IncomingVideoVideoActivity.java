@@ -29,11 +29,6 @@ public class IncomingVideoVideoActivity extends BaseHandleIncomingCallActivity {
         return Constant.API.VIDEO_CALL;
     }
 
-    @Override
-    public void onStreamingConnected() {
-        updateUIWhenInCall();
-    }
-
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoVideoActivity.class);
         intent.putExtras(getBundle(competitor,callID));

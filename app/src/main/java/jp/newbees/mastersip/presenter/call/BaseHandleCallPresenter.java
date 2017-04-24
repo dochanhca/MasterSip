@@ -13,7 +13,6 @@ import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
-import jp.newbees.mastersip.network.api.JoinCallTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.Constant;
 
@@ -45,7 +44,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         if (event.getCallEvent() == GSMCallEvent.PAUSED_GSM_CALL_EVENT) {
             view.onCallPaused();
         }else if(event.getCallEvent() == GSMCallEvent.RESUME_GSM_CALL_EVENT) {
-            view.onCallResuming();
+            view.onCallGSMResuming();
         }
     }
 
@@ -85,8 +84,8 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
     }
 
     public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
-        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
-        requestToServer(joinCallTask);
+//        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
+//        requestToServer(joinCallTask);
         boolean video = callType == Constant.API.VOICE_CALL ? false : true;
         LinphoneHandler.getInstance().acceptCall(video);
     }
@@ -133,6 +132,6 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
 
         void onCallPaused();
 
-        void onCallResuming();
+        void onCallGSMResuming();
     }
 }

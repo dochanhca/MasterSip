@@ -35,9 +35,4 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
-
-    @Override
-    public void onCallConnected() {
-        updateUIWhenInCall();
-    }
 }

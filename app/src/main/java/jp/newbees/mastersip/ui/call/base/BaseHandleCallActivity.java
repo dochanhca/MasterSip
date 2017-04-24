@@ -32,6 +32,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
         PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
+
     protected static final String COMPETITOR = "COMPETITOR";
     protected static final String CALL_ID = "CALL_ID";
     protected static final String RUN_FROM = "RUN_FROM";
@@ -191,10 +192,15 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     @Override
-    public void onCallResuming() {
+    public void onCallGSMResuming() {
         if (callingFragment != null) {
             callingFragment.onCallResume();
         }
+    }
+
+    @Override
+    public void onCallConnected() {
+        updateUIWhenInCall();
     }
 
     protected final void updateUIWhenInCall() {
@@ -209,7 +215,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
                 showCallingFragment();
                 break;
         }
-        callingFragment.updateUIWhenStartCalling();
+//        callingFragment.updateUIWhenStartCalling();
     }
 
     protected void initVideoChatFragment() {
@@ -221,6 +227,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     private void showCallingFragment() {
+        addCallingFragment(callingFragment, "Calling");
         findViewById(R.id.container_fragment_calling).setVisibility(View.VISIBLE);
     }
 
@@ -240,7 +247,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     protected final void initVideoCallFragment() {
         callingFragment = VideoCallFragment.newInstance(competitor, getCallId());
-        addCallingFragment(callingFragment, VideoCallFragment.class.getName());
+//        addCallingFragment(callingFragment, VideoCallFragment.class.getName());
     }
 
     private void initVideoChatFragmentForMale() {

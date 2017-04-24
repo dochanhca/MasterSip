@@ -52,13 +52,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     }
 
     /**
-     * override this if need listen onCallConnected callback
-     */
-    @Override
-    public void onCallConnected() {
-    }
-
-    /**
      * override this if need listen onStreamingConnected callback
      */
     @Override

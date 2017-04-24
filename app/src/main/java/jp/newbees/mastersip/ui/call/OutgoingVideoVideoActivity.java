@@ -25,11 +25,6 @@ public class OutgoingVideoVideoActivity extends BaseHandleOutgoingCallActivity {
         return Constant.API.VIDEO_CALL;
     }
 
-    @Override
-    public void onCallConnected() {
-        updateUIWhenInCall();
-    }
-
     public static void startActivity(Context context, UserItem callee, String callID) {
         Intent intent = new Intent(context, OutgoingVideoVideoActivity.class);
         Bundle bundle = new Bundle();

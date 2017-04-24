@@ -27,7 +27,6 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
-import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -108,6 +107,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         fixZOrder(mVideoView, mCaptureView);
         startCountingToHideAction();
         keepScreenAwake();
+        updateUIWhenStartCalling();
     }
 
     private void keepScreenAwake() {
@@ -117,7 +117,6 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     @Override
     public void onResume() {
         super.onResume();
-
         if (androidVideoWindow != null) {
             synchronized (androidVideoWindow) {
                 setVideoWindow(androidVideoWindow);
@@ -149,6 +148,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         super.onDestroy();
     }
 
+    @SuppressWarnings("deprecation")
     private void setupView() {
         bindVideoViewToLinphone();
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -298,7 +298,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
     @Override
     protected void onCallingBreakTime(Message msg) {
-        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+//        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
     @Override
@@ -309,13 +309,11 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     @Override
     public void onCallPaused() {
         txtLowSignal.setVisibility(View.VISIBLE);
-
     }
 
     @Override
     protected void updateUIWhenStartCalling() {
         countingCallDuration();
-
         btnOnOffSpeaker.setChecked(isSpeakerEnalbed());
         btnOnOffMic.setChecked(isMicEnalbed());
         btnOnOffCamera.setChecked(true);

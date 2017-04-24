@@ -34,8 +34,4 @@ public class OutgoingVoiceActivity extends BaseHandleOutgoingCallActivity {
         context.startActivity(intent);
     }
 
-    @Override
-    public void onCallConnected() {
-        updateUIWhenInCall();
-    }
 }
