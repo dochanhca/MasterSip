@@ -27,6 +27,7 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
+import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -298,7 +299,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
     @Override
     protected void onCallingBreakTime(Message msg) {
-//        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+        txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
     @Override
