@@ -186,7 +186,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
      */
     @Override
     public final void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = busyCallEvent.getCallId() + getString(R.string.mess_callee_reject_call);
+        String message = callee.getUsername() + getString(R.string.mess_callee_reject_call);
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
     }
