@@ -15,8 +15,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity implements
-        BaseHandleIncomingCallPresenter.IncomingCallView {
+public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity {
     private BaseHandleIncomingCallPresenter presenter;
 
     protected abstract int getAcceptCallImage();
@@ -33,7 +32,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-        presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
+        presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this, getCallType());
         presenter.registerEvents();
         setPresenter(presenter);
     }
@@ -55,13 +54,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
             LinphoneService.stopLinphone(this);
         }
         super.onCallEnd();
-    }
-
-    /**
-     * override this if need listen onStreamingConnected callback
-     */
-    @Override
-    public void onStreamingConnected() {
     }
 
 }

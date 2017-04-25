@@ -119,6 +119,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         ConfigManager.getInstance().updateEndCallStatus(false);
         ConfigManager.getInstance().setCallId(callId);
         if (!LinphoneService.isRunning()) {
+            // set end call status equal true to do not send UpdateCallWhenOnlineTask to server
+            // (In linphoneServicePresenter)
+            ConfigManager.getInstance().updateEndCallStatus(true);
+
             LinphoneService.startLinphone(getApplicationContext());
         }
     }

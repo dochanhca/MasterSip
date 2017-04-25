@@ -8,7 +8,7 @@ import org.linphone.core.CallDirection;
 
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 1/10/17.
@@ -16,16 +16,11 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
-    private IncomingCallView view;
+    private final int callType;
 
-    public BaseHandleIncomingCallPresenter(Context context, IncomingCallView view) {
+    public BaseHandleIncomingCallPresenter(Context context, CallView view, int callType) {
         super(context, view);
-        this.view = view;
-    }
-
-    public void startIncomingVideoCall() {
-//        useFrontCamera(false);
-//        enableCamera(true);
+        this.callType = callType;
     }
 
     @Override
@@ -42,14 +37,14 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onReceivingIncomingCallEvent(ReceivingCallEvent event) {
         if (event.getDirection() == CallDirection.Incoming
-                && event.getCallEvent() == ReceivingCallEvent.STREAMS_RUNNING
-                ) {
-            Logger.e("BaseHandleIncomingCallPresenter", "Show Calling");
+                && callType == Constant.API.VOICE_CALL
+                && event.getCallEvent() == ReceivingCallEvent.INCOMING_CONNECTED_CALL) {
+            super.handleCallConnected();
+        } else if (event.getDirection() == CallDirection.Incoming
+                && (callType == Constant.API.VIDEO_CALL
+                    || callType == Constant.API.VIDEO_CHAT_CALL)
+                && event.getCallEvent() == ReceivingCallEvent.STREAMS_RUNNING) {
             super.handleCallConnected();
         }
-    }
-
-    public interface IncomingCallView extends CallView {
-        void onStreamingConnected();
     }
 }

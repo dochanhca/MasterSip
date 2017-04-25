@@ -91,6 +91,9 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
         recyclerChat.setAdapter(chatAdapter);
         setupView();
         fixZOrder(mVideoView, mCaptureView);
+
+        enableSpeaker(false);
+        useFrontCamera();
     }
 
     @Override
@@ -185,7 +188,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
 
 
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        if (LinphoneHandler.getInstance() != null) {
+        if (LinphoneHandler.isRunning()) {
             LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
         }
     }
@@ -216,8 +219,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
         countingCallDuration();
 
         btnOnOffMic.setChecked(isMicEnalbed());
-        enableSpeaker(false);
-        useFrontCamera();
+
     }
 
     @Override
@@ -231,7 +233,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
         if (basicChatPresenter.isMessageOfCurrentUser(chatItem.getOwner(), competitor)
                 || chatItem.isOwner()) {
             chatAdapter.add(newChatMessageEvent.getBaseChatItem());
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            recyclerChat.scrollToPosition(chatAdapter.getItemCount() - 1);
         }
     }
 }

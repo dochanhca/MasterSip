@@ -215,7 +215,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
                 showCallingFragment();
                 break;
         }
-//        callingFragment.updateUIWhenStartCalling();
+        callingFragment.updateUIWhenStartCalling();
     }
 
     protected void initVideoChatFragment() {
@@ -227,7 +227,6 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     private void showCallingFragment() {
-        addCallingFragment(callingFragment, "Calling");
         findViewById(R.id.container_fragment_calling).setVisibility(View.VISIBLE);
     }
 
@@ -247,7 +246,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     protected final void initVideoCallFragment() {
         callingFragment = VideoCallFragment.newInstance(competitor, getCallId());
-//        addCallingFragment(callingFragment, VideoCallFragment.class.getName());
+        addCallingFragment(callingFragment, VideoCallFragment.class.getName());
     }
 
     private void initVideoChatFragmentForMale() {

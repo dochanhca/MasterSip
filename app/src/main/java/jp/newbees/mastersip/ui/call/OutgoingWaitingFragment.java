@@ -61,6 +61,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         public void handleMessage(Message msg) {
             if (getCallActivity() != null) {
                 Logger.e(TAG,"decline call because out of waiting time");
+                stopCountWaitingTimeThread();
                 declineCall();
             }
         }
