@@ -21,15 +21,15 @@ import jp.newbees.mastersip.utils.ConfigManager;
 
 public class SettingCallFragment extends BaseFragment implements CompoundButton.OnCheckedChangeListener, SettingCallPresenter.SettingCallView {
 
-    private SettingCallPresenter settingCallPresenter;
-    private SettingItem settingCall;
-
     @BindView(R.id.chk_voice_setting)
     AppCompatCheckBox chkVoiceSetting;
     @BindView(R.id.chk_video_setting)
     AppCompatCheckBox chkVideoSetting;
     @BindView(R.id.btn_confirm_setting_call)
     HiraginoButton btnConfirmSettingCall;
+
+    private SettingCallPresenter settingCallPresenter;
+    private SettingItem settingCall;
 
     public static SettingCallFragment newInstance() {
         SettingCallFragment settingCallFragment = new SettingCallFragment();

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.LoginEmailTask;
+import jp.newbees.mastersip.network.api.MyProfileTask;
 
 /**
  * Created by vietbq on 12/12/16.
@@ -32,7 +33,10 @@ public class LoginPresenter extends RegisterPresenterBase {
     @Override
     protected void didResponseTask(BaseTask task) {
         if (task instanceof LoginEmailTask) {
-            this.loginVoIP();
+            MyProfileTask myProfileTask = new MyProfileTask(context);
+            requestToServer(myProfileTask);
+        } else if (task instanceof MyProfileTask) {
+            loginVoIP();
         }
     }
 
