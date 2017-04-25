@@ -88,8 +88,12 @@ public class Utils {
     }
 
     public static void closeKeyboard(Context c, IBinder windowToken) {
-        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(windowToken, 0);
+        try {
+            InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(windowToken, 0);
+        } catch (Exception e) {
+            // handle exception
+        }
     }
 
     public static Locale getCurrentLocale(Context context) {

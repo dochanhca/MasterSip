@@ -113,8 +113,8 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
     private void updateGenderForFacebookUser() {
         if (userItem != null) {
             layoutGender.setClickable(false);
-            String genderTemp = userItem.getGender() == UserItem.MALE ? genders[MALE] : genders[FEMALE];
-            txtGender.setText(genderTemp);
+            gender = (userItem.getGender() == UserItem.MALE) ? MALE : FEMALE;
+            txtGender.setText(genders[gender]);
         }
     }
 
