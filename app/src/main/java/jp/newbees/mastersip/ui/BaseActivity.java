@@ -290,12 +290,14 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
         if (errorCode == Constant.Error.INVALID_TOKEN) {
             handleInvalidToken();
-        } else{
+        } else {
             ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
             if (showCommonErrorDialog(errorCode)) {
                 return;
             } else if (!exceptionVolleyHelper.showCommonError()) {
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "".equals(errorMessage) ? getString(R.string.something_wrong)
+                                : errorMessage
+                        , Toast.LENGTH_SHORT).show();
             }
         }
     }

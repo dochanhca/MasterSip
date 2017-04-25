@@ -74,7 +74,7 @@
     <string name="err_request_time_out">Request time out</string>
     <string name="err_unknow">Unknow Error</string>
     <string name="err_cant_get_location">Get Your location failed. Please try again</string>
-    <string name="err_server_error">Interner server error</string>
+    <string name="err_server_error">Internal server error</string>
 
     <string name="hokkaido">北海道</string>
     <string name="multi_choice_possible">※複数選択可</string>
@@ -486,4 +486,6 @@
     <string name="we_will_notify_you_with_push_notice">PUSH通知でお知らせします。</string>
     <string name="list_online_notify">オンライン通知リスト</string>
     <string name="to_change">変更する</string>
+    <string name="err_email_existed">Email existed</string>
+    <string name="something_wrong">Something went wrong</string>
 </resources>
