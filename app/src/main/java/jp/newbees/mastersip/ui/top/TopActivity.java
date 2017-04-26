@@ -193,7 +193,7 @@ public class TopActivity extends CallActivity implements
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
         backToMyMenuFragment(getSupportFragmentManager());
-        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+        showMessageDialog(String.format(getString(R.string.purchase_success), Integer.toString(point)));
     }
 
     @Override

@@ -28,7 +28,6 @@ import org.linphone.core.LinphoneFriend;
 import org.linphone.core.LinphoneFriendList;
 import org.linphone.core.LinphoneInfoMessage;
 import org.linphone.core.LinphoneProxyConfig;
-import org.linphone.core.OpenH264DownloadHelperListener;
 import org.linphone.core.PayloadType;
 import org.linphone.core.PublishState;
 import org.linphone.core.Reason;
@@ -68,12 +67,12 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class LinphoneHandler implements LinphoneCoreListener {
-    private static String FILTER_NAME_OPENH264_ENC = "MSOpenH264Enc" ;
-    private static String FILTER_NAME_OPENH264_DEC = "MSOpenH264Dec" ;
-    private static String FILTER_NAME_MEDIA_CODEC_ENC = "MSMediaCodecH264Enc" ;
-    private static String FILTER_NAME_MEDIA_CODEC_DEC = "MSMediaCodecH264Dec" ;
-    private static String FILTER_NAME_VP8_DEC = "MSVp8Dec" ;
-    private static String FILTER_NAME_VP8_ENC = "MSVp8Enc" ;
+    //    private static String FILTER_NAME_OPENH264_ENC = "MSOpenH264Enc" ;
+//    private static String FILTER_NAME_OPENH264_DEC = "MSOpenH264Dec" ;
+    private static String FILTER_NAME_MEDIA_CODEC_ENC = "MSMediaCodecH264Enc";
+    private static String FILTER_NAME_MEDIA_CODEC_DEC = "MSMediaCodecH264Dec";
+    private static String FILTER_NAME_VP8_DEC = "MSVp8Dec";
+    private static String FILTER_NAME_VP8_ENC = "MSVp8Enc";
 
     private static final String TAG = "LinphoneHandler";
     private static final int INCOMING_CALL_TIMEOUT = 60;
@@ -95,8 +94,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private LinphoneNotifier notifier;
     private boolean globalOff;
     private boolean stopLinphoneCore;
-    private org.linphone.tools.OpenH264DownloadHelper mCodecDownloader;
-    private OpenH264DownloadHelperListener mCodecListener;
+    //    private org.linphone.tools.OpenH264DownloadHelper mCodecDownloader;
+//    private OpenH264DownloadHelperListener mCodecListener;
     private String mLinphoneRootCaFile;
     private String mUserCertificatePath;
     private Timer mTimer;
@@ -107,7 +106,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
      */
     private LinphoneHandler(Context context, LinphoneNotifier notifier) {
         this.context = context;
-        mAudioManager = ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE));
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         this.notifier = notifier;
     }
 
@@ -119,12 +118,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static final synchronized boolean isRunning() {
-        try {
-            if (getInstance() != null) {
-                return true;
-            }
-        } catch (NullPointerException e) {
-            return false;
+        if (instance != null) {
+            return true;
         }
         return false;
     }
@@ -135,26 +130,32 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void show(LinphoneCore lc) {
+        // LinphoneCoreListener
     }
 
     public void byeReceived(LinphoneCore lc, String from) {
+        // LinphoneCoreListener
     }
 
     public void authInfoRequested(LinphoneCore lc, String realm, String username, String domain) {
+        // LinphoneCoreListener
     }
 
     @Override
     public void authenticationRequested(LinphoneCore linphoneCore, LinphoneAuthInfo linphoneAuthInfo, LinphoneCore.AuthMethod authMethod) {
-
+        // LinphoneCoreListener
     }
 
     public void displayStatus(LinphoneCore lc, String message) {
+        // LinphoneCoreListener
     }
 
     public void displayMessage(LinphoneCore lc, String message) {
+        // LinphoneCoreListener
     }
 
     public void displayWarning(LinphoneCore lc, String message) {
+        // LinphoneCoreListener
     }
 
     public void globalState(LinphoneCore lc, LinphoneCore.GlobalState state, String message) {
@@ -180,9 +181,11 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void newSubscriptionRequest(LinphoneCore lc, LinphoneFriend lf, String url) {
+        // LinphoneCoreListener
     }
 
     public void notifyPresenceReceived(LinphoneCore lc, LinphoneFriend lf) {
+        // LinphoneCoreListener
     }
 
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
@@ -198,15 +201,13 @@ public class LinphoneHandler implements LinphoneCoreListener {
             notifyPauseCallToServer();
         } else if (cstate == LinphoneCall.State.Resuming) {
             handleCallResuming();
-        } else if (cstate == LinphoneCall.State.IncomingReceived || (cstate == LinphoneCall.State.CallIncomingEarlyMedia )) {
+        } else if (cstate == LinphoneCall.State.IncomingReceived || (cstate == LinphoneCall.State.CallIncomingEarlyMedia)) {
             if (linphoneCore.getCallsNb() == 1) {
                 requestAudioFocus(STREAM_RING);
             }
-        }else if(cstate == LinphoneCall.State.Connected) {
-            if(call.getDirection() == CallDirection.Incoming) {
-                mAudioManager.abandonAudioFocus(null);
-                requestAudioFocus(STREAM_VOICE_CALL);
-            }
+        } else if (cstate == LinphoneCall.State.Connected && call.getDirection() == CallDirection.Incoming) {
+            mAudioManager.abandonAudioFocus(null);
+            requestAudioFocus(STREAM_VOICE_CALL);
         }
         String callId = ConfigManager.getInstance().getCallId();
         ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, call.getDirection(), callId);
@@ -252,18 +253,23 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void callStatsUpdated(LinphoneCore lc, LinphoneCall call, LinphoneCallStats stats) {
+        // LinphoneCoreListener
     }
 
     public void ecCalibrationStatus(LinphoneCore lc, LinphoneCore.EcCalibratorStatus status, int delay_ms, Object data) {
+        // LinphoneCoreListener
     }
 
     public void callEncryptionChanged(LinphoneCore lc, LinphoneCall call, boolean encrypted, String authenticationToken) {
+        // LinphoneCoreListener
     }
 
     public void notifyReceived(LinphoneCore lc, LinphoneCall call, LinphoneAddress from, byte[] event) {
+        // LinphoneCoreListener
     }
 
     public void dtmfReceived(LinphoneCore lc, LinphoneCall call, int dtmf) {
+        // LinphoneCoreListener
     }
 
     /**
@@ -302,9 +308,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             };
             mTimer = new Timer("Linphone scheduler");
             mTimer.schedule(lTask, 0, 20);
-        } catch (LinphoneCoreException | IOException e ) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (LinphoneCoreException | IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -369,24 +373,24 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void supportOnlyH264() throws LinphoneCoreException {
         PayloadType[] videoCodecs = linphoneCore.getVideoCodecs();
         for (PayloadType payloadType : videoCodecs) {
-            if (payloadType.getMime().equals("H264")) {
+            if ("H264".equals(payloadType.getMime())) {
                 linphoneCore.enablePayloadType(payloadType, true);
 //                linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC , false);
 //                linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC , false);
 
 //                linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_DEC , true);
 //                linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_ENC , true);
-            }else {
+            } else {
                 linphoneCore.enablePayloadType(payloadType, false);
             }
         }
     }
 
     private void updateFilterNameForVideo() {
-        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_DEC , false);
-        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_ENC , false);
-        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC , true);
-        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC , true);
+        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_DEC, false);
+        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_VP8_ENC, false);
+        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_ENC, true);
+        linphoneCore.getMSFactory().enableFilterFromName(FILTER_NAME_MEDIA_CODEC_DEC, true);
 
 //        String decoder = linphoneCore.getMSFactory().getDecoderText("H264");
 //        String encoder = linphoneCore.getMSFactory().getEncoderText("H264");
@@ -446,7 +450,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             linphoneCore.clearAuthInfos();
             linphoneCore.clearProxyConfigs();
             String domain = ConfigManager.getInstance().getDomain();
-            String proxy = "sip:"+domain;
+            String proxy = "sip:" + domain;
             LinphoneAddress identityAddress = LinphoneCoreFactory.instance().createLinphoneAddress(identity);
             LinphoneAddress proxyAddress = LinphoneCoreFactory.instance().createLinphoneAddress(proxy);
             proxyAddress.setTransport(LinphoneAddress.TransportType.LinphoneTransportTcp);
@@ -552,30 +556,39 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void transferState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State newCallState) {
+        // LinphoneCoreListener
     }
 
     public void infoReceived(LinphoneCore lc, LinphoneCall call, LinphoneInfoMessage info) {
+        // LinphoneCoreListener
     }
 
     public void subscriptionStateChanged(LinphoneCore lc, LinphoneEvent ev, SubscriptionState state) {
+        // LinphoneCoreListener
     }
 
     public void notifyReceived(LinphoneCore lc, LinphoneEvent ev, String eventName, LinphoneContent content) {
+        // LinphoneCoreListener
     }
 
     public void publishStateChanged(LinphoneCore lc, LinphoneEvent ev, PublishState state) {
+        // LinphoneCoreListener
     }
 
     public void isComposingReceived(LinphoneCore lc, LinphoneChatRoom cr) {
+        // LinphoneCoreListener
     }
 
     public void configuringStatus(LinphoneCore lc, LinphoneCore.RemoteProvisioningState state, String message) {
+        // LinphoneCoreListener
     }
 
     public void fileTransferProgressIndication(LinphoneCore lc, LinphoneChatMessage message, LinphoneContent content, int progress) {
+        // LinphoneCoreListener
     }
 
     public void fileTransferRecv(LinphoneCore lc, LinphoneChatMessage message, LinphoneContent content, byte[] buffer, int size) {
+        // LinphoneCoreListener
     }
 
     public int fileTransferSend(LinphoneCore lc, LinphoneChatMessage message, LinphoneContent content, ByteBuffer buffer, int size) {
@@ -583,20 +596,24 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void uploadProgressIndication(LinphoneCore lc, int offset, int total) {
+        // LinphoneCoreListener
     }
 
     public void uploadStateChanged(LinphoneCore lc, LinphoneCore.LogCollectionUploadState state, String info) {
+        // LinphoneCoreListener
     }
 
     public void friendListCreated(LinphoneCore lc, LinphoneFriendList list) {
+        // LinphoneCoreListener
     }
 
     public void friendListRemoved(LinphoneCore lc, LinphoneFriendList list) {
+        // LinphoneCoreListener
     }
 
     @Override
     public void networkReachableChanged(LinphoneCore linphoneCore, boolean b) {
-
+        // LinphoneCoreListener
     }
 
     public void sendPacket(String raw, String callee) {
@@ -811,7 +828,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static synchronized boolean isCalling() {
-        if (getInstance() == null) {
+        if (instance == null) {
             return false;
         }
         return getInstance().linphoneCore.isIncall();
@@ -879,7 +896,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public void handleOutgoingCallGSM() {
-
+        //LinphoneCoreListener
     }
 
     public void handleVolumeChanged(int volume) {
@@ -906,9 +923,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     Logger.e(TAG, "Sent Pause call failure " + errorMessage);
                 }
             });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -925,9 +940,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     Logger.e(TAG, "Sent Resume call");
                 }
             }, null);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (JSONException |NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -969,19 +982,19 @@ public class LinphoneHandler implements LinphoneCoreListener {
         });
     }
 
-    public OpenH264DownloadHelperListener getOpenH264HelperListener() {
-        return mCodecListener;
-    }
+//    public OpenH264DownloadHelperListener getOpenH264HelperListener() {
+//        return mCodecListener;
+//    }
 
     public Context getContext() {
         return context;
     }
 
-    private void requestAudioFocus(int stream){
-        if (!mAudioFocused){
-            int res = mAudioManager.requestAudioFocus(null, stream, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT );
+    private void requestAudioFocus(int stream) {
+        if (!mAudioFocused) {
+            int res = mAudioManager.requestAudioFocus(null, stream, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             Log.d("Audio focus requested: " + (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED ? "Granted" : "Denied"));
-            if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) mAudioFocused=true;
+            if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) mAudioFocused = true;
         }
     }
 }

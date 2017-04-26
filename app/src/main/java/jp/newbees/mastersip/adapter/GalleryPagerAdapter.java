@@ -52,7 +52,7 @@ public class GalleryPagerAdapter extends PagerAdapter {
         ImageView imgApproving = (ImageView) convertView.findViewById(R.id.img_mask_approving);
 
         TextView txtApproving = (TextView) convertView.findViewById(R.id.txt_approving);
-        final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imgPhoto, true);
+        new PhotoViewAttacher(imgPhoto, true);
 
         Glide.with(context).load(imageItem.getOriginUrl()).fitCenter()
                 .into(imgPhoto);

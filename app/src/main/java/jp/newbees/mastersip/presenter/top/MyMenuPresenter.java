@@ -157,7 +157,7 @@ public class MyMenuPresenter extends BasePresenter {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                float percent = (transferredBytes * 100) / totalSize;
+                float percent = (float) (((double)transferredBytes * 100) / totalSize);
                 if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR) {
                     menuView.onUploadAvatarProgressChanged(percent);
                 } else if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_GALLERY) {

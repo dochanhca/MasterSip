@@ -21,7 +21,7 @@ public class FirebaseUtils {
         //TODO : Prevent instance object
     }
 
-    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException, NullPointerException {
+    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException {
         if (data.containsKey(Constant.JSON.CALLER)) {
             return parseDataForCallMessage(data);
         }

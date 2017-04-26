@@ -33,7 +33,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
 public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
         PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
 
-    protected static final String COMPETITOR = "COMPETITOR";
+    protected static final String KEY_COMPETITOR = "KEY_COMPETITOR";
     protected static final String CALL_ID = "CALL_ID";
     protected static final String RUN_FROM = "RUN_FROM";
     public static final int RUN_FROM_BG = 1;
@@ -71,7 +71,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
-        this.presenter.acceptCall(calId,  callType);
+        this.presenter.acceptCall(calId, callType);
     }
 
     public final void terminalCall() {
@@ -124,7 +124,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        competitor = getIntent().getExtras().getParcelable(COMPETITOR);
+        competitor = getIntent().getExtras().getParcelable(KEY_COMPETITOR);
         callId = getIntent().getExtras().getString(CALL_ID);
         runFrom = getIntent().getExtras().getInt(RUN_FROM, RUN_FROM_FG);
 
@@ -141,6 +141,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
                 break;
             case Constant.API.VIDEO_CHAT_CALL:
                 initVideoChatFragment();
+                break;
+            default:
                 break;
         }
     }
@@ -177,10 +179,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCoinChanged(int coin) {
-        if (competitor.getGender() == UserItem.MALE) {
-            if (callingFragment != null) {
-                callingFragment.onCoinChanged(coin);
-            }
+        if (competitor.getGender() == UserItem.MALE && callingFragment != null) {
+            callingFragment.onCoinChanged(coin);
         }
     }
 
@@ -214,6 +214,8 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
                 hideWaitingFragment();
                 showCallingFragment();
                 break;
+            default:
+                break;
         }
         callingFragment.updateUIWhenStartCalling();
     }
@@ -232,7 +234,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     private void hideWaitingFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(WaitingFragment.class.getName());
-        if(fragment != null){
+        if (fragment != null) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
@@ -309,7 +311,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     @Override
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
-        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+        showMessageDialog(String.format(getString(R.string.purchase_success), Integer.toString(point)));
     }
 
     @Override
@@ -329,7 +331,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     protected static Bundle getBundle(UserItem competitor, String callID) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(COMPETITOR, competitor);
+        bundle.putParcelable(KEY_COMPETITOR, competitor);
         bundle.putString(CALL_ID, callID);
         return bundle;
     }

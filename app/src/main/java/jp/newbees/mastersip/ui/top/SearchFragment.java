@@ -256,15 +256,13 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         addScrollToLoadMore();
 
         switch (currentFilterMode) {
-            case MODE_FOUR_COLUMN:
-                setupListViewWithModeFour();
-                break;
             case MODE_TWO_COLUMN:
                 setupListViewWithModeTwo();
                 break;
             case MODE_LIST:
                 setupListViewWithModeList();
                 break;
+            case MODE_FOUR_COLUMN:
             default:
                 setupListViewWithModeFour();
                 break;

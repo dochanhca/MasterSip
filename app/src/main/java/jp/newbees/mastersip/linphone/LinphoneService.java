@@ -67,15 +67,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         return LinphoneHandler.getInstance().isRunning();
     }
 
-    /**
-     * @throws RuntimeException service not instantiated
-     */
-    public static LinphoneService instance() {
-        if (isReady()) return instance;
-
-        throw new RuntimeException("LinphoneService not instantiated yet");
-    }
-
     private static void destroyLinphoneService() {
         LinphoneService.instance = null;
     }

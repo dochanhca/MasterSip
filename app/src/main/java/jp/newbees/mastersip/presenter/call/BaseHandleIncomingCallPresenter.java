@@ -36,15 +36,21 @@ public class BaseHandleIncomingCallPresenter extends BaseHandleCallPresenter {
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onReceivingIncomingCallEvent(ReceivingCallEvent event) {
-        if (event.getDirection() == CallDirection.Incoming
-                && callType == Constant.API.VOICE_CALL
-                && event.getCallEvent() == ReceivingCallEvent.INCOMING_CONNECTED_CALL) {
-            super.handleCallConnected();
-        } else if (event.getDirection() == CallDirection.Incoming
-                && (callType == Constant.API.VIDEO_CALL
-                    || callType == Constant.API.VIDEO_CHAT_CALL)
-                && event.getCallEvent() == ReceivingCallEvent.STREAMS_RUNNING) {
+        if (incomingVoiceCall(event) || incomingVideoOrVideoChatCall(event)) {
             super.handleCallConnected();
         }
+    }
+
+    private boolean incomingVideoOrVideoChatCall(ReceivingCallEvent event) {
+        return event.getDirection() == CallDirection.Incoming
+                && (callType == Constant.API.VIDEO_CALL
+                || callType == Constant.API.VIDEO_CHAT_CALL)
+                && event.getCallEvent() == ReceivingCallEvent.STREAMS_RUNNING;
+    }
+
+    private boolean incomingVoiceCall(ReceivingCallEvent event) {
+        return event.getDirection() == CallDirection.Incoming
+                && callType == Constant.API.VOICE_CALL
+                && event.getCallEvent() == ReceivingCallEvent.INCOMING_CONNECTED_CALL;
     }
 }

@@ -109,35 +109,51 @@ public abstract class CallingFragment extends BaseFragment {
     protected abstract void updateUIWhenStartCalling();
 
     protected final void enableMicrophone(boolean enable) {
-        getCallActivity().enableMicrophone(enable);
+        if (getCallActivity() != null) {
+            getCallActivity().enableMicrophone(enable);
+        }
     }
 
     protected final void terminalCall() {
-        getCallActivity().terminalCall();
+        if (getCallActivity() != null) {
+            getCallActivity().terminalCall();
+        }
     }
 
     protected final void declineCall() {
-        getCallActivity().declineCall();
+        if (getCallActivity() != null) {
+            getCallActivity().declineCall();
+        }
     }
 
     protected final void acceptCall(String callId, int callType) throws LinphoneCoreException {
-        getCallActivity().acceptCall(callId, callType);
+        if (getCallActivity() != null) {
+            getCallActivity().acceptCall(callId, callType);
+        }
     }
 
     protected final void enableSpeaker(boolean enable) {
-        getCallActivity().enableSpeaker(enable);
+        if (getCallActivity() != null) {
+            getCallActivity().enableSpeaker(enable);
+        }
     }
 
     protected void switchCamera(SurfaceView mCaptureView) {
-        getCallActivity().switchCamera(mCaptureView);
+        if (getCallActivity() != null) {
+            getCallActivity().switchCamera(mCaptureView);
+        }
     }
 
     protected void useFrontCamera() {
-        getCallActivity().useFrontCamera();
+        if (getCallActivity() != null) {
+            getCallActivity().useFrontCamera();
+        }
     }
 
     protected final void enableCamera(boolean enable) {
-        getCallActivity().enableCamera(enable);
+        if (getCallActivity() != null) {
+            getCallActivity().enableCamera(enable);
+        }
     }
 
     protected final boolean isSpeakerEnalbed() {

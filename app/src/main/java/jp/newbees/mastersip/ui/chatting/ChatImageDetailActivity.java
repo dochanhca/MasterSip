@@ -45,34 +45,32 @@ public class ChatImageDetailActivity extends CallActivity {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ButterKnife.bind(this);
+    }
 
+    @Override
+    protected void initVariables(Bundle savedInstanceState) {
         ImageChatItem imageChatItem = getIntent().getParcelableExtra(IMAGE_CHAT_ITEM);
         if (imageChatItem.isOwner()) {
             layoutBottomAction.setVisibility(View.GONE);
         } else {
             layoutBottomAction.setVisibility(View.VISIBLE);
         }
-        final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imgPhoto, true);
+        new PhotoViewAttacher(imgPhoto, true);
         Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl())
                 .thumbnail(0.1f)
                 .into(imgPhoto);
     }
 
-    @Override
-    protected void initVariables(Bundle savedInstanceState) {
-
-    }
-
     @OnClick({R.id.txt_save_photo, R.id.txt_report, R.id.img_close})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.txt_save_photo:
-                break;
-            case R.id.txt_report:
-                break;
             case R.id.img_close:
                 finish();
                 overridePendingTransition(R.anim.enter_from_top, R.anim.exit_to_bot);
+                break;
+            case R.id.txt_save_photo:
+            case R.id.txt_report:
+            default:
                 break;
         }
     }
