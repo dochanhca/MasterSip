@@ -74,7 +74,7 @@
     <string name="err_request_time_out">Request time out</string>
     <string name="err_unknow">Unknow Error</string>
     <string name="err_cant_get_location">Get Your location failed. Please try again</string>
-    <string name="err_server_error">Interner server error</string>
+    <string name="err_server_error">Internal server error</string>
 
     <string name="hokkaido">北海道</string>
     <string name="multi_choice_possible">※複数選択可</string>
@@ -380,7 +380,7 @@
     <string name="partner_point_are_missing">相手のポイントが不足しています</string>
     <string name="mess_suggest_missing_point_for_girl">さんは通話に必要な\n ポイントが不足しています。\n チャットでアタックしてみましょう！</string>
     <string name="to_attack">アタックする</string>
-    <string name="mess_user_busy">さんは他のお相手と通話を開始してしまいました。 \nしばらくたってからおかけ直しください。</string>
+    <string name="mess_user_busy">さんは他のお相手と通話を開始してしまいました。\nしばらくたってからおかけ直しください。</string>
     <string name="mess_call_limited">現在通話が混み合っています</string>
     <string name="i_m_sorry_pls_try_again">申し訳ありません。 \nしばらくたってからおかけ直しください。</string>
     <string name="confirm_request_enable_video_call">は現在通話ができません。
@@ -448,12 +448,12 @@
     <string name="low_signal">お相手の回線が不安定です</string>
     <string name="follower">フォロワー</string>
     <string name="following">フォロー</string>
-    <string name="description_followers">
+    <string name="description_followings">
         <![CDATA[
     自分がお気に入りした最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
     ]]>
     </string>
-    <string name="description_following">
+    <string name="description_followers">
          <![CDATA[
     お気に入りしてくれた最新<font color=\'#fb5050\'>%1$d人</font>を表示しています。
     ]]>
@@ -488,4 +488,6 @@
     <string name="couldnt_accept_call">An error occurred while accepting the call</string>
     <string name="list_online_notify">オンライン通知リスト</string>
     <string name="to_change">変更する</string>
+    <string name="err_email_existed">Email existed</string>
+    <string name="something_wrong">Something went wrong</string>
 </resources>

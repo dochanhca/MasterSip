@@ -112,6 +112,7 @@ public class StartPresenter extends RegisterPresenterBase {
                 String birthday = userInfo.getString("birthday");
                 if (!isAbove18Age(birthday)) {
                     startView.didBirthdayIsBelow18();
+                    return;
                 }
                 userItem.setDateOfBirth(birthday);
             } else {
