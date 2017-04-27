@@ -5,12 +5,15 @@ import android.content.Context;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.linphone.core.OpenH264DownloadHelperListener;
+import org.linphone.mediastream.Version;
 import org.linphone.tools.OpenH264DownloadHelper;
 
 import java.util.Map;
 
 import jp.newbees.mastersip.event.RegisterVoIPEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -30,11 +33,13 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
 public class LinphoneServicePresenter extends BasePresenter {
     private final OpenH264DownloadHelper mCodecDownloader;
     private IncomingCallListener incomingCallListener;
+    private OpenH264DownloadHelperListener h264DownloadHelperListener;
 
-    public LinphoneServicePresenter(Context context, IncomingCallListener incomingCallListener) {
+    public LinphoneServicePresenter(Context context, IncomingCallListener incomingCallListener, OpenH264DownloadHelperListener h264DownloadHelperListener) {
         super(context);
         this.incomingCallListener = incomingCallListener;
         this.mCodecDownloader = new OpenH264DownloadHelper(context);
+        this.h264DownloadHelperListener = h264DownloadHelperListener;
     }
 
     @Override
@@ -85,8 +90,23 @@ public class LinphoneServicePresenter extends BasePresenter {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());
             }
+            checkDownloadOpenH264();
         } else if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_FAILED){
             stopLinphoneService();
+        }
+    }
+
+    private final void checkDownloadOpenH264() {
+        if (Version.getCpuAbis().contains("armeabi-v7a")
+                && !Version.getCpuAbis().contains("x86")
+                && !mCodecDownloader.isCodecFound()
+                && LinphoneHandler.getInstance().enableDownloadOpenH264()
+                ) {
+            Logger.e("LinphoneServicePresenter", "We will download OpenH264");
+            mCodecDownloader.setOpenH264HelperListener(h264DownloadHelperListener);
+            mCodecDownloader.downloadCodec();
+        }else {
+            Logger.e("LinphoneServicePresenter", "No need download OpenH264");
         }
     }
 
