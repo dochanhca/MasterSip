@@ -259,7 +259,7 @@ public class CallPresenter extends BasePresenter {
         requestToServer(task);
     }
 
-    public final static String getMessageSendRequestSuccess(Context context, UserItem userItem, int type) {
+    public static final String getMessageSendRequestSuccess(Context context, UserItem userItem, int type) {
         String message = "";
         switch (type) {
             case Constant.API.VOICE_CALL:

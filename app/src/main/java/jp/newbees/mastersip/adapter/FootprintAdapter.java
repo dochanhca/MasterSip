@@ -48,8 +48,9 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
     /**
      * Adapter for foot print
+     *
      * @param context
-     * @param data Non-null, must be an instance of List
+     * @param data    Non-null, must be an instance of List
      */
     public FootprintAdapter(Context context, List<FootprintItem> data) {
         this.context = context;
@@ -58,6 +59,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
     /**
      * Get number of sections
+     *
      * @return
      */
     @Override
@@ -67,6 +69,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
     /**
      * Get number of item in  section
+     *
      * @param section
      * @return
      */
@@ -120,20 +123,21 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
     /**
      * Footprint ViewHolder
      */
-    public static class FootprintViewHolder extends RecyclerView.ViewHolder{
+    public static class FootprintViewHolder extends RecyclerView.ViewHolder {
         private HeaderHolder headerHolder;
         private ItemHolder itemHolder;
 
         /**
          * Constructor
+         *
          * @param itemView View for holder Item or Header
          * @param viewType @VIEW_TYPE_HEADER or @VIEW_TYPE_ITEM
          */
-        public FootprintViewHolder(View itemView,int viewType) {
+        public FootprintViewHolder(View itemView, int viewType) {
             super(itemView);
             if (viewType == VIEW_TYPE_HEADER) {
                 headerHolder = new HeaderHolder(itemView);
-            }else {
+            } else {
                 itemHolder = new ItemHolder(itemView);
             }
         }
@@ -142,21 +146,21 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
             /**
              * Title for Section
              */
-            public HiraginoTextView txtSection;
+            private HiraginoTextView txtSection;
+
             HeaderHolder(View view) {
                 this.txtSection = (HiraginoTextView) view;
             }
         }
 
         class ItemHolder implements View.OnClickListener {
-            public HiraginoTextView txtUserNameAge;
-            public HiraginoTextView txtCallSetting;
-            public HiraginoTextView txtLastFootprint;
-            public Button btnVoiceCall;
-            public Button btnVideoCall;
-            public Button btnChat;
-            public ImageView imgAvatar;
-            public View separateView;
+            private HiraginoTextView txtUserNameAge;
+            private HiraginoTextView txtCallSetting;
+            private HiraginoTextView txtLastFootprint;
+            private Button btnVoiceCall;
+            private Button btnVideoCall;
+            private Button btnChat;
+            private ImageView imgAvatar;
             private OnFootprintClickListener footPrintListener;
             private UserItem userItem;
             private View rootView;
@@ -166,8 +170,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
                 this.txtUserNameAge = (HiraginoTextView) view.findViewById(R.id.txt_user_name_age);
                 this.txtCallSetting = (HiraginoTextView) view.findViewById(R.id.txt_call_setting);
                 this.imgAvatar = (ImageView) view.findViewById(R.id.img_avatar);
-                this.txtLastFootprint =  (HiraginoTextView) view.findViewById(R.id.txt_last_footprint);
-                this.separateView =  view.findViewById(R.id.separate_view);
+                this.txtLastFootprint = (HiraginoTextView) view.findViewById(R.id.txt_last_footprint);
                 this.btnVideoCall = (Button) view.findViewById(R.id.btn_video_call);
                 this.btnVoiceCall = (Button) view.findViewById(R.id.btn_voice_call);
                 this.btnChat = (Button) view.findViewById(R.id.btn_chat);
@@ -177,6 +180,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
             /**
              * Update view for item
+             *
              * @param userItem
              * @param context
              */
@@ -192,7 +196,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
             private void updateStatusUser(int status, Context context) {
                 if (status == UserItem.ACTIVE) {
                     handleViewForActiveUser(context);
-                }else {
+                } else {
                     handleViewForQuitUser(context);
                 }
             }
@@ -235,19 +239,20 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
                 int colorVideo = settingItem.getVideoCall() == SettingItem.ON ? colorGreen : colorGray;
                 int colorVoice = settingItem.getVoiceCall() == SettingItem.ON ? colorGreen : colorGray;
 
-                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0,video, 0 , 0);
-                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0,voice, 0 , 0);
+                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0, video, 0, 0);
+                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0, voice, 0, 0);
                 btnVoiceCall.setTextColor(colorVoice);
                 btnVideoCall.setTextColor(colorVideo);
             }
 
             /**
              * Update description setting call
+             *
              * @param context
              * @param lastLogin
              * @param settingItem
              */
-            public void updateDescriptionSettingCall(Context context,String lastLogin, SettingItem settingItem) {
+            public void updateDescriptionSettingCall(Context context, String lastLogin, SettingItem settingItem) {
                 boolean enableVideo = settingItem.getVideoCall() == SettingItem.ON ? true : false;
                 boolean enableVoice = settingItem.getVoiceCall() == SettingItem.ON ? true : false;
 
@@ -255,10 +260,10 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
                 if (enableVideo && enableVoice) {
                     description = context.getString(R.string.allow_video_voice_call);
                 } else if (enableVideo) {
-                    description =  context.getString(R.string.allow_video_only);
+                    description = context.getString(R.string.allow_video_only);
                 } else if (enableVoice) {
-                    description =  context.getString(R.string.allow_voice_only);
-                }else {
+                    description = context.getString(R.string.allow_voice_only);
+                } else {
                     String format = context.getResources().getString(R.string.allow_chat_only);
                     String lastLoginPretty = getPrettyTimeLastLogin(context, lastLogin);
                     description = String.format(format, lastLoginPretty);
@@ -275,6 +280,7 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
 
             /**
              * Register listener on each item footprint
+             *
              * @param footPrintListener
              */
             public void setOnFootprintClickListener(OnFootprintClickListener footPrintListener) {
@@ -285,22 +291,19 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
             public void onClick(View view) {
                 if (view == btnChat) {
                     this.footPrintListener.onChatClickListener(this.userItem);
-                }else if(view == btnVoiceCall) {
+                } else if (view == btnVoiceCall) {
                     this.footPrintListener.onVoiceClickListener(this.userItem);
-                }else if (view == btnVideoCall) {
+                } else if (view == btnVideoCall) {
                     this.footPrintListener.onVideoClickListener(this.userItem);
-                }else {
+                } else {
                     this.footPrintListener.onProfileClickListener(this.userItem);
                 }
             }
 
             private int getQuitImage() {
                 int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-                int quitImage = gender
-                        == UserItem.MALE
-                        ? R.drawable.ic_disable_female
+                return gender == UserItem.MALE ? R.drawable.ic_disable_female
                         : R.drawable.ic_disable_male;
-                return quitImage;
             }
         }
 
@@ -310,24 +313,28 @@ public class FootprintAdapter extends SectionedRecyclerViewAdapter<FootprintAdap
         public interface OnFootprintClickListener {
             /**
              * Callback when user clicks on Chat Button
+             *
              * @param userItem
              */
             void onChatClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Video Button
+             *
              * @param userItem
              */
             void onVideoClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Voice Button
+             *
              * @param userItem
              */
             void onVoiceClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Item
+             *
              * @param userItem
              */
             void onProfileClickListener(UserItem userItem);

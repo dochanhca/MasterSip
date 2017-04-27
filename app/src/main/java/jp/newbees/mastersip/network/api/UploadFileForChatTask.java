@@ -82,6 +82,7 @@ public class UploadFileForChatTask extends BaseUploadTask<BaseChatItem> {
         params.put(Constant.JSON.EXTENSION_SRC, sender.getSipItem().getExtension());
         params.put(Constant.JSON.EXTENSION_DEST, receiverExtension);
         params.put(Constant.JSON.TYPE, typeUpload);
+        Logger.e(TAG, params.toString());
         return params;
     }
 }

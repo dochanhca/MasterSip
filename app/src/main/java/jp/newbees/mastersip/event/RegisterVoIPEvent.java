@@ -11,6 +11,10 @@ public class RegisterVoIPEvent {
 
     private int responseCode;
 
+    public RegisterVoIPEvent(int responseCode) {
+        this(responseCode, false);
+    }
+
     /**
      *
      * @param responseCode
@@ -22,10 +26,6 @@ public class RegisterVoIPEvent {
 
     public boolean isInProgress() {
         return inProgress;
-    }
-
-    public RegisterVoIPEvent(int responseCode) {
-        this(responseCode, false);
     }
 
     public int getResponseCode() {

@@ -3,7 +3,14 @@ package jp.newbees.mastersip.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -80,7 +87,7 @@ public class ImageUtils {
 
         Bitmap decodeSampledBitmap = null;
         boolean isSuccess = false;
-        while(!isSuccess) {
+        while (!isSuccess) {
             try {
                 isSuccess = true;
                 decodeSampledBitmap = BitmapFactory.decodeFile(imgPath, options);
@@ -93,12 +100,12 @@ public class ImageUtils {
         }
 
         ExifInterface exif = getExif(imgPath);
-        if( exif == null){
+        if (exif == null) {
             return decodeSampledBitmap;
         }
         int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
         int rotationInDegrees = exifToDegrees(exifOrientation);
-        return rotate(decodeSampledBitmap,rotationInDegrees);
+        return rotate(decodeSampledBitmap, rotationInDegrees);
     }
 
     private static ExifInterface getExif(String path) {
@@ -112,9 +119,13 @@ public class ImageUtils {
     }
 
     private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
         return 0;
     }
 
@@ -133,26 +144,20 @@ public class ImageUtils {
         return inSampleSize;
     }
 
-    public static Bitmap rotate(Bitmap bitmap, int degrees)
-    {
-        if(degrees != 0 && bitmap != null)
-        {
+    public static Bitmap rotate(Bitmap bitmap, int degrees) {
+        if (degrees != 0 && bitmap != null) {
             Matrix m = new Matrix();
             m.setRotate(degrees, (float) bitmap.getWidth() / 2,
                     (float) bitmap.getHeight() / 2);
 
-            try
-            {
+            try {
                 Bitmap converted = Bitmap.createBitmap(bitmap, 0, 0,
                         bitmap.getWidth(), bitmap.getHeight(), m, true);
-                if(bitmap != converted)
-                {
+                if (bitmap != converted) {
                     bitmap.recycle();
                     bitmap = converted;
                 }
-            }
-            catch(OutOfMemoryError ex)
-            {
+            } catch (OutOfMemoryError ex) {
                 // if out of memory, return original bitmap
             }
         }
@@ -226,4 +231,25 @@ public class ImageUtils {
                 ExifInterface.ORIENTATION_UNDEFINED);
     }
 
+    public static Bitmap getRoundedBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
+    }
 }
+

@@ -7,11 +7,11 @@ import jp.newbees.mastersip.model.UserItem;
  */
 
 public class GSMCallEvent {
+    public static final int PAUSED_GSM_CALL_EVENT = 1;
+    public static final int RESUME_GSM_CALL_EVENT = 2;
+
     private final int callEvent;
     private UserItem user;
-
-    public final static int PAUSED_GSM_CALL_EVENT = 1;
-    public final static int RESUME_GSM_CALL_EVENT = 2;
 
     public GSMCallEvent(UserItem user, int callEvent) {
         this.callEvent = callEvent;

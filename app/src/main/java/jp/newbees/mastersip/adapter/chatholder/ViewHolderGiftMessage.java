@@ -2,11 +2,9 @@ package jp.newbees.mastersip.adapter.chatholder;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -17,7 +15,7 @@ import jp.newbees.mastersip.model.GiftChatItem;
  */
 
 public class ViewHolderGiftMessage extends BaseChatViewHolder<GiftChatItem>{
-    private CircleImageView imgGift;
+    private ImageView imgGift;
     private HiraginoTextView txtContent;
     private TextView txtTime;
     private TextView txtState;
@@ -28,7 +26,7 @@ public class ViewHolderGiftMessage extends BaseChatViewHolder<GiftChatItem>{
 
     @Override
     protected void initView(View root) {
-        imgGift = (CircleImageView) root.findViewById(R.id.img_gift);
+        imgGift = (ImageView) root.findViewById(R.id.img_gift);
         txtContent = (HiraginoTextView) root.findViewById(R.id.txt_content);
         txtTime = (TextView) root.findViewById(R.id.txt_time);
         txtState = (TextView) root.findViewById(R.id.txt_state);
@@ -37,7 +35,8 @@ public class ViewHolderGiftMessage extends BaseChatViewHolder<GiftChatItem>{
     @Override
     public void bindView(GiftChatItem giftChatItem) {
         String imageUrl = giftChatItem.getGiftItem().getGiftImage().getOriginUrl();
-        Glide.with(getContext()).load(imageUrl).into(imgGift);
+        loadGiftImage(imageUrl, imgGift);
+
         txtContent.setText(giftChatItem.getContent());
         txtTime.setText(giftChatItem.getShortDate());
         txtState.setVisibility(

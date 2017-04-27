@@ -1,18 +1,21 @@
 package jp.newbees.mastersip.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.GiftItem;
 
@@ -33,18 +36,44 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
 
     @Override
     public GiftViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_gift, parent, false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.item_gift, parent, false);
         return new GiftViewHolder(view, context);
     }
 
     @Override
-    public void onBindViewHolder(GiftViewHolder holder, int position) {
+    public void onBindViewHolder(final GiftViewHolder holder, int position) {
         GiftItem giftItem = this.giftItems.get(position);
         String price = String.valueOf(giftItem.getPrice()) + context.getString(R.string.pt);
         String giftUrl = giftItem.getGiftImage().getOriginUrl();
         holder.txtGiftName.setText(giftItem.getName());
         holder.txtGiftPrice.setText(price);
-        Glide.with(context).load(giftUrl).into(holder.imgGiftImage);
+
+        Glide.with(context).load(giftUrl)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        int w = resource.getWidth();
+                        int h = resource.getHeight();
+                        setImageGiftSize(w, h);
+                        holder.imgGiftImage.setImageBitmap(resource);
+                    }
+
+                    private void setImageGiftSize(int w, int h) {
+                        double radius =  holder.getGiftSize(context);
+                        double hypo =  Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
+                        double p = radius / hypo;
+                        w = (int) (w * p);
+                        h = (int) (h * p);
+
+                        ViewGroup.LayoutParams layoutParams = holder.imgGiftImage.getLayoutParams();
+                        layoutParams.height = h;
+                        layoutParams.width = w;
+                        holder.imgGiftImage.setLayoutParams(layoutParams);
+
+                    }
+                });
+
         bindSelectGiftAction(holder, giftItem);
     }
 
@@ -53,7 +82,7 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
         holder.llGift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (null != giftItemSelectListener){
+                if (null != giftItemSelectListener) {
                     GiftItem giftItem = (GiftItem) view.getTag();
                     giftItemSelectListener.onGiftItemSelect(giftItem);
                 }
@@ -72,25 +101,27 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
 
     static class GiftViewHolder extends RecyclerView.ViewHolder {
         private TextView txtGiftName;
-        private CircleImageView imgGiftImage;
+        private ImageView imgGiftImage;
         private TextView txtGiftPrice;
         private LinearLayout llGift;
+        private LinearLayout layoutImgGift;
 
         public GiftViewHolder(View itemView, Context context) {
             super(itemView);
             txtGiftName = (TextView) itemView.findViewById(R.id.txt_gift_name);
-            imgGiftImage = (CircleImageView) itemView.findViewById(R.id.img_gift);
+            imgGiftImage = (ImageView) itemView.findViewById(R.id.img_gift);
             txtGiftPrice = (TextView) itemView.findViewById(R.id.txt_gift_price);
             llGift = (LinearLayout) itemView.findViewById(R.id.ll_gift);
-            setImageHeight(context);
+            layoutImgGift = (LinearLayout) itemView.findViewById(R.id.layout_img_gift);
+            setLayoutImageHeight(context);
         }
 
-        private void setImageHeight(Context context) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imgGiftImage.getLayoutParams();
+        private void setLayoutImageHeight(Context context) {
+            ViewGroup.LayoutParams layoutParams = layoutImgGift.getLayoutParams();
             float size = getGiftSize(context);
             layoutParams.height = (int) size;
             layoutParams.width = (int) size;
-            imgGiftImage.setLayoutParams(layoutParams);
+            layoutImgGift.setLayoutParams(layoutParams);
         }
 
         private float getGiftSize(Context c) {

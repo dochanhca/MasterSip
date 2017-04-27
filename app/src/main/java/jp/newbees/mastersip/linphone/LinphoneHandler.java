@@ -277,7 +277,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void createLinphoneCore() {
         try {
-            Logger.e("LinphoneHandler", "Create a new linphone core");
+            Logger.e(TAG, "Create a new linphone core");
             basePath = context.getFilesDir().getAbsolutePath();
             mLinphoneRootCaFile = basePath + "/rootca.pem";
             mUserCertificatePath = basePath;
@@ -378,7 +378,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         linphoneCore.setDownloadBandwidth(bandwidth);
     }
 
-    public static final synchronized LinphoneHandler getInstance() throws NullPointerException {
+    public static final synchronized LinphoneHandler getInstance() {
         if (instance == null) {
             throw new NullPointerException();
         } else {
@@ -451,7 +451,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
     private void clearAll() {
         try {
-            Logger.e("LinphoneHandler", "Clear all proxy and auth");
+            Logger.e(TAG, "Clear all proxy and auth");
             getInstance().mTimer.cancel();
             getInstance().notifyEndCallToServer();
             getInstance().terminalCall();
@@ -471,14 +471,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         if (stopLinphoneCore && globalOff) {
             instance.linphoneCore = null;
             instance = null;
-            Logger.e("LinphoneHandler", "Removed instance");
+            Logger.e(TAG, "Removed instance");
         }
     }
 
     private void tryToRemoveLastAuthInfo() {
         LinphoneAuthInfo[] authInfos = linphoneCore.getAuthInfosList();
         if (authInfos != null) {
-            Logger.e("LinphoneHandler", "trying to remove AuthInfo");
+            Logger.e(TAG, "trying to remove AuthInfo");
             for (LinphoneAuthInfo linphoneAuthInfo : authInfos) {
                 linphoneCore.removeAuthInfo(linphoneAuthInfo);
             }
@@ -488,7 +488,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
     private void tryToRemoveLastProxyConfig() {
         LinphoneProxyConfig[] configList = linphoneCore.getProxyConfigList();
         if (configList != null) {
-            Logger.e("LinphoneHandler", "trying to remove ProxyConfig");
+            Logger.e(TAG, "trying to remove ProxyConfig");
             for (LinphoneProxyConfig proxyConfig : configList) {
                 linphoneCore.removeProxyConfig(proxyConfig);
             }
