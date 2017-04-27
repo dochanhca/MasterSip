@@ -45,7 +45,6 @@ import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_IMAGE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_TEXT;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL;
-import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
 import static jp.newbees.mastersip.utils.Constant.JSON.CALL_ID;
@@ -236,8 +235,6 @@ public class JSONUtils {
         switch (type) {
             case CHAT_DELETED:
                 chatItem = parseDeletedChatItem(jData, me);
-                break;
-            case CHAT_VOICE:
                 break;
             case CHAT_TEXT:
                 chatItem = parseTextChatItem(jData);

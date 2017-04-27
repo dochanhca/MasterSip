@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "jp.newbees.mastersip"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 19
         versionCode 2
         versionName "1.0.2 alpha"
         multiDexEnabled true
@@ -102,6 +102,7 @@ dependencies {
     compile 'com.github.chrisbanes:PhotoView:1.3.1'
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.afollestad:sectioned-recyclerview:0.2.3'
+    compile project(':liblinphone-android-sdk')
 }
 
 allprojects {

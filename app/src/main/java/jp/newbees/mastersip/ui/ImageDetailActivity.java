@@ -140,13 +140,8 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             R.id.btn_view_all})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.txt_save_photo:
-                break;
             case R.id.txt_change_photo:
                 SelectImageDialog.showDialogSelectAvatar(this, false);
-                break;
-            case R.id.txt_report:
-                // Report photo
                 break;
             case R.id.txt_delete_photo:
                 confirmDeleteImage();
@@ -154,6 +149,8 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             case R.id.btn_view_all:
                 PhotoGalleryActivity.startActivityForResult(this, galleryItem, VIEW_ALL_PHOTO);
                 break;
+            case R.id.txt_save_photo:
+            case R.id.txt_report:
             default:
                 break;
         }
@@ -223,7 +220,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
         disMissLoading();
         needReloadProfile = true;
         photos.remove(currentPosition);
-        if ((photos.size() == 0)) {
+        if (photos.isEmpty()) {
             EventBus.getDefault().post(new ReLoadProfileEvent(true));
             super.onBackPressed();
         }

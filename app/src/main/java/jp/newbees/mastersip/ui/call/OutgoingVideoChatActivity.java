@@ -30,23 +30,9 @@ public class OutgoingVideoChatActivity extends BaseHandleOutgoingCallActivity {
     public static void startActivity(Context context, UserItem callee, String callID) {
         Intent intent = new Intent(context, OutgoingVideoChatActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(COMPETITOR, callee);
+        bundle.putParcelable(KEY_COMPETITOR, callee);
         bundle.putString(CALL_ID, callID);
         intent.putExtras(bundle);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void onCallConnected() {
-        showVideoChatFragment();
-        useFrontCamera();
-    }
-
-    private void showVideoChatFragment() {
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-            showVideoChatFragmentForMale(((OutgoingWaitingFragment) getVisibleFragment()).isSpeakerEnable());
-        } else {
-            showVideoChatFragmentForFemale(((OutgoingWaitingFragment) getVisibleFragment()).isMicEnable());
-        }
     }
 }

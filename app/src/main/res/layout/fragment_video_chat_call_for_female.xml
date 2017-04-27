@@ -17,7 +17,7 @@
         android:id="@+id/videoSurface"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
         android:id="@+id/txt_low_signal"

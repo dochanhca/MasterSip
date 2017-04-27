@@ -41,4 +41,8 @@ public class LinphoneNotifier {
             }
         });
     }
+
+    public Handler getHandler() {
+        return mHandler;
+    }
 }

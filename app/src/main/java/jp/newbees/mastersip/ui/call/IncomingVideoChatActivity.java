@@ -31,20 +31,6 @@ public class IncomingVideoChatActivity extends BaseHandleIncomingCallActivity {
         return Constant.API.VIDEO_CHAT_CALL;
     }
 
-    @Override
-    public void onStreamingConnected() {
-        startIncomingVideoCall();
-        showVideoChatFragment();
-    }
-
-    private void showVideoChatFragment() {
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
-            showVideoChatFragmentForMale(true);
-        } else {
-            showVideoChatFragmentForFemale(true);
-        }
-    }
-
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVideoChatActivity.class);
         intent.putExtras(getBundle(competitor,callID));

@@ -273,22 +273,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
-            case R.id.btn_change_avatar:
-                break;
             case R.id.group_avatar:
                 handleUploadAvatar();
-                break;
-            case R.id.layout_my_notify:
                 break;
             case R.id.txt_online_list:
                 MyMenuContainerFragment.showOnlineListFragment(getActivity());
                 break;
             case R.id.txt_call_history:
                 MyMenuContainerFragment.showHistoryCallFragment(getActivity());
-                break;
-            case R.id.txt_block_list:
-                break;
-            case R.id.txt_notify_setting:
                 break;
             case R.id.txt_email_backup_setting:
                 if (ConfigManager.getInstance().getCurrentUser().getEmail().length() == 0) {
@@ -300,12 +292,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.txt_call_setting:
                 MyMenuContainerFragment.showSettingCallFragment(getActivity());
                 break;
-            case R.id.layout_guide:
-                break;
-            case R.id.layout_contact:
-                break;
-            case R.id.layout_common_guide:
-                break;
             case R.id.layout_profile_detail:
                 UserItem me = ConfigManager.getInstance().getCurrentUser();
                 ProfileDetailItemActivity.startActivity(getActivity(), me);
@@ -316,6 +302,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_logout:
                 handleLogout();
                 break;
+            case R.id.layout_my_notify:
+            case R.id.btn_change_avatar:
+            case R.id.layout_guide:
+            case R.id.layout_contact:
+            case R.id.layout_common_guide:
+            case R.id.txt_block_list:
+            case R.id.txt_notify_setting:
             default:
                 break;
         }

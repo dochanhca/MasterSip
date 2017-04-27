@@ -120,7 +120,7 @@ public class ImageDetailPresenter extends BasePresenter {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                float percent = (transferredBytes * 100) / totalSize;
+                float percent = (float) (((double)transferredBytes * 100) / totalSize);
                 view.onUpdateImageProgressChanged(percent);
             }
         });

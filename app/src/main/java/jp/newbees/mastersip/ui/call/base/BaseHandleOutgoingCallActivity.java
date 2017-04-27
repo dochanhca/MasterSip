@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
@@ -17,6 +18,8 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
         presenter = new BaseHandleOutgoingCallPresenter(getApplicationContext(), this);
@@ -28,9 +31,7 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
     protected abstract String getTextTitleInWaitingFragment();
 
     @Override
-    protected void initVariables(Bundle savedInstanceState) {
-        super.initVariables(savedInstanceState);
-
+    protected void onShowWaitingFragment() {
         showOutgoingWaitingFragment(getCompetitor(), getTextTitleInWaitingFragment(), getCallType(), getCallId());
     }
 

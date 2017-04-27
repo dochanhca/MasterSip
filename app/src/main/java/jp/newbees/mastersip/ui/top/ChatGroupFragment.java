@@ -158,6 +158,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
                     selectAllChatRoom(false);
                     setEnabledButtonDeleteChatRoom(false);
                 }
+                break;
             default:
                 break;
         }
@@ -183,7 +184,7 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
 
     @Override
     public void didLoadMoreChatRoom(List<RoomChatItem> roomChatItems) {
-        if (roomChatItems.size() == 0) {
+        if (roomChatItems.isEmpty()) {
             isEnding = true;
         }
         chatGroupAdapter.addAll(roomChatItems);

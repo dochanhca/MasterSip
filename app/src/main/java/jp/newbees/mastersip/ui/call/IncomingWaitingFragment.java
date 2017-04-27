@@ -87,10 +87,10 @@ public class IncomingWaitingFragment extends WaitingFragment {
         try {
             switch (view.getId()) {
                 case R.id.btn_reject_call:
-                    terminalCall();
+                    declineCall();
                     break;
                 case R.id.btn_accept_call:
-                    acceptCall(getCallId());
+                    acceptCall(getCallId(), getCallType());
                     break;
                 case R.id.btn_on_off_mic:
                     enableMicrophone(btnOnOffMic.isChecked());
@@ -138,7 +138,13 @@ public class IncomingWaitingFragment extends WaitingFragment {
     }
 
     @Override
-    public void updateViewWhenVoiceConnected() {
+    public void onCallPaused() {
+        txtTimer.setVisibility(View.INVISIBLE);
+        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void updateUIWhenStartCalling() {
         // Only Counting point with female user
         if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
             llPoint.setVisibility(View.VISIBLE);
@@ -154,12 +160,8 @@ public class IncomingWaitingFragment extends WaitingFragment {
         btnOnOffSpeaker.setChecked(false);
         enableMicrophone(true);
         btnOnOffMic.setChecked(true);
-    }
 
-    @Override
-    public void onCallPaused() {
-        txtTimer.setVisibility(View.INVISIBLE);
-        txtNotifyLowSignal.setVisibility(View.VISIBLE);
+        countingCallDuration();
     }
 
     @Override

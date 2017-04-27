@@ -120,7 +120,7 @@ public class StartPresenter extends RegisterPresenterBase {
             }
             String gender = userInfo.getString("gender");
             userItem.setUsername(handleFbName(name));
-            userItem.setGender(gender.equalsIgnoreCase("female") ? UserItem.FEMALE : UserItem.MALE);
+            userItem.setGender("female".equalsIgnoreCase(gender) ? UserItem.FEMALE : UserItem.MALE);
             this.getAvatarFacebook(userItem, accessToken);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -199,8 +199,6 @@ public class StartPresenter extends RegisterPresenterBase {
         UserItem userItem = task.getUserItem();
         if (userItem.getDateOfBirth() == null) {
             startView.didLoginFacebookMissingBirthday(userItem);
-        } else if (userItem.getDateOfBirth() != null) {
-            this.registerUser(userItem);
         } else {
             this.registerUser(userItem);
         }

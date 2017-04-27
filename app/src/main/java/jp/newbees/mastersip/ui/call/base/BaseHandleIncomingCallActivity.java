@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.call.base;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
@@ -14,8 +15,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  * Created by vietbq on 1/10/17.
  */
 
-public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity implements
-        BaseHandleIncomingCallPresenter.IncomingCallView {
+public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActivity {
     private BaseHandleIncomingCallPresenter presenter;
 
     protected abstract int getAcceptCallImage();
@@ -25,28 +25,26 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
-        presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this);
+        presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this, getCallType());
         presenter.registerEvents();
         setPresenter(presenter);
     }
 
     @Override
-    protected void initVariables(Bundle savedInstanceState) {
-        super.initVariables(savedInstanceState);
-
+    protected void onShowWaitingFragment() {
         showIncomingWaitingFragment(getCompetitor(), getCallId(), getAcceptCallImage(), getTitleCall(), getCallType());
     }
 
     private void showIncomingWaitingFragment(UserItem caller, String callId,
                                              int acceptCallImage, String titleCall, int callType) {
         showWaitingFragment(IncomingWaitingFragment.newInstance(caller, callId, acceptCallImage, titleCall, callType));
-    }
-
-
-    protected final void startIncomingVideoCall() {
-        presenter.startIncomingVideoCall();
     }
 
     @Override
@@ -56,16 +54,6 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
             LinphoneService.stopLinphone(this);
         }
         super.onCallEnd();
-    }
-
-    @Override
-    public void onCallConnected() {
-        // override this if need listener callback
-    }
-
-    @Override
-    public void onStreamingConnected() {
-        // override this if need listener callback
     }
 
 }

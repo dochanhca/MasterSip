@@ -68,8 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 handlePushMessage(data);
 
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e) {
+                Logger.e(TAG,e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -116,9 +115,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleIncomingCall(String callId) {
-        ConfigManager.getInstance().updateEndCallStatus(true);
+        ConfigManager.getInstance().updateEndCallStatus(false);
         ConfigManager.getInstance().setCallId(callId);
         if (!LinphoneService.isRunning()) {
+            // set end call status equal true to do not send UpdateCallWhenOnlineTask to server
+            // (In linphoneServicePresenter)
+            ConfigManager.getInstance().updateEndCallStatus(true);
+
             LinphoneService.startLinphone(getApplicationContext());
         }
     }

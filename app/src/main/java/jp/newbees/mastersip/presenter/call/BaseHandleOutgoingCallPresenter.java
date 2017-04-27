@@ -29,13 +29,9 @@ public class BaseHandleOutgoingCallPresenter extends BaseHandleCallPresenter {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceivingOutgoingCallEvent(ReceivingCallEvent receivingCallEvent) {
-        switch (receivingCallEvent.getCallEvent()) {
-            case ReceivingCallEvent.OUTGOING_CONNECTED_CALL:
-                handleCallConnected();
-                break;
-            default:
-                break;
+    public void onReceivingOutgoingCallEvent(ReceivingCallEvent event) {
+        if (event.getCallEvent() == ReceivingCallEvent.OUTGOING_CONNECTED_CALL) {
+            super.handleCallConnected();
         }
     }
 }

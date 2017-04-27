@@ -75,7 +75,6 @@ public class SelectVideoCallDialog extends DialogFragment implements View.OnClic
                 listener.onSelectedVideoCall(VideoCall.VIDEO_VIDEO);
                 break;
             case R.id.ic_close:
-                break;
             default:
                 break;
         }

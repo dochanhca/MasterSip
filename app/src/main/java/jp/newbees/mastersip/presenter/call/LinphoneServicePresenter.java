@@ -5,6 +5,7 @@ import android.content.Context;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.linphone.tools.OpenH264DownloadHelper;
 
 import java.util.Map;
 
@@ -27,11 +28,13 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  */
 
 public class LinphoneServicePresenter extends BasePresenter {
+    private final OpenH264DownloadHelper mCodecDownloader;
     private IncomingCallListener incomingCallListener;
 
     public LinphoneServicePresenter(Context context, IncomingCallListener incomingCallListener) {
         super(context);
         this.incomingCallListener = incomingCallListener;
+        this.mCodecDownloader = new OpenH264DownloadHelper(context);
     }
 
     @Override
@@ -42,6 +45,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
             ConfigManager.getInstance().setCurrentCallUser(caller, callID);
+            ConfigManager.getInstance().updateEndCallStatus(false);
             handleIncomingCallType(callType, caller, callID);
         }
     }

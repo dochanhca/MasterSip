@@ -5,15 +5,19 @@ upload_bw=380
 [sip]
 contact=sip:unknown@unknown-host
 use_info=0
-use_ipv6=0
+use_ipv6=1
 keepalive_period=30000
+sip_port=-1
+sip_tcp_port=-1
+sip_tls_port=-1
 
 [video]
 size=vga
 
 [app]
-sharing_server=https://www.linphone.org:444/upload.php
 tunnel=disabled
+push_notification=1
+auto_start=1
 
 [tunnel]
 host=
@@ -21,3 +25,8 @@ port=443
 
 [misc]
 config-uri=INSERT_URL_TO_CONFIG_TO_TRY_HERE
+
+[proxy_default_values]
+reg_proxy=<sip:sip.linphone.org>
+realm=sip.linphone.org
+reg_identity=sip:user@sip.linphone.org

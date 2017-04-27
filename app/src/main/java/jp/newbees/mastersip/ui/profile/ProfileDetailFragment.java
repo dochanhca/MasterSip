@@ -193,7 +193,7 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
     }
 
     private boolean canLoadMoreUser() {
-        return (!nextPage.isEmpty() && !nextPage.equals("0")) ? true : false;
+        return (!nextPage.isEmpty() && !"0".equals(nextPage)) ? true : false;
     }
 }
 

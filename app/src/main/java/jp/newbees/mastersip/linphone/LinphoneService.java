@@ -14,6 +14,9 @@ import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import org.linphone.core.LinphoneCoreFactory;
+
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.LinphoneServicePresenter;
@@ -21,6 +24,7 @@ import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 import static android.telephony.TelephonyManager.EXTRA_STATE_IDLE;
@@ -63,15 +67,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         return LinphoneHandler.getInstance().isRunning();
     }
 
-    /**
-     * @throws RuntimeException service not instantiated
-     */
-    public static LinphoneService instance() {
-        if (isReady()) return instance;
-
-        throw new RuntimeException("LinphoneService not instantiated yet");
-    }
-
     private static void destroyLinphoneService() {
         LinphoneService.instance = null;
     }
@@ -86,6 +81,9 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         Logger.e(TAG, "Linphone Service onCreate");
         incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this);
         incomingCallPresenter.registerCallEvent();
+
+        LinphoneCoreFactory.instance().enableLogCollection(Constant.Application.DEBUG);
+        LinphoneCoreFactory.instance().setDebugMode(Constant.Application.DEBUG, getApplication().getString(R.string.app_name));
 
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
@@ -116,7 +114,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.e(TAG, "LinphoneService onDestroy");
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();

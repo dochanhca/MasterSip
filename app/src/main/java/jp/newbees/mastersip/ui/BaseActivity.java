@@ -85,10 +85,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(layoutId());
         TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();
-        setContentView(layoutId());
 
         if (this instanceof BottomNavigation) {
             navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.nav_group);

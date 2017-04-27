@@ -44,7 +44,7 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        splashPresenter = new SplashPresenter(getApplicationContext(), this);
+        splashPresenter = new SplashPresenter(this, this);
     }
 
     @Override
@@ -105,5 +105,4 @@ public class SplashActivity extends RegisterBaseActivity implements SplashPresen
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
 }

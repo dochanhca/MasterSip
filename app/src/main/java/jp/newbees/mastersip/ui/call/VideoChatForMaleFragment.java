@@ -2,6 +2,7 @@ package jp.newbees.mastersip.ui.call;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -10,10 +11,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.tonicartos.superslim.LayoutManager;
 
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 
@@ -27,7 +28,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
-import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
+import jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -35,6 +36,7 @@ import jp.newbees.mastersip.presenter.chatting.BasicChatPresenter;
 import jp.newbees.mastersip.presenter.chatting.SendChatTextListener;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 4/10/17.
@@ -63,25 +65,32 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     TextView txtSend;
     @BindView(R.id.btn_on_off_speaker)
     ToggleButton btnOnOffSpeaker;
+    @BindView(R.id.ll_show_hide_chat_box)
+    LinearLayout llShowHideChatBox;
+    @BindView(R.id.rl_chat_input)
+    RelativeLayout rlChatInput;
+    @BindView(R.id.container)
+    SoftKeyboardListenedRelativeLayout container;
+    @BindView(R.id.txt_show_hide_chat_box)
+    HiraginoTextView txtShowHideChatBox;
+    @BindView(R.id.ic_arrow)
+    ImageView icArrow;
     @BindView(R.id.btn_cancel_call)
     ImageView btnCancelCall;
 
     private AndroidVideoWindowImpl androidVideoWindow;
-
     private UserItem competitor;
 
     private ChatAdapter chatAdapter;
     private BasicChatPresenter basicChatPresenter;
     private Animation fadeOut;
     private Animation fadeIn;
+    private boolean isShowChatBox = true;
     private boolean isShowingView = true;
 
-
-    public static VideoChatForMaleFragment newInstance(UserItem competitor, String callID,
-                                                       boolean enableSpeaker) {
+    public static VideoChatForMaleFragment newInstance(UserItem competitor, String callID) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(SPEAKER, enableSpeaker);
         args.putString(CALL_ID, callID);
         VideoChatForMaleFragment fragment = new VideoChatForMaleFragment();
         fragment.setArguments(args);
@@ -100,16 +109,21 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
 
         competitor = getArguments().getParcelable(COMPETITOR);
+
         basicChatPresenter = new BasicChatPresenter(getContext(), this);
         chatAdapter = new ChatAdapter(getContext(), new ArrayList<BaseChatItem>());
 
-        LayoutManager layoutManager = new LayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setAdapter(chatAdapter);
+
+        container.setListener(mOnSoftKeyboardListener);
 
         setupView();
         fixZOrder(mVideoView);
         startCountingToHideAction();
+
     }
 
     @Override
@@ -148,14 +162,43 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         super.onDestroy();
     }
 
+    private void showHideChatBox(boolean isShow) {
+        if (isShow) {
+            icArrow.setImageResource(R.drawable.ic_arrow_down);
+            txtShowHideChatBox.setText(R.string.hide_chat_box);
+            container.addView(recyclerChat);
+        } else {
+            icArrow.setImageResource(R.drawable.ic_arrow_up);
+            txtShowHideChatBox.setText(R.string.show_chat_box);
+            container.removeView(recyclerChat);
+        }
+        updateConstrain(isShow);
+    }
+
+    private void updateConstrain(boolean isShow) {
+        if (isShow) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llShowHideChatBox.getLayoutParams();
+            params.addRule(RelativeLayout.BELOW, R.id.video_frame);
+            params.removeRule(RelativeLayout.ABOVE);
+
+            RelativeLayout.LayoutParams videoFrameLayoutParams = (RelativeLayout.LayoutParams) videoFrame.getLayoutParams();
+            videoFrameLayoutParams.height = getResources().getDimensionPixelSize(R.dimen.height_video_in_video_chat);
+            videoFrameLayoutParams.removeRule(RelativeLayout.ABOVE);
+
+        } else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) llShowHideChatBox.getLayoutParams();
+            params.removeRule(RelativeLayout.BELOW);
+            params.addRule(RelativeLayout.ABOVE, R.id.rl_chat_input);
+
+            RelativeLayout.LayoutParams videoFrameLayoutParams = (RelativeLayout.LayoutParams) videoFrame.getLayoutParams();
+            videoFrameLayoutParams.addRule(RelativeLayout.ABOVE, R.id.ll_show_hide_chat_box);
+        }
+    }
+
     private void setupView() {
         bindVideoViewToLinphone();
 
         txtName.setText(competitor.getUsername());
-        countingCallDuration();
-        boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
-        btnOnOffSpeaker.setChecked(enableSpeaker);
-        enableSpeaker(enableSpeaker);
         enableCamera(false);
     }
 
@@ -164,8 +207,10 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
             @Override
             public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                Logger.e(TAG,"onVideoRenderingSurfaceReady");
                 mVideoView = surfaceView;
                 setVideoWindow(androidVideoWindow);
+                fillVideo();
             }
 
             @Override
@@ -175,6 +220,8 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
             @Override
             public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                Logger.e(TAG, "onVideoPreviewSurfaceReady");
+
             }
 
             @Override
@@ -184,7 +231,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         });
     }
 
-    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_speaker, R.id.txt_send})
+    @OnClick({R.id.btn_cancel_call, R.id.btn_on_off_speaker, R.id.txt_send, R.id.ll_show_hide_chat_box})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_cancel_call:
@@ -196,6 +243,10 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
             case R.id.txt_send:
                 doSendMessage();
                 break;
+            case R.id.ll_show_hide_chat_box:
+                isShowChatBox = !isShowChatBox;
+                showHideChatBox(isShowChatBox);
+                break;
         }
     }
 
@@ -204,6 +255,22 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         resetCountingToHideAction();
         showView();
         return true;
+
+    }
+
+    private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
+        if (LinphoneHandler.isRunning()) {
+            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+        }
+    }
+
+    private void fillVideo() {
+        float landscapeZoomFactor = ((float) mVideoView.getWidth()) / (float) ((3 * mVideoView.getHeight()) / 4);
+        LinphoneHandler.getInstance().zoomVideo(landscapeZoomFactor, 0.5f, 0.5f);
+    }
+
+    private void fixZOrder(SurfaceView video) {
+        video.setZOrderOnTop(false);
     }
 
     @Override
@@ -222,6 +289,13 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     }
 
     @Override
+    protected void updateUIWhenStartCalling() {
+        fillVideo();
+        countingCallDuration();
+        btnOnOffSpeaker.setChecked(isSpeakerEnalbed());
+    }
+
+    @Override
     public final void onCallResume() {
         txtLowSignal.setVisibility(View.INVISIBLE);
     }
@@ -231,7 +305,7 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         chatAdapter.add(baseChatItem);
         edtChat.setEnabled(true);
         txtSend.setEnabled(true);
-        recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        recyclerChat.scrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -239,9 +313,14 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         showToastExceptionVolleyError(errorCode, errorMessage);
     }
 
-    @Override
-    public void onStateMessageChange(ReceivingReadMessageEvent receivingReadMessageEvent) {
-        chatAdapter.updateOwnerStateMessageToRead(receivingReadMessageEvent.getBaseChatItem());
+    private void doSendMessage() {
+        String newMessage = edtChat.getText().toString();
+        if (!"".equalsIgnoreCase(newMessage)) {
+            edtChat.setText("");
+            edtChat.setEnabled(false);
+            txtSend.setEnabled(false);
+            basicChatPresenter.sendVideoChatText(newMessage, competitor);
+        }
     }
 
     @Override
@@ -272,23 +351,21 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
         btnOnOffSpeaker.setClickable(clickable);
     }
 
-    private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        if (LinphoneHandler.getInstance() != null) {
-            LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
+    private SoftKeyboardListenedRelativeLayout.SoftKeyboardLsner mOnSoftKeyboardListener = new SoftKeyboardListenedRelativeLayout.SoftKeyboardLsner() {
+        @Override
+        public void onSoftKeyboardShow() {
+            if (!isShowChatBox) {
+                llShowHideChatBox.setVisibility(View.GONE);
+            }
+            llShowHideChatBox.setEnabled(false);
         }
-    }
 
-    private void doSendMessage() {
-        String newMessage = edtChat.getText().toString();
-        if (!"".equalsIgnoreCase(newMessage)) {
-            edtChat.setText("");
-            edtChat.setEnabled(false);
-            txtSend.setEnabled(false);
-            basicChatPresenter.sendText(newMessage, competitor);
+        @Override
+        public void onSoftKeyboardHide() {
+            if (!isShowChatBox) {
+                llShowHideChatBox.setVisibility(View.VISIBLE);
+            }
+            llShowHideChatBox.setEnabled(true);
         }
-    }
-
-    private void fixZOrder(SurfaceView video) {
-        video.setZOrderOnTop(false);
-    }
+    };
 }

@@ -53,14 +53,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
+        RecyclerView.ViewHolder viewHolder;
         View view;
         boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
+        int offsetViewType = viewType;
         if (isReplyMessage) {
-            viewType -= OFFSET_RETURN_TYPE;
+            offsetViewType -= OFFSET_RETURN_TYPE;
         }
 
-        switch (viewType) {
+        switch (offsetViewType) {
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
@@ -78,10 +79,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     view = layoutInflater.inflate(R.layout.my_chat_image_item, parent, false);
                     viewHolder = new ViewHolderImageMessage(view, context, onItemClickListener);
                 }
-                break;
-            case BaseChatItem.ChatType.HEADER:
-                view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
-                viewHolder = new ViewHolderHeader(view, context);
                 break;
             case BaseChatItem.ChatType.CHAT_GIFT:
                 if (isReplyMessage) {
@@ -103,6 +100,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolder = new ViewHolderCallMessage(view, context);
                 }
                 break;
+            case BaseChatItem.ChatType.HEADER:
             default:
                 view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
                 viewHolder = new ViewHolderHeader(view, context);
@@ -199,7 +197,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Date date = DateTimeUtils.convertStringToDate(item.getFullDate(), DateTimeUtils.ENGLISH_DATE_FORMAT);
             if (item.getChatType() == BaseChatItem.ChatType.HEADER) {
                 item.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
-                if (needNotify) notifyItemChanged(i);
+                if (needNotify) {
+                    notifyItemChanged(i);
+                }
             }
         }
     }
@@ -210,6 +210,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 getItemCount());
         header.setOwner(item.getOwner());
         add(header);
+    }
+
+    private BaseChatItem getHeaderChatItem(Date date, int sectionFirstPosition) {
+        BaseChatItem header = new BaseChatItem();
+        header.setChatType(BaseChatItem.ChatType.HEADER);
+        header.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
+        header.setSectionFirstPosition(sectionFirstPosition);
+        return header;
     }
 
     private boolean hasNewDay(BaseChatItem item) {
@@ -247,14 +255,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         return false;
-    }
-
-    private BaseChatItem getHeaderChatItem(Date date, int sectionFirstPosition) {
-        BaseChatItem header = new BaseChatItem();
-        header.setChatType(BaseChatItem.ChatType.HEADER);
-        header.setDisplayDate(DateTimeUtils.getHeaderDisplayDateInChatHistory(date, context));
-        header.setSectionFirstPosition(sectionFirstPosition);
-        return header;
     }
 
     public void clearAndAddNewData(List<BaseChatItem> data) {
@@ -315,12 +315,19 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public BaseChatItem getLastSendeeUnreadMessage() {
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
-            if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
-                    !baseChatItem.isOwner() && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
+            if (hasReadState(baseChatItem) && !baseChatItem.isOwner()
+                    && baseChatItem.getMessageState() != BaseChatItem.MessageState.STT_READ) {
                 return baseChatItem;
             }
         }
         return null;
+    }
+
+    private boolean hasReadState(BaseChatItem baseChatItem) {
+        return baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER &&
+                baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VOICE_CALL &&
+                baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VIDEO_CALL &&
+                baseChatItem.getChatType() != BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL;
     }
 
     public void updateSendeeLastMessageStateToRead() {
@@ -338,22 +345,26 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         boolean hasReadChatItem = false;
         for (int i = getItemCount() - 1; i >= 0; i--) {
             BaseChatItem baseChatItem = data.get(i);
+
             if (hasReadChatItem) {
-                if (baseChatItem.getChatType() != BaseChatItem.ChatType.HEADER && baseChatItem.isOwner()) {
-                    if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
-                        notifyDataSetChanged();
-                        return;
-                    } else {
-                        baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
-                    }
-                }
+                performUpdateOwnerStateMessageToRead(baseChatItem);
             } else if (baseChatItem.getMessageId() == readChatItem.getMessageId()) {
                 hasReadChatItem = true;
                 baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
             }
-
         }
         notifyDataSetChanged();
+    }
+
+    private void performUpdateOwnerStateMessageToRead(BaseChatItem baseChatItem) {
+        if (hasReadState(baseChatItem) && baseChatItem.isOwner()) {
+            if (baseChatItem.getMessageState() == BaseChatItem.MessageState.STT_READ) {
+                notifyDataSetChanged();
+                return;
+            } else {
+                baseChatItem.setMessageState(BaseChatItem.MessageState.STT_READ);
+            }
+        }
     }
 
 }

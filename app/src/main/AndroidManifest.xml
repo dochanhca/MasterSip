@@ -26,7 +26,7 @@
     <!-- Needed to allow Linphone to install on tablets, since android.permission.CAMERA implies android.hardware.camera and android.hardware.camera.autofocus are required -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -194,25 +194,24 @@
         <activity
             android:name=".ui.call.OutgoingVideoChatActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            ></activity>
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.profile.ProfileDetailItemActivity"
@@ -260,10 +259,10 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.ExitActivity"
-            android:theme="@android:style/Theme.NoDisplay"
+        <activity
+            android:name=".ui.ExitActivity"
             android:autoRemoveFromRecents="true"
-            />
+            android:theme="@android:style/Theme.NoDisplay" />
     </application>
 
 </manifest>

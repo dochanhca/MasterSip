@@ -459,6 +459,7 @@
     ]]>
     </string>
     <string name="hide_chat_box">チャット画面を閉じる</string>
+    <string name="show_chat_box">チャット画面を開く</string>
     <string name="history_incoming_call">着信履歴</string>
     <string name="history_outgoing_call">発信履歴</string>
     <string name="history_call">通話履歴</string>
@@ -484,6 +485,7 @@
     <string name="do_you_want_to_off_online_notify">オンライン通知設定を解除しますか？</string>
     <string name="setting_online_notify_done">オンライン通知を設定しました</string>
     <string name="we_will_notify_you_with_push_notice">PUSH通知でお知らせします。</string>
+    <string name="couldnt_accept_call">An error occurred while accepting the call</string>
     <string name="list_online_notify">オンライン通知リスト</string>
     <string name="to_change">変更する</string>
     <string name="err_email_existed">Email existed</string>

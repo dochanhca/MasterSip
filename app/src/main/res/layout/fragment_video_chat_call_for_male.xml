@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/video_frame"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/video_height_in_video_chat">
+        android:layout_height="@dimen/height_video_in_video_chat">
 
         <org.linphone.mediastream.video.display.GL2JNIView
             android:id="@+id/videoSurface"
@@ -62,6 +65,7 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/ic_arrow"
             android:src="@drawable/ic_arrow_down"
             android:layout_marginRight="@dimen/small_margin"
             android:layout_width="wrap_content"
@@ -92,4 +96,4 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="@dimen/xnormal_margin" />
-</RelativeLayout>
+</jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout>
