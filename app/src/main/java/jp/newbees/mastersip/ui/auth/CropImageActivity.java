@@ -4,20 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.ByteArrayOutputStream;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
-import jp.newbees.mastersip.ui.dialog.ConfirmCropImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.utils.FileUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -25,8 +26,8 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class CropImageActivity extends BaseActivity implements CropImageView.OnCropImageCompleteListener,
-        View.OnClickListener, CropImageView.OnSetImageUriCompleteListener,
-        ConfirmCropImageDialog.OnDialogConfirmCropImageClick {
+        View.OnClickListener, CropImageView.OnSetImageUriCompleteListener, TextDialog.OnTextDialogPositiveClick {
+
 
     public static final String IMAGE_URI = "IMAGE_URI";
     public static final String IMAGE_CROPPED = "IMAGE_URI";
@@ -36,6 +37,7 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     private CropImageView mCropImageView;
     private TextView txtCancel;
     private TextView txtDone;
+    private ProgressWheel prwLoadingImage;
 
     @Override
     protected int layoutId() {
@@ -47,6 +49,7 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
         mCropImageView = (CropImageView) findViewById(R.id.crop_image);
         txtCancel = (TextView) findViewById(R.id.txt_cancel);
         txtDone = (TextView) findViewById(R.id.txt_done);
+        prwLoadingImage = (ProgressWheel) findViewById(R.id.progress_wheel);
 
         txtDone.setOnClickListener(this);
         txtCancel.setOnClickListener(this);
@@ -79,20 +82,31 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
 
     @Override
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
-        Intent intent = new Intent();
+        Logger.e("Image Cropped: ", "width: " + result.getBitmap().getWidth()
+                + "- height: " + result.getBitmap().getHeight());
+        new AsyncTask<Bitmap, Void, String>() {
+            @Override
+            protected String doInBackground(Bitmap[] params) {
+                String fileName = "android_" + System.currentTimeMillis() + ".png";
+                final String filePath = FileUtils.saveBitmapToFile(params[0], fileName);
+                return filePath;
+            }
 
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        result.getBitmap().compress(Bitmap.CompressFormat.JPEG, 50, bs);
-
-        intent.putExtra(IMAGE_CROPPED, bs.toByteArray());
-
-        setResult(RESULT_OK, intent);
-        finish();
+            @Override
+            protected void onPostExecute(String filePath) {
+                prwLoadingImage.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent();
+                intent.putExtra(IMAGE_CROPPED, filePath);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }.execute(result.getBitmap());
     }
 
     @Override
     public void onClick(View view) {
         if (view == txtDone) {
+            prwLoadingImage.setVisibility(View.VISIBLE);
             mCropImageView.getCroppedImageAsync();
         }
 
@@ -103,6 +117,7 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
 
     @Override
     public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
+        prwLoadingImage.setVisibility(View.INVISIBLE);
         if (error != null) {
             Logger.e("Crop Failed to load image for cropping: ", error.getMessage());
             Toast.makeText(this, "Something went wrong, try again", Toast.LENGTH_LONG).show();
@@ -110,7 +125,7 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     }
 
     @Override
-    public void onOkClick() {
+    public void onTextDialogOkClick(int requestCode) {
         setResult(RESULT_CANCELED);
         finish();
     }
@@ -121,12 +136,12 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     }
 
     private void showDialogConfirm() {
-        ConfirmCropImageDialog confirmCropImageDialog = new ConfirmCropImageDialog();
-        confirmCropImageDialog.show(getSupportFragmentManager(), "ConfirmCropImageDialog");
+        TextDialog textDialog = new TextDialog.Builder()
+                .build(getString(R.string.mess_confirm_cancel_crop_image));
+        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     /**
-     *
      * @param activity
      * @param imageUri
      */
@@ -138,7 +153,6 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
     }
 
     /**
-     *
      * @param fragment
      * @param imageUri
      */

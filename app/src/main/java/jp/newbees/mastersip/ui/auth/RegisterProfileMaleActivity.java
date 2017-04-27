@@ -2,7 +2,6 @@ package jp.newbees.mastersip.ui.auth;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +36,7 @@ import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -297,10 +297,9 @@ public class RegisterProfileMaleActivity extends RegisterBaseActivity implements
     }
 
     private void handleImageCropped(Intent data) {
-        byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
-
-        Bitmap bitmap = BitmapFactory.decodeByteArray(
-                result, 0, result.length);
+        String imagePath = data.getStringExtra(CropImageActivity.IMAGE_CROPPED);
+        Bitmap bitmap = ImageUtils.decodeBitmapFromFile(imagePath, Constant.Application.MAX_IMAGE_WIDTH,
+                Constant.Application.MAX_CHAT_IMAGE_HEIGHT);
 
         showAvatar();
         imgAvatar.setImageBitmap(bitmap);
