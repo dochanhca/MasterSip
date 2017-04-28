@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.android.volley.Response;
 import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
@@ -18,6 +19,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.call.base.WaitingFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -63,9 +66,28 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
                 Logger.e(TAG,"decline call because out of waiting time");
                 stopCountWaitingTimeThread();
                 declineCall();
+                notifyCancelCallToServer();
             }
         }
     };
+
+    private void notifyCancelCallToServer() {
+        Logger.e("OutgoingCall", "Send auto hangup");
+        String callId = ConfigManager.getInstance().getCallId();
+        CancelCallTask callTask = new CancelCallTask(getContext(),callId, CancelCallTask.AUTO_HANGUP);
+        callTask.request(new Response.Listener<Void>() {
+            @Override
+            public void onResponse(Void response) {
+                ConfigManager.getInstance().updateEndCallStatus(true);
+            }
+        }, new BaseTask.ErrorListener() {
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                ConfigManager.getInstance().updateEndCallStatus(false);
+            }
+        });
+    }
+
     private MyCountingTimerThread countWaitingTimeThread;
 
     public static OutgoingWaitingFragment newInstance(UserItem callee, String callID,

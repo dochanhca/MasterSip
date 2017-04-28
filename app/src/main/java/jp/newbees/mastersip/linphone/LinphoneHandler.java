@@ -50,7 +50,6 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.SendDirectMessageTask;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -182,13 +181,15 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
         Logger.e(TAG, "CallState " + msg + " - " + cstate.toString() + " - " + cstate.value());
         int state = cstate.value();
-        if (cstate == LinphoneCall.State.CallReleased
-                || cstate == LinphoneCall.State.CallEnd
-                || cstate == LinphoneCall.State.Error
-                ) {
+        if (cstate == LinphoneCall.State.CallReleased) {
+            ConfigManager.getInstance().updateEndCallStatus(true);
+        }else if( cstate == LinphoneCall.State.Error) {
+            ConfigManager.getInstance().updateEndCallStatus(false);
+        }else if(cstate == LinphoneCall.State.CallEnd) {
+            ConfigManager.getInstance().updateEndCallStatus(false);
             resetDefaultSpeaker();
-            notifyEndCallToServer();
-        } else if (cstate == LinphoneCall.State.Pausing) {
+        }
+        else if (cstate == LinphoneCall.State.Pausing) {
             notifyPauseCallToServer();
         } else if (cstate == LinphoneCall.State.Resuming) {
             handleCallResuming();
@@ -445,7 +446,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         try {
             Logger.e(TAG, "Clear all proxy and auth");
             getInstance().mTimer.cancel();
-            getInstance().notifyEndCallToServer();
             getInstance().terminalCall();
             getInstance().linphoneCore.clearAuthInfos();
             getInstance().linphoneCore.clearProxyConfigs();
@@ -919,29 +919,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
 
         jMessage.put(Constant.JSON.RESPONSE, jResponse);
         return jMessage.toString();
-    }
-
-    private void notifyEndCallToServer() {
-        String callId = ConfigManager.getInstance().getCallId();
-        if (callId == null || cancelingCall) return;
-        cancelingCall = true;
-        CancelCallTask task = new CancelCallTask(getApplicationContext(), callId);
-        task.request(new Response.Listener<Void>() {
-            @Override
-            public void onResponse(Void response) {
-                ConfigManager.getInstance().removeCurrentCall();
-                cancelingCall = false;
-                ConfigManager.getInstance().updateEndCallStatus(true);
-                Logger.e("LinphoneService", "End call success ");
-            }
-        }, new BaseTask.ErrorListener() {
-            @Override
-            public void onError(int errorCode, String errorMessage) {
-                cancelingCall = false;
-                Logger.e("LinphoneService", "End call error " + errorMessage);
-                ConfigManager.getInstance().updateEndCallStatus(false);
-            }
-        });
     }
 
     public Context getContext() {
