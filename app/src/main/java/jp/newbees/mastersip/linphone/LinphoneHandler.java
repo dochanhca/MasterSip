@@ -343,14 +343,14 @@ public class LinphoneHandler implements LinphoneCoreListener {
         setUserAgent();
         useFrontCamera();
         updateLocalRing();
-        linphoneCore.setVideoPreset("high-fps");
+        linphoneCore.setVideoPreset("30");
         linphoneCore.setPreferredVideoSize(VideoSize.VIDEO_SIZE_VGA);
         linphoneCore.setPreferredFramerate(0);
         linphoneCore.setRootCA(mLinphoneRootCaFile);
         linphoneCore.setUserCertificatesPath(mUserCertificatePath);
         setBandwidthLimit(1024 + 128);
+        linphoneCore.enableIpv6(true);
         supportOnlyH264();
-        initRandomPort();
         linphoneCore.setNetworkReachable(true);
         this.tryToLoginVoIP();
     }
@@ -439,14 +439,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         } else {
             createLinphoneCore();
         }
-    }
-
-    public void initRandomPort() {
-        LinphoneCore.Transports transports = linphoneCore.getSignalingTransportPorts();
-        transports.udp = -1;
-        transports.tcp = -1;
-        transports.tls = -1;
-        linphoneCore.setSignalingTransportPorts(transports);
     }
 
     private void clearAll() {

@@ -41,6 +41,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     private UserItem competitor;
     private String callId;
+    private boolean isUpadedView;
 
     /**
      * use for handle call
@@ -200,7 +201,10 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCallConnected() {
-        updateUIWhenInCall();
+        if (isUpadedView == false) {
+            isUpadedView = true;
+            updateUIWhenInCall();
+        }
     }
 
     protected final void updateUIWhenInCall() {
