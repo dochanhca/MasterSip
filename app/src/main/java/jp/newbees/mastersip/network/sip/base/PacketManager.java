@@ -15,6 +15,7 @@ import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.AdminHangUpProcessor;
 import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
+import jp.newbees.mastersip.network.sip.CompetitorChangeBackgroundStateProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
@@ -32,7 +33,6 @@ import jp.newbees.mastersip.utils.Logger;
 
 public class PacketManager {
     private static PacketManager instance;
-    private final BlockingQueue<Runnable> processorQueue;
     private static final int NUMBER_OF_CORES =
             Runtime.getRuntime().availableProcessors();
     private static final int KEEP_ALIVE_TIME = 3;
@@ -44,7 +44,7 @@ public class PacketManager {
 
     private PacketManager() {
         //Prevent init object
-        processorQueue = new LinkedBlockingDeque<>();
+        BlockingQueue<Runnable> processorQueue = new LinkedBlockingDeque<>();
 
         // Creates a thread pool manager
         processorThreadPool = new ThreadPoolExecutor(
@@ -64,7 +64,7 @@ public class PacketManager {
         };
     }
 
-    public final BaseSocketProcessor getProcessor(PacketItem data) {
+    private BaseSocketProcessor getProcessor(PacketItem data) {
         String action = data.getAction();
         BaseSocketProcessor processor = null;
         switch (action) {
@@ -98,6 +98,10 @@ public class PacketManager {
                 break;
             case Constant.SOCKET.ACTION_GSM_CALL_STATE:
                 processor = new PauseCallProcessor();
+                break;
+            case Constant.SOCKET.ACTION_ENTER_FOREGROUND:
+            case Constant.SOCKET.ACTION_ENTER_BACKGROUND:
+                processor = new CompetitorChangeBackgroundStateProcessor();
                 break;
             default:
                 break;

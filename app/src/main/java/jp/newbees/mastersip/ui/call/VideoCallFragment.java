@@ -35,8 +35,8 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class VideoCallFragment extends CallingFragment implements View.OnTouchListener, CallingFragment.CountableToHideAction {
-    @BindView(R.id.txt_low_signal)
-    TextView txtLowSignal;
+    @BindView(R.id.txt_call_status)
+    TextView txtCallStatus;
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
@@ -301,22 +301,17 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     }
 
     @Override
-    public void onCallPaused() {
-        txtLowSignal.setVisibility(View.VISIBLE);
+    protected TextView getTxtCallStatus() {
+        return txtCallStatus;
     }
 
     @Override
     protected void updateUIWhenStartCalling() {
         countingCallDuration();
         startCountingToHideAction();
-        btnOnOffSpeaker.setChecked(isSpeakerEnalbed());
-        btnOnOffMic.setChecked(isMicEnalbed());
+        btnOnOffSpeaker.setChecked(isSpeakerEnabled());
+        btnOnOffMic.setChecked(isMicEnabled());
         btnOnOffCamera.setChecked(true);
-    }
-
-    @Override
-    public final void onCallResume() {
-        txtLowSignal.setVisibility(View.INVISIBLE);
     }
 
     @Override

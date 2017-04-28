@@ -51,8 +51,8 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     ViewGroup videoFrame;
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
-    @BindView(R.id.txt_low_signal)
-    TextView txtLowSignal;
+    @BindView(R.id.txt_call_status)
+    TextView txtCallStatus;
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.txt_name)
@@ -284,20 +284,15 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
     }
 
     @Override
-    public void onCallPaused() {
-        txtLowSignal.setVisibility(View.VISIBLE);
+    protected TextView getTxtCallStatus() {
+        return txtCallStatus;
     }
 
     @Override
     protected void updateUIWhenStartCalling() {
         fillVideo();
         countingCallDuration();
-        btnOnOffSpeaker.setChecked(isSpeakerEnalbed());
-    }
-
-    @Override
-    public final void onCallResume() {
-        txtLowSignal.setVisibility(View.INVISIBLE);
+        btnOnOffSpeaker.setChecked(isSpeakerEnabled());
     }
 
     @Override

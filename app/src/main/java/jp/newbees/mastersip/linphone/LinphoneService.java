@@ -129,7 +129,12 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         loginToVoIP(sipItem);
         registerReceiverRingerModeChanged();
         registerGSMCallBroadcastReceiver();
+        setupActivityMonitor();
         LinphoneService.initInstance(this);
+    }
+
+    private void setupActivityMonitor() {
+
     }
 
     @Override

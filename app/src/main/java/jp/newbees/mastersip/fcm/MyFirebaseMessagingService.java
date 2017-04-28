@@ -67,7 +67,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
                 handlePushMessage(data);
 
-            } catch (JSONException | NullPointerException e) {
+            } catch (JSONException e) {
                 Logger.e(TAG,e.getMessage());
                 e.printStackTrace();
             } catch (NullPointerException e) {
@@ -98,7 +98,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
             case FCMPushItem.CATEGORY.CHAT_TEXT:
-                if (!MyLifecycleHandler.isApplicationVisible()) {
+                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
                     sendNotificationForChat(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
                 }
                 break;
@@ -108,7 +108,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleIncomingCallMessage(Map<String, Object> data) {
-        if (MyLifecycleHandler.isApplicationVisible()) {
+        if (MyLifecycleHandler.getInstance().isApplicationVisible()) {
             showMissedCallPush = false;
         } else {
             showMissedCallPush = true;
@@ -179,8 +179,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
 
-        if (Build.VERSION.SDK_INT >= 21)
+        if (Build.VERSION.SDK_INT >= 21){
             notificationBuilder.setVibrate(new long[0]);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

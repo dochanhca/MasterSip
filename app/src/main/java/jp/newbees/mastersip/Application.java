@@ -11,14 +11,13 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  */
 
 public class Application extends android.app.Application{
-
     @Override
     public void onCreate() {
         super.onCreate();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         initConfigs();
-        registerActivityLifecycleCallbacks(new MyLifecycleHandler());
+        registerActivityLifecycleCallbacks(MyLifecycleHandler.getInstance());
     }
 
     /**

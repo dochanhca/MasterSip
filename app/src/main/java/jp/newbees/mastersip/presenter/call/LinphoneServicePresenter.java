@@ -82,7 +82,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             } else {
                 Logger.e("LinphoneHandler", "Do not notify to server that the client is online");
             }
-            if (!MyLifecycleHandler.isApplicationVisible()) {
+            if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());
             }
@@ -127,7 +127,7 @@ public class LinphoneServicePresenter extends BasePresenter {
     }
 
     private void handleIncomingCallType(int callType, UserItem caller, String callID) {
-        if (MyLifecycleHandler.isApplicationVisible()) {
+        if (MyLifecycleHandler.getInstance().isApplicationVisible()) {
             ReceivingCallEvent event = new ReceivingCallEvent(this.getEventCall(callType), caller, callID);
             EventBus.getDefault().post(event);
         } else {
