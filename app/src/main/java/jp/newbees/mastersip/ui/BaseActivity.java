@@ -15,11 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 
+import io.fabric.sdk.android.Fabric;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
@@ -86,6 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layoutId());
+        Fabric.with(this, new Crashlytics());
         TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();
