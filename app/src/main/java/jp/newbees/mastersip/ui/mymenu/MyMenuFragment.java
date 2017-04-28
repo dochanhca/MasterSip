@@ -376,6 +376,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
+    public void didUpLoadPhotoGalleryFailure(int errorCode, String errorMessage) {
+        uploadingPhoto = false;
+        showToastExceptionVolleyError(errorCode, errorMessage);
+        groupUploadPhotoGallery.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onStartUploadPhotoGallery(String filePath) {
         this.uploadingPhoto = true;
         this.prwUploadPhotoGallery.resetCount();
@@ -408,13 +415,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onStartUploadAvatarBitmap(final String filePath) {
         this.uploadingAvatar = true;
         this.prwUploadAvatar.resetCount();
-        Glide.with(getContext())
-                .load(new File(filePath))
+        Glide.with(getContext()).load(new File(filePath))
                 .fitCenter()
-                .dontAnimate()
-                .dontTransform()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .dontAnimate().dontTransform()
+                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(this.imgAvatar);
         this.btnChangeAvatar.setVisibility(View.GONE);
         this.groupUploadAvatar.setVisibility(View.VISIBLE);
@@ -580,11 +584,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void handleImageCropped(Intent data) {
-        byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
+        String imagePath = data.getStringExtra(CropImageActivity.IMAGE_CROPPED);
         if (currentRequestPhoto == REQUEST_SELECT_PHOTO_FOR_AVATAR) {
-            presenter.uploadAvatar(result);
+            presenter.uploadAvatar(imagePath);
         } else {
-            presenter.uploadPhotoForGallery(result);
+            presenter.uploadPhotoForGallery(imagePath);
         }
     }
 

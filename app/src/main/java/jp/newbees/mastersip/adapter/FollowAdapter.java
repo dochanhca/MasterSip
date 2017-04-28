@@ -34,7 +34,6 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
     private FollowViewHolder.OnFollowItemClickListener followItemListener;
     private final Context context;
     private FollowItem followList;
-    private int quitImage;
 
     public FollowAdapter(Context context, FollowItem followList) {
         this.context = context;
@@ -75,11 +74,12 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
     /**
      * Footprint ViewHolder
      */
-    public static class FollowViewHolder extends RecyclerView.ViewHolder{
+    public static class FollowViewHolder extends RecyclerView.ViewHolder {
         private ItemHolder itemHolder;
 
         /**
          * Constructor
+         *
          * @param itemView View for holder Item
          */
         public FollowViewHolder(View itemView) {
@@ -88,14 +88,13 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
         }
 
         class ItemHolder implements View.OnClickListener {
-            public HiraginoTextView txtUserNameAge;
-            public HiraginoTextView txtCallSetting;
-            public Button btnVoiceCall;
-            public Button btnVideoCall;
-            public Button btnChat;
-            public ImageView imgAvatar;
-            public View separateView;
-            public View groupAction;
+            private HiraginoTextView txtUserNameAge;
+            private HiraginoTextView txtCallSetting;
+            private Button btnVoiceCall;
+            private Button btnVideoCall;
+            private Button btnChat;
+            private ImageView imgAvatar;
+            private View groupAction;
             private OnFollowItemClickListener followItemListener;
             private UserItem userItem;
             private View rootView;
@@ -104,7 +103,6 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
                 this.txtUserNameAge = (HiraginoTextView) view.findViewById(R.id.txt_user_name_age);
                 this.txtCallSetting = (HiraginoTextView) view.findViewById(R.id.txt_call_setting);
                 this.imgAvatar = (ImageView) view.findViewById(R.id.img_avatar);
-                this.separateView =  view.findViewById(R.id.separate_view);
                 this.btnVideoCall = (Button) view.findViewById(R.id.btn_video_call);
                 this.btnVoiceCall = (Button) view.findViewById(R.id.btn_voice_call);
                 this.btnChat = (Button) view.findViewById(R.id.btn_chat);
@@ -114,6 +112,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
 
             /**
              * Update view for item
+             *
              * @param userItem
              * @param context
              */
@@ -128,7 +127,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
             private void updateStatusUser(int status, Context context) {
                 if (status == UserItem.ACTIVE) {
                     handleViewForActiveUser(context);
-                }else {
+                } else {
                     handleViewForQuitUser(context);
                 }
             }
@@ -167,19 +166,20 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
                 int colorVideo = settingItem.getVideoCall() == SettingItem.ON ? colorGreen : colorGray;
                 int colorVoice = settingItem.getVoiceCall() == SettingItem.ON ? colorGreen : colorGray;
 
-                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0,video, 0 , 0);
-                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0,voice, 0 , 0);
+                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0, video, 0, 0);
+                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0, voice, 0, 0);
                 btnVoiceCall.setTextColor(colorVoice);
                 btnVideoCall.setTextColor(colorVideo);
             }
 
             /**
              * Update description setting call
+             *
              * @param context
              * @param lastLogin
              * @param settingItem
              */
-            public void updateDescriptionSettingCall(Context context,String lastLogin, SettingItem settingItem) {
+            public void updateDescriptionSettingCall(Context context, String lastLogin, SettingItem settingItem) {
                 boolean enableVideo = settingItem.getVideoCall() == SettingItem.ON ? true : false;
                 boolean enableVoice = settingItem.getVoiceCall() == SettingItem.ON ? true : false;
 
@@ -187,10 +187,10 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
                 if (enableVideo && enableVoice) {
                     description = context.getString(R.string.allow_video_voice_call);
                 } else if (enableVideo) {
-                    description =  context.getString(R.string.allow_video_only);
+                    description = context.getString(R.string.allow_video_only);
                 } else if (enableVoice) {
-                    description =  context.getString(R.string.allow_voice_only);
-                }else {
+                    description = context.getString(R.string.allow_voice_only);
+                } else {
                     String format = context.getResources().getString(R.string.allow_chat_only);
                     String lastLoginPretty = getPrettyTimeLastLogin(context, lastLogin);
                     description = String.format(format, lastLoginPretty);
@@ -207,6 +207,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
 
             /**
              * Register listener on each item footprint
+             *
              * @param followItemListener
              */
             public void setOnItemFollowClickListener(OnFollowItemClickListener followItemListener) {
@@ -217,22 +218,19 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
             public void onClick(View view) {
                 if (view == btnChat) {
                     this.followItemListener.onChatClickListener(this.userItem);
-                }else if(view == btnVoiceCall) {
+                } else if (view == btnVoiceCall) {
                     this.followItemListener.onVoiceClickListener(this.userItem);
-                }else if (view == btnVideoCall) {
+                } else if (view == btnVideoCall) {
                     this.followItemListener.onVideoClickListener(this.userItem);
-                }else {
+                } else {
                     this.followItemListener.onProfileClickListener(this.userItem);
                 }
             }
 
             private int getQuitImage() {
                 int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-                int quitImage = gender
-                        == UserItem.MALE
-                        ? R.drawable.ic_disable_female
+                return gender == UserItem.MALE ? R.drawable.ic_disable_female
                         : R.drawable.ic_disable_male;
-                return quitImage;
             }
         }
 
@@ -242,24 +240,28 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.FollowView
         public interface OnFollowItemClickListener {
             /**
              * Callback when user clicks on Chat Button
+             *
              * @param userItem
              */
             void onChatClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Video Button
+             *
              * @param userItem
              */
             void onVideoClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Voice Button
+             *
              * @param userItem
              */
             void onVoiceClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Item
+             *
              * @param userItem
              */
             void onProfileClickListener(UserItem userItem);

@@ -260,7 +260,7 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void didLoadChatHistoryError(int errorCode, String errorMessage) {
         showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

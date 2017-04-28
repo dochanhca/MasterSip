@@ -23,7 +23,6 @@ public class BusyCallProcessor extends BaseSocketProcessor {
     @Override
     protected Object doInBackgroundData(PacketItem packetItem) throws JSONException {
         JSONObject jData = new JSONObject(packetItem.getData());
-        String callID = jData.getString(Constant.JSON.CALL_ID);
-        return callID;
+        return jData.getString(Constant.JSON.CALL_ID);
     }
 }

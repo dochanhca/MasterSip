@@ -130,4 +130,5 @@
     <dimen name="height_video_in_video_chat">260dp</dimen>
     <dimen name="height_text_show_hide_chat_box">40dp</dimen>
     <dimen name="avatar_size_normal">150dp</dimen>
+    <dimen name="img_gift_size">80dp</dimen>
 </resources>

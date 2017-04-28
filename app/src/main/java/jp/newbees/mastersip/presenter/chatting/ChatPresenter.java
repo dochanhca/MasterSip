@@ -31,7 +31,7 @@ import jp.newbees.mastersip.utils.ConfigManager;
  */
 
 public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.ErrorListener,
-        Response.Listener<BaseChatItem>{
+        Response.Listener<BaseChatItem> {
 
     private ChatListener chatPresenterListener;
 
@@ -117,26 +117,12 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
      */
     public void doFollowUser(UserItem userItem) {
         if (userItem.getRelationshipItem().isFollowed() == RelationshipItem.FOLLOW) {
-            unFollowUser(userItem.getUserId());
+            UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, userItem.getUserId());
+            requestToServer(unFollowUserTask);
         } else {
-            followUser(userItem.getUserId());
+            FollowUserTask followUserTask = new FollowUserTask(context, userItem.getUserId());
+            requestToServer(followUserTask);
         }
-    }
-
-    /**
-     * @param destUserId
-     */
-    private void followUser(String destUserId) {
-        FollowUserTask followUserTask = new FollowUserTask(context, destUserId);
-        requestToServer(followUserTask);
-    }
-
-    /**
-     * @param destUserId
-     */
-    private void unFollowUser(String destUserId) {
-        UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, destUserId);
-        requestToServer(unFollowUserTask);
     }
 
     /**
@@ -144,6 +130,7 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
      * @param members
      * @return
      */
+
     public UserItem getUserHasRelationShipItem(UserItem currentUser, Map<String, UserItem> members) {
         return members.get(currentUser.getUserId());
     }

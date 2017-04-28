@@ -58,18 +58,14 @@ public class LinphoneServicePresenter extends BasePresenter {
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
         if (task instanceof CheckIncomingCallTask) {
-            incomingCallListener.didCheckCallError(errorCode,errorMessage);
+            incomingCallListener.didCheckCallError(errorCode, errorMessage);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCallEvent(ReceivingCallEvent receivingCallEvent) {
-        switch (receivingCallEvent.getCallEvent()) {
-            case ReceivingCallEvent.INCOMING_CALL:
-                onIncomingCall();
-                break;
-            default:
-                break;
+        if (receivingCallEvent.getCallEvent() == ReceivingCallEvent.INCOMING_CALL) {
+            onIncomingCall();
         }
     }
 
@@ -83,7 +79,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             if (event.isInProgress()) {
                 Logger.e("LinphoneHandler", "Notify to server that the client is online");
                 this.notifyToServer();
-            }else {
+            } else {
                 Logger.e("LinphoneHandler", "Do not notify to server that the client is online");
             }
             if (!MyLifecycleHandler.isApplicationVisible()) {
@@ -118,8 +114,7 @@ public class LinphoneServicePresenter extends BasePresenter {
     }
 
     private void reconnectRoom(String callId) {
-        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context,
-                callId);
+        ReconnectCallTask reconnectCallTask = new ReconnectCallTask(context, callId);
         requestToServer(reconnectCallTask);
     }
 
@@ -135,12 +130,12 @@ public class LinphoneServicePresenter extends BasePresenter {
         if (MyLifecycleHandler.isApplicationVisible()) {
             ReceivingCallEvent event = new ReceivingCallEvent(this.getEventCall(callType), caller, callID);
             EventBus.getDefault().post(event);
-        }else {
+        } else {
             handleIncomingCallFromBackground(callType, caller, callID);
         }
     }
 
-    private void handleIncomingCallFromBackground(int callType,UserItem caller,String callID) {
+    private void handleIncomingCallFromBackground(int callType, UserItem caller, String callID) {
         switch (callType) {
             case Constant.API.VOICE_CALL:
                 incomingCallListener.incomingVoiceCall(caller, callID);

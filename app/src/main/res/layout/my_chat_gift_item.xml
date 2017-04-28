@@ -6,42 +6,52 @@
 
     <ImageView
         android:id="@+id/comma"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:src="@drawable/img_comma_chat_item" />
 
     <RelativeLayout
         android:id="@+id/group_gift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginRight="-8dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@id/comma"
-        android:background="@drawable/bg_blue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:background="@drawable/bg_blue">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_gift"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_centerHorizontal="true"
+        <LinearLayout
+            android:id="@+id/layout_img_gift"
             android:layout_width="@dimen/size_50dp"
-            android:layout_height="@dimen/size_50dp" />
+            android:layout_height="@dimen/margin_50"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10dp"
+            android:background="@drawable/bg_circle_gift_send"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_gift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
 
         <jp.newbees.mastersip.customviews.HiraginoTextView
             android:id="@+id/txt_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/img_gift"
             style="@style/origin_style_content_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/max_chat_item_width"
+            android:layout_below="@id/layout_img_gift"
+            android:layout_centerHorizontal="true"
             android:lineSpacingMultiplier="1.4"
+            android:maxWidth="@dimen/max_chat_item_width"
             android:padding="@dimen/normal_margin"
             android:text="ちあきさんがたくみさんへ
 「スイーツ」ギフト(10pts)
 を送りました。"
-            android:textSize="@dimen/text_size_13"
-            android:textColor="@color/text_chat_color" />
+            android:textColor="@color/text_chat_color"
+            android:textSize="@dimen/text_size_13" />
 
     </RelativeLayout>
 
