@@ -51,6 +51,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
             ConfigManager.getInstance().setCurrentCallUser(caller, callID);
             ConfigManager.getInstance().updateEndCallStatus(false);
+            ConfigManager.getInstance().setCallState(callID, ConfigManager.CALL_STATE_WAITING);
             handleIncomingCallType(callType, caller, callID);
         }
     }

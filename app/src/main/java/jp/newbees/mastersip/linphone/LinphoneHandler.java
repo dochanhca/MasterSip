@@ -50,6 +50,7 @@ import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.network.api.SendDirectMessageTask;
 import jp.newbees.mastersip.network.sip.base.PacketManager;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -181,8 +182,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
     public void callState(LinphoneCore lc, LinphoneCall call, LinphoneCall.State cstate, String msg) {
         Logger.e(TAG, "CallState " + msg + " - " + cstate.toString() + " - " + cstate.value());
         int state = cstate.value();
+        String callId = ConfigManager.getInstance().getCallId();
         if (cstate == LinphoneCall.State.CallReleased) {
-            ConfigManager.getInstance().updateEndCallStatus(true);
+            checkEndWhileWaitingCall();
         }else if( cstate == LinphoneCall.State.Error) {
             ConfigManager.getInstance().updateEndCallStatus(false);
         }else if(cstate == LinphoneCall.State.CallEnd) {
@@ -201,9 +203,51 @@ public class LinphoneHandler implements LinphoneCoreListener {
             mAudioManager.abandonAudioFocus(null);
             requestAudioFocus(STREAM_VOICE_CALL);
         }
-        String callId = ConfigManager.getInstance().getCallId();
+
+        if((cstate == LinphoneCall.State.Connected ||
+                cstate == LinphoneCall.State.StreamsRunning) &&
+                call.getDirection() == CallDirection.Incoming) {
+            checkCallConnected(cstate, callId);
+        }
+
         ReceivingCallEvent receivingCallEvent = new ReceivingCallEvent(state, call.getDirection(), callId);
         EventBus.getDefault().post(receivingCallEvent);
+    }
+
+    private void checkCallConnected(LinphoneCall.State state, String callId) {
+        int callType = ConfigManager.getInstance().getCurrentCallType();
+        if (callType == Constant.API.VOICE_CALL
+                && state == LinphoneCall.State.Connected) {
+            ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_CONNECTED);
+        }else if ((callType == Constant.API.VIDEO_CALL || callType == Constant.API.VIDEO_CHAT_CALL )
+                && state == LinphoneCall.State.StreamsRunning) {
+            ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_CONNECTED);
+        }
+    }
+
+    private void checkEndWhileWaitingCall() {
+        String callId = ConfigManager.getInstance().getCallId();
+        int callState = ConfigManager.getInstance().getCallState(callId);
+        if (callState == ConfigManager.CALL_STATE_WAITING) {
+            notifyEndCall(callId);
+        }else {
+            ConfigManager.getInstance().updateEndCallStatus(true);
+        }
+    }
+
+    private void notifyEndCall(String callId) {
+        CancelCallTask cancelCallTask = new CancelCallTask(getContext(), callId);
+        cancelCallTask.request(new Response.Listener<Void>() {
+            @Override
+            public void onResponse(Void response) {
+                ConfigManager.getInstance().updateEndCallStatus(true);
+            }
+        }, new BaseTask.ErrorListener() {
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                ConfigManager.getInstance().updateEndCallStatus(false);
+            }
+        });
     }
 
     private void handleCallResuming() {
