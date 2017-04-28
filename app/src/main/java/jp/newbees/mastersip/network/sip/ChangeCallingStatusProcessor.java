@@ -23,8 +23,8 @@ public class ChangeCallingStatusProcessor extends BaseSocketProcessor {
         int status = (int) ((Map<String, Object>) data).get(Constant.JSON.STATUS);
 
         if (status == Constant.SOCKET.STATUS_CALLING_CONNECTED) {
-            int callId = (int) ((Map<String, Object>) data).get(Constant.JSON.CALL_ID);
-            ConfigManager.getInstance().setCallState("" + callId, Constant.SOCKET.STATUS_CALLING_CONNECTED);
+            String callId = (String) ((Map<String, Object>) data).get(Constant.JSON.CALL_ID);
+            ConfigManager.getInstance().setCallState(callId, Constant.SOCKET.STATUS_CALLING_CONNECTED);
             this.postEvent(new ReceivingCallEvent(ReceivingCallEvent.OUTGOING_CONNECTED_CALL));
         }
     }
