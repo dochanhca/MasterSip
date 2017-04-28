@@ -1032,4 +1032,27 @@ public class JSONUtils {
         result.put(GetOnlineListTask.LIST_USER, userItems);
         return result;
     }
+
+    public static String genMessageGSM(int state) throws JSONException {
+        String extension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        JSONObject jMessage = new JSONObject();
+        jMessage.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_GSM_CALL_STATE);
+        jMessage.put(Constant.JSON.MESSAGE, "");
+
+        JSONObject jResponse = new JSONObject();
+        jResponse.put(Constant.JSON.EXTENSION, extension);
+        jResponse.put(Constant.JSON.GSM_STATE, state);
+
+        jMessage.put(Constant.JSON.RESPONSE, jResponse);
+        return jMessage.toString();
+    }
+
+    public static String genMessageChangeBackgroundState(String mode) throws JSONException {
+        JSONObject jMessage = new JSONObject();
+        jMessage.put(Constant.JSON.ACTION, mode);
+        jMessage.put(Constant.JSON.MESSAGE, "");
+        jMessage.put(Constant.JSON.RESPONSE, new JSONObject());
+
+        return jMessage.toString();
+    }
 }

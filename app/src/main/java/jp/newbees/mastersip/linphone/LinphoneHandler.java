@@ -649,7 +649,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         }
     }
 
-    public final boolean isSpeakerEnalbed() {
+    public final boolean isSpeakerEnabled() {
         return linphoneCore.isSpeakerEnabled();
     }
 

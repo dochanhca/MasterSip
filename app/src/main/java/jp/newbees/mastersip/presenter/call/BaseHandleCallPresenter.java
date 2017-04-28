@@ -3,24 +3,35 @@ package jp.newbees.mastersip.presenter.call;
 import android.content.Context;
 import android.view.SurfaceView;
 
+import com.android.volley.Response;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 import org.linphone.core.LinphoneCoreException;
 
+import jp.newbees.mastersip.event.CompetitorChangeBackgroundStateEvent;
 import jp.newbees.mastersip.event.GSMCallEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.event.call.RunOutOfCoinEvent;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
+import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.SendDirectMessageTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
+import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.MyLifecycleHandler;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by ducpv on 3/10/17.
  */
 
-public abstract class BaseHandleCallPresenter extends BasePresenter {
+public abstract class BaseHandleCallPresenter extends BasePresenter{
 
     private CallView view;
 
@@ -32,6 +43,11 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
         view.onCoinChanged(event.getCoin());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCompetitorChangeBackgroundState(CompetitorChangeBackgroundStateEvent event) {
+        view.onCompetitorChangeBGState(event.getAction());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -121,6 +137,36 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
+    public void registerActivityMonitorListener(MyLifecycleHandler.ActivityMonitorListener listener) {
+        MyLifecycleHandler.getInstance().registerActivityMonitorListener(listener);
+    }
+
+    public void unregisterActivityMonitorListener() {
+        MyLifecycleHandler.getInstance().unregisterActivityMonitorListener();
+    }
+
+    public void sendBackgroundState(String toExtension, String action) {
+        try {
+            String message = JSONUtils.genMessageChangeBackgroundState(action);
+            SendDirectMessageTask messageTask = new SendDirectMessageTask(getApplicationContext(),
+                    toExtension, message);
+
+            messageTask.request(new Response.Listener<Boolean>() {
+                @Override
+                public void onResponse(Boolean response) {
+                    Logger.e("BaseHandleCallPresenter", "sendBackgroundState success");
+                }
+            }, new BaseTask.ErrorListener() {
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    Logger.e("BaseHandleCallPresenter", "sendBackgroundState " + errorMessage);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public interface CallView {
         void onCallConnected();
 
@@ -133,5 +179,7 @@ public abstract class BaseHandleCallPresenter extends BasePresenter {
         void onCallPaused();
 
         void onCallGSMResuming();
+
+        void onCompetitorChangeBGState(String action);
     }
 }

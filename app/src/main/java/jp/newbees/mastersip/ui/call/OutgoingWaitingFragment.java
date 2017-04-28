@@ -222,6 +222,12 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     }
 
     @Override
+    public final void onCallResume() {
+        txtTimer.setVisibility(View.VISIBLE);
+        txtNotifyLowSignal.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     protected void updateUIWhenStartCalling() {
         stopCountWaitingTimeThread();
 
@@ -246,8 +252,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     }
 
     @Override
-    public final void onCallResume() {
-        txtTimer.setVisibility(View.VISIBLE);
-        txtNotifyLowSignal.setVisibility(View.INVISIBLE);
+    protected TextView getTxtCallStatus() {
+        return txtNotifyLowSignal;
     }
 }

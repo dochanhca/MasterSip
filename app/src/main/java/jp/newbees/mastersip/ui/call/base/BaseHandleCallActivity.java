@@ -31,7 +31,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  */
 
 public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
-        PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
+        PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView, MyLifecycleHandler.ActivityMonitorListener {
 
     protected static final String KEY_COMPETITOR = "KEY_COMPETITOR";
     protected static final String CALL_ID = "CALL_ID";
@@ -59,20 +59,13 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     private int runFrom;
 
-    public void setPresenter(BaseHandleCallPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public BaseHandleCallPresenter getPresenter() {
-        return presenter;
-    }
-
     public final void declineCall() {
         this.presenter.declineCall();
     }
 
     public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
         this.presenter.acceptCall(calId, callType);
+        this.presenter.registerActivityMonitorListener(this);
     }
 
     public final void terminalCall() {
@@ -109,10 +102,6 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         return callId;
     }
 
-    public CallingFragment getCallingFragment() {
-        return callingFragment;
-    }
-
     @Override
     protected int layoutId() {
         return R.layout.activity_calling;
@@ -131,7 +120,10 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
         onShowWaitingFragment();
         initCallingFragment();
+        presenter = getPresenter();
     }
+
+    protected abstract BaseHandleCallPresenter getPresenter();
 
     private void initCallingFragment() {
         switch (getCallType()) {
@@ -154,6 +146,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
+        presenter.unregisterActivityMonitorListener();
         if (getIabHelper() != null) {
             topPresenter.disposeIabHelper();
         }
@@ -186,6 +179,11 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     @Override
+    public void onCompetitorChangeBGState(String action) {
+        callingFragment.onCompetitorChangeBGState(action);
+    }
+
+    @Override
     public void onCallPaused() {
         if (callingFragment != null) {
             callingFragment.onCallPaused();
@@ -203,6 +201,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     public void onCallConnected() {
         if (isUpadedView == false) {
             isUpadedView = true;
+            presenter.registerActivityMonitorListener(this);
             updateUIWhenInCall();
         }
     }
@@ -326,11 +325,21 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCallEnd() {
-        if (MyLifecycleHandler.getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
+        if (MyLifecycleHandler.getInstance().getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
             ExitActivity.exitApplication(this);
         } else {
             BaseHandleCallActivity.this.finish();
         }
+    }
+
+    @Override
+    public void onForegroundMode() {
+        presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_FOREGROUND);
+    }
+
+    @Override
+    public void onBackgroundMode() {
+        presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_BACKGROUND);
     }
 
     protected static Bundle getBundle(UserItem competitor, String callID) {

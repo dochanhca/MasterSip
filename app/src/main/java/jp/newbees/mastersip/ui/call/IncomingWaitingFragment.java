@@ -138,6 +138,11 @@ public class IncomingWaitingFragment extends WaitingFragment {
     }
 
     @Override
+    protected TextView getTxtCallStatus() {
+        return txtNotifyLowSignal;
+    }
+
+    @Override
     public void onCallPaused() {
         txtTimer.setVisibility(View.INVISIBLE);
         txtNotifyLowSignal.setVisibility(View.VISIBLE);

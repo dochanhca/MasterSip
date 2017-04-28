@@ -6,6 +6,7 @@ import android.view.WindowManager;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleIncomingCallPresenter;
 import jp.newbees.mastersip.ui.call.IncomingWaitingFragment;
 import jp.newbees.mastersip.utils.Logger;
@@ -32,9 +33,13 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
+    }
+
+    @Override
+    protected BaseHandleCallPresenter getPresenter() {
         presenter = new BaseHandleIncomingCallPresenter(getApplicationContext(), this, getCallType());
         presenter.registerEvents();
-        setPresenter(presenter);
+        return presenter;
     }
 
     @Override
@@ -49,7 +54,7 @@ public abstract class BaseHandleIncomingCallActivity extends BaseHandleCallActiv
 
     @Override
     public void onCallEnd() {
-        if (MyLifecycleHandler.getNumberOfActivity() == 1) {
+        if (MyLifecycleHandler.getInstance().getNumberOfActivity() == 1) {
             Logger.e(TAG, "we have only calling activity, stop service and destroy app");
             LinphoneService.stopLinphone(this);
         }

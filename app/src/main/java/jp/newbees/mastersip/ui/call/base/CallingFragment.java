@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 import org.linphone.core.LinphoneCoreException;
@@ -13,6 +14,7 @@ import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -87,7 +89,7 @@ public abstract class CallingFragment extends BaseFragment {
         new Thread(countingCallDurationThread).start();
     }
 
-    public final void onCoinChanged(int coin) {
+    protected final void onCoinChanged(int coin) {
         if (isDetached() || getTxtPoint() == null) {
             return;
         }
@@ -102,9 +104,16 @@ public abstract class CallingFragment extends BaseFragment {
 
     protected abstract TextView getTxtPoint();
 
-    protected abstract void onCallResume();
+    protected abstract TextView getTxtCallStatus();
 
-    protected abstract void onCallPaused();
+    protected void onCallResume() {
+        getTxtCallStatus().setVisibility(View.INVISIBLE);
+    }
+
+    protected void onCallPaused() {
+        getTxtCallStatus().setText(getString(R.string.low_signal));
+        getTxtCallStatus().setVisibility(View.VISIBLE);
+    }
 
     protected abstract void updateUIWhenStartCalling();
 
@@ -138,13 +147,13 @@ public abstract class CallingFragment extends BaseFragment {
         }
     }
 
-    protected void switchCamera(SurfaceView mCaptureView) {
+    protected final void switchCamera(SurfaceView mCaptureView) {
         if (getCallActivity() != null) {
             getCallActivity().switchCamera(mCaptureView);
         }
     }
 
-    protected void useFrontCamera() {
+    protected final void useFrontCamera() {
         if (getCallActivity() != null) {
             getCallActivity().useFrontCamera();
         }
@@ -156,11 +165,11 @@ public abstract class CallingFragment extends BaseFragment {
         }
     }
 
-    protected final boolean isSpeakerEnalbed() {
-        return LinphoneHandler.getInstance().isSpeakerEnalbed();
+    protected final boolean isSpeakerEnabled() {
+        return LinphoneHandler.getInstance().isSpeakerEnabled();
     }
 
-    protected final boolean isMicEnalbed() {
+    protected final boolean isMicEnabled() {
         return LinphoneHandler.getInstance().isMicEnabled();
     }
 
@@ -171,6 +180,19 @@ public abstract class CallingFragment extends BaseFragment {
         } else {
             Logger.e("CallingFragment", " The activity contain calling fragment must extend BaseHandleCallActivity");
             return null;
+        }
+    }
+
+    protected final void onCompetitorChangeBGState(String action) {
+        if (getCallActivity().getCallType() != Constant.API.VOICE_CALL) {
+            if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_BACKGROUND)) {
+                getTxtCallStatus().setText(getString(R.string.competitor_off_camera));
+                getTxtCallStatus().setVisibility(View.VISIBLE);
+                enableCamera(false);
+            } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_FOREGROUND)) {
+                enableCamera(true);
+                getTxtCallStatus().setVisibility(View.INVISIBLE);
+            }
         }
     }
 

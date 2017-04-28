@@ -39,8 +39,8 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
-    @BindView(R.id.txt_low_signal)
-    TextView txtLowSignal;
+    @BindView(R.id.txt_call_status)
+    TextView txtCallStatus;
     @BindView(R.id.videoCaptureSurface)
     SurfaceView mCaptureView;
     @BindView(R.id.btn_on_off_mic)
@@ -210,21 +210,16 @@ public class VideoChatForFemaleFragment extends CallingFragment implements Recei
     }
 
     @Override
-    public void onCallPaused() {
-        txtLowSignal.setVisibility(View.VISIBLE);
+    protected TextView getTxtCallStatus() {
+        return txtCallStatus;
     }
 
     @Override
     protected void updateUIWhenStartCalling() {
         countingCallDuration();
 
-        btnOnOffMic.setChecked(isMicEnalbed());
+        btnOnOffMic.setChecked(isMicEnabled());
 
-    }
-
-    @Override
-    public final void onCallResume() {
-        txtLowSignal.setVisibility(View.INVISIBLE);
     }
 
     @Override

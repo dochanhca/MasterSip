@@ -5,6 +5,7 @@ import android.view.WindowManager;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleOutgoingCallPresenter;
 import jp.newbees.mastersip.ui.call.OutgoingWaitingFragment;
 
@@ -22,10 +23,13 @@ public abstract class BaseHandleOutgoingCallActivity extends BaseHandleCallActiv
 
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 
+    }
+
+    @Override
+    protected BaseHandleCallPresenter getPresenter() {
         presenter = new BaseHandleOutgoingCallPresenter(getApplicationContext(), this);
         presenter.registerEvents();
-        setPresenter(presenter);
-
+        return presenter;
     }
 
     protected abstract String getTextTitleInWaitingFragment();
