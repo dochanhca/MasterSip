@@ -43,6 +43,10 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
 public class LinphoneService extends Service implements LinphoneServicePresenter.IncomingCallListener {
 
     private static final String TAG = "LinphoneService";
+    public static final int START_FROM_PUSH_NOTIFICATION = 1;
+    public static final int START_FROM_ACTIVITY = 2;
+    private static final String START_SERVICE_FROM = "START_SERVICE_FROM";
+
     private BroadcastReceiver receiverRingerModeChanged;
 
     private LinphoneServicePresenter incomingCallPresenter;
@@ -69,12 +73,10 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     };
 
     public void restartApplication() {
-
         Intent mStartActivity = new Intent(this, StartActivity.class);
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, mPendingIntent);
-
 
         stopService(new Intent(Intent.ACTION_MAIN).setClass(this, LinphoneService.class));
         ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
@@ -83,6 +85,11 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     }
 
     public static void startLinphone(Context context) {
+        LinphoneService.startLinphone(context, LinphoneService.START_FROM_ACTIVITY);
+    }
+
+    public static void startLinphone(Context context, int startFromPushNotification) {
+        ConfigManager.getInstance().startServiceFrom(startFromPushNotification);
         Intent intent = new Intent(context, LinphoneService.class);
         context.startService(intent);
     }
@@ -98,10 +105,11 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     }
 
     public static boolean isRunning() {
-        if (instance == null || LinphoneHandler.getInstance() == null) {
+        if (null == instance) {
             return false;
+        }else {
+            return true;
         }
-        return LinphoneHandler.getInstance().isRunning();
     }
 
     private static void destroyLinphoneService() {
@@ -145,6 +153,7 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Logger.e("LinphoneService", "onBind");
         return null;
     }
 

@@ -112,7 +112,6 @@ public class CallPresenter extends BasePresenter {
         ConfigManager.getInstance().setCallId(callId);
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
 
-        ConfigManager.getInstance().updateEndCallStatus(false);
         ConfigManager.getInstance().setCurrentCallUser(callee, callId);
         ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_WAITING);
 

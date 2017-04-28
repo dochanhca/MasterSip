@@ -50,7 +50,6 @@ public class LinphoneServicePresenter extends BasePresenter {
             UserItem caller = (UserItem) result.get(CheckIncomingCallTask.CALLER);
             String callID = (String) result.get(CheckIncomingCallTask.CALL_ID);
             ConfigManager.getInstance().setCurrentCallUser(caller, callID);
-            ConfigManager.getInstance().updateEndCallStatus(false);
             ConfigManager.getInstance().setCallState(callID, ConfigManager.CALL_STATE_WAITING);
             handleIncomingCallType(callType, caller, callID);
         }
@@ -77,12 +76,7 @@ public class LinphoneServicePresenter extends BasePresenter {
     public void onRegisterVoIPEvent(RegisterVoIPEvent event) {
         Logger.e(tag, "onRegisterVoIPEvent receive: " + event.getResponseCode());
         if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_SUCCESS) {
-            if (event.isInProgress()) {
-                Logger.e("LinphoneHandler", "Notify to server that the client is online");
-                this.notifyToServer();
-            } else {
-                Logger.e("LinphoneHandler", "Do not notify to server that the client is online");
-            }
+            this.notifyToServer();
             if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
                 saveLoginState(true);
                 reconnectRoom(ConfigManager.getInstance().getCallId());
@@ -108,7 +102,8 @@ public class LinphoneServicePresenter extends BasePresenter {
     }
 
     private void notifyToServer() {
-        if (!ConfigManager.getInstance().getEndCallStatus()) {
+        if (!LinphoneHandler.getInstance().isCalling() ||
+                ConfigManager.getInstance().getStartServiceFrom() == LinphoneService.START_FROM_ACTIVITY) {
             UpdateCallWhenOnlineTask task = new UpdateCallWhenOnlineTask(context);
             requestToServer(task);
         }

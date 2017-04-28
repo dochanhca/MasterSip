@@ -185,13 +185,9 @@ public class LinphoneHandler implements LinphoneCoreListener {
         String callId = ConfigManager.getInstance().getCallId();
         if (cstate == LinphoneCall.State.CallReleased) {
             checkEndWhileWaitingCall();
-        }else if( cstate == LinphoneCall.State.Error) {
-            ConfigManager.getInstance().updateEndCallStatus(false);
         }else if(cstate == LinphoneCall.State.CallEnd) {
-            ConfigManager.getInstance().updateEndCallStatus(false);
             resetDefaultSpeaker();
-        }
-        else if (cstate == LinphoneCall.State.Pausing) {
+        } else if (cstate == LinphoneCall.State.Pausing) {
             notifyPauseCallToServer();
         } else if (cstate == LinphoneCall.State.Resuming) {
             handleCallResuming();
@@ -230,8 +226,6 @@ public class LinphoneHandler implements LinphoneCoreListener {
         int callState = ConfigManager.getInstance().getCallState(callId);
         if (callState == ConfigManager.CALL_STATE_WAITING) {
             notifyEndCall(callId);
-        }else {
-            ConfigManager.getInstance().updateEndCallStatus(true);
         }
     }
 
@@ -240,12 +234,12 @@ public class LinphoneHandler implements LinphoneCoreListener {
         cancelCallTask.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
-                ConfigManager.getInstance().updateEndCallStatus(true);
+                Logger.e("LinphoneHandler", "End waiting call");
             }
         }, new BaseTask.ErrorListener() {
             @Override
             public void onError(int errorCode, String errorMessage) {
-                ConfigManager.getInstance().updateEndCallStatus(false);
+                Logger.e("LinphoneHandler", "End waiting call failed");
             }
         });
     }

@@ -78,12 +78,12 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         callTask.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
-                ConfigManager.getInstance().updateEndCallStatus(true);
+                Logger.e("OutgoingWaitingFragment", "Endcall Auto hangup");
             }
         }, new BaseTask.ErrorListener() {
             @Override
             public void onError(int errorCode, String errorMessage) {
-                ConfigManager.getInstance().updateEndCallStatus(false);
+                Logger.e("OutgoingWaitingFragment", "Endcall Auto hangup failed");
             }
         });
     }

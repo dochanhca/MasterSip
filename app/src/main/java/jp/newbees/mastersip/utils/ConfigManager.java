@@ -48,6 +48,7 @@ final public class ConfigManager {
     private HashMap<String, Integer> callStatus;
     public final static int CALL_STATE_WAITING = 1;
     public final static int CALL_STATE_CONNECTED= 2;
+    private int startServiceFrom;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -250,15 +251,11 @@ final public class ConfigManager {
         this.currentCallId = null;
     }
 
-    public final void updateEndCallStatus(boolean status) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constant.Application.LAST_STATUS_END_CALL, status);
-        editor.commit();
-    }
-
-    public final boolean getEndCallStatus() {
-        return sharedPreferences.getBoolean(Constant.Application.LAST_STATUS_END_CALL, true);
-    }
+//    public final void updateEndCallStatus(boolean status) {
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean(Constant.Application.LAST_STATUS_END_CALL, status);
+//        editor.commit();
+//    }
 
     public boolean inCall() {
         if (this.currentCallId == null) {
@@ -327,5 +324,13 @@ final public class ConfigManager {
 
     public int getCallState(String callId) {
        return callStatus.get(callId);
+    }
+
+    public void startServiceFrom(int startFromPushNotification) {
+        this.startServiceFrom = startFromPushNotification;
+    }
+
+    public int getStartServiceFrom() {
+        return startServiceFrom;
     }
 }
