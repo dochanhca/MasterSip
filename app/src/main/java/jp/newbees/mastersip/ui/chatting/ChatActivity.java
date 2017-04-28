@@ -140,6 +140,7 @@ public class ChatActivity extends CallActivity implements
     private int maxImageHeight = Constant.Application.MAX_IMAGE_HEIGHT;
 
     private Map<String, UserItem> members;
+    private long startClickTime;
 
     private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener =
             new NavigationLayoutGroup.OnChildItemClickListener() {
@@ -537,8 +538,6 @@ public class ChatActivity extends CallActivity implements
                 break;
         }
     }
-
-    private long startClickTime;
 
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {

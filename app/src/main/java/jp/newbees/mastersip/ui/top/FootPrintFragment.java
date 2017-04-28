@@ -54,6 +54,12 @@ public class FootPrintFragment extends BaseCallFragment implements
     private SwipeRefreshLayout swipeContainer;
     private int currentCheckId;
 
+    public static Fragment newInstance() {
+        Fragment fragment = new FootPrintFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
     @Override
     protected int layoutId() {
         return R.layout.fragment_foot_print;
@@ -73,24 +79,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.initRefreshView(rootView);
     }
 
-    private void initRefreshView(View rootView) {
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                handleChangeListFootprint(currentCheckId);
-            }
-        });
-
-    }
-
-    public static Fragment newInstance() {
-        Fragment fragment = new FootPrintFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -104,28 +92,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.handleChangeListFootprint(checkedId);
     }
 
-    private void handleChangeListFootprint(int checkedId) {
-        if (checkedId == rdoFootprintViewedByOther.getId()) {
-            showLoading();
-            descriptionTotal = getString(R.string.description_viewed_by_other);
-            presenter.getListFootprintViewedByOther();
-        } else {
-            showLoading();
-            descriptionTotal = getString(R.string.description_viewed_by_me);
-            presenter.getListFootprintViewedByMe();
-        }
-    }
-
-    private void updateTextColorSegment(int checkedId) {
-        if (checkedId == rdoFootprintViewedByOther.getId()) {
-            rdoFootprintViewedByOther.setTextColor(getContext().getResources().getColor(R.color.white));
-            rdoFootprintViewedByMe.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-        } else {
-            rdoFootprintViewedByMe.setTextColor(getContext().getResources().getColor(R.color.white));
-            rdoFootprintViewedByOther.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-        }
-    }
-
     @Override
     public void didLoadListFootprint(ArrayList<FootprintItem> data, int totalFootprint) {
         disMissLoading();
@@ -136,10 +102,7 @@ public class FootPrintFragment extends BaseCallFragment implements
         updateText(totalFootprint);
     }
 
-    private void updateText(int total) {
-        String description = String.format(descriptionTotal, total);
-        this.txtFootprintDescription.setText(Html.fromHtml(description));
-    }
+
 
     @Override
     public void didLoadDataError(int errorCode, String errorMessage) {
@@ -166,5 +129,48 @@ public class FootPrintFragment extends BaseCallFragment implements
     @Override
     public void onProfileClickListener(UserItem userItem) {
         super.gotoProfileDetail(userItem);
+    }
+
+    private void handleChangeListFootprint(int checkedId) {
+        if (checkedId == rdoFootprintViewedByOther.getId()) {
+            showLoading();
+            descriptionTotal = getString(R.string.description_viewed_by_other);
+            presenter.getListFootprintViewedByOther();
+        } else {
+            showLoading();
+            descriptionTotal = getString(R.string.description_viewed_by_me);
+            presenter.getListFootprintViewedByMe();
+        }
+    }
+
+    private void updateTextColorSegment(int checkedId) {
+        if (checkedId == rdoFootprintViewedByOther.getId()) {
+            rdoFootprintViewedByOther.setTextColor(getContext().getResources().getColor(R.color.white));
+            rdoFootprintViewedByMe.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        } else {
+            rdoFootprintViewedByMe.setTextColor(getContext().getResources().getColor(R.color.white));
+            rdoFootprintViewedByOther.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        }
+    }
+
+    private void updateText(int total) {
+        String description = String.format(descriptionTotal, total);
+        this.txtFootprintDescription.setText(Html.fromHtml(description));
+    }
+
+
+    private void initRefreshView(View rootView) {
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                handleChangeListFootprint(currentCheckId);
+            }
+        });
+
+    }
+
+    public final void setLeftTabChecked() {
+        rdoFootprintViewedByOther.setChecked(true);
     }
 }
