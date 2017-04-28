@@ -70,8 +70,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (JSONException | NullPointerException e) {
                 Logger.e(TAG,e.getMessage());
                 e.printStackTrace();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
             }
         }
 

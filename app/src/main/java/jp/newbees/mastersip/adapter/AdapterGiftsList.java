@@ -18,6 +18,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.GiftItem;
+import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by vietbq on 2/2/17.
@@ -53,24 +54,8 @@ public class AdapterGiftsList extends RecyclerView.Adapter<AdapterGiftsList.Gift
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        int w = resource.getWidth();
-                        int h = resource.getHeight();
-                        setImageGiftSize(w, h);
+                        ImageUtils.setImageGiftSize(holder.imgGiftImage, resource, holder.getGiftSize(context));
                         holder.imgGiftImage.setImageBitmap(resource);
-                    }
-
-                    private void setImageGiftSize(int w, int h) {
-                        double radius =  holder.getGiftSize(context);
-                        double hypo =  Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
-                        double p = radius / hypo;
-                        w = (int) (w * p);
-                        h = (int) (h * p);
-
-                        ViewGroup.LayoutParams layoutParams = holder.imgGiftImage.getLayoutParams();
-                        layoutParams.height = h;
-                        layoutParams.width = w;
-                        holder.imgGiftImage.setLayoutParams(layoutParams);
-
                     }
                 });
 

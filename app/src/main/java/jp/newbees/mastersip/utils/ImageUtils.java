@@ -14,6 +14,8 @@ import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -250,6 +252,20 @@ public class ImageUtils {
         bitmap.recycle();
 
         return output;
+    }
+
+    public static void setImageGiftSize(ImageView imageView, Bitmap resource, double radius) {
+        int w = resource.getWidth();
+        int h = resource.getHeight();
+        double hypo = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2));
+        double p = radius / hypo;
+        w = (int) (w * p);
+        h = (int) (h * p);
+
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.height = h;
+        layoutParams.width = w;
+        imageView.setLayoutParams(layoutParams);
     }
 }
 
