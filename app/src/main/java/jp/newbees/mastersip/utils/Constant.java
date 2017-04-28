@@ -65,6 +65,7 @@ public final class Constant {
         public static final String LAST_TIME_CALL_LOG = "last_time_call_log";
         public static final String CALL_LOGS = "call_logs";
         public static final String ONLINE_LIST = "online_list";
+        public static final String AUTO_HANGUP = "auto_hangup";
 
         private JSON() {
             //Prevent init constructor
