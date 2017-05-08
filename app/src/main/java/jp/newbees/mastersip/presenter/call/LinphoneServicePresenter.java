@@ -102,7 +102,7 @@ public class LinphoneServicePresenter extends BasePresenter {
     }
 
     private void notifyToServer() {
-        if (!LinphoneHandler.getInstance().isCalling() ||
+        if (!LinphoneHandler.getInstance().isCalling() &&
                 ConfigManager.getInstance().getStartServiceFrom() == LinphoneService.START_FROM_ACTIVITY) {
             UpdateCallWhenOnlineTask task = new UpdateCallWhenOnlineTask(context);
             requestToServer(task);

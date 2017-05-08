@@ -16,16 +16,15 @@ repositories {
 }
 
 android {
-
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "jp.newbees.mastersip"
         minSdkVersion 19
-        targetSdkVersion 18
-        versionCode 19
-        versionName "v1.0.0 b18 "
+        targetSdkVersion 25
+        versionCode 18
+        versionName "v1.0.0 b18"
         multiDexEnabled true
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,16 +42,15 @@ android {
             storePassword "123456"
             keyAlias "Master Sip"
             keyPassword "123456"
+            v2SigningEnabled false
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable true
         }
         debug {
             signingConfig signingConfigs.release
@@ -85,19 +83,18 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'biz.kasual:materialnumberpicker:1.2.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.google.android.gms:play-services-places:10.0.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.google.android.gms:play-services-places:10.2.1'
     compile 'joda-time:joda-time:2.3'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'dev.dworks.libs:volleyplus:+'
     compile 'com.romandanylyk:pageindicatorview:0.0.7'
     compile project(':slideDateTimePicker')
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     compile('org.apache.httpcomponents:httpmime:4.3.5') {
@@ -119,7 +116,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.afollestad:sectioned-recyclerview:0.2.3'
     compile project(':liblinphone-android-sdk')
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 }
