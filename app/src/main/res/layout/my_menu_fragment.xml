@@ -604,11 +604,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/action_bar_h"
                     android:layout_marginTop="@dimen/margin_15"
                     android:background="@color/colorPrimary"
                     android:text="@string/logout"
                     android:textColor="@color/white" />
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    android:id="@+id/txt_version"
+                    android:text="version"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:layout_marginBottom="@dimen/action_bar_h"
+                    style="@style/origin_style_content_text_view" />
 
             </LinearLayout>
 

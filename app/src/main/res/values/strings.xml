@@ -491,4 +491,6 @@
     <string name="err_email_existed">Email existed</string>
     <string name="something_wrong">Something went wrong</string>
     <string name="competitor_off_camera">相手のカメラ画面がオフになりました</string>
+    <string name="version">Version</string>
+    <string name="domain">Server</string>
 </resources>

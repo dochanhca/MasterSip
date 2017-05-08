@@ -120,7 +120,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtEmailBackup;
     @BindView(R.id.divider_email_backup)
     View dividerEmailBackup;
-
+    @BindView(R.id.txt_version)
+    HiraginoTextView txtVersion;
 
     private MyMenuPresenter presenter;
     private int defaultAvatar;
@@ -167,6 +168,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
 
         txtActionBarTitle.setText(userItem.getUsername());
+        txtVersion.setText(presenter.getVersion());
 
         if (userItem.getAvatarItem() == null) {
             imgAvatar.setImageResource(defaultAvatar);
