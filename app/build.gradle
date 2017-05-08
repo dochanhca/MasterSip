@@ -88,7 +88,7 @@ dependencies {
     compile 'biz.kasual:materialnumberpicker:1.2.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.google.android.gms:play-services-places:10.2.1'
+    compile 'com.google.android.gms:play-services-places:10.0.1'
     compile 'joda-time:joda-time:2.3'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'dev.dworks.libs:volleyplus:+'
