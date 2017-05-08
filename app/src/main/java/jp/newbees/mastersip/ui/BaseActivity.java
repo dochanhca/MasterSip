@@ -88,7 +88,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layoutId());
-        Fabric.with(this, new Crashlytics());
+        if (!Constant.Application.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
         TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();

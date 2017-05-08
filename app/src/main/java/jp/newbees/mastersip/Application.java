@@ -6,6 +6,7 @@ import com.facebook.appevents.AppEventsLogger;
 
 import io.fabric.sdk.android.Fabric;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
 /**
@@ -16,7 +17,9 @@ public class Application extends android.app.Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        if (!Constant.Application.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         initConfigs();
