@@ -34,9 +34,9 @@ import jp.newbees.mastersip.utils.Logger;
  * use for both incoming and outgoing video call
  */
 
-public class VideoCallFragment extends CallingFragment implements View.OnTouchListener,CallingFragment.CountableToHideAction {
-    @BindView(R.id.txt_low_signal)
-    TextView txtLowSignal;
+public class VideoCallFragment extends CallingFragment implements View.OnTouchListener, CallingFragment.CountableToHideAction {
+    @BindView(R.id.txt_call_status)
+    TextView txtCallStatus;
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
     @BindView(R.id.videoCaptureSurface)
@@ -76,12 +76,9 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     private Animation fadeOut;
     private boolean isShowingView = true;
 
-    public static VideoCallFragment newInstance(UserItem competitor, String callID,
-                                                boolean enableSpeaker, boolean enableMic) {
+    public static VideoCallFragment newInstance(UserItem competitor, String callID) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(SPEAKER, enableSpeaker);
-        args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
         VideoCallFragment fragment = new VideoCallFragment();
         fragment.setArguments(args);
@@ -108,13 +105,12 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
         setupView();
         fixZOrder(mVideoView, mCaptureView);
-        startCountingToHideAction();
+        useFrontCamera();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         if (androidVideoWindow != null) {
             synchronized (androidVideoWindow) {
                 setVideoWindow(androidVideoWindow);
@@ -146,6 +142,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         super.onDestroy();
     }
 
+    @SuppressWarnings("deprecation")
     private void setupView() {
         bindVideoViewToLinphone();
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -153,15 +150,7 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
         llPoint.setVisibility(competitor.getGender() == UserItem.MALE ? View.VISIBLE : View.GONE);
 
         txtName.setText(competitor.getUsername());
-        countingCallDuration();
 
-        boolean enableSpeaker = getArguments().getBoolean(SPEAKER);
-        boolean enableMic = getArguments().getBoolean(MIC);
-
-        btnOnOffSpeaker.setChecked(enableSpeaker);
-        btnOnOffMic.setChecked(enableMic);
-        enableSpeaker(enableSpeaker);
-        enableMicrophone(enableMic);
     }
 
     private void bindVideoViewToLinphone() {
@@ -208,35 +197,31 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
                 break;
             case R.id.btn_on_off_camera:
                 enableCamera(btnOnOffCamera.isChecked());
-                updateVideoView();
+                updateVideoView(!btnOnOffCamera.isChecked());
                 break;
             case R.id.img_switch_camera:
                 switchCamera(mCaptureView);
                 break;
+            default:break;
         }
     }
 
     @OnTouch({R.id.videoSurface, R.id.videoCaptureSurface})
     public boolean onTouch(View v, MotionEvent event) {
-        switch (v.getId()) {
-            case R.id.videoSurface:
-            case R.id.videoCaptureSurface:
-                resetCountingToHideAction();
-                showView();
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.videoSurface || v.getId() == R.id.videoCaptureSurface) {
+            resetCountingToHideAction();
+            showView();
         }
         return true;
     }
 
-    private void updateVideoView() {
-        if (btnOnOffCamera.isChecked()) {
+    private void updateVideoView(boolean enable) {
+        if (enable) {
             mCaptureView.setVisibility(View.GONE);
             bindingCaptureView(null);
         } else {
-            bindingCaptureView(mCaptureView);
             mCaptureView.setVisibility(View.VISIBLE);
+            bindingCaptureView(mCaptureView);
         }
     }
 
@@ -316,14 +301,17 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
     }
 
     @Override
-    public void onCallPaused() {
-        txtLowSignal.setVisibility(View.VISIBLE);
-
+    protected TextView getTxtCallStatus() {
+        return txtCallStatus;
     }
 
     @Override
-    public final void onCallResume() {
-        txtLowSignal.setVisibility(View.INVISIBLE);
+    protected void updateUIWhenStartCalling() {
+        countingCallDuration();
+        startCountingToHideAction();
+        btnOnOffSpeaker.setChecked(isSpeakerEnabled());
+        btnOnOffMic.setChecked(isMicEnabled());
+        btnOnOffCamera.setChecked(true);
     }
 
     @Override

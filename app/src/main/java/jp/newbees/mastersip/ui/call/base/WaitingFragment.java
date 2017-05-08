@@ -11,7 +11,7 @@ import jp.newbees.mastersip.model.UserItem;
  */
 
 public abstract class WaitingFragment extends CallingFragment {
-    private static final String COMPETITOR = "COMPETITOR";
+    private static final String COMPETITOR = "KEY_COMPETITOR";
     private static final String CALL_TYPE = "CALL_TYPE";
     private static final String CALL_ID = "CALL_ID";
     private static final String ACCEPT_CALL_IMAGE = "ACCEPT_CALL_IMAGE";
@@ -22,8 +22,6 @@ public abstract class WaitingFragment extends CallingFragment {
     private String titleCall;
     private int callType;
     private int acceptCallImage;
-
-    public abstract void updateViewWhenVoiceConnected();
 
     @Override
     protected void init(View mRoot, Bundle savedInstanceState) {

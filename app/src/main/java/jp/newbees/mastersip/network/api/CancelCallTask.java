@@ -18,7 +18,9 @@ import jp.newbees.mastersip.utils.Logger;
 
 public final class CancelCallTask extends BaseTask<Void> {
 
+    public static final int AUTO_HANGUP = 1;
     private final String callID;
+    private int autoHangup;
 
     /**
      * This API uses for cancel a call
@@ -26,8 +28,18 @@ public final class CancelCallTask extends BaseTask<Void> {
      * @param callID
      */
     public CancelCallTask(Context context, String callID) {
+        this(context, callID , 0);
+    }
+
+    /**
+     * This API uses for cancel a call
+     * @param context
+     * @param callID
+     */
+    public CancelCallTask(Context context, String callID, int autoHangup) {
         super(context);
         this.callID = callID;
+        this.autoHangup = autoHangup;
     }
 
     @Nullable
@@ -35,6 +47,7 @@ public final class CancelCallTask extends BaseTask<Void> {
     protected JSONObject genParams() throws JSONException {
         JSONObject jParams = new JSONObject();
         jParams.put(Constant.JSON.CALL_ID, callID);
+        jParams.put(Constant.JSON.AUTO_HANGUP , autoHangup);
         return jParams;
     }
 

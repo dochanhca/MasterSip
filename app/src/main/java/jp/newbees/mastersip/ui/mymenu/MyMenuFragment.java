@@ -273,22 +273,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
-            case R.id.btn_change_avatar:
-                break;
             case R.id.group_avatar:
                 handleUploadAvatar();
-                break;
-            case R.id.layout_my_notify:
                 break;
             case R.id.txt_online_list:
                 MyMenuContainerFragment.showOnlineListFragment(getActivity());
                 break;
             case R.id.txt_call_history:
                 MyMenuContainerFragment.showHistoryCallFragment(getActivity());
-                break;
-            case R.id.txt_block_list:
-                break;
-            case R.id.txt_notify_setting:
                 break;
             case R.id.txt_email_backup_setting:
                 if (ConfigManager.getInstance().getCurrentUser().getEmail().length() == 0) {
@@ -300,12 +292,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.txt_call_setting:
                 MyMenuContainerFragment.showSettingCallFragment(getActivity());
                 break;
-            case R.id.layout_guide:
-                break;
-            case R.id.layout_contact:
-                break;
-            case R.id.layout_common_guide:
-                break;
             case R.id.layout_profile_detail:
                 UserItem me = ConfigManager.getInstance().getCurrentUser();
                 ProfileDetailItemActivity.startActivity(getActivity(), me);
@@ -316,6 +302,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_logout:
                 handleLogout();
                 break;
+            case R.id.layout_my_notify:
+            case R.id.btn_change_avatar:
+            case R.id.layout_guide:
+            case R.id.layout_contact:
+            case R.id.layout_common_guide:
+            case R.id.txt_block_list:
+            case R.id.txt_notify_setting:
             default:
                 break;
         }
@@ -383,6 +376,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
+    public void didUpLoadPhotoGalleryFailure(int errorCode, String errorMessage) {
+        uploadingPhoto = false;
+        showToastExceptionVolleyError(errorCode, errorMessage);
+        groupUploadPhotoGallery.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onStartUploadPhotoGallery(String filePath) {
         this.uploadingPhoto = true;
         this.prwUploadPhotoGallery.resetCount();
@@ -415,13 +415,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onStartUploadAvatarBitmap(final String filePath) {
         this.uploadingAvatar = true;
         this.prwUploadAvatar.resetCount();
-        Glide.with(getContext())
-                .load(new File(filePath))
+        Glide.with(getContext()).load(new File(filePath))
                 .fitCenter()
-                .dontAnimate()
-                .dontTransform()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .dontAnimate().dontTransform()
+                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(this.imgAvatar);
         this.btnChangeAvatar.setVisibility(View.GONE);
         this.groupUploadAvatar.setVisibility(View.VISIBLE);
@@ -587,11 +584,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void handleImageCropped(Intent data) {
-        byte[] result = data.getByteArrayExtra(CropImageActivity.IMAGE_CROPPED);
+        String imagePath = data.getStringExtra(CropImageActivity.IMAGE_CROPPED);
         if (currentRequestPhoto == REQUEST_SELECT_PHOTO_FOR_AVATAR) {
-            presenter.uploadAvatar(result);
+            presenter.uploadAvatar(imagePath);
         } else {
-            presenter.uploadPhotoForGallery(result);
+            presenter.uploadPhotoForGallery(imagePath);
         }
     }
 

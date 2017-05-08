@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <!-- Needed to allow Linphone to install on tablets, since android.permission.CALL_PHONE implies android.hardware.telephony is required -->
     <uses-feature
         android:name="android.hardware.telephony"
@@ -26,7 +27,7 @@
     <!-- Needed to allow Linphone to install on tablets, since android.permission.CAMERA implies android.hardware.camera and android.hardware.camera.autofocus are required -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" />
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -51,6 +52,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7f113fa9e52407fc8c6e102334182fd9f9a51476" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -194,25 +198,24 @@
         <activity
             android:name=".ui.call.OutgoingVideoChatActivity"
             android:configChanges="orientation"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVoiceActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoChatActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            ></activity>
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <activity
             android:name=".ui.call.IncomingVideoVideoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".ui.profile.ProfileDetailItemActivity"
@@ -260,10 +263,10 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.ExitActivity"
-            android:theme="@android:style/Theme.NoDisplay"
+        <activity
+            android:name=".ui.ExitActivity"
             android:autoRemoveFromRecents="true"
-            />
+            android:theme="@android:style/Theme.NoDisplay" />
     </application>
 
 </manifest>

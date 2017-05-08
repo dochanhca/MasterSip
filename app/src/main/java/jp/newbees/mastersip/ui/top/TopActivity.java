@@ -43,7 +43,7 @@ public class TopActivity extends CallActivity implements
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
     private static final int FOOT_PRINT_FRAGMENT = 2;
-    private static final int FLOW_FRAGMENT = 3;
+    private static final int FOLLOW_FRAGMENT = 3;
     private static final int MY_MENU_CONTAINER_FRAGMENT = 4;
 
     private ViewPager viewPager;
@@ -56,6 +56,19 @@ public class TopActivity extends CallActivity implements
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
             ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
+            popBackToFirstFragment(position);
+        }
+
+        private void popBackToFirstFragment(int position) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            if (position == FOOT_PRINT_FRAGMENT) {
+                FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
+                footPrintFragment.setLeftTabChecked();
+            } else if (position == FOLLOW_FRAGMENT) {
+                FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
+                followFragment.setLeftTabChecked();
+            }
         }
     };
 
@@ -90,7 +103,7 @@ public class TopActivity extends CallActivity implements
         topPresenter = new TopPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
@@ -193,7 +206,7 @@ public class TopActivity extends CallActivity implements
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
         backToMyMenuFragment(getSupportFragmentManager());
-        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+        showMessageDialog(String.format(getString(R.string.purchase_success), Integer.toString(point)));
     }
 
     @Override
@@ -275,7 +288,7 @@ public class TopActivity extends CallActivity implements
                     return ChatGroupFragment.newInstance();
                 case FOOT_PRINT_FRAGMENT:
                     return FootPrintFragment.newInstance();
-                case FLOW_FRAGMENT:
+                case FOLLOW_FRAGMENT:
                     return FollowFragment.newInstance();
                 case MY_MENU_CONTAINER_FRAGMENT:
                     return MyMenuContainerFragment.newInstance();

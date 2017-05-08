@@ -4,9 +4,14 @@ import android.content.Context;
 
 import com.android.volley.Response;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.InputStream;
 import java.util.Map;
 
+import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -17,6 +22,7 @@ import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetChatHistoryTask;
 import jp.newbees.mastersip.network.api.LoadChatHistoryResultItem;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
+import jp.newbees.mastersip.network.api.UpdateStateMessageTask;
 import jp.newbees.mastersip.network.api.UploadFileForChatTask;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -25,7 +31,7 @@ import jp.newbees.mastersip.utils.ConfigManager;
  */
 
 public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.ErrorListener,
-        Response.Listener<BaseChatItem>{
+        Response.Listener<BaseChatItem> {
 
     private ChatListener chatPresenterListener;
 
@@ -44,6 +50,9 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
             chatPresenterListener.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUser();
+        } else if (task instanceof UpdateStateMessageTask) {
+            BaseChatItem result = ((UpdateStateMessageTask) task).getDataResponse();
+            chatPresenterListener.didSendingReadMessageToServer(result);
         }
     }
 
@@ -56,9 +65,15 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
             chatPresenterListener.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             chatPresenterListener.didUnFollowUserError(errorMessage, errorCode);
+        } else if (task instanceof UpdateStateMessageTask) {
+            chatPresenterListener.didSendingReadMessageToServerError(errorCode, errorMessage);
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStateMessageChange(final ReceivingReadMessageEvent receivingReadMessageEvent) {
+        chatPresenterListener.onStateMessageChange(receivingReadMessageEvent);
+    }
 
     /**
      * Upload image error
@@ -102,26 +117,12 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
      */
     public void doFollowUser(UserItem userItem) {
         if (userItem.getRelationshipItem().isFollowed() == RelationshipItem.FOLLOW) {
-            unFollowUser(userItem.getUserId());
+            UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, userItem.getUserId());
+            requestToServer(unFollowUserTask);
         } else {
-            followUser(userItem.getUserId());
+            FollowUserTask followUserTask = new FollowUserTask(context, userItem.getUserId());
+            requestToServer(followUserTask);
         }
-    }
-
-    /**
-     * @param destUserId
-     */
-    private void followUser(String destUserId) {
-        FollowUserTask followUserTask = new FollowUserTask(context, destUserId);
-        requestToServer(followUserTask);
-    }
-
-    /**
-     * @param destUserId
-     */
-    private void unFollowUser(String destUserId) {
-        UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, destUserId);
-        requestToServer(unFollowUserTask);
     }
 
     /**
@@ -129,6 +130,7 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
      * @param members
      * @return
      */
+
     public UserItem getUserHasRelationShipItem(UserItem currentUser, Map<String, UserItem> members) {
         return members.get(currentUser.getUserId());
     }
@@ -137,5 +139,16 @@ public class ChatPresenter extends BasicChatPresenter implements BaseUploadTask.
         RelationshipItem relationshipItem = members.get(currentUser.getUserId()).getRelationshipItem();
         relationshipItem.setFollowed(follow);
         return relationshipItem;
+    }
+
+    public final void sendingReadMessageToServer(BaseChatItem baseChatItem) {
+        UpdateStateMessageTask updateStateMessageTask = new UpdateStateMessageTask(context, baseChatItem);
+        requestToServer(updateStateMessageTask);
+    }
+
+    public void sendingReadMessageUsingLinPhone(BaseChatItem baseChatItem, UserItem sender) {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        LinphoneHandler.getInstance().sendReadMessageEvent(currentUser.getSipItem().getExtension(),
+                sender.getSipItem().getExtension(), baseChatItem);
     }
 }

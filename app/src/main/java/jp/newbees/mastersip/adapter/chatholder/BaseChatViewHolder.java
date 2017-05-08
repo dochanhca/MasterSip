@@ -1,17 +1,24 @@
 package jp.newbees.mastersip.adapter.chatholder;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
+import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by thangit14 on 1/25/17.
  */
 
-public abstract class BaseChatViewHolder<T extends BaseChatItem>  extends RecyclerView.ViewHolder{
+public abstract class BaseChatViewHolder<T extends BaseChatItem> extends RecyclerView.ViewHolder {
     private Context context;
 
     public BaseChatViewHolder(View root, Context context) {
@@ -26,6 +33,19 @@ public abstract class BaseChatViewHolder<T extends BaseChatItem>  extends Recycl
 
     public Context getContext() {
         return context;
+    }
+
+    protected void loadGiftImage(String imageUrl, final ImageView imageView) {
+        Glide.with(getContext()).load(imageUrl)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        double radius = getContext().getResources().getDimensionPixelOffset(R.dimen.size_50dp);
+                        ImageUtils.setImageGiftSize(imageView, resource, radius);
+                        imageView.setImageBitmap(resource);
+                    }
+                });
     }
 
     protected String getCallType(int chatType) {

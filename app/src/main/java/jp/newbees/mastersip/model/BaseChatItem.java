@@ -104,9 +104,7 @@ public class BaseChatItem implements Parcelable {
 
     public static final class ChatType implements Parcelable {
         public static final int CHAT_DELETED = 0;
-        public static final int CHAT_VOICE = 1; //!!!
         public static final int CHAT_TEXT = 2;
-        public static final int CHAT_VIDEO = 3;
         public static final int CHAT_IMAGE = 4;
         public static final int CHAT_VOICE_CALL = 5;
         public static final int CHAT_VIDEO_CALL = 6;

@@ -68,6 +68,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 handlePushMessage(data);
 
             } catch (JSONException e) {
+                Logger.e(TAG,e.getMessage());
                 e.printStackTrace();
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -89,12 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
         switch (fcmPushItem.getCategory()) {
             case FCMPushItem.CATEGORY.INCOMING_CALL:
-                if (MyLifecycleHandler.isApplicationVisible()) {
-                    showMissedCallPush = false;
-                } else {
-                    showMissedCallPush = true;
-                }
-                handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
+                handleIncomingCallMessage(data);
                 break;
             case FCMPushItem.CATEGORY.MISS_CALL:
                 if (showMissedCallPush) {
@@ -102,11 +98,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
             case FCMPushItem.CATEGORY.CHAT_TEXT:
-                handleChatMessage(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
+                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
+                    sendNotificationForChat(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    private void handleIncomingCallMessage(Map<String, Object> data) {
+        if (MyLifecycleHandler.getInstance().isApplicationVisible()) {
+            showMissedCallPush = false;
+        } else {
+            showMissedCallPush = true;
+        }
+        handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
     }
 
     private void handleMissCallMessage(UserItem caller) {
@@ -116,16 +123,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleIncomingCall(String callId) {
-        ConfigManager.getInstance().updateEndCallStatus(true);
         ConfigManager.getInstance().setCallId(callId);
         if (!LinphoneService.isRunning()) {
-            LinphoneService.startLinphone(getApplicationContext());
-        }
-    }
-
-    private void handleChatMessage(String message, UserItem userItem) {
-        if (!MyLifecycleHandler.isApplicationVisible()) {
-            sendNotificationForChat(message, userItem);
+            LinphoneService.startLinphone(getApplicationContext(), LinphoneService.START_FROM_PUSH_NOTIFICATION);
         }
     }
 
@@ -174,7 +174,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
 
-        if (Build.VERSION.SDK_INT >= 21) notificationBuilder.setVibrate(new long[0]);
+        if (Build.VERSION.SDK_INT >= 21){
+            notificationBuilder.setVibrate(new long[0]);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -37,7 +37,6 @@ public class TopPresenter extends BasePresenter {
     private IabHelper iabHelper;
     private volatile int numberOfItemNeedConsume = 0;
     private boolean needPurchaseWithServer = false;
-
     private TopPresenterListener listener;
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -134,6 +133,8 @@ public class TopPresenter extends BasePresenter {
             needPurchaseWithServer = false;
         }
     };
+
+
 
     public interface TopPresenterListener {
         void onInAppBillingSuccess(String sku, String token);

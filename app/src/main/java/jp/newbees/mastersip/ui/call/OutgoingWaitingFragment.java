@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.android.volley.Response;
 import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
@@ -18,11 +19,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.CancelCallTask;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.call.base.WaitingFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by thangit14 on 3/15/17.
@@ -59,10 +63,31 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         @Override
         public void handleMessage(Message msg) {
             if (getCallActivity() != null) {
-                terminalCall();
+                Logger.e(TAG,"decline call because out of waiting time");
+                stopCountWaitingTimeThread();
+                declineCall();
+                notifyCancelCallToServer();
             }
         }
     };
+
+    private void notifyCancelCallToServer() {
+        Logger.e("OutgoingCall", "Send auto hangup");
+        String callId = ConfigManager.getInstance().getCallId();
+        CancelCallTask callTask = new CancelCallTask(getContext(),callId, CancelCallTask.AUTO_HANGUP);
+        callTask.request(new Response.Listener<Void>() {
+            @Override
+            public void onResponse(Void response) {
+                Logger.e("OutgoingWaitingFragment", "Endcall Auto hangup");
+            }
+        }, new BaseTask.ErrorListener() {
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                Logger.e("OutgoingWaitingFragment", "Endcall Auto hangup failed");
+            }
+        });
+    }
+
     private MyCountingTimerThread countWaitingTimeThread;
 
     public static OutgoingWaitingFragment newInstance(UserItem callee, String callID,
@@ -89,10 +114,16 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
     @Override
     public void onDestroy() {
-        if (countWaitingTimeThread != null) {
-            countWaitingTimeThread.turnOffCounting();
-        }
         super.onDestroy();
+        Logger.e(TAG,"onDestroy");
+        stopCountWaitingTimeThread();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Logger.e(TAG,"onDetach");
+        stopCountWaitingTimeThread();
     }
 
     private void updateView() {
@@ -134,6 +165,8 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
                 btnOnOffMic.setChecked(true);
             }
         }
+        enableSpeaker(btnOnOffSpeaker.isChecked());
+        enableMicrophone(btnOnOffMic.isChecked());
     }
 
     private void inflateViewAction(int layout) {
@@ -167,14 +200,6 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         }
     }
 
-    public boolean isSpeakerEnable() {
-        return btnOnOffSpeaker.isChecked();
-    }
-
-    public boolean isMicEnable() {
-        return btnOnOffMic.isChecked();
-    }
-
     @Override
     protected void onCallingBreakTime(Message msg) {
         txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
@@ -190,29 +215,6 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
         new Thread(countWaitingTimeThread).start();
     }
 
-
-    @Override
-    public void countingCallDuration() {
-        super.countingCallDuration();
-        if (countWaitingTimeThread != null) {
-            countWaitingTimeThread.turnOffCounting();
-            countWaitingTimeThread = null;
-        }
-    }
-
-    @Override
-    public void updateViewWhenVoiceConnected() {
-        // Only Counting point with female user
-        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
-            llPoint.setVisibility(View.VISIBLE);
-        }
-        imgLoading.setVisibility(View.GONE);
-
-        enableSpeaker(btnOnOffSpeaker.isChecked());
-        enableMicrophone(btnOnOffMic.isChecked());
-        txtCancelCall.setText(getString(R.string.end));
-    }
-
     @Override
     public void onCallPaused() {
         txtTimer.setVisibility(View.INVISIBLE);
@@ -223,5 +225,34 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
     public final void onCallResume() {
         txtTimer.setVisibility(View.VISIBLE);
         txtNotifyLowSignal.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void updateUIWhenStartCalling() {
+        stopCountWaitingTimeThread();
+
+        // Only Counting point with female user
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.FEMALE) {
+            llPoint.setVisibility(View.VISIBLE);
+        }
+        imgLoading.setVisibility(View.GONE);
+
+        enableSpeaker(btnOnOffSpeaker.isChecked());
+        enableMicrophone(btnOnOffMic.isChecked());
+        txtCancelCall.setText(getString(R.string.end));
+
+        countingCallDuration();
+    }
+
+    public void stopCountWaitingTimeThread() {
+        if (countWaitingTimeThread != null) {
+            countWaitingTimeThread.turnOffCounting();
+            countWaitingTimeThread = null;
+        }
+    }
+
+    @Override
+    protected TextView getTxtCallStatus() {
+        return txtNotifyLowSignal;
     }
 }

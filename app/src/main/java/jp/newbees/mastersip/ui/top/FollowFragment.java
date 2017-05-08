@@ -52,7 +52,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     private String descriptionTotal;
     private int currentCheckId;
 
-
     public static Fragment newInstance() {
         Fragment fragment = new FollowFragment();
         Bundle bundle = new Bundle();
@@ -79,27 +78,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         this.initRefreshView();
     }
 
-    private void initRefreshView() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                handleChangeListFollow(currentCheckId);
-            }
-        });
-    }
-
-    private void handleChangeListFollow(int checkedId) {
-        if (checkedId == rdoFollowers.getId()) {
-            showLoading();
-            descriptionTotal = getString(R.string.description_followers);
-            presenter.getListFollowers();
-        } else {
-            showLoading();
-            descriptionTotal = getString(R.string.description_following);
-            presenter.getListFollowing();
-        }
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -113,16 +91,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         this.handleChangeListFollow(checkedId);
     }
 
-    private void updateTextColorSegment(int checkedId) {
-        if (checkedId == rdoFollowers.getId()) {
-            rdoFollowers.setTextColor(getContext().getResources().getColor(R.color.white));
-            rdoFollowing.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-        } else {
-            rdoFollowing.setTextColor(getContext().getResources().getColor(R.color.white));
-            rdoFollowers.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-        }
-    }
-
     @Override
     public void didLoadListFollow(FollowItem data) {
         disMissLoading();
@@ -131,11 +99,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         adapterFollow.setData(data);
         adapterFollow.notifyDataSetChanged();
         updateText(data.getTotal());
-    }
-
-    private void updateText(int totalFollow) {
-        String description = String.format(descriptionTotal, totalFollow);
-        this.txtFollowDescription.setText(Html.fromHtml(description));
     }
 
     @Override
@@ -163,5 +126,45 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     @Override
     public void onProfileClickListener(UserItem userItem) {
         super.gotoProfileDetail(userItem);
+    }
+
+    private void updateTextColorSegment(int checkedId) {
+        if (checkedId == rdoFollowers.getId()) {
+            rdoFollowers.setTextColor(getContext().getResources().getColor(R.color.white));
+            rdoFollowing.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        } else {
+            rdoFollowing.setTextColor(getContext().getResources().getColor(R.color.white));
+            rdoFollowers.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        }
+    }
+
+    private void initRefreshView() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                handleChangeListFollow(currentCheckId);
+            }
+        });
+    }
+
+    private void handleChangeListFollow(int checkedId) {
+        if (checkedId == rdoFollowers.getId()) {
+            showLoading();
+            descriptionTotal = getString(R.string.description_followers);
+            presenter.getListFollowers();
+        } else {
+            showLoading();
+            descriptionTotal = getString(R.string.description_followings);
+            presenter.getListFollowing();
+        }
+    }
+
+    private void updateText(int totalFollow) {
+        String description = String.format(descriptionTotal, totalFollow);
+        this.txtFollowDescription.setText(Html.fromHtml(description));
+    }
+
+    public final void setLeftTabChecked() {
+        rdoFollowers.setChecked(true);
     }
 }

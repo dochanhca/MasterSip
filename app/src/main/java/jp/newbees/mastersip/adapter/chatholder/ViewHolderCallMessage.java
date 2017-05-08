@@ -44,14 +44,12 @@ public class ViewHolderCallMessage extends BaseChatViewHolder<CallChatItem> {
     }
 
     private String getCallDuration(CallChatItem callChatItem) {
-        String text = "";
+        String text;
         switch (callChatItem.getCallType()) {
-            case BaseChatItem.CallType.MISS_CALL:
-                text = getContext().getString(R.string.no_answer);
-                break;
             case BaseChatItem.CallType.CANCEL_CALL:
                 text = getContext().getString(R.string.cancel);
                 break;
+            case BaseChatItem.CallType.MISS_CALL:
             case BaseChatItem.CallType.BUSY_CALL:
                 text = getContext().getString(R.string.no_answer);
                 break;

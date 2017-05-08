@@ -41,7 +41,7 @@ import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.customviews.SoftKeyboardLsnedRelativeLayout;
+import jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
@@ -103,7 +103,7 @@ public class ChatActivity extends CallActivity implements
     @BindView(R.id.swap_layout)
     LinearLayout swapRecycleChatLayout;
     @BindView(R.id.container)
-    SoftKeyboardLsnedRelativeLayout container;
+    SoftKeyboardListenedRelativeLayout container;
     @BindView(R.id.layout_select_image)
     LinearLayout layoutSelectImage;
     @BindView(R.id.rl_open_camera)
@@ -140,6 +140,7 @@ public class ChatActivity extends CallActivity implements
     private int maxImageHeight = Constant.Application.MAX_IMAGE_HEIGHT;
 
     private Map<String, UserItem> members;
+    private long startClickTime;
 
     private NavigationLayoutGroup.OnChildItemClickListener onCustomActionHeaderInChatClickListener =
             new NavigationLayoutGroup.OnChildItemClickListener() {
@@ -187,7 +188,7 @@ public class ChatActivity extends CallActivity implements
         }
     };
 
-    private SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner softKeyboardListener = new SoftKeyboardLsnedRelativeLayout.SoftKeyboardLsner() {
+    private SoftKeyboardListenedRelativeLayout.SoftKeyboardLsner softKeyboardListener = new SoftKeyboardListenedRelativeLayout.SoftKeyboardLsner() {
         @Override
         public void onSoftKeyboardShow() {
             isSoftKeyboardOpened = true;
@@ -260,7 +261,7 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void didLoadChatHistoryError(int errorCode, String errorMessage) {
         showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
-
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -538,8 +539,6 @@ public class ChatActivity extends CallActivity implements
         }
     }
 
-    private long startClickTime;
-
     @OnTouch(R.id.recycler_chat)
     public boolean onTouchEvent(MotionEvent event) {
         if (isSoftKeyboardOpened) {
@@ -670,7 +669,7 @@ public class ChatActivity extends CallActivity implements
         String newMessage = edtChat.getText().toString();
         if (!"".equalsIgnoreCase(newMessage)) {
             edtChat.setText("");
-            presenter.sendText(newMessage, userItem);
+            presenter.sendChatText(newMessage, userItem);
         }
     }
 

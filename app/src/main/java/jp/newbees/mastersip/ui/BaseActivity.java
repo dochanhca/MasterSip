@@ -15,11 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 
+import io.fabric.sdk.android.Fabric;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
@@ -85,10 +87,11 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(layoutId());
+        Fabric.with(this, new Crashlytics());
         TAG = getClass().getSimpleName();
         Logger.e(TAG, "Create");
         setupSharePreference();
-        setContentView(layoutId());
 
         if (this instanceof BottomNavigation) {
             navigationLayoutGroup = (NavigationLayoutGroup) findViewById(R.id.nav_group);
@@ -272,30 +275,18 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         }
     }
 
-    protected SharedPreferences getSharedPreferences() {
-        if (sharedPreferences == null) {
-            setupSharePreference();
-        }
-        return sharedPreferences;
-    }
-
-    protected SharedPreferences.Editor getEditor() {
-        if (editor == null) {
-            setupSharePreference();
-        }
-        return editor;
-    }
-
     public void showToastExceptionVolleyError(Context context, int errorCode, String errorMessage) {
         Logger.e(TAG, "error code = " + errorCode + " : " + errorMessage);
         if (errorCode == Constant.Error.INVALID_TOKEN) {
             handleInvalidToken();
-        } else{
+        } else {
             ExceptionVolleyHelper exceptionVolleyHelper = new ExceptionVolleyHelper(context, errorCode, errorMessage);
             if (showCommonErrorDialog(errorCode)) {
                 return;
             } else if (!exceptionVolleyHelper.showCommonError()) {
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "".equals(errorMessage) ? getString(R.string.something_wrong)
+                                : errorMessage
+                        , Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -323,9 +314,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
             case Constant.Error.NO_NETWORK:
                 showMessageDialog(getString(R.string.network_error), getString(R.string.mess_check_network),
                         "", false);
-                return true;
-            case Constant.Error.USER_BUSY:
-                showMessageDialog(getString(R.string.mess_user_busy));
                 return true;
             case Constant.Error.MAX_CALL_ERROR:
                 showMessageDialog("", getString(R.string.mess_call_limited), getString(R.string.i_m_sorry_pls_try_again), false);

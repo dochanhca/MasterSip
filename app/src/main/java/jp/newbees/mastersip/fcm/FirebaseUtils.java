@@ -18,10 +18,10 @@ import jp.newbees.mastersip.utils.Constant;
 public class FirebaseUtils {
 
     private FirebaseUtils() {
-        //TODO : Prevent instance object
+        // Prevent instance object
     }
 
-    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException, NullPointerException {
+    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException , NullPointerException{
         if (data.containsKey(Constant.JSON.CALLER)) {
             return parseDataForCallMessage(data);
         }
@@ -40,7 +40,7 @@ public class FirebaseUtils {
         return result;
     }
 
-    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data) throws JSONException, NullPointerException{
+    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data) throws JSONException, NullPointerException {
         Map<String, Object> result = new HashMap<>();
         JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         String roomId = data.get(Constant.JSON.ROOM_ID);

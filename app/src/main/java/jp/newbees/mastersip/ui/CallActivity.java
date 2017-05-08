@@ -81,8 +81,8 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             @Override
             public void onReceive(Context context, Intent intent) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if(info != null && info.isConnected()) {
-                    Logger.e(CallActivity.this.getClass().getSimpleName(),"Start Service");
+                if (info != null && info.isConnected()) {
+                    Logger.e(CallActivity.this.getClass().getSimpleName(), "Start Service");
                     LinphoneService.startLinphone(getApplicationContext());
                 }
             }
@@ -186,14 +186,18 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
      */
     @Override
     public final void onCalleeRejectCall(BusyCallEvent busyCallEvent) {
-        String message = busyCallEvent.getCallId() + getString(R.string.mess_callee_reject_call);
+        String message = callee.getUsername() + getString(R.string.mess_callee_reject_call);
         String positiveTitle = getString(R.string.back_to_profile_detail);
         OneButtonDialog.showDialog(getSupportFragmentManager(), "", message, "", positiveTitle);
     }
 
     @Override
     public final void didCheckCallError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        if (errorCode == Constant.Error.USER_BUSY) {
+            showMessageDialog(callee.getUsername() + getString(R.string.mess_user_busy));
+        } else {
+            showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
+        }
     }
 
     @Override
@@ -320,7 +324,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                     .build(content);
             textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
         } else {
-           textDialog = new TextDialog.Builder()
+            textDialog = new TextDialog.Builder()
                     .setRequestCode(CONFIRM_MAKE_VOICE_CALL)
                     .build(getString(R.string.are_you_sure_make_a_voice_call));
             textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());

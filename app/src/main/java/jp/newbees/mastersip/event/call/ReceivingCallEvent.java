@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.event.call;
 
+import org.linphone.core.CallDirection;
+
 import jp.newbees.mastersip.model.UserItem;
 
 /**
@@ -13,7 +15,7 @@ public class ReceivingCallEvent {
     public static final int CHECKED_INCOMING_VIDEO_CALL = 101;
     public static final int CHECKED_INCOMING_VIDEO_CHAT_CALL = 102;
     public static final int INCOMING_CONNECTED_CALL = 6;
-    public static final int STREAMING_CALL = 7;
+    public static final int STREAMS_RUNNING = 7;
     public static final int PAUSED_CALL = 9;
     public static final int RESUMING_CALL = 10;
     public static final int LINPHONE_ERROR = 12;
@@ -24,19 +26,26 @@ public class ReceivingCallEvent {
     private int callEvent;
     private String callId;
     private UserItem callUser;
+    private CallDirection direction;
 
     public ReceivingCallEvent(int callEvent) {
         this.callEvent = callEvent;
     }
 
-    public ReceivingCallEvent(int callEvent, String callId) {
+    public ReceivingCallEvent(int callEvent,CallDirection direction, String callId) {
         this.callEvent = callEvent;
         this.callId = callId;
+        this.direction = direction;
     }
 
     public ReceivingCallEvent(int callEvent, UserItem callUser, String callId) {
         this.callEvent = callEvent;
         this.callUser = callUser;
+        this.callId = callId;
+    }
+
+    public ReceivingCallEvent(int callEvent, String callId) {
+        this.callEvent = callEvent;
         this.callId = callId;
     }
 
@@ -52,4 +61,7 @@ public class ReceivingCallEvent {
         return callEvent;
     }
 
+    public CallDirection getDirection() {
+        return direction;
+    }
 }

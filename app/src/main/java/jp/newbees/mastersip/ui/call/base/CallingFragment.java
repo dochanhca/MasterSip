@@ -4,14 +4,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -22,9 +25,8 @@ import jp.newbees.mastersip.utils.Logger;
 public abstract class CallingFragment extends BaseFragment {
 
     protected static final String COMPETITOR = "USER ITEM";
-    protected static final String SPEAKER = "SPEAKER";
-    protected static final String MIC = "MIC";
     protected static final String CALL_ID = "CALL_ID";
+    protected static final String CALL_TYPE = "CALL TYPE";
 
     private static final int BREAK_TIME_TO_HIDE_ACTION = 5;
     private static final String ID_TIMER_HIDE_ACTION = "ID_TIMER_HIDE_ACTION";
@@ -71,23 +73,23 @@ public abstract class CallingFragment extends BaseFragment {
         }
     }
 
-    protected void startCountingToHideAction() {
+    protected final void startCountingToHideAction() {
         myCountingThreadToHideAction = new MyCountingTimerThread(handler, ID_TIMER_HIDE_ACTION, BREAK_TIME_TO_HIDE_ACTION);
         new Thread(myCountingThreadToHideAction).start();
     }
 
-    protected void resetCountingToHideAction() {
+    protected final void resetCountingToHideAction() {
         if (myCountingThreadToHideAction != null) {
             myCountingThreadToHideAction.reset();
         }
     }
 
-    protected void countingCallDuration() {
+    protected final void countingCallDuration() {
         countingCallDurationThread = new MyCountingTimerThread(countingCallDurationHandler);
         new Thread(countingCallDurationThread).start();
     }
 
-    public final void onCoinChanged(int coin) {
+    protected final void onCoinChanged(int coin) {
         if (isDetached() || getTxtPoint() == null) {
             return;
         }
@@ -102,41 +104,95 @@ public abstract class CallingFragment extends BaseFragment {
 
     protected abstract TextView getTxtPoint();
 
-    protected abstract void onCallResume();
+    protected abstract TextView getTxtCallStatus();
 
-    protected abstract void onCallPaused();
-
-    public final void enableMicrophone(boolean enable) {
-        getCallActivity().enableMicrophone(enable);
+    protected void onCallResume() {
+        getTxtCallStatus().setVisibility(View.INVISIBLE);
     }
 
-    public final void terminalCall() {
-        getCallActivity().terminalCall();
+    protected void onCallPaused() {
+        getTxtCallStatus().setText(getString(R.string.low_signal));
+        getTxtCallStatus().setVisibility(View.VISIBLE);
     }
 
-    public final void acceptCall(String callId) throws LinphoneCoreException {
-        getCallActivity().acceptCall(callId);
+    protected abstract void updateUIWhenStartCalling();
+
+    protected final void enableMicrophone(boolean enable) {
+        if (getCallActivity() != null) {
+            getCallActivity().enableMicrophone(enable);
+        }
     }
 
-    public final void enableSpeaker(boolean enable) {
-        getCallActivity().enableSpeaker(enable);
+    protected final void terminalCall() {
+        if (getCallActivity() != null) {
+            getCallActivity().terminalCall();
+        }
     }
 
-    public void switchCamera(SurfaceView mCaptureView) {
-        getCallActivity().switchCamera(mCaptureView);
+    protected final void declineCall() {
+        if (getCallActivity() != null) {
+            getCallActivity().declineCall();
+        }
     }
 
-    public final void enableCamera(boolean enable) {
-        getCallActivity().enableCamera(enable);
+    protected final void acceptCall(String callId, int callType) throws LinphoneCoreException {
+        if (getCallActivity() != null) {
+            getCallActivity().acceptCall(callId, callType);
+        }
     }
 
-    public final BaseHandleCallActivity getCallActivity() {
+    protected final void enableSpeaker(boolean enable) {
+        if (getCallActivity() != null) {
+            getCallActivity().enableSpeaker(enable);
+        }
+    }
+
+    protected final void switchCamera(SurfaceView mCaptureView) {
+        if (getCallActivity() != null) {
+            getCallActivity().switchCamera(mCaptureView);
+        }
+    }
+
+    protected final void useFrontCamera() {
+        if (getCallActivity() != null) {
+            getCallActivity().useFrontCamera();
+        }
+    }
+
+    protected final void enableCamera(boolean enable) {
+        if (getCallActivity() != null) {
+            getCallActivity().enableCamera(enable);
+        }
+    }
+
+    protected final boolean isSpeakerEnabled() {
+        return LinphoneHandler.getInstance().isSpeakerEnabled();
+    }
+
+    protected final boolean isMicEnabled() {
+        return LinphoneHandler.getInstance().isMicEnabled();
+    }
+
+    protected final BaseHandleCallActivity getCallActivity() {
         if (getActivity() instanceof BaseHandleCallActivity) {
             BaseHandleCallActivity activity = (BaseHandleCallActivity) getActivity();
             return activity;
         } else {
             Logger.e("CallingFragment", " The activity contain calling fragment must extend BaseHandleCallActivity");
             return null;
+        }
+    }
+
+    protected final void onCompetitorChangeBGState(String action) {
+        if (getCallActivity().getCallType() != Constant.API.VOICE_CALL) {
+            if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_BACKGROUND)) {
+                getTxtCallStatus().setText(getString(R.string.competitor_off_camera));
+                getTxtCallStatus().setVisibility(View.VISIBLE);
+                enableCamera(false);
+            } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_FOREGROUND)) {
+                enableCamera(true);
+                getTxtCallStatus().setVisibility(View.INVISIBLE);
+            }
         }
     }
 

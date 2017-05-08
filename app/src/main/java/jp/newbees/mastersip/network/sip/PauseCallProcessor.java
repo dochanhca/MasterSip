@@ -27,7 +27,6 @@ public class PauseCallProcessor extends BaseSocketProcessor<GSMCallEvent> {
         int gsmState = jData.getInt(Constant.JSON.GSM_STATE);
         UserItem userItem = new UserItem();
         userItem.setUserId(userId);
-        GSMCallEvent event = new GSMCallEvent(userItem, gsmState);
-        return event;
+        return new GSMCallEvent(userItem, gsmState);
     }
 }

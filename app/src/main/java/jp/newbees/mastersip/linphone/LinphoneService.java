@@ -1,5 +1,8 @@
 package jp.newbees.mastersip.linphone;
 
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,13 +17,19 @@ import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import org.linphone.core.LinphoneCoreFactory;
+import org.linphone.core.OpenH264DownloadHelperListener;
+
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.LinphoneServicePresenter;
+import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 import static android.telephony.TelephonyManager.EXTRA_STATE_IDLE;
@@ -34,6 +43,10 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
 public class LinphoneService extends Service implements LinphoneServicePresenter.IncomingCallListener {
 
     private static final String TAG = "LinphoneService";
+    public static final int START_FROM_PUSH_NOTIFICATION = 1;
+    public static final int START_FROM_ACTIVITY = 2;
+    private static final String START_SERVICE_FROM = "START_SERVICE_FROM";
+
     private BroadcastReceiver receiverRingerModeChanged;
 
     private LinphoneServicePresenter incomingCallPresenter;
@@ -41,7 +54,42 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     private static LinphoneService instance;
     private BroadcastReceiver callStateChangeReceiver;
 
+    private OpenH264DownloadHelperListener h264DownloadHelperListener = new OpenH264DownloadHelperListener() {
+
+        @Override
+        public void OnProgress(int current, int max) {
+            if (current > max) {
+                Logger.e("LinphoneService", "Download done");
+                LinphoneHandler.getInstance().reloadMsPlugins(LinphoneService.this.getApplicationInfo().nativeLibraryDir);
+                LinphoneService.this.restartApplication();
+            }
+        }
+
+        @Override
+        public void OnError(String s) {
+
+        }
+
+    };
+
+    public void restartApplication() {
+        Intent mStartActivity = new Intent(this, StartActivity.class);
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, mPendingIntent);
+
+        stopService(new Intent(Intent.ACTION_MAIN).setClass(this, LinphoneService.class));
+        ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        am.killBackgroundProcesses("jp.newbees.mastersip");
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
     public static void startLinphone(Context context) {
+        LinphoneService.startLinphone(context, LinphoneService.START_FROM_ACTIVITY);
+    }
+
+    public static void startLinphone(Context context, int startFromPushNotification) {
+        ConfigManager.getInstance().startServiceFrom(startFromPushNotification);
         Intent intent = new Intent(context, LinphoneService.class);
         context.startService(intent);
     }
@@ -57,19 +105,11 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     }
 
     public static boolean isRunning() {
-        if (instance == null || LinphoneHandler.getInstance() == null) {
+        if (null == instance) {
             return false;
+        }else {
+            return true;
         }
-        return LinphoneHandler.getInstance().isRunning();
-    }
-
-    /**
-     * @throws RuntimeException service not instantiated
-     */
-    public static LinphoneService instance() {
-        if (isReady()) return instance;
-
-        throw new RuntimeException("LinphoneService not instantiated yet");
     }
 
     private static void destroyLinphoneService() {
@@ -84,8 +124,11 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     public void onCreate() {
         super.onCreate();
         Logger.e(TAG, "Linphone Service onCreate");
-        incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this);
+        incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this, h264DownloadHelperListener);
         incomingCallPresenter.registerCallEvent();
+
+        LinphoneCoreFactory.instance().enableLogCollection(Constant.Application.DEBUG);
+        LinphoneCoreFactory.instance().setDebugMode(Constant.Application.DEBUG, getApplication().getString(R.string.app_name));
 
         Handler mHandler = new Handler(Looper.getMainLooper());
         final LinphoneNotifier notifier = new LinphoneNotifier(mHandler);
@@ -110,13 +153,13 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Logger.e("LinphoneService", "onBind");
         return null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.e(TAG, "LinphoneService onDestroy");
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
@@ -170,10 +213,13 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
                 if (extras != null) {
                     String state = extras.getString(TelephonyManager.EXTRA_STATE);
                     if (state.equals(EXTRA_STATE_RINGING)) {
+                        Logger.e("LinphoneService", "Incoming call gsm");
                         LinphoneHandler.getInstance().handleIncomingCallGSM();
                     }else if(state.equals(EXTRA_STATE_IDLE)) {
+                        Logger.e("LinphoneService", "Idle call");
                         LinphoneHandler.getInstance().handleIdleCallGSM();
                     }else if(state.equals(EXTRA_STATE_OFFHOOK)) {
+                        Logger.e("LinphoneService", "Outgoing call gsm");
                         LinphoneHandler.getInstance().handleOutgoingCallGSM();
                     }
                 }

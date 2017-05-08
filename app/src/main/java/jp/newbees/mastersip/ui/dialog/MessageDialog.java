@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by ducpv on 12/9/16.
@@ -44,6 +47,18 @@ public class MessageDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         //Remove super() to prevent crash
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+
+        try {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(this, tag);
+            ft.commit();
+        } catch (IllegalStateException e) {
+            Logger.e("MessageDialog", e.getMessage());
+        }
     }
 
     @Override

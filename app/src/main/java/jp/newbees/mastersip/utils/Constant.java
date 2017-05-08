@@ -65,6 +65,7 @@ public final class Constant {
         public static final String LAST_TIME_CALL_LOG = "last_time_call_log";
         public static final String CALL_LOGS = "call_logs";
         public static final String ONLINE_LIST = "online_list";
+        public static final String AUTO_HANGUP = "auto_hangup";
 
         private JSON() {
             //Prevent init constructor
@@ -219,8 +220,7 @@ public final class Constant {
         public static final int TYPE_UPLOAD_VIDEO = 3;
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
-
-//                private static final String DEVELOPMENT_IP = "52.199.112.26";
+//        private static final String DEVELOPMENT_IP = "52.199.112.26";
         private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
@@ -284,6 +284,7 @@ public final class Constant {
         public static final String SUBSCRIBE_ONLINE_NOTIFY = "online/subscribe";
         public static final String UNSUBSCRIBE_ONLINE_NOTIFY = "online/unsubscribe";
         public static final String ONLINE_LIST = "online/list";
+        public static final String CHANGE_BACKGROUND_STATE = "background";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
@@ -380,8 +381,6 @@ public final class Constant {
     }
 
     public class SOCKET {
-
-
         private SOCKET() {
             //Prevent init object
         }
@@ -403,6 +402,10 @@ public final class Constant {
         public static final int STATUS_CALLING_CONNECTED = 3;
         public static final int STATUS_CALLING_MISSING = 4;
         public static final int STATUS_CALLING_END = 5;
+
+        public static final String ACTION_ENTER_BACKGROUND = "enter_background";
+        public static final String ACTION_ENTER_FOREGROUND = "enter_foreground";
+
     }
 
     public static final class InAppBilling {

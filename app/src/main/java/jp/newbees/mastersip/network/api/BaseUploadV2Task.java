@@ -31,7 +31,6 @@ public abstract class BaseUploadV2Task<T extends Object>  {
     private static final int NETWORK_TIME_OUT = 30000;
     private MultiPartRequest<T> mRequest;
     private Context mContext;
-    private RequestQueue mRequestQueue;
     private SharedPreferences sharedPreferences;
     private T dataResponse;
 
@@ -100,7 +99,7 @@ public abstract class BaseUploadV2Task<T extends Object>  {
             }
         };
 
-        mRequestQueue = ConfigManager.getInstance().getRequestQueue();
+        RequestQueue mRequestQueue = ConfigManager.getInstance().getRequestQueue();
         mRequest.setRetryPolicy(new DefaultRetryPolicy(NETWORK_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequest.addFile("file", getFilePath());
         buildMultipartEntity();

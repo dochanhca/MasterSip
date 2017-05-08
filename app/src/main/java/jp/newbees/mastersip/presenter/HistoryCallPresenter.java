@@ -19,6 +19,7 @@ public class HistoryCallPresenter extends BasePresenter {
 
     public interface HistoryCallPresenterView {
         void didLoadCallLogs(List<CallLogItem> data, int totalCallLog);
+
         void didLoadDataError(int errorCode, String errorMessage);
     }
 
@@ -29,12 +30,12 @@ public class HistoryCallPresenter extends BasePresenter {
         this.historyCallPresenterView = historyCallPresenterView;
     }
 
-    final public void getIncomingCallLogs() {
+    public final void getIncomingCallLogs() {
         GetIncomingCallLogsTask task = new GetIncomingCallLogsTask(getContext());
         this.requestToServer(task);
     }
 
-    final public void getOutgoingCallLogs() {
+    public final void getOutgoingCallLogs() {
         GetOutgoingCallLogsTask task = new GetOutgoingCallLogsTask(getContext());
         this.requestToServer(task);
     }

@@ -52,7 +52,7 @@ public class FilterUserPresenter extends BasePresenter {
     }
 
     public final boolean canLoadMoreUser() {
-        return (!nextPage.isEmpty() && !nextPage.equals("0")) ? true : false;
+        return (!nextPage.isEmpty() && !"0".equals(nextPage)) ? true : false;
     }
 
     @Override

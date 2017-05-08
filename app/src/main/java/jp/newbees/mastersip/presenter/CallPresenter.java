@@ -113,6 +113,8 @@ public class CallPresenter extends BasePresenter {
         String roomId = (String) result.get(CheckCallTask.ROOM_FREE);
 
         ConfigManager.getInstance().setCurrentCallUser(callee, callId);
+        ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_WAITING);
+
         makeCall(roomId, callType);
     }
 
@@ -201,7 +203,7 @@ public class CallPresenter extends BasePresenter {
     public void onCallEvent(ReceivingCallEvent event) {
         switch (event.getCallEvent()) {
             case ReceivingCallEvent.OUTGOING_CALL:
-                notifyCallerJoinedRoom(event.getCallId());
+//                notifyCallerJoinedRoom(event.getCallId());
                 handleOutgoingCall(event.getCallId());
                 break;
             case ReceivingCallEvent.CHECKED_INCOMING_VOICE_CALL:
@@ -257,7 +259,7 @@ public class CallPresenter extends BasePresenter {
         requestToServer(task);
     }
 
-    public final static String getMessageSendRequestSuccess(Context context, UserItem userItem, int type) {
+    public static final String getMessageSendRequestSuccess(Context context, UserItem userItem, int type) {
         String message = "";
         switch (type) {
             case Constant.API.VOICE_CALL:

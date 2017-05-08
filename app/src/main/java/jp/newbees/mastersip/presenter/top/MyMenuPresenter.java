@@ -2,8 +2,6 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 
 import com.android.volley.Response;
@@ -15,14 +13,12 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.DeleteImageTask;
-import jp.newbees.mastersip.network.api.LogoutTask;
 import jp.newbees.mastersip.network.api.GetMyPhotosTask;
+import jp.newbees.mastersip.network.api.LogoutTask;
 import jp.newbees.mastersip.network.api.MyProfileTask;
 import jp.newbees.mastersip.network.api.UploadImageWithProcessTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.FileUtils;
-import jp.newbees.mastersip.utils.Logger;
 
 /**
  * Created by vietbq on 1/19/17.
@@ -35,6 +31,7 @@ public class MyMenuPresenter extends BasePresenter {
     private GalleryItem lastGalleryItem;
     private boolean isLoadMorePhotoInGallery;
     private boolean isRequestingMyInfo;
+    private int uploadType;
 
     public MyMenuPresenter(Context context, MyMenuView menuView) {
         super(context);
@@ -122,6 +119,8 @@ public class MyMenuPresenter extends BasePresenter {
     }
 
     public void uploadPhoto(final String filePath, final int uploadType) {
+        this.uploadType = uploadType;
+
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         UploadImageWithProcessTask uploadImageWithProcessTask = new UploadImageWithProcessTask(getContext(),
                 userItem.getUserId(),
@@ -139,7 +138,11 @@ public class MyMenuPresenter extends BasePresenter {
         }, new BaseUploadTask.ErrorListener() {
             @Override
             public void onErrorListener(int errorCode, String errorMessage) {
-                menuView.didUploadAvatarFailure(errorCode, errorMessage);
+                if (uploadType == UploadImageWithProcessTask.UPLOAD_FOR_AVATAR){
+                    menuView.didUploadAvatarFailure(errorCode, errorMessage);
+                } else {
+                    menuView.didUpLoadPhotoGalleryFailure(errorCode, errorMessage);
+                }
             }
         }, new Response.ProgressListener() {
             @Override
@@ -174,25 +177,9 @@ public class MyMenuPresenter extends BasePresenter {
         menuView.didUploadAvatar(avatar);
     }
 
-    public void uploadAvatar(final byte[] result) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long start = System.currentTimeMillis();
-                final Bitmap bitmap = BitmapFactory.decodeByteArray(
-                        result, 0, result.length);
-                final String filePath = FileUtils.saveBitmapToFile(bitmap);
-                long end = System.currentTimeMillis() - start;
-                Logger.e("Upload Avatar", "time : " + end);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        menuView.onStartUploadAvatarBitmap(filePath);
-                        uploadPhoto(filePath, UploadImageWithProcessTask.UPLOAD_FOR_AVATAR);
-                    }
-                });
-            }
-        }).start();
+    public void uploadAvatar(final String imagePath) {
+        menuView.onStartUploadAvatarBitmap(imagePath);
+        uploadPhoto(imagePath, UploadImageWithProcessTask.UPLOAD_FOR_AVATAR);
     }
 
     public void deleteAvatar() {
@@ -201,24 +188,9 @@ public class MyMenuPresenter extends BasePresenter {
         requestToServer(deleteImageTask);
     }
 
-    public void uploadPhotoForGallery(final byte[] result) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long start = System.currentTimeMillis();
-                String fileName = "android_" + System.currentTimeMillis() + ".png";
-                final String filePath = FileUtils.saveImageBytesToFile(result, fileName);
-                long end = System.currentTimeMillis() - start;
-                Logger.e("Upload photo", "time : " + end);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        menuView.onStartUploadPhotoGallery(filePath);
-                        uploadPhoto(filePath, UploadImageWithProcessTask.UPLOAD_FOR_GALLERY);
-                    }
-                });
-            }
-        }).start();
+    public void uploadPhotoForGallery(final String imagePath) {
+        menuView.onStartUploadPhotoGallery(imagePath);
+        uploadPhoto(imagePath, UploadImageWithProcessTask.UPLOAD_FOR_GALLERY);
     }
 
     public void loadMorePhotoInGallery() {
@@ -244,6 +216,8 @@ public class MyMenuPresenter extends BasePresenter {
         void onUploadAvatarProgressChanged(float percent);
 
         void didUploadAvatarFailure(int errorCode, String errorMessage);
+
+        void didUpLoadPhotoGalleryFailure(int code, String errorMessage);
 
         void onStartUploadAvatarBitmap(String filePath);
 

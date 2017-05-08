@@ -29,12 +29,6 @@ public class IncomingVoiceActivity extends BaseHandleIncomingCallActivity {
         return Constant.API.VOICE_CALL;
     }
 
-    @Override
-    public void onCallConnected() {
-        countingCallDuration();
-        updateViewWhenVoiceConnected();
-    }
-
     public static void startActivity(Context context, UserItem competitor, String callID) {
         Intent intent = new Intent(context, IncomingVoiceActivity.class);
         intent.putExtras(getBundle(competitor,callID));

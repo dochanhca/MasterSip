@@ -45,7 +45,6 @@ import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_IMAGE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_TEXT;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VIDEO_CHAT_CALL;
-import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_VOICE_CALL;
 import static jp.newbees.mastersip.model.BaseChatItem.RoomType.ROOM_CHAT_CHAT;
 import static jp.newbees.mastersip.utils.Constant.JSON.CALL_ID;
@@ -236,8 +235,6 @@ public class JSONUtils {
         switch (type) {
             case CHAT_DELETED:
                 chatItem = parseDeletedChatItem(jData, me);
-                break;
-            case CHAT_VOICE:
                 break;
             case CHAT_TEXT:
                 chatItem = parseTextChatItem(jData);
@@ -519,6 +516,7 @@ public class JSONUtils {
         userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
         userItem.setEmail((jMyInfo.isNull(Constant.JSON.EMAIL)
                 ? "" : jMyInfo.getString(Constant.JSON.EMAIL)));
+
         if (jMyInfo.has(Constant.JSON.AVATAR)) {
             JSONObject jAvatar = jMyInfo.getJSONObject(Constant.JSON.AVATAR);
             if (jAvatar.length() > 0) {
@@ -530,6 +528,7 @@ public class JSONUtils {
         } else {
             userItem.setAvatarItem(null);
         }
+        userItem.setSettings(parseSettings(jMyInfo.getJSONObject(Constant.JSON.SETTING)));
         return userItem;
     }
 
@@ -1032,5 +1031,28 @@ public class JSONUtils {
         result.put(GetOnlineListTask.NEXT, next);
         result.put(GetOnlineListTask.LIST_USER, userItems);
         return result;
+    }
+
+    public static String genMessageGSM(int state) throws JSONException {
+        String extension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+        JSONObject jMessage = new JSONObject();
+        jMessage.put(Constant.JSON.ACTION, Constant.SOCKET.ACTION_GSM_CALL_STATE);
+        jMessage.put(Constant.JSON.MESSAGE, "");
+
+        JSONObject jResponse = new JSONObject();
+        jResponse.put(Constant.JSON.EXTENSION, extension);
+        jResponse.put(Constant.JSON.GSM_STATE, state);
+
+        jMessage.put(Constant.JSON.RESPONSE, jResponse);
+        return jMessage.toString();
+    }
+
+    public static String genMessageChangeBackgroundState(String mode) throws JSONException {
+        JSONObject jMessage = new JSONObject();
+        jMessage.put(Constant.JSON.ACTION, mode);
+        jMessage.put(Constant.JSON.MESSAGE, "");
+        jMessage.put(Constant.JSON.RESPONSE, new JSONObject());
+
+        return jMessage.toString();
     }
 }

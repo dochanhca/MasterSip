@@ -85,12 +85,13 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
     /**
      * Footprint ViewHolder
      */
-    public static class HistoryCallViewHolder extends RecyclerView.ViewHolder{
+    public static class HistoryCallViewHolder extends RecyclerView.ViewHolder {
         private HeaderHolder headerHolder;
         private ItemHolder itemHolder;
 
         /**
          * Constructor
+         *
          * @param itemView View for holder Item or Header
          * @param viewType @VIEW_TYPE_HEADER or @VIEW_TYPE_ITEM
          */
@@ -98,7 +99,7 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
             super(itemView);
             if (viewType == VIEW_TYPE_HEADER) {
                 headerHolder = new HeaderHolder(itemView);
-            }else {
+            } else {
                 itemHolder = new ItemHolder(itemView);
             }
         }
@@ -107,7 +108,8 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
             /**
              * Title for Section
              */
-            public HiraginoTextView txtSection;
+            private HiraginoTextView txtSection;
+
             HeaderHolder(View view) {
                 this.txtSection = (HiraginoTextView) view;
             }
@@ -115,14 +117,13 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
 
         class ItemHolder implements View.OnClickListener {
 
-            public HiraginoTextView txtUserName;
-            public HiraginoTextView txtCallDuration;
-            public HiraginoTextView txtLastTimeCall;
-            public Button btnVoiceCall;
-            public Button btnVideoCall;
-            public ImageView imgAvatar;
-            public ImageView imgCallType;
-            public View separateView;
+            private HiraginoTextView txtUserName;
+            private HiraginoTextView txtCallDuration;
+            private HiraginoTextView txtLastTimeCall;
+            private Button btnVoiceCall;
+            private Button btnVideoCall;
+            private ImageView imgAvatar;
+            private ImageView imgCallType;
             private OnHistoryCallClickListener historyCallClickListener;
             private HistoryCallItem historyCallItem;
             private View rootView;
@@ -132,8 +133,7 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
                 this.txtUserName = (HiraginoTextView) view.findViewById(R.id.txt_user_name);
                 this.txtCallDuration = (HiraginoTextView) view.findViewById(R.id.txt_call_duration);
                 this.imgAvatar = (ImageView) view.findViewById(R.id.img_avatar);
-                this.txtLastTimeCall =  (HiraginoTextView) view.findViewById(R.id.txt_last_time_call);
-                this.separateView =  view.findViewById(R.id.separate_view);
+                this.txtLastTimeCall = (HiraginoTextView) view.findViewById(R.id.txt_last_time_call);
                 this.btnVideoCall = (Button) view.findViewById(R.id.btn_video_call);
                 this.btnVoiceCall = (Button) view.findViewById(R.id.btn_voice_call);
                 this.groupAction = view.findViewById(R.id.group_action);
@@ -143,6 +143,7 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
 
             /**
              * Update view for item
+             *
              * @param historyCallItem
              * @param context
              */
@@ -159,7 +160,7 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
             private void updateStatusUser(int status, Context context) {
                 if (status == UserItem.ACTIVE) {
                     handleViewForActiveUser(context);
-                }else {
+                } else {
                     handleViewForQuitUser(context);
                 }
             }
@@ -198,14 +199,15 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
                 int colorVideo = settingItem.getVideoCall() == SettingItem.ON ? colorGreen : colorGray;
                 int colorVoice = settingItem.getVoiceCall() == SettingItem.ON ? colorGreen : colorGray;
 
-                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0,video, 0 , 0);
-                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0,voice, 0 , 0);
+                btnVideoCall.setCompoundDrawablesWithIntrinsicBounds(0, video, 0, 0);
+                btnVoiceCall.setCompoundDrawablesWithIntrinsicBounds(0, voice, 0, 0);
                 btnVoiceCall.setTextColor(colorVoice);
                 btnVideoCall.setTextColor(colorVideo);
             }
 
             /**
              * Register listener on each item history call
+             *
              * @param historyCallClickListener
              */
             public void setOnHistoryCallClickListener(OnHistoryCallClickListener historyCallClickListener) {
@@ -214,22 +216,19 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
 
             @Override
             public void onClick(View view) {
-                if(view == btnVoiceCall) {
+                if (view == btnVoiceCall) {
                     this.historyCallClickListener.onVoiceClickListener(this.historyCallItem.getUserItem());
-                }else if (view == btnVideoCall) {
+                } else if (view == btnVideoCall) {
                     this.historyCallClickListener.onVideoClickListener(this.historyCallItem.getUserItem());
-                }else {
+                } else {
                     this.historyCallClickListener.onProfileClickListener(this.historyCallItem.getUserItem());
                 }
             }
 
             private int getQuitImage() {
                 int gender = ConfigManager.getInstance().getCurrentUser().getGender();
-                int quitImage = gender
-                        == UserItem.MALE
-                        ? R.drawable.ic_disable_female
+                return gender == UserItem.MALE ? R.drawable.ic_disable_female
                         : R.drawable.ic_disable_male;
-                return quitImage;
             }
         }
 
@@ -239,18 +238,21 @@ public class HistoryCallAdapter extends SectionedRecyclerViewAdapter<HistoryCall
         public interface OnHistoryCallClickListener {
             /**
              * Callback when user clicks on Video Button
+             *
              * @param userItem
              */
             void onVideoClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Voice Button
+             *
              * @param userItem
              */
             void onVoiceClickListener(UserItem userItem);
 
             /**
              * Callback when user clicks on Item
+             *
              * @param userItem
              */
             void onProfileClickListener(UserItem userItem);

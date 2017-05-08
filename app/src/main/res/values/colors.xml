@@ -52,5 +52,6 @@
     <color name="bg_point_video_call">#80388d92</color>
     <color name="gray_bg_call">#f4f4f4</color>
     <color name="light_blue_bg_call">#bde4e6</color>
+    <color name="bg_gift_send">#a1d4d7</color>
 
 </resources>

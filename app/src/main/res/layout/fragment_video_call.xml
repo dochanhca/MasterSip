@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/xnormal_margin" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
-        android:id="@+id/txt_low_signal"
+        android:id="@+id/txt_call_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

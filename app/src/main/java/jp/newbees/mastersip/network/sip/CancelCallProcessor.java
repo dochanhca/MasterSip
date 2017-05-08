@@ -20,7 +20,9 @@ public class CancelCallProcessor extends BaseSocketProcessor {
         //send event to UI
         this.postEvent(new ReceivingCallEvent(ReceivingCallEvent.RELEASE_CALL));
         //send event to service
-        LinphoneHandler.getInstance().terminalCall();
+        if (LinphoneHandler.isRunning()) {
+            LinphoneHandler.getInstance().declineCall();
+        }
     }
 
     @Override

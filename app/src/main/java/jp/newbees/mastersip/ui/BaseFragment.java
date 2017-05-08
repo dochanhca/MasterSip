@@ -14,6 +14,7 @@ import android.widget.TextView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
 import jp.newbees.mastersip.utils.Logger;
+import jp.newbees.mastersip.utils.Utils;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -68,9 +69,16 @@ public abstract class BaseFragment extends Fragment {
             public void onClick(View view) {
                 onImageBackPressed();
                 getFragmentManager().popBackStack();
+                hideSoftKeyboard();
             }
         });
         txtActionBarTitle.setText(title);
+    }
+
+    protected void hideSoftKeyboard() {
+        if (getActivity().getCurrentFocus() != null) {
+            Utils.closeKeyboard(getActivity(), getActivity().getCurrentFocus().getWindowToken());
+        }
     }
 
     protected void showFragmentActionBar(boolean showFragmentActionBar) {

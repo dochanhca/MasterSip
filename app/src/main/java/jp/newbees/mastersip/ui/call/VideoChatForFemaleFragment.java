@@ -27,7 +27,7 @@ import jp.newbees.mastersip.linphone.LinphoneHandler;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.chatting.BasicChatPresenter;
-import jp.newbees.mastersip.presenter.chatting.ReadChatTextListener;
+import jp.newbees.mastersip.presenter.chatting.ReceiveChatTextListener;
 import jp.newbees.mastersip.ui.call.base.CallingFragment;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 
@@ -35,12 +35,12 @@ import jp.newbees.mastersip.utils.DateTimeUtils;
  * Created by thangit14 on 4/10/17.
  */
 
-public class VideoChatForFemaleFragment extends CallingFragment implements ReadChatTextListener {
+public class VideoChatForFemaleFragment extends CallingFragment implements ReceiveChatTextListener {
 
     @BindView(R.id.recycler_chat)
     RecyclerView recyclerChat;
-    @BindView(R.id.txt_low_signal)
-    TextView txtLowSignal;
+    @BindView(R.id.txt_call_status)
+    TextView txtCallStatus;
     @BindView(R.id.videoCaptureSurface)
     SurfaceView mCaptureView;
     @BindView(R.id.btn_on_off_mic)
@@ -53,11 +53,9 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     ImageView imgSwitchCamera;
     @BindView(R.id.txt_point)
     HiraginoTextView txtPoint;
-
     @BindView(R.id.videoSurface)
     SurfaceView mVideoView;
 
-    private boolean isResume = false;
     private AndroidVideoWindowImpl androidVideoWindow;
 
     private UserItem competitor;
@@ -65,11 +63,9 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     private ChatAdapter chatAdapter;
     private BasicChatPresenter basicChatPresenter;
 
-    public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID,
-                                                boolean enableMic) {
+    public static VideoChatForFemaleFragment newInstance(UserItem competitor, String callID) {
         Bundle args = new Bundle();
         args.putParcelable(COMPETITOR, competitor);
-        args.putBoolean(MIC, enableMic);
         args.putString(CALL_ID, callID);
         VideoChatForFemaleFragment fragment = new VideoChatForFemaleFragment();
         fragment.setArguments(args);
@@ -94,7 +90,10 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         recyclerChat.setLayoutManager(layoutManager);
         recyclerChat.setAdapter(chatAdapter);
         setupView();
-        fixZOrder(mCaptureView);
+        fixZOrder(mVideoView, mCaptureView);
+
+        enableSpeaker(false);
+        useFrontCamera();
     }
 
     @Override
@@ -106,7 +105,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
                 setVideoWindow(androidVideoWindow);
             }
         }
-        isResume = true;
         basicChatPresenter.registerCallEvent();
     }
 
@@ -122,7 +120,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
             }
         }
         super.onPause();
-        isResume = false;
         basicChatPresenter.unregisterCallEvent();
     }
 
@@ -141,12 +138,6 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         txtName.setText(competitor.getUsername());
-        countingCallDuration();
-        boolean enableMic = getArguments().getBoolean(MIC);
-
-        btnOnOffMic.setChecked(enableMic);
-        enableMicrophone(enableMic);
-        enableSpeaker(false);
     }
 
     private void bindVideoViewToLinphone() {
@@ -154,6 +145,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
 
             @Override
             public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl androidVideoWindow, SurfaceView surfaceView) {
+                mVideoView = surfaceView;
                 setVideoWindow(androidVideoWindow);
             }
 
@@ -196,12 +188,13 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
 
 
     private void setVideoWindow(AndroidVideoWindowImpl androidVideoWindow) {
-        if (LinphoneHandler.getInstance() != null) {
+        if (LinphoneHandler.isRunning()) {
             LinphoneHandler.getInstance().setVideoWindow(androidVideoWindow);
         }
     }
 
-    private void fixZOrder(SurfaceView preview) {
+    private void fixZOrder(SurfaceView video, SurfaceView preview) {
+        video.setZOrderOnTop(false);
         preview.setZOrderOnTop(true);
         preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
     }
@@ -217,13 +210,16 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
     }
 
     @Override
-    public void onCallPaused() {
-        txtLowSignal.setVisibility(View.VISIBLE);
+    protected TextView getTxtCallStatus() {
+        return txtCallStatus;
     }
 
     @Override
-    public final void onCallResume() {
-        txtLowSignal.setVisibility(View.INVISIBLE);
+    protected void updateUIWhenStartCalling() {
+        countingCallDuration();
+
+        btnOnOffMic.setChecked(isMicEnabled());
+
     }
 
     @Override
@@ -232,21 +228,7 @@ public class VideoChatForFemaleFragment extends CallingFragment implements ReadC
         if (basicChatPresenter.isMessageOfCurrentUser(chatItem.getOwner(), competitor)
                 || chatItem.isOwner()) {
             chatAdapter.add(newChatMessageEvent.getBaseChatItem());
-            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-            if (isResume) {
-                basicChatPresenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
-            }
+            recyclerChat.scrollToPosition(chatAdapter.getItemCount() - 1);
         }
-    }
-
-    @Override
-    public void didSendingReadMessageToServer(BaseChatItem baseChatItem) {
-        chatAdapter.updateSendeeLastMessageStateToRead();
-        basicChatPresenter.sendingReadMessageUsingLinPhone(baseChatItem, competitor);
-    }
-
-    @Override
-    public void didSendingReadMessageToServerError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(errorCode, errorMessage);
     }
 }

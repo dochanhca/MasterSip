@@ -2,9 +2,11 @@ package jp.newbees.mastersip.ui.call.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 
 import org.linphone.core.LinphoneCoreException;
 
@@ -20,6 +22,7 @@ import jp.newbees.mastersip.ui.call.VideoCallFragment;
 import jp.newbees.mastersip.ui.call.VideoChatForFemaleFragment;
 import jp.newbees.mastersip.ui.call.VideoChatForMaleFragment;
 import jp.newbees.mastersip.ui.dialog.PaymentDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.MyLifecycleHandler;
 
@@ -28,8 +31,9 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  */
 
 public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
-        PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView {
-    protected static final String COMPETITOR = "COMPETITOR";
+        PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView, MyLifecycleHandler.ActivityMonitorListener {
+
+    protected static final String KEY_COMPETITOR = "KEY_COMPETITOR";
     protected static final String CALL_ID = "CALL_ID";
     protected static final String RUN_FROM = "RUN_FROM";
     public static final int RUN_FROM_BG = 1;
@@ -37,6 +41,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     private UserItem competitor;
     private String callId;
+    private boolean isUpadedView;
 
     /**
      * use for handle call
@@ -48,23 +53,19 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
      */
     private TopPresenter topPresenter;
 
-    private CallingFragment visibleFragment;
+    private CallingFragment callingFragment;
+
+    private WaitingFragment waitingFragment;
+
     private int runFrom;
-
-    public void setPresenter(BaseHandleCallPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public BaseHandleCallPresenter getPresenter() {
-        return presenter;
-    }
 
     public final void declineCall() {
         this.presenter.declineCall();
     }
 
-    public final void acceptCall(String calId) throws LinphoneCoreException {
-        this.presenter.acceptCall(calId);
+    public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
+        this.presenter.acceptCall(calId, callType);
+        this.presenter.registerActivityMonitorListener(this);
     }
 
     public final void terminalCall() {
@@ -84,7 +85,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     protected void useFrontCamera() {
-        presenter.useFrontCamera(true);
+        presenter.useFrontCameraAndUpdateCall();
     }
 
     public final void enableCamera(boolean enable) {
@@ -92,6 +93,14 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     }
 
     public abstract int getCallType();
+
+    public UserItem getCompetitor() {
+        return competitor;
+    }
+
+    public String getCallId() {
+        return callId;
+    }
 
     @Override
     protected int layoutId() {
@@ -105,15 +114,39 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        competitor = getIntent().getExtras().getParcelable(COMPETITOR);
+        competitor = getIntent().getExtras().getParcelable(KEY_COMPETITOR);
         callId = getIntent().getExtras().getString(CALL_ID);
         runFrom = getIntent().getExtras().getInt(RUN_FROM, RUN_FROM_FG);
+
+        onShowWaitingFragment();
+        initCallingFragment();
+        presenter = getPresenter();
     }
+
+    protected abstract BaseHandleCallPresenter getPresenter();
+
+    private void initCallingFragment() {
+        switch (getCallType()) {
+            case Constant.API.VOICE_CALL:
+                break;
+            case Constant.API.VIDEO_CALL:
+                initVideoCallFragment();
+                break;
+            case Constant.API.VIDEO_CHAT_CALL:
+                initVideoChatFragment();
+                break;
+            default:
+                break;
+        }
+    }
+
+    protected abstract void onShowWaitingFragment();
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
+        presenter.unregisterActivityMonitorListener();
         if (getIabHelper() != null) {
             topPresenter.disposeIabHelper();
         }
@@ -140,65 +173,101 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCoinChanged(int coin) {
-        if (competitor.getGender() == UserItem.MALE) {
-            if (visibleFragment != null) {
-                visibleFragment.onCoinChanged(coin);
-            }
+        if (competitor.getGender() == UserItem.MALE && callingFragment != null) {
+            callingFragment.onCoinChanged(coin);
         }
+    }
+
+    @Override
+    public void onCompetitorChangeBGState(String action) {
+        callingFragment.onCompetitorChangeBGState(action);
     }
 
     @Override
     public void onCallPaused() {
-        if (visibleFragment != null) {
-            visibleFragment.onCallPaused();
+        if (callingFragment != null) {
+            callingFragment.onCallPaused();
         }
     }
 
     @Override
-    public void onCallResuming() {
-        if (visibleFragment != null) {
-            visibleFragment.onCallResume();
+    public void onCallGSMResuming() {
+        if (callingFragment != null) {
+            callingFragment.onCallResume();
+        }
+    }
+
+    @Override
+    public void onCallConnected() {
+        if (isUpadedView == false) {
+            isUpadedView = true;
+            presenter.registerActivityMonitorListener(this);
+            updateUIWhenInCall();
+        }
+    }
+
+    protected final void updateUIWhenInCall() {
+        switch (getCallType()) {
+            case Constant.API.VOICE_CALL:
+                // in voice call, we only change the ui of waiting fragment to calling
+                callingFragment = waitingFragment;
+                break;
+            case Constant.API.VIDEO_CALL:
+            case Constant.API.VIDEO_CHAT_CALL:
+                hideWaitingFragment();
+                showCallingFragment();
+                break;
+            default:
+                break;
+        }
+        callingFragment.updateUIWhenStartCalling();
+    }
+
+    protected void initVideoChatFragment() {
+        if (ConfigManager.getInstance().getCurrentUser().getGender() == UserItem.MALE) {
+            initVideoChatFragmentForMale();
+        } else {
+            initVideoChatFragmentForFemale();
+        }
+    }
+
+    private void showCallingFragment() {
+        findViewById(R.id.container_fragment_calling).setVisibility(View.VISIBLE);
+    }
+
+    private void hideWaitingFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(WaitingFragment.class.getName());
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
 
     protected final void showWaitingFragment(WaitingFragment waitingFragment) {
-        addFragment(waitingFragment, WaitingFragment.class.getName());
-    }
-
-    protected final void showVideoCallFragment(boolean enableSpeaker, boolean muteMic) {
-        visibleFragment = VideoCallFragment.newInstance(competitor, getCallId(), enableSpeaker, muteMic);
-        replaceFragment(visibleFragment, VideoCallFragment.class.getName());
-    }
-
-    protected final void showVideoChatFragmentForMale(boolean enableSpeaker) {
-        visibleFragment = VideoChatForMaleFragment.newInstance(competitor, getCallId(), enableSpeaker);
-        replaceFragment(visibleFragment, VideoChatForMaleFragment.class.getName());
-    }
-
-    protected final void showVideoChatFragmentForFemale(boolean enableMic) {
-        visibleFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId(), enableMic);
-        replaceFragment(visibleFragment, VideoChatForFemaleFragment.class.getName());
-    }
-
-    private final void showFragment(CallingFragment fragment, String TAG, boolean isAdd) {
-        this.visibleFragment = fragment;
+        this.waitingFragment = waitingFragment;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (isAdd) {
-            transaction.add(R.id.fragment_container, fragment,
-                    TAG).commit();
-        } else {
-            transaction.replace(R.id.fragment_container, fragment,
-                    TAG).commit();
-        }
-
+        transaction.add(R.id.container_fragment_waiting, waitingFragment,
+                WaitingFragment.class.getName()).commit();
     }
 
-    private final void addFragment(CallingFragment fragment, String tag) {
-        showFragment(fragment, tag, true);
+    protected final void initVideoCallFragment() {
+        callingFragment = VideoCallFragment.newInstance(competitor, getCallId());
+        addCallingFragment(callingFragment, VideoCallFragment.class.getName());
     }
 
-    private final void replaceFragment(CallingFragment fragment, String tag) {
-        showFragment(fragment, tag, false);
+    private void initVideoChatFragmentForMale() {
+        callingFragment = VideoChatForMaleFragment.newInstance(competitor, getCallId());
+        addCallingFragment(callingFragment, VideoChatForMaleFragment.class.getName());
+    }
+
+    private void initVideoChatFragmentForFemale() {
+        callingFragment = VideoChatForFemaleFragment.newInstance(competitor, getCallId());
+        addCallingFragment(callingFragment, VideoChatForFemaleFragment.class.getName());
+    }
+
+    private void addCallingFragment(CallingFragment fragment, String tag) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.container_fragment_calling, fragment,
+                tag).commit();
     }
 
 
@@ -245,7 +314,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     @Override
     public void onSendPurchaseResultToServerSuccess(int point) {
         disMissLoading();
-        showMessageDialog(String.format(getString(R.string.purchase_success), point + ""));
+        showMessageDialog(String.format(getString(R.string.purchase_success), Integer.toString(point)));
     }
 
     @Override
@@ -256,39 +325,27 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
     @Override
     public void onCallEnd() {
-        if (MyLifecycleHandler.getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
+        if (MyLifecycleHandler.getInstance().getNumberOfActivity() == 1 && runFrom == RUN_FROM_BG) {
             ExitActivity.exitApplication(this);
-        }else {
+        } else {
             BaseHandleCallActivity.this.finish();
         }
     }
 
+    @Override
+    public void onForegroundMode() {
+        presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_FOREGROUND);
+    }
+
+    @Override
+    public void onBackgroundMode() {
+        presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_BACKGROUND);
+    }
+
     protected static Bundle getBundle(UserItem competitor, String callID) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(COMPETITOR, competitor);
+        bundle.putParcelable(KEY_COMPETITOR, competitor);
         bundle.putString(CALL_ID, callID);
         return bundle;
-    }
-
-    protected void countingCallDuration() {
-        visibleFragment.countingCallDuration();
-    }
-
-    protected void updateViewWhenVoiceConnected() {
-        if (visibleFragment instanceof WaitingFragment) {
-            ((WaitingFragment) visibleFragment).updateViewWhenVoiceConnected();
-        }
-    }
-
-    public UserItem getCompetitor() {
-        return competitor;
-    }
-
-    public String getCallId() {
-        return callId;
-    }
-
-    public CallingFragment getVisibleFragment() {
-        return visibleFragment;
     }
 }

@@ -50,9 +50,7 @@ public class ChangePassPresenter extends RegisterPresenterBase {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        if (task instanceof ChangePasswordTask) {
-            view.didChangePassError(errorCode, errorMessage);
-        } else if (task instanceof ChangePasswordTask) {
+        if (task instanceof ChangePasswordTask || task instanceof LoginEmailTask) {
             view.didChangePassError(errorCode, errorMessage);
         }
     }

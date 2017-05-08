@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.ui.auth;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -13,10 +12,6 @@ import jp.newbees.mastersip.ui.top.TopActivity;
  */
 
 public abstract class RegisterBaseActivity extends BaseActivity {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     protected void startTopScreenWithNewTask() {
         Intent intent = new Intent(getApplicationContext(), TopActivity.class);

@@ -9,6 +9,7 @@ import java.util.Map;
 import jp.newbees.mastersip.event.call.ReceivingCallEvent;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.base.BaseSocketProcessor;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -22,6 +23,8 @@ public class ChangeCallingStatusProcessor extends BaseSocketProcessor {
         int status = (int) ((Map<String, Object>) data).get(Constant.JSON.STATUS);
 
         if (status == Constant.SOCKET.STATUS_CALLING_CONNECTED) {
+            String callId = (String) ((Map<String, Object>) data).get(Constant.JSON.CALL_ID);
+            ConfigManager.getInstance().setCallState(callId, Constant.SOCKET.STATUS_CALLING_CONNECTED);
             this.postEvent(new ReceivingCallEvent(ReceivingCallEvent.OUTGOING_CONNECTED_CALL));
         }
     }
