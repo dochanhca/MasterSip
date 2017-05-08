@@ -194,6 +194,8 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     public static void startActivity(Activity activity) {
         Intent intent = new Intent(activity, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
     }
 
