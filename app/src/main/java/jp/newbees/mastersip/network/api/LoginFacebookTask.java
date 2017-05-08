@@ -61,11 +61,13 @@ public class LoginFacebookTask extends BaseTask<UserItem> {
         String extension = jData.getString(Constant.JSON.EXTENSION);
         String password = jData.getString(Constant.JSON.PASSWORD);
         String userId = jData.getString(Constant.JSON.USER_ID);
+        String userName = jData.getString(Constant.JSON.HANDLE_NAME);
         String registerToken = jData.getString(Constant.JSON.REGIST_TOKEN);
 
-        SipItem sipItem = new SipItem(extension,password);
-        this.userItem.setSipItem(sipItem);
-        this.userItem.setUserId(userId);
+        SipItem sipItem = new SipItem(extension, password);
+        userItem.setSipItem(sipItem);
+        userItem.setUserId(userId);
+        userItem.setUsername(userName);
 
         ConfigManager.getInstance().saveRegisterToken(registerToken);
         ConfigManager.getInstance().saveAuthId(userId);
