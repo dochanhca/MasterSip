@@ -2,10 +2,13 @@ package jp.newbees.mastersip.presenter.top;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 
 import com.android.volley.Response;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
@@ -19,6 +22,7 @@ import jp.newbees.mastersip.network.api.MyProfileTask;
 import jp.newbees.mastersip.network.api.UploadImageWithProcessTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 1/19/17.
@@ -200,6 +204,22 @@ public class MyMenuPresenter extends BasePresenter {
         } else {
             menuView.photoNoMoreInGallery();
         }
+    }
+
+    public String getVersion() {
+        String version = context.getResources().getString(R.string.version) + " ";
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            version += pInfo.versionName;
+            version += "(" + pInfo.versionCode + ") \n";
+            version += context.getResources().getString(R.string.domain) + " ";
+            version += Constant.API.BASE_URL;
+            return version;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public interface MyMenuView {
