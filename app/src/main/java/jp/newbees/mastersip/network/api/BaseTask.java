@@ -118,7 +118,12 @@ public abstract class BaseTask<T extends Object> {
                         return Response.error(sipError);
                     }
                 } catch (JSONException e) {
-                    sipError = new SipError(Constant.Error.PARSE_ERROR, "Parse json error");
+                    // if has a html page response from network, we had a network error
+                    if (data.contains("<!doctype html>")) {
+                        sipError = new SipError(Constant.Error.NO_NETWORK, "has html message from network");
+                    } else {
+                        sipError = new SipError(Constant.Error.PARSE_ERROR, "Parse json error");
+                    }
                     return Response.error(sipError);
                 }
             }
