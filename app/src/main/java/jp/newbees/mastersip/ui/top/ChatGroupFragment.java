@@ -334,11 +334,11 @@ public class ChatGroupFragment extends BaseFragment implements ChatGroupPresente
     }
 
     private void listenSwipeLeftToRightEvent() {
-        recyclerChatGroup.setOnTouchListener(new OnSwipeTouchListener(getActivity().getApplicationContext()) {
+        recyclerChatGroup.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             @Override
             public void onSwipeRight() {
                 super.onSwipeRight();
-                if (!isEditing) {
+                if (!isEditing && chatGroupAdapter.getItemCount() > 0) {
                     notifyChatRoomListWithMode();
                     initEditMode();
                 }
