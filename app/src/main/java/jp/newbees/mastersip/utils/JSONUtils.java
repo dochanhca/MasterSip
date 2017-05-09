@@ -353,7 +353,7 @@ public class JSONUtils {
             userItem.setUserId(jSender.getString(Constant.JSON.USER_ID));
             userItem.setUsername(jSender.getString(Constant.JSON.HANDLE_NAME));
 
-            if (jSender.optBoolean(Constant.JSON.AVATAR)) {
+            if (jSender.has(Constant.JSON.AVATAR)) {
                 ImageItem myAvatar = new ImageItem();
                 myAvatar.setThumbUrl(jSender.getString(Constant.JSON.AVATAR));
                 myAvatar.setOriginUrl(jSender.getString(Constant.JSON.AVATAR));
