@@ -131,6 +131,7 @@ public class ChatActivity extends CallActivity implements
     private boolean isCustomActionHeaderInChatOpened = true;
     private boolean isCallActionHeaderInChatOpened = false;
     private boolean isSoftKeyboardOpened = false;
+    private boolean needHideActionHeader;
 
     private boolean isResume = false;
     private boolean isShowDialogForHandleImage = false;
@@ -205,6 +206,45 @@ public class ChatActivity extends CallActivity implements
         }
     };
 
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        private int dy;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            this.dy = dy;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (dy != 0 && needHideActionHeader) {
+                    if (scrollDown(dy)) {
+                        slideDownCustomActionHeaderInChat();
+                    } else if (scrollUp(dy)) {
+                        slideUpCustomActionHeaderInChat();
+                    }
+                }
+                needHideActionHeader = true;
+            }
+        }
+
+        private boolean scrollDown(int dy) {
+            return dy < 0;
+        }
+
+        private boolean scrollUp(int dy) {
+            return dy > 0;
+        }
+    };
+
+    private View.OnClickListener mOnHeaderClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            gotoProfileDetailActivity();
+        }
+    };
+
 
     @Override
     public void didSendChatToServer(BaseChatItem baseChatItem) {
@@ -241,6 +281,7 @@ public class ChatActivity extends CallActivity implements
         members = resultItem.getMembers();
         if (chatAdapter.getItemCount() == 0) {
             needScrollToTheEnd = true;
+            needHideActionHeader = false;
             updateFollowView(presenter
                     .getUserHasRelationShipItem(userItem, members)
                     .getRelationshipItem());
@@ -376,43 +417,6 @@ public class ChatActivity extends CallActivity implements
         }
     };
 
-    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-        private int dy;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            this.dy = dy;
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (dy != 0) {
-                    if (scrollDown(dy)) {
-                        slideDownCustomActionHeaderInChat();
-                    } else if (scrollUp(dy)) {
-                        slideUpCustomActionHeaderInChat();
-                    }
-                }
-            }
-        }
-
-        private boolean scrollDown(int dy) {
-            return dy < 0;
-        }
-
-        private boolean scrollUp(int dy) {
-            return dy > 0;
-        }
-    };
-
-    private View.OnClickListener mOnHeaderClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            gotoProfileDetailActivity();
-        }
-    };
 
     @Override
     protected int layoutId() {

@@ -488,7 +488,7 @@
     <string name="couldnt_accept_call">An error occurred while accepting the call</string>
     <string name="list_online_notify">オンライン通知リスト</string>
     <string name="to_change">変更する</string>
-    <string name="err_email_existed">Email existed</string>
+    <string name="err_email_existed">既に登録されています</string>
     <string name="something_wrong">Something went wrong</string>
     <string name="competitor_off_camera">相手のカメラ画面がオフになりました</string>
 </resources>
