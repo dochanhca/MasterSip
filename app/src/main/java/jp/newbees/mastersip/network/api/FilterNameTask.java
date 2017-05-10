@@ -33,7 +33,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     private final UserItem userItem;
     private final int page;
     private String name;
-
+    private Context context;
     /**
      * This API uses for filter User by name
      * @param context
@@ -77,7 +77,7 @@ public class FilterNameTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
-        List<UserItem> userItems = JSONUtils.parseUsers(jData);
+        List<UserItem> userItems = JSONUtils.parseUsers(context, jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER, userItems);

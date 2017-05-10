@@ -493,4 +493,6 @@
     <string name="competitor_off_camera">相手のカメラ画面がオフになりました</string>
     <string name="version">Version</string>
     <string name="domain">Server</string>
+    <string name="edit_profile">プロフィール編集</string>
+    <string name="save_changes">変更内容を保存する</string>
 </resources>

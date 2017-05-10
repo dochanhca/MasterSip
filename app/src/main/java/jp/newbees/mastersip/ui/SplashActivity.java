@@ -9,7 +9,6 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.auth.SplashPresenter;
-import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
 
@@ -20,7 +19,7 @@ import static jp.newbees.mastersip.ui.StartActivity.IS_REGISTERED;
  * Created by ducpv on 2/17/17.
  */
 
-public class SplashActivity extends RegisterBaseActivity implements SplashPresenter.SplashView {
+public class SplashActivity extends BaseActivity implements SplashPresenter.SplashView {
 
     private SplashPresenter splashPresenter;
     private static final long TIME_DELAY = 500;

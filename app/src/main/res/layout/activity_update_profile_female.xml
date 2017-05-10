@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/tools"
     android:background="@color/color_gray_bg"
     android:focusableInTouchMode="true">
 
@@ -12,22 +11,24 @@
         layout="@layout/layout_action_bar" />
 
     <com.andexert.library.RippleView
-        android:id="@+id/btn_complete_register"
+        android:id="@+id/rv_complete_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:rv_type="rectangle">
+
         <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_save_profile"
+            style="@style/style_button_big"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_big_size"
-            style="@style/style_button_big"
-            android:text="@string/complete_register"/>
+            android:text="@string/complete_register" />
     </com.andexert.library.RippleView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_complete_register"
+        android:layout_above="@+id/rv_complete_register"
         android:layout_below="@+id/layout_action_bar">
 
         <LinearLayout
@@ -35,117 +36,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_25">
-
-                <ImageView
-                    android:id="@+id/img_select_avatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/img_select_avatar" />
-
-                <ImageView
-                    android:id="@+id/img_avatar"
-                    android:layout_width="@dimen/avatar_size"
-                    android:layout_height="@dimen/avatar_size"
-                    android:layout_centerInParent="true"
-                    android:scaleType="fitXY"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_20"
-                android:src="@drawable/img_text_require_note" />
-
-            <!--Lay out input nickname-->
-            <RelativeLayout
-                android:id="@+id/layout_nickname"
-                style="@style/style_layout_text_field_common">
-
-                <ImageView
-                    style="@style/style_title_text_view"
-                    android:src="@drawable/img_nickname_title" />
-
-                <jp.newbees.mastersip.customviews.HiraginoEditText
-                    android:id="@+id/edt_nickname"
-                    style="@style/style_info_edittext"
-                    android:layout_alignParentRight="true"
-                    android:hint="@string/enter_nickname"
-                    android:imeOptions="actionDone"
-                    android:maxLength="14"
-                    android:singleLine="true"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent" />
-
-            </RelativeLayout>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/img_separate_line" />
-
-            <!--Lay out select area-->
-            <RelativeLayout
-                android:id="@+id/layout_area"
-                style="@style/style_layout_text_field_common">
-
-                <ImageView
-                    style="@style/style_title_text_view"
-                    android:src="@drawable/img_area_title" />
-
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    android:id="@+id/txt_area"
-                    style="@style/style_content_text_view"
-                    android:layout_toLeftOf="@+id/img_arrow_right_area"
-                    android:text="@string/unset" />
-
-                <ImageView
-                    android:id="@+id/img_arrow_right_area"
-                    style="@style/style_img_right_text_field_common"
-                    android:src="@drawable/ic_arrow_right" />
-
-            </RelativeLayout>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/img_separate_line" />
-
-            <!--Lay out select profession-->
-            <RelativeLayout
-                android:id="@+id/layout_profession"
-                style="@style/style_layout_text_field_common">
-
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    style="@style/style_title_text_view"
-                    android:text="@string/profession" />
-
-                <jp.newbees.mastersip.customviews.HiraginoTextView
-                    android:id="@+id/txt_profession"
-                    style="@style/style_content_text_view"
-                    android:layout_toLeftOf="@+id/img_arrow_right_profession"
-                    android:text="@string/unset" />
-
-                <ImageView
-                    android:id="@+id/img_arrow_right_profession"
-                    style="@style/style_img_right_text_field_common"
-                    android:src="@drawable/ic_arrow_right" />
-            </RelativeLayout>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@drawable/img_separate_line" />
+            <include layout="@layout/layout_common_profile" />
 
             <!--Lay out select type-->
             <RelativeLayout
@@ -298,6 +189,7 @@
                 android:id="@+id/txt_status_content"
                 style="@style/style_content_text_input"
                 android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/img_divider_status"
                 android:layout_width="match_parent"

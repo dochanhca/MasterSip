@@ -35,7 +35,6 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
         jParams.put(Constant.JSON.HANDLE_NAME, userItem.getUsername());
         jParams.put(Constant.JSON.PHONE_NUMBER, "");
         jParams.put(Constant.JSON.PROVINCE_ID, userItem.getLocation().getId());
-        jParams.put(Constant.JSON.AVATAR_ID, userItem.getAvatarItem().getImageId());
         jParams.put(Constant.JSON.JOB_ID, userItem.getJobItem().getId());
         jParams.put(Constant.JSON.DEVICE_ID, getDeviceId());
         jParams.put(Constant.JSON.TYPE_ID, userItem.getTypeGirl().getId());
@@ -43,6 +42,9 @@ public class UpdateProfileTask extends BaseTask<UserItem> {
         jParams.put(Constant.JSON.CHARM_POINT, userItem.getCharmingPoint());
         jParams.put(Constant.JSON.FREE_TIME, userItem.getAvailableTimeItem().getId());
         jParams.put(Constant.JSON.SLOGAN, userItem.getMemo());
+        if (userItem.getAvatarItem() != null) {
+            jParams.put(Constant.JSON.AVATAR_ID, userItem.getAvatarItem().getImageId());
+        }
 
         return jParams;
     }

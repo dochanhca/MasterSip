@@ -47,7 +47,7 @@ final public class ConfigManager {
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
     public final static int CALL_STATE_WAITING = 1;
-    public final static int CALL_STATE_CONNECTED= 2;
+    public final static int CALL_STATE_CONNECTED = 2;
     private int startServiceFrom;
 
     public final static void initConfig(Context context) {
@@ -311,7 +311,7 @@ final public class ConfigManager {
         return sharedPreferences.getBoolean(Constant.Application.CHATTING_FLAG, false);
     }
 
-    public UserItem getCalleeByRoomId(String roomId) throws NullPointerException{
+    public UserItem getCalleeByRoomId(String roomId) throws NullPointerException {
         return this.callUsers.get(roomId);
     }
 
@@ -323,7 +323,7 @@ final public class ConfigManager {
     }
 
     public int getCallState(String callId) {
-       return callStatus.get(callId);
+        return callStatus.get(callId);
     }
 
     public void startServiceFrom(int startFromPushNotification) {

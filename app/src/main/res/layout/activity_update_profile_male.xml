@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_gray_bg"
+    android:focusableInTouchMode="true">
+
+    <include
+        android:id="@+id/layout_action_bar"
+        layout="@layout/layout_action_bar" />
+
+    <com.andexert.library.RippleView
+        android:id="@+id/rv_complete_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:rv_type="rectangle">
+
+        <jp.newbees.mastersip.customviews.HiraginoButton
+            android:id="@+id/btn_save_profile"
+            style="@style/style_button_big"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_big_size"
+            android:text="@string/complete_register" />
+    </com.andexert.library.RippleView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rv_complete_register"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/layout_action_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_common_profile" />
+
+            <!--Lay out select status-->
+            <RelativeLayout
+                android:id="@+id/layout_status"
+                style="@style/style_layout_text_field_common">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view"
+                    android:text="@string/status" />
+
+                <ImageView
+                    style="@style/style_img_right_text_field_common"
+                    android:src="@drawable/img_pencil" />
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line" />
+
+            <!--Layout status content-->
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:id="@+id/txt_status_content"
+                style="@style/style_content_text_input"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_divider_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_separate_line"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

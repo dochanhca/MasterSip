@@ -26,9 +26,8 @@ import jp.newbees.mastersip.adapter.TutorialPagerAdapter;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.auth.StartPresenter;
 import jp.newbees.mastersip.ui.auth.LoginActivity;
-import jp.newbees.mastersip.ui.auth.RegisterBaseActivity;
+import jp.newbees.mastersip.ui.auth.UpdateProfileMaleActivity;
 import jp.newbees.mastersip.ui.auth.RegisterDateOfBirthActivity;
-import jp.newbees.mastersip.ui.auth.RegisterProfileMaleActivity;
 import jp.newbees.mastersip.ui.auth.TipPageActivity;
 import jp.newbees.mastersip.utils.Logger;
 
@@ -36,7 +35,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by vietbq on 12/6/16.
  */
 
-public class StartActivity extends RegisterBaseActivity implements View.OnClickListener, StartPresenter.StartView {
+public class StartActivity extends BaseActivity implements View.OnClickListener, StartPresenter.StartView {
 
     public static final String IS_REGISTERED = "IS_REGISTERED";
     private static final String TAG = "StartActivity";
@@ -165,7 +164,7 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
         if (userItem.getGender() == UserItem.FEMALE) {
             gotoTipScreen();
         } else {
-            gotoMaleProfile();
+            UpdateProfileMaleActivity.startActivity(this, ProfileBaseActivity.MODE_REGISTER);
         }
     }
 
@@ -184,11 +183,6 @@ public class StartActivity extends RegisterBaseActivity implements View.OnClickL
 
     private void gotoTipScreen() {
         Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
-        startActivity(intent);
-    }
-
-    private void gotoMaleProfile() {
-        Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
         startActivity(intent);
     }
 
