@@ -205,6 +205,9 @@ public final class Constant {
             //Prevent init constructor
         }
 
+        public static final int CHANGE_TO_BACKGROUND = 1;
+        public static final int CHANGE_TO_FOREGROUND = 2;
+
         public static final int AVAILABLE_CALL = 1;
         public static final int NEW_USER = 2;
         public static final int ALL_USER = 3;
