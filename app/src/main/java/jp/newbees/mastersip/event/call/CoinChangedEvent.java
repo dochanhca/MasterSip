@@ -1,11 +1,10 @@
 package jp.newbees.mastersip.event.call;
 
 /**
- * Created by vietbq on 1/12/17.
+ * Created by thangit14 on 5/12/17.
  */
 
 public class CoinChangedEvent {
-
     private int coin;
     private int total;
 

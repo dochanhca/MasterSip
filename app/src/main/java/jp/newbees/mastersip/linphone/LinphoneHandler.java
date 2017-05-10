@@ -234,6 +234,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         cancelCallTask.request(new Response.Listener<Void>() {
             @Override
             public void onResponse(Void response) {
+                ConfigManager.getInstance().removeCurrentCall();
                 Logger.e("LinphoneHandler", "End waiting call");
             }
         }, new BaseTask.ErrorListener() {

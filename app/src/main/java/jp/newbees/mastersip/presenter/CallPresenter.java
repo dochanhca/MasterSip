@@ -181,7 +181,12 @@ public class CallPresenter extends BasePresenter {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
-        callView.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
+        /**
+         * Only Coin changed event after call ended contain total field
+         */
+        if (event.getTotal() >= 0) {
+            callView.didCoinChangedAfterHangUp(event.getTotal(), event.getCoin());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -400,11 +400,27 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         return isShowNavigationBar;
     }
 
-    public void setUnreadMessageValue(int value) {
+    public void setBudgieMessage(int value) {
         if (value == 0) {
             navigationMessage.setShowBoxValue(false);
         } else {
             navigationMessage.showBoxValue(value);
+        }
+    }
+
+    public void setBudgieFootPrint(int value) {
+        if (value == 0) {
+            navigationLeg.setShowBoxValue(false);
+        } else {
+            navigationLeg.showBoxValue(value);
+        }
+    }
+
+    public void setBudgieFollower(int value) {
+        if (value == 0) {
+            navigationHeart.setShowBoxValue(false);
+        } else {
+            navigationHeart.showBoxValue(value);
         }
     }
 

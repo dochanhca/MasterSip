@@ -13,7 +13,7 @@ import org.linphone.core.LinphoneCoreException;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 import jp.newbees.mastersip.presenter.call.BaseHandleCallPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
@@ -30,7 +30,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  * Created by thangit14 on 3/16/17.
  */
 
-public abstract class BaseHandleCallActivity extends BaseActivity implements TopPresenter.TopPresenterListener,
+public abstract class BaseHandleCallActivity extends BaseActivity implements InAppPurchasePresenter.InAppPurchaseListener,
         PaymentDialog.OnPaymentDialogClickListener, BaseHandleCallPresenter.CallView, MyLifecycleHandler.ActivityMonitorListener {
 
     protected static final String KEY_COMPETITOR = "KEY_COMPETITOR";
@@ -51,7 +51,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     /**
      * use for in-app purchase
      */
-    private TopPresenter topPresenter;
+    private InAppPurchasePresenter inAppPurchasePresenter;
 
     private CallingFragment callingFragment;
 
@@ -148,7 +148,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
         presenter.unregisterEvents();
         presenter.unregisterActivityMonitorListener(this);
         if (getIabHelper() != null) {
-            topPresenter.disposeIabHelper();
+            inAppPurchasePresenter.disposeIabHelper();
         }
     }
 
@@ -272,39 +272,39 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
 
 
     private IabHelper getIabHelper() {
-        if (topPresenter == null) {
+        if (inAppPurchasePresenter == null) {
             return null;
         }
-        return topPresenter.getIabHelper();
+        return inAppPurchasePresenter.getIabHelper();
     }
 
     @Override
     public void onRunningOutOfCoin() {
-        topPresenter = new TopPresenter(this, this);
-        topPresenter.setupForPurchase();
+        inAppPurchasePresenter = new InAppPurchasePresenter(this, this);
+        inAppPurchasePresenter.setupForPurchase();
         PaymentDialog.openPaymentDialog(getSupportFragmentManager());
     }
 
     @Override
     public void onPaymentItemClick(PaymentAdOnItem item) {
-        topPresenter.performPurchaseItem(item.getId());
+        inAppPurchasePresenter.performPurchaseItem(item.getId());
     }
 
     @Override
     public void onInAppBillingSuccess(String sku, String token) {
         showLoading();
-        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+        inAppPurchasePresenter.sendPurchaseResultToServer(InAppPurchasePresenter.PurchaseStatus.SUCCESS, sku, token);
     }
 
     @Override
     public void onPurchaseError(int errorCode, String errorMessage, String sku, String token) {
-        TopPresenter.PurchaseStatus status;
+        InAppPurchasePresenter.PurchaseStatus status;
         if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
-            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
-            topPresenter.sendPurchaseResultToServer(status, sku, token);
+            status = InAppPurchasePresenter.PurchaseStatus.NOT_SUCCESS;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, token);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
-            status = TopPresenter.PurchaseStatus.FAIL;
-            topPresenter.sendPurchaseResultToServer(status, sku, token);
+            status = InAppPurchasePresenter.PurchaseStatus.FAIL;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, token);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
             disMissLoading();
             showMessageDialog(getString(R.string.cancel_purchase));

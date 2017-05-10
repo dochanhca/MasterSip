@@ -27,6 +27,7 @@ import jp.newbees.mastersip.model.GiftItem;
 import jp.newbees.mastersip.model.HistoryCallItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.model.MasterDataItem;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.model.PaymentAdOnItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -39,7 +40,7 @@ import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.CheckCallTask;
 import jp.newbees.mastersip.network.api.GetOnlineListTask;
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_DELETED;
 import static jp.newbees.mastersip.model.BaseChatItem.ChatType.CHAT_GIFT;
@@ -851,7 +852,7 @@ public class JSONUtils {
         return jsonObject;
     }
 
-    public static JSONObject genParamsToSendPurchaseResult(String skuID, String transection, TopPresenter.PurchaseStatus purchaseStatus, String createAt) throws JSONException {
+    public static JSONObject genParamsToSendPurchaseResult(String skuID, String transection, InAppPurchasePresenter.PurchaseStatus purchaseStatus, String createAt) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.JSON.ID_ADDON, skuID);
         jsonObject.put(Constant.JSON.TRANSECTION, transection);
@@ -1108,6 +1109,16 @@ public class JSONUtils {
         jMessage.put(Constant.JSON.RESPONSE, new JSONObject());
 
         return jMessage.toString();
+    }
+
+    public static MasterDataItem parseMasterData(JSONObject jData) throws JSONException {
+        MasterDataItem masterDataItem = new MasterDataItem();
+        masterDataItem.setCoin(jData.getInt(Constant.JSON.POINTS));
+        masterDataItem.setTotalChat(jData.getInt(Constant.JSON.TOTAL_CHAT));
+        masterDataItem.setTotalFollower(jData.getInt(Constant.JSON.TOTAL_FOLLOWER));
+        masterDataItem.setTotalFootPrint(jData.getInt(Constant.JSON.TOTAL_FOOTPRINT));
+        masterDataItem.setTotalMyMenu(jData.getInt(Constant.JSON.TOTAL_MY_MENU));
+        return masterDataItem;
     }
 
     public static SettingPushItem parsePushNotifySetting(JSONObject jData) throws JSONException {

@@ -17,9 +17,11 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
+import jp.newbees.mastersip.model.MasterDataItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.CallPresenter;
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
+import jp.newbees.mastersip.presenter.top.TopActivityPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.CallActivity;
@@ -36,7 +38,7 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class TopActivity extends CallActivity implements
-        View.OnClickListener, TopPresenter.TopPresenterListener, BaseActivity.BottomNavigation {
+        View.OnClickListener, InAppPurchasePresenter.InAppPurchaseListener, BaseActivity.BottomNavigation, TopActivityPresenter.TopActivityListener {
 
     private static final String TAG = "TopActivity";
     private static final int REQUEST_OPEN_CALLER_PROFILE = 33;
@@ -48,7 +50,10 @@ public class TopActivity extends CallActivity implements
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
-    private TopPresenter topPresenter;
+
+    private InAppPurchasePresenter inAppPurchasePresenter;
+    private TopActivityPresenter topActivityPresenter;
+
     private UserItem caller;
 
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
@@ -100,7 +105,8 @@ public class TopActivity extends CallActivity implements
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        topPresenter = new TopPresenter(this, this);
+        inAppPurchasePresenter = new InAppPurchasePresenter(this, this);
+        topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(4);
@@ -110,7 +116,8 @@ public class TopActivity extends CallActivity implements
     @Override
     protected void initVariables(Bundle savedInstanceState) {
         fillData();
-        topPresenter.requestPermissions();
+        topActivityPresenter.requestPermissions();
+        topActivityPresenter.loadMasterData();
         getDataFromFCMChatMessage(getIntent());
         ConfigManager.getInstance().setCurrentTabInRootNavigater(0);
     }
@@ -141,7 +148,7 @@ public class TopActivity extends CallActivity implements
         super.onDestroy();
         Logger.e(TAG, "Destroying helper.");
         if (getIabHelper() != null) {
-            topPresenter.disposeIabHelper();
+            inAppPurchasePresenter.disposeIabHelper();
         }
     }
 
@@ -173,7 +180,8 @@ public class TopActivity extends CallActivity implements
      */
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
-        setUnreadMessageValue(roomChatEvent.getNumberOfRoomUnRead());
+        ConfigManager.getInstance().setUnreadMessage(roomChatEvent.getNumberOfRoomUnRead());
+        setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
     }
 
     @Override
@@ -184,18 +192,18 @@ public class TopActivity extends CallActivity implements
     @Override
     public void onInAppBillingSuccess(String sku, String token) {
         showLoading();
-        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+        inAppPurchasePresenter.sendPurchaseResultToServer(InAppPurchasePresenter.PurchaseStatus.SUCCESS, sku, token);
     }
 
     @Override
     public void onPurchaseError(int errorCode, String errorMessage, String sku, String transection) {
-        TopPresenter.PurchaseStatus status;
+        InAppPurchasePresenter.PurchaseStatus status;
         if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
-            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
-            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+            status = InAppPurchasePresenter.PurchaseStatus.NOT_SUCCESS;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, transection);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
-            status = TopPresenter.PurchaseStatus.FAIL;
-            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+            status = InAppPurchasePresenter.PurchaseStatus.FAIL;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, transection);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
             disMissLoading();
             showMessageDialog(getString(R.string.cancel_purchase));
@@ -216,8 +224,21 @@ public class TopActivity extends CallActivity implements
     }
 
     @Override
+    public void onLoadMasterDataSuccess(MasterDataItem masterDataItem) {
+        topActivityPresenter.saveCoin(masterDataItem.getCoin());
+        setBudgieMessage(masterDataItem.getTotalChat());
+        setBudgieFootPrint(masterDataItem.getTotalFootPrint());
+        setBudgieFollower(masterDataItem.getTotalFollower());
+    }
+
+    @Override
+    public void onLoadMasterDataError(int errorCode, String errorMessage) {
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, final int[] grantResults) {
-        topPresenter.requestPermissions();
+        topActivityPresenter.requestPermissions();
     }
 
     @Override
@@ -229,7 +250,7 @@ public class TopActivity extends CallActivity implements
     }
 
     private IabHelper getIabHelper() {
-        return topPresenter.getIabHelper();
+        return inAppPurchasePresenter.getIabHelper();
     }
 
     private void fillData() {
@@ -324,8 +345,8 @@ public class TopActivity extends CallActivity implements
         return fragment;
     }
 
-    public TopPresenter getPresenter() {
-        return topPresenter;
+    public InAppPurchasePresenter getPresenter() {
+        return inAppPurchasePresenter;
     }
 
     public void showSearchFragment() {

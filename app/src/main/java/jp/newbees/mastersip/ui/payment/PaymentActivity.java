@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.WrapperWithBottomNavigationActivity;
 import jp.newbees.mastersip.utils.Constant;
@@ -17,9 +17,9 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 3/27/17.
  */
 
-public class PaymentActivity extends WrapperWithBottomNavigationActivity implements TopPresenter.TopPresenterListener {
+public class PaymentActivity extends WrapperWithBottomNavigationActivity implements InAppPurchasePresenter.InAppPurchaseListener {
 
-    private TopPresenter topPresenter;
+    private InAppPurchasePresenter inAppPurchasePresenter;
 
     public static void startActivityForResult(Activity activity,int requestCode) {
         Intent intent = new Intent(activity, PaymentActivity.class);
@@ -36,7 +36,7 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
         hideActionBar();
         PaymentFragment paymentFragment = PaymentFragment.newInstance(true);
         showFragmentContent(paymentFragment, PaymentFragment.class.getName());
-        topPresenter = new TopPresenter(this, this);
+        inAppPurchasePresenter = new InAppPurchasePresenter(this, this);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
 
         Logger.e(TAG, "Destroying helper.");
         if (getIabHelper() != null) {
-            topPresenter.disposeIabHelper();
+            inAppPurchasePresenter.disposeIabHelper();
         }
     }
 
@@ -66,18 +66,18 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
     @Override
     public void onInAppBillingSuccess(String sku, String token) {
         showLoading();
-        topPresenter.sendPurchaseResultToServer(TopPresenter.PurchaseStatus.SUCCESS, sku, token);
+        inAppPurchasePresenter.sendPurchaseResultToServer(InAppPurchasePresenter.PurchaseStatus.SUCCESS, sku, token);
     }
 
     @Override
     public void onPurchaseError(int errorCode, String errorMessage, String sku, String transection) {
-        TopPresenter.PurchaseStatus status;
+        InAppPurchasePresenter.PurchaseStatus status;
         if (errorCode == Constant.Error.IN_APP_PURCHASE_NOT_SUCCESS) {
-            status = TopPresenter.PurchaseStatus.NOT_SUCCESS;
-            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+            status = InAppPurchasePresenter.PurchaseStatus.NOT_SUCCESS;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, transection);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_FAIL) {
-            status = TopPresenter.PurchaseStatus.FAIL;
-            topPresenter.sendPurchaseResultToServer(status, sku, transection);
+            status = InAppPurchasePresenter.PurchaseStatus.FAIL;
+            inAppPurchasePresenter.sendPurchaseResultToServer(status, sku, transection);
         } else if (errorCode == Constant.Error.IN_APP_PURCHASE_CANCEL) {
             disMissLoading();
             showMessageDialog(getString(R.string.cancel_purchase));
@@ -100,11 +100,11 @@ public class PaymentActivity extends WrapperWithBottomNavigationActivity impleme
     }
 
     private IabHelper getIabHelper() {
-        return topPresenter.getIabHelper();
+        return inAppPurchasePresenter.getIabHelper();
     }
 
-    public TopPresenter getPresenter() {
-        return topPresenter;
+    public InAppPurchasePresenter getPresenter() {
+        return inAppPurchasePresenter;
     }
 
 }
