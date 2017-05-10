@@ -13,7 +13,7 @@ public class UpdateMyProfileActivity extends BaseActivity {
 
     @Override
     protected int layoutId() {
-        return R.layout.activity_register_profile_male;
+        return R.layout.activity_update_profile_male;
     }
 
     @Override

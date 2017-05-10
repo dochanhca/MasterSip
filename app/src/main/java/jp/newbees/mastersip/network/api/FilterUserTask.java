@@ -30,6 +30,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     private final FilterItem filterItem;
     private final String nextPage;
     private final UserItem userItem;
+    private Context context;
 
     /**
      * This API uses for filter user by conditions
@@ -43,6 +44,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
         this.filterItem = filterItem;
         this.userItem = userItem;
         this.nextPage = nextPage;
+        this.context = context;
     }
 
     @Nullable
@@ -92,7 +94,7 @@ public class FilterUserTask extends BaseTask<HashMap<String, Object>> {
     protected HashMap<String, Object> didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
         String nextPage = jData.getString(Constant.JSON.NEXT_PAGE);
-        List<UserItem> userItems  = JSONUtils.parseUsers(jData);
+        List<UserItem> userItems  = JSONUtils.parseUsers(context, jData);
         HashMap<String, Object> result = new HashMap<>();
         result.put(NEXT_PAGE, nextPage);
         result.put(LIST_USER, userItems);

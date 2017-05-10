@@ -19,8 +19,11 @@ import jp.newbees.mastersip.utils.JSONUtils;
 */
 
 public class MyProfileTask extends BaseTask<UserItem> {
+    private Context context;
+
     public MyProfileTask(Context context) {
         super(context);
+        this.context = context;
     }
 
     @Nullable
@@ -43,7 +46,7 @@ public class MyProfileTask extends BaseTask<UserItem> {
     @Override
     protected UserItem didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        UserItem userItem = JSONUtils.parseMyMenuItem(jData);
+        UserItem userItem = JSONUtils.parseMyMenuItem(context, jData);
         ConfigManager.getInstance().saveUser(userItem);
         return userItem;
     }

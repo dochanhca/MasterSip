@@ -22,6 +22,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.auth.RegisterPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.ProfileBaseActivity;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -283,8 +284,7 @@ public class RegisterDateOfBirthActivity extends BaseActivity implements View.On
 
     private void gotoRegisterProfileActivity(UserItem userItem) {
         if (userItem.getGender() == UserItem.MALE) {
-            Intent intent = new Intent(getApplicationContext(), RegisterProfileMaleActivity.class);
-            startActivity(intent);
+            UpdateProfileMaleActivity.startActivity(this, ProfileBaseActivity.MODE_REGISTER);
         } else if (userItem.getGender() == UserItem.FEMALE) {
             Intent intent = new Intent(getApplicationContext(), TipPageActivity.class);
             startActivity(intent);

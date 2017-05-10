@@ -30,6 +30,7 @@ import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.dialog.LoadingDialog;
 import jp.newbees.mastersip.ui.dialog.MessageDialog;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ExceptionVolleyHelper;
@@ -364,6 +365,13 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
                 //Unused
             }
         });
+    }
+
+    protected void startTopScreenWithNewTask() {
+        Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     public void showNavigation() {

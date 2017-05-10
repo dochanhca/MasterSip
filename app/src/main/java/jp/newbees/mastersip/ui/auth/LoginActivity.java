@@ -12,12 +12,13 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.presenter.auth.LoginPresenter;
+import jp.newbees.mastersip.ui.BaseActivity;
 
 /**
  * Created by vietbq on 12/6/16.
  */
 
-public class LoginActivity extends RegisterBaseActivity implements View.OnClickListener, LoginPresenter.LoginView {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, LoginPresenter.LoginView {
 
     @BindView(R.id.edt_email)
     HiraginoEditText edtEmail;

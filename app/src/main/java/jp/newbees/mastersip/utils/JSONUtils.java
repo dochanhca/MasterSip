@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.CallChatItem;
 import jp.newbees.mastersip.model.CallLogItem;
@@ -58,10 +59,10 @@ public class JSONUtils {
         //Prevent init object
     }
 
-    public static UserItem parseUserDetail(JSONObject data) throws JSONException {
+    public static UserItem parseUserDetail(Context context, JSONObject data) throws JSONException {
         JSONObject jUser = data.getJSONObject(Constant.JSON.USER);
         UserItem userItem = new UserItem();
-        parseBasicUserInfo(userItem, jUser);
+        parseBasicUserInfo(context, userItem, jUser);
 
         if (!jUser.isNull(Constant.JSON.AVATAR)) {
             JSONObject jAvatar = jUser.getJSONObject(Constant.JSON.AVATAR);
@@ -82,13 +83,13 @@ public class JSONUtils {
         return userItem;
     }
 
-    public static List<UserItem> parseUsers(JSONObject data) throws JSONException {
+    public static List<UserItem> parseUsers(Context context, JSONObject data) throws JSONException {
         JSONArray jArray = data.getJSONArray(Constant.JSON.USERS);
         ArrayList<UserItem> result = new ArrayList<>();
         for (int i = 0, n = jArray.length(); i < n; i++) {
             JSONObject jUser = jArray.getJSONObject(i);
             UserItem userItem = new UserItem();
-            parseBasicUserInfo(userItem, jUser);
+            parseBasicUserInfo(context, userItem, jUser);
 
             if (jUser.has(Constant.JSON.SETTING)) {
                 JSONObject jSetting = jUser.getJSONObject(Constant.JSON.SETTING);
@@ -128,9 +129,14 @@ public class JSONUtils {
         return settingItem;
     }
 
-    private static void parseBasicUserInfo(UserItem userItem, JSONObject jUser) throws JSONException {
+    private static void parseBasicUserInfo(Context context, UserItem userItem, JSONObject jUser) throws JSONException {
         userItem.setUsername(jUser.getString(Constant.JSON.HANDLE_NAME));
         userItem.setUserId(jUser.getString(Constant.JSON.ID));
+        if (jUser.has(Constant.JSON.GENDER)) {
+            userItem.setGender(jUser.getInt(Constant.JSON.GENDER));
+        } else {
+            userItem.setGender(getInteractionUserGender());
+        }
 
         if (!jUser.isNull(Constant.JSON.SLOGAN)) {
             userItem.setMemo(jUser.getString(Constant.JSON.SLOGAN));
@@ -172,23 +178,8 @@ public class JSONUtils {
         int status = getInt(jUser, Constant.JSON.STATUS);
         userItem.setStatus(status);
 
-        userItem.setGender(getInteractionUserGender());
         if (jUser.has(Constant.JSON.EXTEND_INFO)) {
-            JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.EXTEND_INFO);
-            if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
-                String charmPoint = jExtendInfo.getString(Constant.JSON.CHARM_POINT);
-                userItem.setCharmingPoint(charmPoint);
-                String freeTime = jExtendInfo.getString(Constant.JSON.FREE_TIME);
-                SelectionItem availableTime = new SelectionItem();
-                availableTime.setTitle(freeTime);
-                userItem.setAvailableTimeItem(availableTime);
-                String typeBoy = jExtendInfo.getString(Constant.JSON.TYPE_BOY);
-                userItem.setTypeBoy(typeBoy);
-                String favoriteType = jExtendInfo.getString(Constant.JSON.FAVORITE_TYPE);
-                SelectionItem typeGirl = new SelectionItem();
-                typeGirl.setTitle(favoriteType);
-                userItem.setTypeGirl(typeGirl);
-            }
+            parseExtendInfo(context, userItem, jUser);
         }
     }
 
@@ -509,7 +500,7 @@ public class JSONUtils {
         return galleryItem;
     }
 
-    public static UserItem parseMyMenuItem(JSONObject jData) throws JSONException {
+    public static UserItem parseMyMenuItem(Context context, JSONObject jData) throws JSONException {
         JSONObject jMyInfo = jData.getJSONObject(Constant.JSON.MY_INFO);
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
@@ -529,7 +520,69 @@ public class JSONUtils {
             userItem.setAvatarItem(null);
         }
         userItem.setSettings(parseSettings(jMyInfo.getJSONObject(Constant.JSON.SETTING)));
+        userItem.setMemo(jMyInfo.getString(Constant.JSON.SLOGAN));
+
+        JSONObject jProvince = jMyInfo.getJSONObject(Constant.JSON.PROVINCE);
+        SelectionItem locationItem = new SelectionItem();
+        locationItem.setId(jProvince.getInt(Constant.JSON.PROVINCE_ID));
+        locationItem.setTitle(jProvince.getString(Constant.JSON.PROVINCE_NAME));
+        userItem.setLocation(locationItem);
+        userItem.setJobItem(getJobItem(context, userItem, jMyInfo));
+        if (jMyInfo.has(Constant.JSON.EXTEND_INFO)) {
+            parseExtendInfo(context, userItem, jMyInfo);
+        }
+
         return userItem;
+    }
+
+    private static SelectionItem getJobItem(Context context, UserItem userItem, JSONObject jMyInfo) throws JSONException {
+        String jobTitle = jMyInfo.getString(Constant.JSON.JOB_NAME);
+        String jobs[];
+        if (userItem.getGender() == UserItem.MALE) {
+            jobs = context.getResources().getStringArray(R.array.male_job);
+        } else {
+            jobs = context.getResources().getStringArray(R.array.female_job);
+        }
+        for (int i = 0; i < jobs.length; i++) {
+            if (jobs[i].equalsIgnoreCase(jobTitle)) {
+                return new SelectionItem(i + 1, jobTitle);
+            }
+        }
+        return new SelectionItem();
+    }
+
+    private static void parseExtendInfo(Context context, UserItem userItem, JSONObject jUser) throws JSONException {
+        JSONObject jExtendInfo = jUser.getJSONObject(Constant.JSON.EXTEND_INFO);
+        if (userItem.getGender() == UserItem.FEMALE && jExtendInfo.length() > 0) {
+            userItem.setTypeGirl(getTypeGirl(context, jExtendInfo));
+            userItem.setTypeBoy(jExtendInfo.getString(Constant.JSON.TYPE_BOY));
+            userItem.setCharmingPoint(jExtendInfo.getString(Constant.JSON.CHARM_POINT));
+            userItem.setAvailableTimeItem(getAvailableTimeItem(context, jExtendInfo));
+        }
+
+    }
+
+    private static SelectionItem getTypeGirl(Context context, JSONObject jExtendInfo) throws JSONException {
+        String[] types = context.getResources().getStringArray(R.array.type);
+        String type = jExtendInfo.getString(Constant.JSON.FAVORITE_TYPE);
+        for (int i = 0; i < types.length; i++) {
+            if (types[i].equalsIgnoreCase(type)) {
+                return new SelectionItem(i + 1, type);
+            }
+        }
+        return new SelectionItem();
+    }
+
+    private static SelectionItem getAvailableTimeItem(Context context, JSONObject jExtendInfo)
+            throws JSONException {
+        String[] availableTimes = context.getResources().getStringArray(R.array.rest_time);
+        String freeTime = jExtendInfo.getString(Constant.JSON.FREE_TIME);
+        for (int i = 0; i < availableTimes.length; i++) {
+            if (availableTimes[i].equalsIgnoreCase(freeTime)) {
+                return new SelectionItem(i + 1, freeTime);
+            }
+        }
+        return new SelectionItem();
     }
 
     public static ImageItem parseImageItem(JSONObject jAvatar) throws JSONException {

@@ -1,6 +1,5 @@
 package jp.newbees.mastersip.ui.auth;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -11,6 +10,7 @@ import android.webkit.WebViewClient;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.ProfileBaseActivity;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -44,7 +44,8 @@ public class TipPageActivity extends BaseActivity implements View.OnClickListene
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.equals(Constant.API.TIP_PAGE_DIRECTION)) {
-                    redirectToUpdateProfile();
+                    UpdateProfileFemaleActivity.startActivity(TipPageActivity.this,
+                            ProfileBaseActivity.MODE_REGISTER);
                 }
                 return true;
             }
@@ -54,17 +55,12 @@ public class TipPageActivity extends BaseActivity implements View.OnClickListene
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 if (url.equals(Constant.API.TIP_PAGE_DIRECTION)) {
-                    redirectToUpdateProfile();
+                    UpdateProfileFemaleActivity.startActivity(TipPageActivity.this,
+                            ProfileBaseActivity.MODE_REGISTER);
                 }
                 return true;
             }
         });
-    }
-
-    private void redirectToUpdateProfile() {
-        Intent intent = new Intent(this,
-                RegisterProfileFemaleActivity.class);
-        startActivity(intent);
     }
 
     @Override

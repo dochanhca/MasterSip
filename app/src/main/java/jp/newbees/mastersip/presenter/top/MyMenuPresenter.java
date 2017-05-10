@@ -75,7 +75,6 @@ public class MyMenuPresenter extends BasePresenter {
 
     private void handleMyInfo(MyProfileTask task) {
         UserItem userItem = task.getDataResponse();
-        ConfigManager.getInstance().saveUser(userItem);
         menuView.didLoadMyProfile(userItem);
         isRequestingMyInfo = false;
         isLoadMorePhotoInGallery = false;

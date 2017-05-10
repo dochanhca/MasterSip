@@ -19,6 +19,7 @@ import jp.newbees.mastersip.utils.JSONUtils;
 public class GetProfileDetailTask extends BaseTask {
 
     private String userId;
+    private Context context;
 
     /**
      * This API uses for get profile details
@@ -28,6 +29,7 @@ public class GetProfileDetailTask extends BaseTask {
     public GetProfileDetailTask(Context context, String userId) {
         super(context);
         this.userId = userId;
+        this.context = context;
     }
 
     @Nullable
@@ -50,6 +52,6 @@ public class GetProfileDetailTask extends BaseTask {
     @Override
     protected Object didResponse(JSONObject data) throws JSONException {
         JSONObject jData = data.getJSONObject(Constant.JSON.DATA);
-        return JSONUtils.parseUserDetail(jData);
+        return JSONUtils.parseUserDetail(context, jData);
     }
 }

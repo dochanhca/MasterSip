@@ -45,8 +45,11 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.MyMenuPresenter;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
+import jp.newbees.mastersip.ui.ProfileBaseActivity;
 import jp.newbees.mastersip.ui.StartActivity;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
+import jp.newbees.mastersip.ui.auth.UpdateProfileFemaleActivity;
+import jp.newbees.mastersip.ui.auth.UpdateProfileMaleActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
@@ -69,9 +72,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     private static final int REQUEST_SELECT_PHOTO_FOR_GALLERY = 8989;
     private static final String REFRESH_DATA = "REFRESH_DATA";
     private static final int CONFIRM_DELETE_AVATAR = 11;
+    private static final int REQUEST_EDIT_PROFILE = 31;
 
-    @BindView(R.id.switch_mode_in_header)
-    ImageView switchModeInHeader;
     @BindView(R.id.txt_action_bar_title)
     HiraginoTextView txtActionBarTitle;
     @BindView(R.id.ll_action_bar)
@@ -259,7 +261,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @OnClick({
-            R.id.btn_buy_point, R.id.btn_upload_photo, R.id.btn_change_avatar,
+            R.id.btn_buy_point, R.id.btn_upload_photo, R.id.btn_change_avatar, R.id.img_edit_profile,
             R.id.group_avatar, R.id.layout_my_notify, R.id.txt_online_list, R.id.txt_call_history,
             R.id.txt_block_list, R.id.txt_notify_setting, R.id.txt_email_backup_setting,
             R.id.txt_call_setting, R.id.layout_guide, R.id.layout_contact,
@@ -272,6 +274,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         mLastClickTime = SystemClock.elapsedRealtime();
 
         switch (view.getId()) {
+            case R.id.img_edit_profile:
+                startEditProfileScreen();
+                break;
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
@@ -340,8 +345,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadMyProfile(UserItem userItem) {
-        this.txtPoint.setText("" + userItem.getCoin());
-        this.updateAvatarView(userItem.getAvatarItem());
+        txtPoint.setText("" + userItem.getCoin());
+        txtActionBarTitle.setText(userItem.getUsername());
+        updateAvatarView(userItem.getAvatarItem());
     }
 
     @Override
@@ -508,14 +514,13 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             groupUploadAvatar.setVisibility(View.GONE);
             Glide.with(getActivity().getApplicationContext())
                     .load(avatarItem.getThumbUrl())
-                    .placeholder(defaultAvatar)
-                    .fitCenter()
-                    .dontAnimate()
-                    .dontTransform()
+                    .placeholder(defaultAvatar).error(defaultAvatar)
+                    .fitCenter().dontAnimate().dontTransform()
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(imgAvatar);
         } else {
+            imgAvatar.setImageResource(defaultAvatar);
             groupUploadAvatar.setVisibility(View.GONE);
             imgMaskApproving.setVisibility(View.INVISIBLE);
             txtApproving.setVisibility(View.INVISIBLE);
@@ -570,6 +575,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                     handleImageCropped(data);
                 }
                 break;
+            case REQUEST_EDIT_PROFILE:
+                if (resultCode == RESULT_OK) {
+                    presenter.requestMyMenuInfo();
+                }
+                break;
             default:
                 break;
         }
@@ -603,5 +613,16 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             pickedImage = ImageUtils.getImageUrlWithAuthority(getContext(), pickedImage);
         }
         CropImageActivity.startActivityForResult(this, pickedImage);
+    }
+
+    private void startEditProfileScreen() {
+        int gender = ConfigManager.getInstance().getCurrentUser().getGender();
+        if (gender == UserItem.MALE) {
+            UpdateProfileMaleActivity.startActivityForResult(this,
+                    ProfileBaseActivity.MODE_UPDATE, REQUEST_EDIT_PROFILE);
+        } else {
+            UpdateProfileFemaleActivity.startActivityForResult(this,
+                    ProfileBaseActivity.MODE_UPDATE, REQUEST_EDIT_PROFILE);
+        }
     }
 }
