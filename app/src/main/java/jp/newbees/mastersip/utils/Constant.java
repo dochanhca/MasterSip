@@ -346,6 +346,7 @@ public final class Constant {
     public final class Application {
 
         public static final String LAST_STATUS_END_CALL = "LAST_STATUS_END_CALL";
+        public static final int START_MALE_JOB_ID = 19;
 
         private Application() {
             //Prevent init object

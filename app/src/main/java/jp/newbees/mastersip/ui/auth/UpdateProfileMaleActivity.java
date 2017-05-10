@@ -14,6 +14,7 @@ import jp.newbees.mastersip.ui.InputActivity;
 import jp.newbees.mastersip.ui.ProfileBaseActivity;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by vietbq on 12/6/16.
@@ -36,7 +37,7 @@ public class UpdateProfileMaleActivity extends ProfileBaseActivity implements Vi
 
         String[] maleJobs = getResources().getStringArray(R.array.male_job);
         for (int i = 0; i < maleJobs.length; i++) {
-            SelectionItem selectionItem = new SelectionItem(i + 1, maleJobs[i]);
+            SelectionItem selectionItem = new SelectionItem(i + Constant.Application.START_MALE_JOB_ID, maleJobs[i]);
             maleJobItems.add(selectionItem);
         }
     }
