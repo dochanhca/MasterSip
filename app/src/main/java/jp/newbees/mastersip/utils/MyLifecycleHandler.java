@@ -21,7 +21,7 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     public Handler mHandler = new Handler();
     private boolean mActive = false;
     private InactivityChecker mLastChecker;
-    private ActivityMonitorListener activityMonitorListener;
+    private ArrayList<ActivityMonitorListener> listeners;
 
     private MyLifecycleHandler() {
     }
@@ -31,6 +31,7 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     public static MyLifecycleHandler getInstance() {
         if (instance == null) {
             instance = new MyLifecycleHandler();
+            instance.listeners = new ArrayList<>();
         }
         return instance;
     }
@@ -89,11 +90,11 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
     }
 
     public void registerActivityMonitorListener(ActivityMonitorListener activityMonitorListener) {
-        MyLifecycleHandler.this.activityMonitorListener = activityMonitorListener;
+        listeners.add(activityMonitorListener);
     }
 
-    public void unregisterActivityMonitorListener() {
-        MyLifecycleHandler.this.activityMonitorListener = null;
+    public void unregisterActivityMonitorListener(ActivityMonitorListener activityMonitorListener) {
+        listeners.remove(activityMonitorListener);
     }
 
     class InactivityChecker implements Runnable {
@@ -109,9 +110,7 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
                 if (!isCanceled) {
                     if (getRunningActivities() == 0 && mActive) {
                         mActive = false;
-                        if (activityMonitorListener != null) {
-                            activityMonitorListener.onBackgroundMode();
-                        }
+                        notifyOnStateChange(true);
                     }
                 }
             }
@@ -124,13 +123,24 @@ public class MyLifecycleHandler implements Application.ActivityLifecycleCallback
         } else if (getRunningActivities() > 0) {
             if (!mActive) {
                 mActive = true;
-                if (activityMonitorListener != null) {
-                    activityMonitorListener.onForegroundMode();
-                }
+                notifyOnStateChange(false);
             }
             if (mLastChecker != null) {
                 mLastChecker.cancel();
                 mLastChecker = null;
+            }
+        }
+    }
+
+    private void notifyOnStateChange(boolean isBackground) {
+        if (listeners.isEmpty()) {
+            return;
+        }
+        for (ActivityMonitorListener listener : listeners) {
+            if (isBackground) {
+                listener.onBackgroundMode();
+            } else {
+                listener.onForegroundMode();
             }
         }
     }

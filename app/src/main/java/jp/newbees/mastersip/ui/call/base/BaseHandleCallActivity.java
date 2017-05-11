@@ -146,7 +146,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
-        presenter.unregisterActivityMonitorListener();
+        presenter.unregisterActivityMonitorListener(this);
         if (getIabHelper() != null) {
             topPresenter.disposeIabHelper();
         }

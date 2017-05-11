@@ -141,8 +141,8 @@ public abstract class BaseHandleCallPresenter extends BasePresenter{
         MyLifecycleHandler.getInstance().registerActivityMonitorListener(listener);
     }
 
-    public void unregisterActivityMonitorListener() {
-        MyLifecycleHandler.getInstance().unregisterActivityMonitorListener();
+    public void unregisterActivityMonitorListener(MyLifecycleHandler.ActivityMonitorListener listener) {
+        MyLifecycleHandler.getInstance().unregisterActivityMonitorListener(listener);
     }
 
     public void sendBackgroundState(String toExtension, String action) {

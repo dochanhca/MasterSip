@@ -468,12 +468,17 @@ public class ChatActivity extends CallActivity implements
         updateTopPaddingRecycle();
 
         presenter.loadChatHistory(userItem, 0);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         presenter.registerCallEvent();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         presenter.unregisterCallEvent();
     }
 
@@ -496,14 +501,12 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void onChatMessageEvent(NewChatMessageEvent newChatMessageEvent) {
         BaseChatItem chatItem = newChatMessageEvent.getBaseChatItem();
-        if (chatItem.getRoomType() == BaseChatItem.RoomType.ROOM_CHAT_CHAT) {
-            if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
-                    || chatItem.isOwner()) {
-                chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
-                recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-                if (isResume) {
-                    presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
-                }
+        if (presenter.isMessageOfCurrentUser(chatItem.getOwner(), userItem)
+                || chatItem.isOwner()) {
+            chatAdapter.addItemAndHeaderIfNeed(newChatMessageEvent.getBaseChatItem());
+            recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            if (isResume) {
+                presenter.sendingReadMessageToServer(newChatMessageEvent.getBaseChatItem());
             }
         }
     }

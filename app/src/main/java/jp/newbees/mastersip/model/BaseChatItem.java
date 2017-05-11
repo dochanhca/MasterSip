@@ -47,6 +47,7 @@ public class BaseChatItem implements Parcelable {
      * Default constructor
      */
     public BaseChatItem() {
+        roomType = RoomType.ROOM_CHAT_CHAT;
     }
 
     /**
