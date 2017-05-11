@@ -3,6 +3,8 @@ package jp.newbees.mastersip.ui.profile;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -34,6 +36,10 @@ public class SettingOnlineFragment extends BaseFragment implements
     private static final int REQUEST_ON_ONLINE_NOTIFY = 1;
     private static final int REQUEST_OFF_ONLINE_NOTIFY = 2;
 
+    @BindView(R.id.txt_action_bar_title)
+    TextView txtActionBarTitle;
+    @BindView(R.id.img_back)
+    ImageView imgBack;
     @BindView(R.id.profile_image)
     CircleImageView profileImage;
     @BindView(R.id.txt_description)
@@ -65,13 +71,11 @@ public class SettingOnlineFragment extends BaseFragment implements
     protected void init(View rootView, Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, rootView);
         if (getArguments().getBoolean(SHOW_FRAGMENT_ACTION_BAR)) {
-            setFragmentTitle(getString(R.string.online_notify_setting));
+            txtActionBarTitle.setText(getString(R.string.online_notify_setting));
         } else {
             hideFragmentActionBar();
             ((BaseActivity) getActivity()).changeHeaderText(getString(R.string.online_notify_setting));
         }
-
-        setOnBackPressed(this);
 
         currentUser = getArguments().getParcelable(USER_ITEM);
         loadAvatar();
@@ -145,18 +149,31 @@ public class SettingOnlineFragment extends BaseFragment implements
     }
 
     @Override
-    protected void onImageBackPressed() {
-        super.onImageBackPressed();
-        onBackPressed();
-    }
-
-    @Override
     public void onBackPressed() {
         if (notifyChangeSetting) {
             EventBus.getDefault().postSticky(new SettingOnlineChangedEvent(isFollowing,
                     currentUser.getUserId()));
         }
         getFragmentManager().popBackStackImmediate();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setOnBackPressed(this);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        setOnBackPressed(null);
+        imgBack.setOnClickListener(null);
     }
 
     private void showConfirmDialog(String content, int requestCode) {
