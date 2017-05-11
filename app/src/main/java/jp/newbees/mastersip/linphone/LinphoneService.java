@@ -40,7 +40,7 @@ import static android.telephony.TelephonyManager.EXTRA_STATE_RINGING;
  * Created by vietbq on 1/9/17.
  */
 
-public class LinphoneService extends Service implements LinphoneServicePresenter.IncomingCallListener {
+public class LinphoneService extends Service implements LinphoneServicePresenter.IncomingCallListener{
 
     private static final String TAG = "LinphoneService";
     public static final int START_FROM_PUSH_NOTIFICATION = 1;
@@ -126,6 +126,8 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         Logger.e(TAG, "Linphone Service onCreate");
         incomingCallPresenter = new LinphoneServicePresenter(getApplicationContext(), this, h264DownloadHelperListener);
         incomingCallPresenter.registerCallEvent();
+        incomingCallPresenter.registerActivityMonitorListener();
+        incomingCallPresenter.sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_FOREGROUND);
 
         LinphoneCoreFactory.instance().enableLogCollection(Constant.Application.DEBUG);
         LinphoneCoreFactory.instance().setDebugMode(Constant.Application.DEBUG, getApplication().getString(R.string.app_name));
@@ -163,6 +165,8 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         unregisterReceiver(receiverRingerModeChanged);
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
+        incomingCallPresenter.unregisterActivityMonitorListener();
+        incomingCallPresenter.sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_BACKGROUND);
         LinphoneHandler.getInstance().destroy();
         LinphoneService.destroyLinphoneService();
     }

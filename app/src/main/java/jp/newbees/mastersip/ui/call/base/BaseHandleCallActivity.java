@@ -146,7 +146,7 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     protected void onDestroy() {
         super.onDestroy();
         presenter.unregisterEvents();
-        presenter.unregisterActivityMonitorListener();
+        presenter.unregisterActivityMonitorListener(this);
         if (getIabHelper() != null) {
             topPresenter.disposeIabHelper();
         }
@@ -335,11 +335,13 @@ public abstract class BaseHandleCallActivity extends BaseActivity implements Top
     @Override
     public void onForegroundMode() {
         presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_FOREGROUND);
+        presenter.enableCamera(true);
     }
 
     @Override
     public void onBackgroundMode() {
         presenter.sendBackgroundState(getCompetitor().getSipItem().getExtension(), Constant.SOCKET.ACTION_ENTER_BACKGROUND);
+        presenter.enableCamera(false);
     }
 
     protected static Bundle getBundle(UserItem competitor, String callID) {

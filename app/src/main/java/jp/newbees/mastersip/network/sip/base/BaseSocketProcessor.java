@@ -66,7 +66,12 @@ public abstract class BaseSocketProcessor<T extends Object> implements Runnable 
         return result;
     }
 
-    protected final void postEvent(T result) {
-        EventBus.getDefault().post(result);
+    protected final void postEvent(final T result) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(result);
+            }
+        }, 200);
     }
 }

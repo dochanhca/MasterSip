@@ -2,6 +2,8 @@ package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
 
+import com.android.volley.Response;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -19,6 +21,7 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.CheckIncomingCallTask;
 import jp.newbees.mastersip.network.api.ReconnectCallTask;
+import jp.newbees.mastersip.network.api.SendBackgroundStateTask;
 import jp.newbees.mastersip.network.api.UpdateCallWhenOnlineTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -30,7 +33,7 @@ import jp.newbees.mastersip.utils.MyLifecycleHandler;
  * Created by thangit14 on 3/29/17.
  */
 
-public class LinphoneServicePresenter extends BasePresenter {
+public class LinphoneServicePresenter extends BasePresenter implements MyLifecycleHandler.ActivityMonitorListener {
     private final OpenH264DownloadHelper mCodecDownloader;
     private IncomingCallListener incomingCallListener;
     private OpenH264DownloadHelperListener h264DownloadHelperListener;
@@ -82,7 +85,7 @@ public class LinphoneServicePresenter extends BasePresenter {
                 reconnectRoom(ConfigManager.getInstance().getCallId());
             }
             checkDownloadOpenH264();
-        } else if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_FAILED){
+        } else if (event.getResponseCode() == RegisterVoIPEvent.REGISTER_FAILED) {
             stopLinphoneService();
         }
     }
@@ -96,7 +99,7 @@ public class LinphoneServicePresenter extends BasePresenter {
             Logger.e("LinphoneServicePresenter", "We will download OpenH264");
             mCodecDownloader.setOpenH264HelperListener(h264DownloadHelperListener);
             mCodecDownloader.downloadCodec();
-        }else {
+        } else {
             Logger.e("LinphoneServicePresenter", "No need download OpenH264");
         }
     }
@@ -170,6 +173,41 @@ public class LinphoneServicePresenter extends BasePresenter {
 
     public void unRegisterCallEvent() {
         EventBus.getDefault().unregister(this);
+    }
+
+    public void registerActivityMonitorListener() {
+        MyLifecycleHandler.getInstance().registerActivityMonitorListener(this);
+    }
+
+    public void unregisterActivityMonitorListener() {
+        MyLifecycleHandler.getInstance().unregisterActivityMonitorListener(this);
+    }
+
+    @Override
+    public void onForegroundMode() {
+        sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_FOREGROUND);
+    }
+
+    @Override
+    public void onBackgroundMode() {
+        sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_BACKGROUND);
+    }
+
+    /**
+     * @param status get in constant/api/CHANGE_TO_BACKGROUND or constant/api/CHANGE_TO_FOREGROUND
+     */
+    public void sendChangeBackgroundStateToSever(final int status) {
+        SendBackgroundStateTask task = new SendBackgroundStateTask(getContext(), status);
+        task.request(new Response.Listener() {
+            @Override
+            public void onResponse(Object response) {
+            }
+        }, new BaseTask.ErrorListener() {
+            @Override
+            public void onError(int errorCode, String errorMessage) {
+                Logger.e("LinphoneServicePresenter", errorCode + " " + errorMessage);
+            }
+        });
     }
 
     public interface IncomingCallListener {
