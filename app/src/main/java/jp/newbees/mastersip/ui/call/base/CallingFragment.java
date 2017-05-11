@@ -111,6 +111,7 @@ public abstract class CallingFragment extends BaseFragment {
     }
 
     protected void onCallPaused() {
+        getTxtCallStatus().setTextColor(getResources().getColor(R.color.white));
         getTxtCallStatus().setText(getString(R.string.low_signal));
         getTxtCallStatus().setVisibility(View.VISIBLE);
     }
@@ -187,10 +188,9 @@ public abstract class CallingFragment extends BaseFragment {
         if (getCallActivity().getCallType() != Constant.API.VOICE_CALL) {
             if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_BACKGROUND)) {
                 getTxtCallStatus().setText(getString(R.string.competitor_off_camera));
+                getTxtCallStatus().setTextColor(getResources().getColor(R.color.red));
                 getTxtCallStatus().setVisibility(View.VISIBLE);
-                enableCamera(false);
             } else if (action.equalsIgnoreCase(Constant.SOCKET.ACTION_ENTER_FOREGROUND)) {
-                enableCamera(true);
                 getTxtCallStatus().setVisibility(View.INVISIBLE);
             }
         }
