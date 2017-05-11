@@ -66,6 +66,10 @@ public final class Constant {
         public static final String CALL_LOGS = "call_logs";
         public static final String ONLINE_LIST = "online_list";
         public static final String AUTO_HANGUP = "auto_hangup";
+        public static final String ADMIN = "admin";
+        public static final String ALL_USER= "all_user";
+        public static final String USER_FOLLOW = "user_follow";
+
 
         private JSON() {
             //Prevent init constructor
@@ -285,6 +289,7 @@ public final class Constant {
         public static final String UNSUBSCRIBE_ONLINE_NOTIFY = "online/unsubscribe";
         public static final String ONLINE_LIST = "online/list";
         public static final String CHANGE_BACKGROUND_STATE = "background";
+        public static final String PUSH_NOTIFICATION = "push_notification/register";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

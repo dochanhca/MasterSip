@@ -18,7 +18,6 @@ public abstract class BasePresenter {
 
     protected Context context;
     protected String tag;
-    private BaseView view;
 
     public BasePresenter(Context context) {
         this.context = context;

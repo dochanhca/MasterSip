@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_gray_bg"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_action_bar" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/action_bar_h">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/common_margin">
+
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:lineSpacingMultiplier="1.4"
+                android:text="@string/instruction_setting_push"
+                android:textColor="@color/text_color_gray"
+                android:textSize="@dimen/_15sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_checkbox_h"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/common_margin"
+                android:background="@drawable/bg_corner_layout">
+
+                <jp.newbees.mastersip.customviews.HiraginoTextView
+                    style="@style/style_title_text_view_small"
+                    android:text="@string/push_from_management" />
+
+                <CheckBox
+                    android:id="@+id/cb_push_from_admin"
+                    style="@style/style_img_right_text_field_common"
+                    android:button="@drawable/cb_blue_selector" />
+            </RelativeLayout>
+
+            <jp.newbees.mastersip.customviews.HiraginoTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/common_margin"
+                android:text="@string/setting_receive_push"
+                android:textColor="@color/text_color_gray"
+                android:textSize="@dimen/text_size_15" />
+
+            <!--<RadioGroup-->
+                <!--android:id="@+id/rdg_setting_push"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+
+                <CheckBox
+                    android:id="@+id/cb_all_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/common_checkbox_h"
+                    android:background="@drawable/bg_corner_layout"
+                    android:button="@null"
+                    android:drawableRight="@drawable/cb_blue_selector"
+                    android:paddingLeft="@dimen/common_margin"
+                    android:paddingRight="@dimen/common_margin"
+                    android:text="@string/all_messages"
+                    android:textColor="@color/text_color_gray"
+                    android:textSize="@dimen/text_size_15" />
+
+                <CheckBox
+                    android:id="@+id/cb_following_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/common_checkbox_h"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:background="@drawable/bg_corner_layout"
+                    android:button="@null"
+                    android:drawableRight="@drawable/cb_blue_selector"
+                    android:paddingLeft="@dimen/common_margin"
+                    android:paddingRight="@dimen/common_margin"
+                    android:text="@string/only_from_following_user"
+                    android:textColor="@color/text_color_gray"
+                    android:textSize="@dimen/text_size_15" />
+            <!--</RadioGroup>-->
+
+            <jp.newbees.mastersip.customviews.HiraginoButton
+                android:id="@+id/btn_setting_online"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_15sp"
+                android:layout_marginTop="@dimen/_15dp"
+                android:background="@drawable/bg_button_primary_big"
+                android:gravity="center"
+                android:text="@string/save_setting"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
