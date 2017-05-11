@@ -65,19 +65,6 @@
                         android:minHeight="80dp"
                         android:minWidth="80dp" />
 
-                    <TextView
-                        android:id="@+id/txt_approving"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/img_avatar"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="5dp"
-                        android:gravity="center"
-                        android:text="@string/approving"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_8sp"
-                        android:visibility="invisible" />
-
                     <RelativeLayout
                         android:id="@+id/group_upload_avatar"
                         android:layout_width="match_parent"
@@ -114,6 +101,18 @@
                         android:background="@drawable/bg_mask_approving_corner"
                         android:visibility="invisible" />
 
+                    <TextView
+                        android:id="@+id/txt_approving"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/img_avatar"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:gravity="center"
+                        android:text="@string/approving"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sp"
+                        android:visibility="invisible" />
                 </RelativeLayout>
 
                 <RelativeLayout
