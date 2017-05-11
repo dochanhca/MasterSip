@@ -47,12 +47,17 @@
 
             <jp.newbees.mastersip.customviews.HiraginoTextView
                 style="@style/style_title_text_view_small"
-                android:text="@string/notify_settings" />
+                android:text="@string/notify_settings"
+                android:id="@+id/hiraginoTextView3" />
 
             <CheckBox
                 android:id="@+id/cb_online_setting"
                 style="@style/style_img_right_text_field_common"
-                android:button="@drawable/cb_blue_selector" />
+                android:button="@drawable/cb_blue_selector"
+                android:layout_alignBaseline="@+id/hiraginoTextView3"
+                android:layout_alignBottom="@+id/hiraginoTextView3"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp" />
         </RelativeLayout>
 
         <jp.newbees.mastersip.customviews.HiraginoButton

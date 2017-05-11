@@ -495,4 +495,11 @@
     <string name="domain">Server</string>
     <string name="edit_profile">プロフィール編集</string>
     <string name="save_changes">変更内容を保存する</string>
+    <string name="instruction_setting_push">プッシュ通知を受け取る項目の設定ができます。 以下でチェックした項目のみ、通知が受け取れる ようになります。</string>
+    <string name="push_from_management">運営からのお知らせ</string>
+    <string name="setting_receive_push">メッセージ受信時</string>
+    <string name="all_messages">全てのメッセージ</string>
+    <string name="only_from_following_user">フォローしているお相手からのみ</string>
+    <string name="notification_settings">通知設定</string>
+    <string name="notification_setting_saved">通知設定が保存されました。</string>
 </resources>

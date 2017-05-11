@@ -14,6 +14,7 @@ import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.HistoryCallFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
+import jp.newbees.mastersip.ui.mymenu.SettingPushFragment;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
@@ -102,6 +103,11 @@ public class MyMenuContainerFragment extends BaseFragment {
 
     public static void showHistoryCallFragment(FragmentActivity activity) {
         BaseFragment fragment = HistoryCallFragment.newInstance();
+        performShowFragment(activity, fragment);
+    }
+
+    public static void showSettingPushFragment(FragmentActivity activity) {
+        BaseFragment fragment = SettingPushFragment.newInstance();
         performShowFragment(activity, fragment);
     }
 

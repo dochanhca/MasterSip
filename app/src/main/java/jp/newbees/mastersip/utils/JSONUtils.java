@@ -33,6 +33,7 @@ import jp.newbees.mastersip.model.RelationshipItem;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
+import jp.newbees.mastersip.model.SettingPushItem;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.TextChatItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -1107,5 +1108,13 @@ public class JSONUtils {
         jMessage.put(Constant.JSON.RESPONSE, new JSONObject());
 
         return jMessage.toString();
+    }
+
+    public static SettingPushItem parsePushNotifySetting(JSONObject jData) throws JSONException {
+        SettingPushItem settingPushItem = new SettingPushItem();
+        settingPushItem.setAdmin(jData.getInt(Constant.JSON.ADMIN));
+        settingPushItem.setAllUser(jData.getInt(Constant.JSON.ALL_USER));
+        settingPushItem.setUserFollow(jData.getInt(Constant.JSON.USER_FOLLOW));
+        return settingPushItem;
     }
 }
