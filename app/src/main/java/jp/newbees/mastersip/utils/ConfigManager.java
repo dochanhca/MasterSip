@@ -182,6 +182,12 @@ final public class ConfigManager {
         editor.commit();
     }
 
+    public final void setCoin(int coin) {
+        UserItem userItem = getCurrentUser();
+        userItem.setCoin(coin);
+        saveUser(userItem);
+    }
+
     public int getImageCalleeDefault() {
         if (imageDrawableCalleeId == -1) {
 

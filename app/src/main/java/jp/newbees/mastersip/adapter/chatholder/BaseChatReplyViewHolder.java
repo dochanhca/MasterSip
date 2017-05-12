@@ -27,7 +27,9 @@ public abstract class BaseChatReplyViewHolder<T extends BaseChatItem> extends Ba
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onFriendAvatarClick();
+                if (onItemClickListener != null) {
+                    onItemClickListener.onFriendAvatarClick();
+                }
             }
         });
     }

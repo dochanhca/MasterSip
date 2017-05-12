@@ -1,14 +1,10 @@
 package jp.newbees.mastersip.presenter;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import jp.newbees.mastersip.network.api.BaseTask;
@@ -30,14 +26,14 @@ import static jp.newbees.mastersip.utils.Constant.InAppBilling.base64EncodedPubl
  * Created by vietbq on 12/21/16.
  */
 
-public class TopPresenter extends BasePresenter {
+public class InAppPurchasePresenter extends BasePresenter {
 
     private static final String IN_APP_BILLING_TAG = "In app billing";
 
     private IabHelper iabHelper;
     private volatile int numberOfItemNeedConsume = 0;
     private boolean needPurchaseWithServer = false;
-    private TopPresenterListener listener;
+    private InAppPurchaseListener listener;
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -134,9 +130,7 @@ public class TopPresenter extends BasePresenter {
         }
     };
 
-
-
-    public interface TopPresenterListener {
+    public interface InAppPurchaseListener {
         void onInAppBillingSuccess(String sku, String token);
 
         void onPurchaseError(int errorCode, String errorMessage, String sku, String token);
@@ -146,7 +140,7 @@ public class TopPresenter extends BasePresenter {
         void onSendPurchaseResultToServerError(int errorCode, String errorMessage);
     }
 
-    public TopPresenter(BaseActivity context, TopPresenterListener listener) {
+    public InAppPurchasePresenter(BaseActivity context, InAppPurchaseListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -154,20 +148,6 @@ public class TopPresenter extends BasePresenter {
 
     public IabHelper getIabHelper() {
         return iabHelper;
-    }
-
-    public final void requestPermissions() {
-        for (Permission permission : Permission.values()) {
-            if (ContextCompat.checkSelfPermission(context, permission.getPermission()) != PackageManager.PERMISSION_GRANTED) {
-                requestPermission(permission.getPermission(), permission.getResult());
-                return;
-            }
-        }
-    }
-
-    private void requestPermission(String permission, int result) {
-        Logger.e("TopPresenter", "[Permission] Asking for " + permission);
-        ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, result);
     }
 
     @Override
@@ -212,13 +192,13 @@ public class TopPresenter extends BasePresenter {
                 if (!result.isSuccess()) {
                     Logger.e(IN_APP_BILLING_TAG, "Problem setting up in-app billing: ");
                     Toast.makeText(context, "Problem setting up in-app billing: " + result, Toast.LENGTH_LONG).show();
-                    TopPresenter.this.getActivity().disMissLoading();
+                    InAppPurchasePresenter.this.getActivity().disMissLoading();
                     iabHelper = null;
                     return;
                 }
 
                 if (iabHelper == null) {
-                    TopPresenter.this.getActivity().disMissLoading();
+                    InAppPurchasePresenter.this.getActivity().disMissLoading();
                     return;
                 }
 
@@ -276,30 +256,6 @@ public class TopPresenter extends BasePresenter {
 
         public int getValue() {
             return value;
-        }
-    }
-
-    public enum Permission {
-        CAMERA(201, Manifest.permission.CAMERA),
-        RECORD_AUDIO(202, Manifest.permission.RECORD_AUDIO),
-        WRITE_EXTERNAL_STORAGE(203, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-        GET_ACCOUNTS(204, Manifest.permission.GET_ACCOUNTS),
-        READ_PHONE_STATE(205, Manifest.permission.READ_PHONE_STATE);
-
-        private final int result;
-        private final String permissionName;
-
-        Permission(int result, String permissionName) {
-            this.result = result;
-            this.permissionName = permissionName;
-        }
-
-        public int getResult() {
-            return result;
-        }
-
-        public String getPermission() {
-            return permissionName;
         }
     }
 }

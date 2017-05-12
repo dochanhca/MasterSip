@@ -38,7 +38,7 @@ public abstract class WrapperWithBottomNavigationActivity extends CallActivity i
     @Override
     protected void initViews(Bundle savedInstanceState) {
         navigationLayoutGroup.setOnChildItemClickListener(onChildItemClickListener);
-        setUnreadMessageValue(ConfigManager.getInstance().getUnreadMessage());
+        setBudgieMessage(ConfigManager.getInstance().getUnreadMessage());
         navigationLayoutGroup.setSelectedItem(ConfigManager.getInstance().getCurrentTabInRootNavigater());
     }
 

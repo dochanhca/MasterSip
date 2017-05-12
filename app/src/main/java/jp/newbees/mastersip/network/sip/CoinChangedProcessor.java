@@ -9,6 +9,7 @@ import java.util.Map;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.base.BaseSocketProcessor;
+import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -25,12 +26,8 @@ public class CoinChangedProcessor extends BaseSocketProcessor {
         int coin = ((HashMap<String, Integer>) data).get(Constant.JSON.COINT);
         int total = ((HashMap<String, Integer>) data).get(Constant.JSON.TOTAL);
 
-        /**
-         * Only Coin changed event after call ended contain total field
-         */
-        if (total >= 0) {
-            this.postEvent(new CoinChangedEvent(coin, total));
-        }
+        ConfigManager.getInstance().setCoin(coin);
+        this.postEvent(new CoinChangedEvent(coin));
     }
 
     @Override

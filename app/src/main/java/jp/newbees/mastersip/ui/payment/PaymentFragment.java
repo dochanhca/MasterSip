@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.top.TopActivity;
@@ -43,7 +43,7 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
     @BindView(R.id.img_back)
     ImageView imgBack;
 
-    private TopPresenter topPresenter;
+    private InAppPurchasePresenter inAppPurchasePresenter;
     private boolean isFromActivity;
 
     public static PaymentFragment newInstance(boolean isFromActivity) {
@@ -68,11 +68,11 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
         loadWebView(webview);
 
         if (isFromActivity) {
-            topPresenter = ((PaymentActivity) getActivity()).getPresenter();
+            inAppPurchasePresenter = ((PaymentActivity) getActivity()).getPresenter();
         } else {
-            topPresenter = ((TopActivity) getActivity()).getPresenter();
+            inAppPurchasePresenter = ((TopActivity) getActivity()).getPresenter();
         }
-        topPresenter.setupForPurchase();
+        inAppPurchasePresenter.setupForPurchase();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class PaymentFragment extends BaseFragment implements BaseActivity.OnBack
 
         @JavascriptInterface
         public void purchaseItem(String id) {
-            topPresenter.performPurchaseItem(id);
+            inAppPurchasePresenter.performPurchaseItem(id);
         }
     }
 

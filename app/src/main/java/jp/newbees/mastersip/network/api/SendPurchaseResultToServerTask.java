@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-import jp.newbees.mastersip.presenter.TopPresenter;
+import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.JSONUtils;
@@ -21,11 +21,11 @@ import jp.newbees.mastersip.utils.JSONUtils;
  */
 public class SendPurchaseResultToServerTask extends BaseTask<Integer>{
 
-    private final TopPresenter.PurchaseStatus purchaseStatus;
+    private final InAppPurchasePresenter.PurchaseStatus purchaseStatus;
     private final String skuID;
     private final String transection;
 
-    public SendPurchaseResultToServerTask(Context context, String skuID, String transection, TopPresenter.PurchaseStatus purchaseStatus) {
+    public SendPurchaseResultToServerTask(Context context, String skuID, String transection, InAppPurchasePresenter.PurchaseStatus purchaseStatus) {
         super(context);
         this.purchaseStatus = purchaseStatus;
         this.skuID = skuID;

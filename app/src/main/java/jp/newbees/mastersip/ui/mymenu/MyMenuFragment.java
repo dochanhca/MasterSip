@@ -24,6 +24,7 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
+import jp.newbees.mastersip.event.call.CoinChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -244,8 +246,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         EventBus.getDefault().register(this);
         isFragmentRunning = true;
         if (needRefreshData) {
@@ -255,8 +257,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
@@ -478,6 +480,11 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     public void onReloadProfileEvent(ReLoadProfileEvent event) {
         presenter.requestMyMenuInfo();
         EventBus.getDefault().removeStickyEvent(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCoinChangedEvent(CoinChangedEvent event) {
+        txtPoint.setText(event.getCoin() + "");
     }
 
     private void handleUploadPhotoForGallery() {

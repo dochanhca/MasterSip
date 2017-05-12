@@ -166,7 +166,6 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
         unregisterReceiver(callStateChangeReceiver);
         incomingCallPresenter.unRegisterCallEvent();
         incomingCallPresenter.unregisterActivityMonitorListener();
-        incomingCallPresenter.sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_BACKGROUND);
         LinphoneHandler.getInstance().destroy();
         LinphoneService.destroyLinphoneService();
     }
@@ -174,6 +173,7 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         this.stopSelf();
+        incomingCallPresenter.sendChangeBackgroundStateToSever(Constant.API.CHANGE_TO_BACKGROUND);
         super.onTaskRemoved(rootIntent);
     }
 
