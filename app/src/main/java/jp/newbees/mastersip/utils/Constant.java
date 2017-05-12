@@ -300,6 +300,7 @@ public final class Constant {
         public static final String MASTER_DATA = "master_data/get";
 
         public static final String PUSH_NOTIFICATION = "push_notification/register";
+        public static final String FOOTPRINT = "footprint";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

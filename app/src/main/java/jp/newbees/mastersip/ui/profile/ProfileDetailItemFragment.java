@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,6 +61,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     public static final String USER_ITEM = "USER_ITEM";
     private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final String SELECTED = "SELECTED";
+    private static final long TIME_DELAY = 500;
 
     @BindView(R.id.txt_online_time)
     HiraginoTextView txtOnlineTime;
@@ -212,15 +214,15 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        profileDetailItemPresenter.unRegisterEvent();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         profileDetailItemPresenter.registerEvent();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        profileDetailItemPresenter.unRegisterEvent();
     }
 
     @Override
@@ -264,9 +266,17 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @Override
-    public void didGetProfileDetail(UserItem userItem) {
+    public void didGetProfileDetail(final UserItem userItem) {
         this.userItem = userItem;
         fillDataToView();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getUserVisibleHint()) {
+                    profileDetailItemPresenter.sendFootPrintToServer(userItem.getUserId());
+                }
+            }
+        }, TIME_DELAY);
     }
 
     @Override

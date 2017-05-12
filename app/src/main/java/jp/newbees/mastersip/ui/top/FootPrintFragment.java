@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,7 +94,7 @@ public class FootPrintFragment extends BaseCallFragment implements
     }
 
     @Override
-    public void didLoadListFootprint(ArrayList<FootprintItem> data, int totalFootprint) {
+    public void didLoadListFootprint(List<FootprintItem> data, int totalFootprint) {
         disMissLoading();
         swipeContainer.setRefreshing(false);
         adapterFootprint.clearData();

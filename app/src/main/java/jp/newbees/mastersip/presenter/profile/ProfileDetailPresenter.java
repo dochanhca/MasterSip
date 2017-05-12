@@ -8,6 +8,7 @@ import java.util.Map;
 import jp.newbees.mastersip.model.FilterItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FilterUserTask;
+import jp.newbees.mastersip.network.api.SendFootPrintTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.utils.ConfigManager;
 
@@ -34,6 +35,11 @@ public class ProfileDetailPresenter extends BasePresenter {
         filterItem.setFilterType(typeSearch);
         FilterUserTask filterUserTask = new FilterUserTask(context, filterItem, nextPage, getCurrentUserItem());
         requestToServer(filterUserTask);
+    }
+
+    public void sendFootPrintToServer(String userId) {
+        SendFootPrintTask sendFootPrintTask = new SendFootPrintTask(context, userId);
+        requestToServer(sendFootPrintTask);
     }
 
     @Override

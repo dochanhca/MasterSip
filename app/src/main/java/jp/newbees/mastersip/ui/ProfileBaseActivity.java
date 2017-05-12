@@ -233,7 +233,8 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
                 SelectImageDialog.showDialogSelectAvatar(this, false);
                 break;
             case R.id.img_avatar:
-                if (userItem.getAvatarItem().getImageStatus() == ImageItem.IMAGE_APPROVED) {
+                if ("".equalsIgnoreCase(userItem.getAvatarItem().getOriginUrl()) ||
+                        userItem.getAvatarItem().getImageStatus() == ImageItem.IMAGE_APPROVED) {
                     SelectImageDialog.showDialogSelectAvatar(this, true);
                 }
                 break;

@@ -3,6 +3,7 @@ package jp.newbees.mastersip.presenter.top;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jp.newbees.mastersip.model.FootprintItem;
@@ -20,7 +21,8 @@ public class FootprintPresenter extends BasePresenter {
     private final FootprintPresenterView view;
 
     public interface FootprintPresenterView {
-        void didLoadListFootprint(ArrayList<FootprintItem> data, int totalFootprint);
+        void didLoadListFootprint(List<FootprintItem> data, int totalFootprint);
+
         void didLoadDataError(int errorCode, String errorMessage);
     }
 
@@ -45,12 +47,12 @@ public class FootprintPresenter extends BasePresenter {
 
         if (task instanceof ListFootprintViewedByOther) {
             data = ((ListFootprintViewedByOther) task).getDataResponse();
-        }else {
+        } else {
             data = ((ListFootprintViewedByMe) task).getDataResponse();
         }
-            ArrayList<FootprintItem> listFootprint = (ArrayList<FootprintItem>) data.get(Constant.JSON.LIST);
-            int totalFootprint = (int) data.get(Constant.JSON.TOTAL);
-            this.view.didLoadListFootprint(listFootprint, totalFootprint);
+        List<FootprintItem> listFootprint = (ArrayList<FootprintItem>) data.get(Constant.JSON.LIST);
+        int totalFootprint = (int) data.get(Constant.JSON.TOTAL);
+        this.view.didLoadListFootprint(listFootprint, totalFootprint);
     }
 
     @Override
