@@ -1128,4 +1128,11 @@ public class JSONUtils {
         settingPushItem.setUserFollow(jData.getInt(Constant.JSON.USER_FOLLOW));
         return settingPushItem;
     }
+
+    public static String genMessageNotifyInCall(String myExtension, String roomID) throws JSONException{
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constant.JSON.MY_EXTENSION, myExtension);
+        jsonObject.put(Constant.JSON.ROOM, roomID);
+        return jsonObject.toString();
+    }
 }

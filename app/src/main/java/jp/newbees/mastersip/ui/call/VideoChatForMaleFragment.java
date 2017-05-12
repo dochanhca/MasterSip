@@ -275,7 +275,13 @@ public class VideoChatForMaleFragment extends CallingFragment implements SendCha
 
     @Override
     protected void onCallingBreakTime(Message msg) {
+        super.onCallingBreakTime(msg);
         txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+    }
+
+    @Override
+    protected UserItem getCompetitor() {
+        return competitor;
     }
 
     @Override

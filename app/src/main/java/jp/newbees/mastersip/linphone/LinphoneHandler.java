@@ -623,6 +623,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             LinphoneAddress lAddress = linphoneCore.interpretUrl(addressSip);
             LinphoneChatRoom linphoneChatRoom = linphoneCore.getChatRoom(lAddress);
             linphoneChatRoom.sendMessage(raw);
+            Logger.e(TAG, raw);
         } catch (LinphoneCoreException e) {
             e.printStackTrace();
         }

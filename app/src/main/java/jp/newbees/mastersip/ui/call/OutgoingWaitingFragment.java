@@ -202,6 +202,7 @@ public class OutgoingWaitingFragment extends WaitingFragment implements View.OnC
 
     @Override
     protected void onCallingBreakTime(Message msg) {
+        super.onCallingBreakTime(msg);
         txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 

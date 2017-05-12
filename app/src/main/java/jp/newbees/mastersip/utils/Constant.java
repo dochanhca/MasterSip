@@ -73,6 +73,8 @@ public final class Constant {
         public static final String ADMIN = "admin";
         public static final String ALL_USER= "all_user";
         public static final String USER_FOLLOW = "user_follow";
+        public static final String MY_EXTENSION = "my_extension";
+        public static final String ROOM = "room";
 
 
         private JSON() {
@@ -361,9 +363,6 @@ public final class Constant {
 
     public final class Application {
 
-        public static final String LAST_STATUS_END_CALL = "LAST_STATUS_END_CALL";
-        public static final int START_MALE_JOB_ID = 19;
-
         private Application() {
             //Prevent init object
         }
@@ -393,6 +392,11 @@ public final class Constant {
         public static final String CREDIT_CARD = "CREDITCARD";
         public static final String BIT_CASH = "BITCASH";
         public static final String PURCHASE = "Purchase";
+        public static final String LAST_STATUS_END_CALL = "LAST_STATUS_END_CALL";
+        public static final int START_MALE_JOB_ID = 19;
+        public static final String ROOM_ID = "ROOM_ID";
+        public static final String SERVER_HANDLE_CALLING_EXTENSION = "113";
+
 
         public static final int MIN_COIN_FOR_CALL = 10;
     }

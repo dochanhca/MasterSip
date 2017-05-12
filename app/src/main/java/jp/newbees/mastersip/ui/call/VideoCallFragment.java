@@ -292,7 +292,13 @@ public class VideoCallFragment extends CallingFragment implements View.OnTouchLi
 
     @Override
     protected void onCallingBreakTime(Message msg) {
+        super.onCallingBreakTime(msg);
         txtTime.setText(DateTimeUtils.getTimerCallString(msg.what));
+    }
+
+    @Override
+    protected UserItem getCompetitor() {
+        return competitor;
     }
 
     @Override

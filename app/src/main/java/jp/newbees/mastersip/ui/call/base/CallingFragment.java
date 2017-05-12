@@ -7,14 +7,17 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.linphone.core.LinphoneCoreException;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.linphone.LinphoneHandler;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.thread.MyCountingTimerThread;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
+import jp.newbees.mastersip.utils.JSONUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -100,7 +103,7 @@ public abstract class CallingFragment extends BaseFragment {
         getTxtPoint().setText(point.toString());
     }
 
-    protected abstract void onCallingBreakTime(Message msg);
+    protected abstract UserItem getCompetitor();
 
     protected abstract TextView getTxtPoint();
 
@@ -108,6 +111,19 @@ public abstract class CallingFragment extends BaseFragment {
 
     protected void onCallResume() {
         getTxtCallStatus().setVisibility(View.INVISIBLE);
+    }
+
+    protected void onCallingBreakTime(Message msg) {
+        ConfigManager configManager = ConfigManager.getInstance();
+        String roomID = configManager.getCallId();
+        String myExtension = configManager.getCurrentUser().getSipItem().getExtension();
+        try {
+            String raw = JSONUtils.genMessageNotifyInCall(myExtension, roomID);
+            LinphoneHandler.getInstance().sendPacket(raw,
+                    Constant.Application.SERVER_HANDLE_CALLING_EXTENSION);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void onCallPaused() {

@@ -47,6 +47,7 @@ public abstract class WaitingFragment extends CallingFragment {
         return args;
     }
 
+    @Override
     protected UserItem getCompetitor() {
         return competitor;
     }

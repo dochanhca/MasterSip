@@ -129,6 +129,7 @@ public class IncomingWaitingFragment extends WaitingFragment {
 
     @Override
     protected void onCallingBreakTime(Message msg) {
+        super.onCallingBreakTime(msg);
         txtTimer.setText(DateTimeUtils.getTimerCallString(msg.what));
     }
 
