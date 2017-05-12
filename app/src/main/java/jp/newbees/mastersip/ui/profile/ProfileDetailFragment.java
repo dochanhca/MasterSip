@@ -59,13 +59,15 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
 
         @Override
         public void onPageSelected(int position) {
+            UserItem currentUser = userItemList.get(position);
             currentIndex = position;
             updatePagerIndicator();
-            setFragmentTitle(userItemList.get(position).getUsername());
-            ProfileDetailItemFragment fragment =  adapterViewPagerProfileDetail.getFragmentByIndex(position);
-            if (null!=fragment) {
+            setFragmentTitle(currentUser.getUsername());
+            ProfileDetailItemFragment fragment = adapterViewPagerProfileDetail.getFragmentByIndex(position);
+            if (null != fragment) {
                 fragment.onPageSelected();
             }
+            profileDetailPresenter.sendFootPrintToServer(currentUser.getUserId());
         }
 
         @Override

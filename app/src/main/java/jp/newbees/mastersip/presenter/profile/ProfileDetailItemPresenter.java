@@ -12,6 +12,7 @@ import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
 import jp.newbees.mastersip.network.api.GetProfileDetailTask;
 import jp.newbees.mastersip.network.api.UnFollowUserTask;
+import jp.newbees.mastersip.network.api.SendFootPrintTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.utils.Logger;
@@ -150,5 +151,10 @@ public class ProfileDetailItemPresenter extends BasePresenter {
     public void unFollowUser(String destUserId) {
         UnFollowUserTask unFollowUserTask = new UnFollowUserTask(context, destUserId);
         requestToServer(unFollowUserTask);
+    }
+
+    public void sendFootPrintToServer(String userId) {
+        SendFootPrintTask sendFootPrintTask = new SendFootPrintTask(context, userId);
+        requestToServer(sendFootPrintTask);
     }
 }

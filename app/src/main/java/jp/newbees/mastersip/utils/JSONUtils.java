@@ -916,7 +916,7 @@ public class JSONUtils {
         JSONArray jListGroupDate = jData.getJSONArray(Constant.JSON.LIST);
         int total = jData.getInt(Constant.JSON.TOTAL);
 
-        ArrayList<FootprintItem> listFootprint = new ArrayList<>();
+        List<FootprintItem> listFootprint = new ArrayList<>();
 
         for (int j = 0, m = jListGroupDate.length(); j < m; j++) {
             JSONObject jGroup = jListGroupDate.getJSONObject(j);

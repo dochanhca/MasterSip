@@ -293,6 +293,7 @@ public final class Constant {
         public static final String ONLINE_LIST = "online/list";
         public static final String CHANGE_BACKGROUND_STATE = "background";
         public static final String PUSH_NOTIFICATION = "push_notification/register";
+        public static final String FOOTPRINT = "footprint";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
