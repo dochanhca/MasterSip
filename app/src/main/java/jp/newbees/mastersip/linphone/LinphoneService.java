@@ -24,7 +24,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.call.LinphoneServicePresenter;
-import jp.newbees.mastersip.ui.StartActivity;
+import jp.newbees.mastersip.ui.SplashActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoChatActivity;
 import jp.newbees.mastersip.ui.call.IncomingVideoVideoActivity;
 import jp.newbees.mastersip.ui.call.IncomingVoiceActivity;
@@ -73,7 +73,7 @@ public class LinphoneService extends Service implements LinphoneServicePresenter
     };
 
     public void restartApplication() {
-        Intent mStartActivity = new Intent(this, StartActivity.class);
+        Intent mStartActivity = new Intent(this, SplashActivity.class);
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, mPendingIntent);

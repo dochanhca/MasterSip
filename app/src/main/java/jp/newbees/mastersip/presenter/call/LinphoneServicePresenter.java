@@ -1,6 +1,7 @@
 package jp.newbees.mastersip.presenter.call;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.android.volley.Response;
 
@@ -95,7 +96,7 @@ public class LinphoneServicePresenter extends BasePresenter implements MyLifecyc
                 && !Version.getCpuAbis().contains("x86")
                 && !mCodecDownloader.isCodecFound()
                 && LinphoneHandler.getInstance().enableDownloadOpenH264()
-                ) {
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             Logger.e("LinphoneServicePresenter", "We will download OpenH264");
             mCodecDownloader.setOpenH264HelperListener(h264DownloadHelperListener);
             mCodecDownloader.downloadCodec();

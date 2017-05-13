@@ -18,7 +18,6 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class CoinChangedProcessor extends BaseSocketProcessor {
     /**
-     *
      * @param data
      */
     @Override
@@ -27,7 +26,7 @@ public class CoinChangedProcessor extends BaseSocketProcessor {
         int total = ((HashMap<String, Integer>) data).get(Constant.JSON.TOTAL);
 
         ConfigManager.getInstance().setCoin(coin);
-        this.postEvent(new CoinChangedEvent(coin));
+        this.postEvent(new CoinChangedEvent(coin, total));
     }
 
     @Override

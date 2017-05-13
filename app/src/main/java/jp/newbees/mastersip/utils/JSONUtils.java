@@ -523,6 +523,7 @@ public class JSONUtils {
         }
         userItem.setSettings(parseSettings(jMyInfo.getJSONObject(Constant.JSON.SETTING)));
         userItem.setMemo(jMyInfo.getString(Constant.JSON.SLOGAN));
+        userItem.setDateOfBirth(jMyInfo.getString(Constant.JSON.BIRTHDAY));
 
         JSONObject jProvince = jMyInfo.getJSONObject(Constant.JSON.PROVINCE);
         SelectionItem locationItem = new SelectionItem();

@@ -113,7 +113,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
     private Uri pickedImage;
     private SelectionItem provinceItem;
     private boolean avatarDeleted;
-
+    private boolean avatarChanged = false;
 
     private SlideDateTimeListener onDateSelected = new SlideDateTimeListener() {
         @Override
@@ -278,6 +278,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
                 break;
             case SelectImageDialog.CROP_IMAGE:
                 if (resultCode == RESULT_OK) {
+                    avatarChanged = true;
                     handleImageCropped(data);
                 }
                 break;
@@ -414,7 +415,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
 
         if (avatarDeleted && mode == MODE_UPDATE) {
             updateRegisterProfilePresenter.deleteAvatar();
-        } else if (imgAvatar.getDrawable() != null && imgMaskApproving.getVisibility() != View.VISIBLE) {
+        } else if (avatarChanged && imgAvatar.getDrawable() != null && imgMaskApproving.getVisibility() != View.VISIBLE) {
             showLoading();
             Bitmap avatar = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
             InputStream inputStream = ImageUtils.convertToInputStream(avatar);

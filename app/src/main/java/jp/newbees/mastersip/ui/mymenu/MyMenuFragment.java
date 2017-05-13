@@ -279,6 +279,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.img_edit_profile:
                 startEditProfileScreen();
                 break;
+            case R.id.btn_change_avatar:
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
@@ -311,14 +312,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.btn_logout:
                 handleLogout();
                 break;
+            case R.id.txt_notify_setting:
+                MyMenuContainerFragment.showSettingPushFragment(getActivity());
+                break;
             case R.id.layout_my_notify:
-            case R.id.btn_change_avatar:
             case R.id.layout_guide:
             case R.id.layout_contact:
             case R.id.layout_common_guide:
             case R.id.txt_block_list:
-            case R.id.txt_notify_setting:
-                MyMenuContainerFragment.showSettingPushFragment(getActivity());
             default:
                 break;
         }
