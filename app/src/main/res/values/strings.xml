@@ -502,4 +502,6 @@
     <string name="only_from_following_user">フォローしているお相手からのみ</string>
     <string name="notification_settings">通知設定</string>
     <string name="notification_setting_saved">通知設定が保存されました。</string>
+    <string name="block_user">ブロックする</string>
+    <string name="report_user">通報する</string>
 </resources>
