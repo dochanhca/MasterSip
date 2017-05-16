@@ -226,7 +226,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (presenter.canLoadMoreUser() && totalItemsCount == 20) {
+                if (presenter.canLoadMoreUser()) {
                     showLoading();
                     presenter.loadMoreUser(currentTypeSearch);
                 }

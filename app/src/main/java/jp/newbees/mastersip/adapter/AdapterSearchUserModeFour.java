@@ -64,6 +64,11 @@ public class AdapterSearchUserModeFour extends Adapter<AdapterSearchUserModeFour
                 ? View.VISIBLE : View.GONE);
         holder.imgAvailableVideo.setVisibility(item.getSettings().getVideoCall() == SettingItem.ON
                 ? View.VISIBLE : View.GONE);
+
+        boolean isOnTwoCallType = item.getSettings().getVoiceCall() == SettingItem.ON &&
+                item.getSettings().getVideoCall() == SettingItem.ON;
+        if (isOnTwoCallType)
+            holder.imgAvailableCall.setVisibility(View.GONE);
     }
 
     @Override
