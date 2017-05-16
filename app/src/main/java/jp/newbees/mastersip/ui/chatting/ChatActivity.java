@@ -54,6 +54,8 @@ import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.chatting.ChatListener;
 import jp.newbees.mastersip.presenter.chatting.ChatPresenter;
 import jp.newbees.mastersip.ui.CallActivity;
+import jp.newbees.mastersip.ui.dialog.MessageDialog;
+import jp.newbees.mastersip.ui.dialog.MessageDialog.OnMessageDialogClickListener;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -259,6 +261,8 @@ public class ChatActivity extends CallActivity implements
     public void didChatError(int errorCode, String errorMessage) {
         if (errorCode == Constant.Error.NOT_ENOUGH_POINT) {
             showDialogNotifyNotEnoughPointForChat(BaseChatItem.ChatType.CHAT_TEXT, 20);
+        } else if (errorCode == Constant.Error.MESSAGE_NG) {
+            showMessageDialog(this.getString(R.string.message_have_ng));
         } else {
             showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
         }
