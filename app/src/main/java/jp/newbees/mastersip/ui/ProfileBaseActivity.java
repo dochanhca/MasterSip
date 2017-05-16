@@ -273,7 +273,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
             case SelectImageDialog.PICK_AVATAR_GALLERY:
                 if (resultCode == RESULT_OK) {
                     pickedImage = data.getData();
-                    handleImageFromGallery();
+                    CropImageActivity.startActivityForResult(this, pickedImage);
                 }
                 break;
             case SelectImageDialog.CROP_IMAGE:
@@ -369,7 +369,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
 
     private void handleImageCropped(Intent data) {
         String imagePath = data.getStringExtra(CropImageActivity.IMAGE_CROPPED);
-        Bitmap bitmap = ImageUtils.decodeBitmapFromFile(imagePath, Constant.Application.MAX_IMAGE_WIDTH,
+        Bitmap bitmap = ImageUtils.decodeBitmapFromFile(imagePath, Constant.Application.REQ_IMAGE_WIDTH,
                 Constant.Application.MAX_CHAT_IMAGE_HEIGHT);
 
         showAvatar();
@@ -385,17 +385,6 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
             pickedImage = Uri.fromFile(outFile);
             CropImageActivity.startActivityForResult(this, pickedImage);
         }
-    }
-
-    private void handleImageFromGallery() {
-        getImageFilePath();
-    }
-
-    private void getImageFilePath() {
-        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
-            pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
-        }
-        CropImageActivity.startActivityForResult(this, pickedImage);
     }
 
     private void showAvatar() {

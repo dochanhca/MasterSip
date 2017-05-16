@@ -57,7 +57,6 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -618,9 +617,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     }
 
     private void getImageFilePath() {
-        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
-            pickedImage = ImageUtils.getImageUrlWithAuthority(getContext(), pickedImage);
-        }
         CropImageActivity.startActivityForResult(this, pickedImage);
     }
 

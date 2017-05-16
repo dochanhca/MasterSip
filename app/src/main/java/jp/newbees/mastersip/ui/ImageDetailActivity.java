@@ -33,7 +33,6 @@ import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
-import jp.newbees.mastersip.utils.ImageUtils;
 
 /**
  * Created by ducpv on 2/6/17.
@@ -168,7 +167,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             case SelectImageDialog.PICK_AVATAR_GALLERY:
                 if (resultCode == RESULT_OK) {
                     pickedImage = data.getData();
-                    handleImageFromGallery();
+                    CropImageActivity.startActivityForResult(this, pickedImage);
                 }
                 break;
             case SelectImageDialog.CROP_IMAGE:
@@ -355,17 +354,6 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             pickedImage = Uri.fromFile(outFile);
             CropImageActivity.startActivityForResult(this, pickedImage);
         }
-    }
-
-    private void handleImageFromGallery() {
-        getImageFilePath();
-    }
-
-    private void getImageFilePath() {
-        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
-            pickedImage = ImageUtils.getImageUrlWithAuthority(this, pickedImage);
-        }
-        CropImageActivity.startActivityForResult(this, pickedImage);
     }
 
     private void updatePhotos(GalleryItem galleryItem) {
