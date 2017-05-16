@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -68,7 +69,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 handlePushMessage(data);
 
             } catch (JSONException e) {
-                Logger.e(TAG,e.getMessage());
+                Logger.e(TAG, e.getMessage());
                 e.printStackTrace();
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -174,8 +175,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
 
-        if (Build.VERSION.SDK_INT >= 21){
-            notificationBuilder.setVibrate(new long[0]);
+        if (Build.VERSION.SDK_INT >= 21) {
+            notificationBuilder.setVibrate(new long[0])
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         }
 
         NotificationManager notificationManager =
