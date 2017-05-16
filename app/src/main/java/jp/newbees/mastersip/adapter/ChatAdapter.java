@@ -2,6 +2,7 @@ package jp.newbees.mastersip.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,9 @@ import jp.newbees.mastersip.adapter.chatholder.ViewHolderHeader;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessage;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderImageMessageReply;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessage;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageDeleted;
 import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageReply;
+import jp.newbees.mastersip.adapter.chatholder.ViewHolderTextMessageReplyDeleted;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Logger;
@@ -55,13 +58,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         View view;
-        boolean isReplyMessage = viewType > OFFSET_RETURN_TYPE;
+        boolean isReplyMessage = viewType >= OFFSET_RETURN_TYPE;
         int offsetViewType = viewType;
         if (isReplyMessage) {
             offsetViewType -= OFFSET_RETURN_TYPE;
         }
 
         switch (offsetViewType) {
+
             case BaseChatItem.ChatType.CHAT_TEXT:
                 if (isReplyMessage) {
                     view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
@@ -100,10 +104,20 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     viewHolder = new ViewHolderCallMessage(view, context);
                 }
                 break;
+
             case BaseChatItem.ChatType.HEADER:
-            default:
                 view = layoutInflater.inflate(R.layout.header_chat_recycle_view, parent, false);
                 viewHolder = new ViewHolderHeader(view, context);
+                break;
+            case BaseChatItem.ChatType.CHAT_DELETED:
+            default:
+                if (isReplyMessage) {
+                    view = layoutInflater.inflate(R.layout.reply_chat_text_item, parent, false);
+                    viewHolder = new ViewHolderTextMessageReplyDeleted(view, context, onItemClickListener);
+                } else {
+                    view = layoutInflater.inflate(R.layout.my_chat_text_item, parent, false);
+                    viewHolder = new ViewHolderTextMessageDeleted(view, context);
+                }
                 break;
         }
 

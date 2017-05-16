@@ -8,18 +8,17 @@ import android.widget.TextView;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.ChatAdapter;
 import jp.newbees.mastersip.model.BaseChatItem;
-import jp.newbees.mastersip.model.TextChatItem;
 
 /**
- * Created by thangit14 on 1/25/17.
+ * Created by vynv on 5/16/17.
  */
 
-public class ViewHolderTextMessageReply extends BaseChatReplyViewHolder<BaseChatItem>{
+public class ViewHolderTextMessageReplyDeleted extends BaseChatReplyViewHolder<BaseChatItem> {
     private TextView txtContent;
     private TextView txtTime;
     private ImageView imgAvatar;
 
-    public ViewHolderTextMessageReply(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
+    public ViewHolderTextMessageReplyDeleted(View root, Context context, ChatAdapter.OnItemClickListener onItemClickListener) {
         super(root, context, onItemClickListener);
     }
 
@@ -33,9 +32,8 @@ public class ViewHolderTextMessageReply extends BaseChatReplyViewHolder<BaseChat
 
     @Override
     public void bindView(BaseChatItem baseChatItem) {
-        TextChatItem textChatItem = (TextChatItem) baseChatItem;
-        txtTime.setText(textChatItem.getShortDate());
-        txtContent.setText(textChatItem.getMessage());
+        txtTime.setText(baseChatItem.getShortDate());
+        txtContent.setText(getContext().getString(R.string.message_receiver_not_good));
         setUserAvatar(imgAvatar, baseChatItem);
     }
 }
