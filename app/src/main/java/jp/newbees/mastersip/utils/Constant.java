@@ -71,7 +71,7 @@ public final class Constant {
         public static final String TOTAL_FOOTPRINT = "total_footprint";
         public static final String TOTAL_MY_MENU = "total_mymenu";
         public static final String ADMIN = "admin";
-        public static final String ALL_USER= "all_user";
+        public static final String ALL_USER = "all_user";
         public static final String USER_FOLLOW = "user_follow";
         public static final String MY_EXTENSION = "my_extension";
         public static final String ROOM = "room";
@@ -235,7 +235,7 @@ public final class Constant {
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
         private static final String DEVELOPMENT_IP = "52.199.112.26";
-//        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
@@ -361,6 +361,11 @@ public final class Constant {
         public static final int IN_APP_PURCHASE_FAIL = 5001;
         public static final int IN_APP_PURCHASE_NOT_SUCCESS = 5002;
         public static final int IN_APP_PURCHASE_CANCEL = 5003;
+
+        public static final int INPUT_NAME_NG = 1024;
+        public static final int TYPE_BOY_NG = 1031;
+        public static final int CHARM_POINT_NG = 1016;
+        public static final int SLOGAN_NG = 1015;
     }
 
     public final class Application {
