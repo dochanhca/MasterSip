@@ -88,6 +88,10 @@
     <string name="foreign_country">海外</string>
     <string name="region_selection">地域選択</string>
     <string name="err_wrong_order_by_code">Wrong order by code</string>
+
+    <!--message not good-->
+    <string name="message_sender_not_good">不適切な内容のため削除されました。</string>
+    <string name="message_receiver_not_good">お相手のコメントは削除されました。</string>
     <string-array name="array_gender">
         <item>男性</item>
         <item>女性</item>
