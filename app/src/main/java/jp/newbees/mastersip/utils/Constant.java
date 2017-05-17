@@ -337,6 +337,8 @@ public final class Constant {
         public static final int NOT_ENOUGH_POINT = 1204;
         public static final int EXTENSION_OFFLINE = 1206;
         public static final int USER_NOT_EXIST = 1011;
+        public static final int MESSAGE_NG = 1404;
+
         //
         public static final int SOCIAL_ID_IS_NOT_EXIST = 1100;
         public static final int EMAIL_OR_PASS_IS_WRONG = 1044;
