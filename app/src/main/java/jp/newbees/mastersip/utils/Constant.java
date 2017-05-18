@@ -391,9 +391,9 @@ public final class Constant {
         public static final int LAST_LOGIN = 1;
         public static final int LAST_REGISTER = 2;
 
-        public static final int MAX_IMAGE_WIDTH = 1080;
+        public static final int REQ_IMAGE_WIDTH = 480;
+        public static final int REQ_IMAGE_HEIGHT = 800;
         public static final int MAX_CHAT_IMAGE_WIDTH = 540;
-        public static final int MAX_IMAGE_HEIGHT = 1920;
         public static final int MAX_CHAT_IMAGE_HEIGHT = 780;
         public static final int ANDROID = 1;
         public static final String CREDIT_CARD = "CREDITCARD";

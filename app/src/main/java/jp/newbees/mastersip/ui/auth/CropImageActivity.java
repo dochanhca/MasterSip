@@ -19,6 +19,7 @@ import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.FileUtils;
+import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -82,13 +83,16 @@ public class CropImageActivity extends BaseActivity implements CropImageView.OnC
 
     @Override
     public void onCropImageComplete(CropImageView view, CropImageView.CropResult result) {
-        Logger.e("Image Cropped: ", "width: " + result.getBitmap().getWidth()
-                + "- height: " + result.getBitmap().getHeight());
+
         new AsyncTask<Bitmap, Void, String>() {
             @Override
             protected String doInBackground(Bitmap[] params) {
+                Bitmap dstBitmap = ImageUtils.createScaledBitmap(params[0]);
+                Logger.e("Image Cropped: ", "width: " + dstBitmap.getWidth()
+                        + "- height: " + dstBitmap.getHeight());
+
                 String fileName = "android_" + System.currentTimeMillis() + ".png";
-                final String filePath = FileUtils.saveBitmapToFile(params[0], fileName);
+                final String filePath = FileUtils.saveBitmapToFile(dstBitmap, fileName);
                 return filePath;
             }
 

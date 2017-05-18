@@ -64,7 +64,6 @@ import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.ImageFilePath;
 import jp.newbees.mastersip.utils.ImageUtils;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
@@ -139,8 +138,8 @@ public class ChatActivity extends CallActivity implements
     private boolean isShowDialogForHandleImage = false;
 
     private Bitmap bitmap;
-    private int maxImageWidth = Constant.Application.MAX_IMAGE_WIDTH;
-    private int maxImageHeight = Constant.Application.MAX_IMAGE_HEIGHT;
+    private final int reqImageWidth = Constant.Application.REQ_IMAGE_WIDTH;
+    private final int reqImageHeight = Constant.Application.REQ_IMAGE_HEIGHT;
 
     private Map<String, UserItem> members;
     private long startClickTime;
@@ -713,7 +712,7 @@ public class ChatActivity extends CallActivity implements
             Toast.makeText(getBaseContext(), "Error while capturing image", Toast.LENGTH_SHORT).show();
         } else {
             bitmap = ImageUtils.decodeBitmapFromFile(outFile.getPath(),
-                    maxImageWidth, maxImageHeight);
+                    reqImageWidth, reqImageHeight);
             uploadImageToServer();
         }
     }
@@ -729,22 +728,7 @@ public class ChatActivity extends CallActivity implements
     }
 
     private void handleImageFromGallery(Uri pickedImage) {
-        getImageFilePath(pickedImage);
-    }
-
-    private void getImageFilePath(Uri pickedImage) {
-        String imagePath;
-        // Get Image path from Google photo
-        if (pickedImage.toString().startsWith("content://com.google.android.apps.photos.content")) {
-            imagePath = ImageFilePath.getPath(this,
-                    ImageUtils.getImageUrlWithAuthority(this, pickedImage));
-
-            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageWidth, maxImageHeight);
-            bitmap = ImageUtils.rotateBitmap(bitmap, imagePath);
-        } else {
-            imagePath = ImageFilePath.getPath(this, pickedImage);
-            bitmap = ImageUtils.decodeBitmapFromFile(imagePath, maxImageWidth, maxImageHeight);
-        }
+        bitmap = ImageUtils.decodeSampledBitmap(this, pickedImage, reqImageWidth, reqImageHeight);
         uploadImageToServer();
     }
 
