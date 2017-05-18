@@ -36,7 +36,8 @@
             android:padding="@dimen/_5dp"
             android:text="1000 Yen"
             android:textColor="@color/blue_dark"
-            android:textSize="@dimen/text_size_15" />
+            android:textSize="@dimen/text_size_15"
+            android:clickable="false"/>
     </RelativeLayout>
 
     <View
