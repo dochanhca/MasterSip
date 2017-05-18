@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -146,12 +147,9 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-
-
         updateRegisterProfilePresenter = new UpdateRegisterProfilePresenter(getApplicationContext(),
                 this);
         uploadImagePresenter = new UploadImagePresenter(getApplicationContext(), this);
-
         Calendar calendar = Calendar.getInstance();
         currentDate = calendar.getTime();
         updateData();
@@ -198,6 +196,21 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
     @Override
     public void onUpdateRegisterProfileFailure(int errorCode, String errorMessage) {
         disMissLoading();
+        if (errorCode == Constant.Error.INPUT_NAME_NG) {
+            showMessageDialog(this.getString(R.string.name_ng));
+            return;
+        } else if (errorCode == Constant.Error.TYPE_BOY_NG) {
+            showMessageDialog(this.getString(R.string.type_ng
+            ));
+            return;
+        } else if (errorCode == Constant.Error.CHARM_POINT_NG) {
+            showMessageDialog(this.getString(R.string.charm_point_ng));
+            return;
+        } else if (errorCode == Constant.Error.SLOGAN_NG) {
+            showMessageDialog(this.getString(R.string.slogan_ng));
+            return;
+        }
+
         showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 

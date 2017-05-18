@@ -90,6 +90,12 @@
     <string name="err_wrong_order_by_code">Wrong order by code</string>
     <string name="message_have_ng">入力できない文字が \n 含まれています。</string>
 
+    <!--error handle update profile-->
+    <string name="name_ng">ハンドルネームに入力できない文字が\n含まれています。</string>
+    <string name="slogan_ng">メッセージに入力できない文字が\n含まれています。</string>
+    <string name="type_ng">タイプの男性に入力できない文字が\n含まれています。</string>
+    <string name="charm_point_ng">チャームポイントに入力できない文字が\n含まれています。</string>
+
     <!--message not good-->
     <string name="message_sender_not_good">不適切な内容のため削除されました。</string>
     <string name="message_receiver_not_good">お相手のコメントは削除されました。</string>
