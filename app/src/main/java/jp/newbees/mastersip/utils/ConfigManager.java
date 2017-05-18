@@ -238,6 +238,7 @@ final public class ConfigManager {
     }
 
     public void setCurrentCallUser(UserItem callUser, String roomId) {
+        this.currentCallId = roomId;
         callUsers.put(roomId, callUser);
     }
 
