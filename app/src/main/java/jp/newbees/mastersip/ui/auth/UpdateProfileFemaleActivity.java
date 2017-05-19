@@ -153,14 +153,10 @@ public class UpdateProfileFemaleActivity extends ProfileBaseActivity implements 
         }
 
         String typeOfMen = txtTypeOfMenContent.getText().toString();
-        if (typeOfMen.length() > 0) {
-            userItem.setTypeBoy(typeOfMen);
-        }
+        userItem.setTypeBoy(typeOfMen.length() > 0 ? typeOfMen : "");
 
         String charmPoint = txtCharmPointContent.getText().toString();
-        if (charmPoint.length() > 0) {
-            userItem.setCharmingPoint(charmPoint);
-        }
+        userItem.setCharmingPoint(charmPoint.length() > 0 ? charmPoint : "");
 
         if (availableTimeItem != null) {
             userItem.setAvailableTimeItem(availableTimeItem);

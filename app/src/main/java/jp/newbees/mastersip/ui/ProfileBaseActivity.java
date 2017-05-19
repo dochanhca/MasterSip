@@ -200,8 +200,7 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
             showMessageDialog(this.getString(R.string.name_ng));
             return;
         } else if (errorCode == Constant.Error.TYPE_BOY_NG) {
-            showMessageDialog(this.getString(R.string.type_ng
-            ));
+            showMessageDialog(this.getString(R.string.type_ng));
             return;
         } else if (errorCode == Constant.Error.CHARM_POINT_NG) {
             showMessageDialog(this.getString(R.string.charm_point_ng));
@@ -329,9 +328,8 @@ public abstract class ProfileBaseActivity extends BaseActivity implements
         }
 
         String memo = txtStatusContent.getText().toString();
-        if (memo.length() > 0) {
-            userItem.setMemo(memo);
-        }
+        userItem.setMemo(memo.length() > 0 ? memo : "");
+
         if (mode == MODE_UPDATE) {
             userItem.setDateOfBirth(dateSendToServer);
         }
