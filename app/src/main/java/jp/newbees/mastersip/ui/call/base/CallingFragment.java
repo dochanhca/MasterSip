@@ -118,9 +118,11 @@ public abstract class CallingFragment extends BaseFragment {
         String roomID = configManager.getCallId();
         String myExtension = configManager.getCurrentUser().getSipItem().getExtension();
         try {
-            String raw = JSONUtils.genMessageNotifyInCall(myExtension, roomID);
-            LinphoneHandler.getInstance().sendPacket(raw,
-                    Constant.Application.SERVER_HANDLE_CALLING_EXTENSION);
+            if (LinphoneHandler.getInstance() != null) {
+                String raw = JSONUtils.genMessageNotifyInCall(myExtension, roomID);
+                LinphoneHandler.getInstance().sendPacket(raw,
+                        Constant.Application.SERVER_HANDLE_CALLING_EXTENSION);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

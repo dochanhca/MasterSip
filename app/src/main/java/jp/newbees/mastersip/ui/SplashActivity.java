@@ -24,7 +24,7 @@ public class SplashActivity extends BaseActivity implements SplashPresenter.Spla
     private SplashPresenter splashPresenter;
     private static final long TIME_DELAY = 500;
     private UserItem userItem;
-    private boolean isFromMissCall;
+    private int pushType = -1;
 
     @Override
     protected int layoutId() {
@@ -36,8 +36,8 @@ public class SplashActivity extends BaseActivity implements SplashPresenter.Spla
         //Init views
         if (getIntent().getExtras() != null) {
             userItem = getIntent().getExtras().getParcelable(FROM_USER);
-            isFromMissCall = getIntent().getExtras().
-                    getBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, false);
+            pushType = getIntent().getExtras().
+                    getInt(MyFirebaseMessagingService.PUSH_TYPE, -1);
         }
     }
 
@@ -82,7 +82,7 @@ public class SplashActivity extends BaseActivity implements SplashPresenter.Spla
 
     @Override
     public void didLoginVoIP() {
-        if (userItem == null) {
+        if (pushType == -1) {
             startTopScreenWithNewTask();
         } else {
             startTopScreenForPush();
@@ -100,7 +100,7 @@ public class SplashActivity extends BaseActivity implements SplashPresenter.Spla
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Bundle bundle = new Bundle();
         bundle.putParcelable(MyFirebaseMessagingService.FROM_USER, userItem);
-        bundle.putBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, isFromMissCall);
+        bundle.putInt(MyFirebaseMessagingService.PUSH_TYPE, pushType);
         intent.putExtras(bundle);
         startActivity(intent);
     }

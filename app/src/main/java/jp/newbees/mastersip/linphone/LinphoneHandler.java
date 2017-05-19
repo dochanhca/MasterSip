@@ -185,7 +185,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         String callId = ConfigManager.getInstance().getCallId();
         if (cstate == LinphoneCall.State.CallReleased) {
             checkEndWhileWaitingCall();
-        }else if(cstate == LinphoneCall.State.CallEnd) {
+        } else if (cstate == LinphoneCall.State.CallEnd) {
             resetDefaultSpeaker();
         } else if (cstate == LinphoneCall.State.Pausing) {
             notifyPauseCallToServer();
@@ -200,7 +200,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
             requestAudioFocus(STREAM_VOICE_CALL);
         }
 
-        if((cstate == LinphoneCall.State.Connected ||
+        if ((cstate == LinphoneCall.State.Connected ||
                 cstate == LinphoneCall.State.StreamsRunning) &&
                 call.getDirection() == CallDirection.Incoming) {
             checkCallConnected(cstate, callId);
@@ -215,7 +215,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
         if (callType == Constant.API.VOICE_CALL
                 && state == LinphoneCall.State.Connected) {
             ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_CONNECTED);
-        }else if ((callType == Constant.API.VIDEO_CALL || callType == Constant.API.VIDEO_CHAT_CALL )
+        } else if ((callType == Constant.API.VIDEO_CALL || callType == Constant.API.VIDEO_CHAT_CALL)
                 && state == LinphoneCall.State.StreamsRunning) {
             ConfigManager.getInstance().setCallState(callId, ConfigManager.CALL_STATE_CONNECTED);
         }
@@ -419,11 +419,10 @@ public class LinphoneHandler implements LinphoneCoreListener {
     }
 
     public static final synchronized LinphoneHandler getInstance() {
-        if (instance == null) {
-            throw new NullPointerException();
-        } else {
+        if (instance != null) {
             return instance;
         }
+        return null;
     }
 
     public synchronized void loginVoIPServer(final SipItem sipItem) {
@@ -942,7 +941,7 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     Logger.e(TAG, "Sent Resume call");
                 }
             }, null);
-        } catch (JSONException |NullPointerException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }

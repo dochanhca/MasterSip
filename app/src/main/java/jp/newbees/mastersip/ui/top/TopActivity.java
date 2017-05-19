@@ -270,12 +270,25 @@ public class TopActivity extends CallActivity implements
     private void getDataFromFCMChatMessage(Intent intent) {
         if (intent.getExtras() != null) {
             UserItem fromUser = intent.getExtras().getParcelable(MyFirebaseMessagingService.FROM_USER);
-            boolean isFromMissCall = intent.getExtras().getBoolean(MyFirebaseMessagingService.IS_FROM_MISS_CALL, false);
-            if (isFromMissCall) {
+            int pushType = intent.getExtras().getInt(MyFirebaseMessagingService.PUSH_TYPE, -1);
+            handlePushMessage(fromUser, pushType);
+        }
+    }
+
+    private void handlePushMessage(UserItem fromUser, int pushType) {
+        switch (pushType) {
+            case MyFirebaseMessagingService.PUSH_MISS_CALL:
                 showMessageDialogForMissedCall(fromUser);
-            } else {
+                break;
+            case MyFirebaseMessagingService.PUSH_CHAT:
                 ChatActivity.startChatActivity(this, fromUser);
-            }
+                break;
+            case MyFirebaseMessagingService.PUSH_FOLLOWED:
+                viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
+                ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
+                break;
+            default:
+                break;
         }
     }
 

@@ -76,14 +76,23 @@ public abstract class BaseHandleCallPresenter extends BasePresenter{
     }
 
     public final void enableSpeaker(boolean enable) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().enableSpeaker(enable);
     }
 
     public final void enableMicrophone(boolean enable) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().enableMic(enable);
     }
 
     public final void switchCamera(SurfaceView mCaptureView) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().switchCamera(mCaptureView);
     }
 
@@ -92,16 +101,20 @@ public abstract class BaseHandleCallPresenter extends BasePresenter{
     }
 
     public final void useFrontCameraAndUpdateCall() {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().useFrontCameraAndUpdateCall();
     }
 
     public final void enableCamera(boolean enable) {
+        if (LinphoneHandler.getInstance() == null) {
+            return;
+        }
         LinphoneHandler.getInstance().enableVideo(enable);
     }
 
     public final void acceptCall(String calId, int callType) throws LinphoneCoreException {
-//        JoinCallTask joinCallTask = new JoinCallTask(context, calId);
-//        requestToServer(joinCallTask);
         boolean video = callType == Constant.API.VOICE_CALL ? false : true;
         LinphoneHandler.getInstance().acceptCall(video);
     }

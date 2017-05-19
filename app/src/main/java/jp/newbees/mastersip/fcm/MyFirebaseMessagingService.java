@@ -37,8 +37,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMessagingService";
     public static final String FROM_USER = "FROM_USER";
-    public static final String IS_FROM_MISS_CALL = "IS_FROM_MISS_CALL";
+    public static final String PUSH_TYPE = "PUSH_TYPE";
     private static boolean showMissedCallPush = true;
+
+    public static final int PUSH_MISS_CALL = 1;
+    public static final int PUSH_CHAT = 2;
+    public static final int PUSH_FOLLOWED = 3;
+
 
     /**
      * Called when message is received.
@@ -77,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
+        if (remoteMessage.getNotification() != null && remoteMessage.getNotification().getBody() != null) {
             Logger.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getNotification().getBody());
         }
@@ -103,9 +108,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendNotificationForChat(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
                 }
                 break;
+            case FCMPushItem.CATEGORY.FOLLOW:
+                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
+                    sendNotificationForFollow(fcmPushItem);
+                }
+                break;
             default:
                 break;
         }
+    }
+
+    private void sendNotificationForFollow(FCMPushItem fcmPushItem) {
+        String message = String.format(getString(R.string.mess_be_followed), fcmPushItem.getUserName());
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PUSH_TYPE, PUSH_FOLLOWED);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
     }
 
     private void handleIncomingCallMessage(Map<String, Object> data) {
@@ -120,7 +139,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleMissCallMessage(UserItem caller) {
         String message = caller.getUsername() +
                 getApplicationContext().getResources().getString(R.string.push_missed_call);
-        sendNotificationForMissCall(message, caller, true);
+        sendNotificationForMissCall(message, caller);
     }
 
     private void handleIncomingCall(String callId) {
@@ -130,11 +149,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendNotificationForMissCall(String message, UserItem caller, boolean isFromMissCall) {
+    private void sendNotificationForMissCall(String message, UserItem caller) {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(FROM_USER, caller);
-        bundle.putBoolean(IS_FROM_MISS_CALL, isFromMissCall);
+        bundle.putInt(PUSH_TYPE, PUSH_MISS_CALL);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }
@@ -143,6 +162,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(FROM_USER, fromUser);
+        bundle.putInt(PUSH_TYPE, PUSH_CHAT);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }

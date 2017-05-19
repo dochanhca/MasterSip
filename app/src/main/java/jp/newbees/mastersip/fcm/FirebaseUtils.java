@@ -21,28 +21,47 @@ public class FirebaseUtils {
         // Prevent instance object
     }
 
-    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException , NullPointerException{
+    public static Map<String, Object> parseData(Map<String, String> data) throws JSONException, NullPointerException {
+
+        JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
+        FCMPushItem fcmPushItem = parsePushItem(jAps);
+
         if (data.containsKey(Constant.JSON.CALLER)) {
-            return parseDataForCallMessage(data);
+            return parseDataForCallMessage(data, fcmPushItem);
         }
-        return parseDataForChatMessage(data);
+
+        if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
+            return parseDataForChatMessage(data, fcmPushItem);
+        } else if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.FOLLOW)) {
+            return parseDataForFollowMessage(data, fcmPushItem);
+        }
+        return null;
     }
 
-    private static Map<String, Object> parseDataForCallMessage(Map<String, String> data) throws JSONException {
+    private static Map<String, Object> parseDataForFollowMessage(Map<String, String> data,
+                                                                 FCMPushItem fcmPushItem) throws JSONException {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
+        result.put(Constant.JSON.RECEIVER_STATUS, data.get(Constant.JSON.RECEIVER_STATUS));
+        return result;
+    }
+
+    private static Map<String, Object> parseDataForCallMessage(Map<String, String> data, FCMPushItem fcmPushItem) throws JSONException {
         Map<String, Object> result = new HashMap<>();
         UserItem caller = parseCaller(new JSONObject(data.get(Constant.JSON.CALLER)));
-        JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         String callId = data.get(Constant.JSON.CALL_ID);
 
-        result.put(Constant.JSON.FCM_PUSH_ITEM, parsePushItem(jAps));
+        result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
         result.put(Constant.JSON.CALLER, caller);
         result.put(Constant.JSON.CALL_ID, callId);
         return result;
     }
 
-    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data) throws JSONException, NullPointerException {
+    private static Map<String, Object> parseDataForChatMessage(Map<String, String> data, FCMPushItem fcmPushItem)
+            throws JSONException, NullPointerException {
         Map<String, Object> result = new HashMap<>();
-        JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
+
         String roomId = data.get(Constant.JSON.ROOM_ID);
         String extension = data.get(Constant.JSON.EXTENSION);
         String userId = data.get(Constant.JSON.USER_ID);
@@ -52,7 +71,7 @@ public class FirebaseUtils {
         userItem.setUserId(userId);
         userItem.setSipItem(sipItem);
 
-        result.put(Constant.JSON.FCM_PUSH_ITEM, parsePushItem(jAps));
+        result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
         result.put(Constant.JSON.USER, userItem);
         result.put(Constant.JSON.ROOM_ID, roomId);
 
@@ -77,7 +96,10 @@ public class FirebaseUtils {
     private static FCMPushItem parsePushItem(JSONObject jsonObject) throws JSONException {
         FCMPushItem fcmPushItem = new FCMPushItem();
 
-        fcmPushItem.setBadge(jsonObject.getString(Constant.FCM.BADGE));
+        if (jsonObject.has(Constant.FCM.BADGE)) {
+            fcmPushItem.setBadge(jsonObject.getString(Constant.FCM.BADGE));
+        }
+
         fcmPushItem.setSound(jsonObject.getString(Constant.FCM.SOUND));
         fcmPushItem.setCategory(jsonObject.getString(Constant.FCM.CATEGORY));
 
