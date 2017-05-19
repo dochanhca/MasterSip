@@ -375,6 +375,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void showNavigation() {
+        if (!checkBottomNavigation()) {
+            return;
+        }
         if (slideUp == null) {
             slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_to_show);
         }
@@ -386,6 +389,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void hideNavigation() {
+        if (!checkBottomNavigation()) {
+            return;
+        }
         if (slideDown == null) {
             slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_to_hide);
         }
@@ -397,10 +403,17 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public boolean isShowNavigationBar() {
+        if (!checkBottomNavigation()){
+            return false;
+        }
         return isShowNavigationBar;
     }
 
     public void setBudgieMessage(int value) {
+        ConfigManager.getInstance().setUnreadMessage(value);
+        if (!checkBottomNavigation()){
+            return;
+        }
         if (value == 0) {
             navigationMessage.setShowBoxValue(false);
         } else {
@@ -409,6 +422,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void setBudgieFootPrint(int value) {
+        ConfigManager.getInstance().setUnReadFootPrint(value);
+        if (!checkBottomNavigation()){
+            return;
+        }
         if (value == 0) {
             navigationLeg.setShowBoxValue(false);
         } else {
@@ -417,11 +434,19 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void setBudgieFollower(int value) {
+        ConfigManager.getInstance().setUnReadFollow(value);
+        if (!checkBottomNavigation()){
+           return;
+       }
         if (value == 0) {
             navigationHeart.setShowBoxValue(false);
         } else {
             navigationHeart.showBoxValue(value);
         }
+    }
+
+    private boolean checkBottomNavigation() {
+        return this instanceof BottomNavigation;
     }
 
     public interface BottomNavigation {

@@ -132,4 +132,5 @@
     <dimen name="avatar_size_normal">150dp</dimen>
     <dimen name="img_gift_size">80dp</dimen>
     <dimen name="common_checkbox_h">56dp</dimen>
+    <dimen name="footer_dialog_height">85dp</dimen>
 </resources>

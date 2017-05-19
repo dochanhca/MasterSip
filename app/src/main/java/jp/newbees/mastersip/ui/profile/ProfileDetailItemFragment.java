@@ -141,6 +141,8 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     private GalleryItem galleryItem;
     private boolean isLoading;
     private UserPhotoAdapter userPhotoAdapter;
+    private boolean needSendFootprint;
+    private boolean needShowActionBar;
 
     private long mLastClickTime = 0;
 
@@ -204,6 +206,9 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         if (selected) {
             super.setShowingProfile(userItem);
         }
+        needShowActionBar = getArguments().getBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT);
+        needSendFootprint = !needShowActionBar;
+
         progressWheel.spin();
         progressWheel.setVisibility(View.VISIBLE);
         restoreNavigationBarState();
@@ -272,7 +277,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getUserVisibleHint()) {
+                if (getUserVisibleHint() && needSendFootprint) {
                     profileDetailItemPresenter.sendFootPrintToServer(userItem.getUserId());
                 }
             }
@@ -415,6 +420,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                needSendFootprint = true;
                 profileDetailItemPresenter.getProfileDetail(userItem.getUserId());
                 profileDetailItemPresenter.getListPhotos(userItem.getUserId());
             }
@@ -570,7 +576,6 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     private void showGiftFragment() {
-        boolean needShowActionBar = getArguments().getBoolean(NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT);
         SearchContainerFragment.showGiftFragment(getActivity(), userItem,
                 ListGiftFragment.OPEN_FROM_PROFILE_DETAILS, needShowActionBar);
     }

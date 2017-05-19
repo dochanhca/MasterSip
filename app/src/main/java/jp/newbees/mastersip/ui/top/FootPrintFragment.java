@@ -174,4 +174,9 @@ public class FootPrintFragment extends BaseCallFragment implements
     public final void setLeftTabChecked() {
         rdoFootprintViewedByOther.setChecked(true);
     }
+
+    public final void reLoadBadge() {
+        showLoading();
+        presenter.getListFootprintViewedByOther();
+    }
 }

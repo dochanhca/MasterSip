@@ -516,4 +516,9 @@
     <string name="mess_be_followed">%1$sさんにお気に入りされました</string>
     <string name="block_user">ブロックする</string>
     <string name="report_user">通報する</string>
+    <string name="footer_dialog_gift_message_for_male">%1$sさんからギフトが届いています。</string>
+    <string name="footer_dialog_gift_message_for_female">%1$sさんからギフトが届きました。%2$dpt獲得しました。</string>
+    <string name="footer_dialog_foot_print_message_for_male">%1$sさんがあなたのページに訪れました</string>
+    <string name="footer_dialog_foot_print_message_for_female">%1$sさんがあなたのページに訪れました。さっそくアタックしてみましょう。</string>
+    <string name="footer_dialog_follow_message_for_male">%1$sさんにお気に入りされました</string>
 </resources>

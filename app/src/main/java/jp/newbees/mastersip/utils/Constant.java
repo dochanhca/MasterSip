@@ -172,6 +172,7 @@ public final class Constant {
         public static final String CALLER = "caller";
         public static final String RECEIVER = "receiver";
         public static final String TYPE = "type";
+        public static final String BADGE = "badge";
         public static final String KIND = "kind";
         public static final String CALL_WAIT_ID = "call_wait_id";
         public static final String MESSAGE_ID = "message_id";
@@ -433,6 +434,8 @@ public final class Constant {
 
         public static final String ACTION_ENTER_BACKGROUND = "enter_background";
         public static final String ACTION_ENTER_FOREGROUND = "enter_foreground";
+        public static final String FOOTER_DIALOG = "FOOTER_DIALOG";
+        public static final String CHANGE_BADGE = "CHANGE_BADGE";
 
     }
 
@@ -462,5 +465,13 @@ public final class Constant {
         public static final String HANDLE_NAME = "handle-name";
         public static final String EXTENSION_ID = "extension-id";
 
+    }
+
+    public static final class FOOTER_DIALOG_TYPE{
+        public static final int CHAT_TEXT = 1;
+        public static final int SEND_GIFT = 2;
+        public static final int FOOT_PRINT = 5;
+        public static final int FOLLOW = 6;
+        public static final int ONLINE_NOTIFY = 7;
     }
 }

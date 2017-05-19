@@ -39,6 +39,8 @@ public abstract class WrapperWithBottomNavigationActivity extends CallActivity i
     protected void initViews(Bundle savedInstanceState) {
         navigationLayoutGroup.setOnChildItemClickListener(onChildItemClickListener);
         setBudgieMessage(ConfigManager.getInstance().getUnreadMessage());
+        setBudgieFootPrint(ConfigManager.getInstance().getUnReadFootPrint());
+        setBudgieFollower(ConfigManager.getInstance().getUnReadFollow());
         navigationLayoutGroup.setSelectedItem(ConfigManager.getInstance().getCurrentTabInRootNavigater());
     }
 

@@ -9,6 +9,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.ChangeBadgeEvent;
+import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.event.call.AdminHangUpEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
@@ -65,6 +67,10 @@ public class CallPresenter extends BasePresenter {
         void didCheckedIncomingVideoCall(UserItem callUser, String callId);
 
         void didCheckedIncomingVideoChatCall(UserItem callUser, String callId);
+
+        void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent);
+
+        void onChangeBadgeEvent(int type, int badge);
     }
 
     public CallPresenter(Context context, CallView callView) {
@@ -205,7 +211,13 @@ public class CallPresenter extends BasePresenter {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
+        callView.onHasFooterDialogEvent(footerDialogEvent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCallEvent(ReceivingCallEvent event) {
+
         switch (event.getCallEvent()) {
             case ReceivingCallEvent.OUTGOING_CALL:
 //                notifyCallerJoinedRoom(event.getCallId());
@@ -224,7 +236,10 @@ public class CallPresenter extends BasePresenter {
                 break;
         }
     }
-
+    @Subscribe
+    public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
+        callView.onChangeBadgeEvent(badgeEvent.getType(), badgeEvent.getBadge());
+    }
     /**
      * Notify to server that caller has joined a room.
      *

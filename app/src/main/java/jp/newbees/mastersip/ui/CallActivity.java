@@ -4,13 +4,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
+import jp.newbees.mastersip.footerdialog.FooterManager;
 import jp.newbees.mastersip.linphone.LinphoneService;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
@@ -30,6 +44,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -55,6 +70,15 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private UserItem currentProfileShowing;
     private boolean fromProfileDetail;
     private BroadcastReceiver wifiBroadcastReceiver;
+    private ViewGroup rootView;
+
+    private View footerDialog;
+    private TextView txtContentFooterDialog;
+    private ImageView imgIconFooterDialog;
+
+    private Animation showFooterDialogAnim;
+    private Animation hideFooterDialogAnim;
+    private boolean isShowingFooterDialog = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +91,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         super.onStart();
         presenter.registerCallEvent();
         this.registerWifiStateChange();
+        FooterManager.changeActivity(this);
     }
 
     @Override
@@ -74,6 +99,16 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         super.onStop();
         presenter.unregisterCallEvent();
         this.unregisterReceiver(wifiBroadcastReceiver);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        rootView = (ViewGroup) layoutInflater.inflate(R.layout.root_view_with_footer_dialog, null);
+        ViewGroup containerContent = (ViewGroup) rootView.findViewById(R.id.root_container);
+        View contentView = layoutInflater.inflate(layoutResID, null);
+        containerContent.addView(contentView);
+        super.setContentView(rootView);
     }
 
     private void registerWifiStateChange() {
@@ -379,6 +414,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     }
 
     @Override
+    public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
+        FooterManager.getInstance(this).add(footerDialogEvent);
+    }
+
+    @Override
     public void onOneButtonPositiveClick() {
         this.gotoProfileFromActivity(callee);
     }
@@ -410,4 +450,121 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     public void setShowingProfile(UserItem userItem) {
         this.currentProfileShowing = userItem;
     }
+
+    @Override
+    public void onChangeBadgeEvent(int type, int badge) {
+        changeBadge(type, badge);
+    }
+
+    private void changeBadge(int type, int badge) {
+        switch (type) {
+            case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
+                setBudgieFootPrint(badge);
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.FOLLOW:
+                setBudgieFollower(badge);
+                break;
+        }
+    }
+
+    public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
+        isShowingFooterDialog = true;
+        if (footerDialog == null) {
+            prepareToShowFooterDialog(footerDialogEvent);
+        }
+        fillDataToFooterDialog(footerDialogEvent);
+
+        clearViewAnimation(footerDialog, showFooterDialogAnim, View.VISIBLE);
+        footerDialog.startAnimation(showFooterDialogAnim);
+        hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
+    }
+
+    private void hideFooterDialogAfter(int timeDelay) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideFooterDialog();
+            }
+        }, timeDelay);
+    }
+
+    private void prepareToShowFooterDialog(final FooterDialogEvent footerDialogEvent) {
+        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
+        footerDialog.setVisibility(View.VISIBLE);
+
+        if (this instanceof ChatActivity) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
+        } else {
+            addConstrainWhenKeyboardShowing();
+        }
+        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
+        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
+        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
+        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
+    }
+
+    private void addConstrainWhenKeyboardShowing() {
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect rect = new Rect();
+                rootView.getWindowVisibleDisplayFrame(rect);
+
+                int screenHeight = rootView.getHeight();
+                int keyboardHeight = screenHeight - (rect.bottom - rect.top);
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
+                if (keyboardHeight > screenHeight / 3) {
+                    layoutParams.setMargins(0, 0, 0, keyboardHeight);
+                    Logger.e("Keyboard", "Active");
+
+                } else {
+                    layoutParams.setMargins(0, 0, 0, 0);
+                    Logger.e("Keyboard", "Not Active");
+                }
+            }
+        });
+    }
+
+    private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
+        txtContentFooterDialog.setText(footerDialogEvent.getMessage());
+        imgIconFooterDialog.setImageResource(footerDialogEvent.getIconResourceId());
+        footerDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirect(footerDialogEvent);
+                hideFooterDialog();
+            }
+        });
+    }
+
+    private void redirect(FooterDialogEvent footerDialogEvent) {
+        switch (footerDialogEvent.getType()) {
+            case Constant.FOOTER_DIALOG_TYPE.SEND_GIFT:
+            case Constant.FOOTER_DIALOG_TYPE.CHAT_TEXT:
+                ChatActivity.startChatActivity(CallActivity.this, footerDialogEvent.getCompetitor());
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.FOLLOW:
+                TopActivity.navigateToFragment(this,TopActivity.FOLLOW_FRAGMENT);
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
+                TopActivity.navigateToFragment(this,TopActivity.FOOT_PRINT_FRAGMENT);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void hideFooterDialog() {
+        if (!isShowingFooterDialog) {
+            return;
+        }
+        isShowingFooterDialog = false;
+        View footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
+        clearViewAnimation(footerDialog, hideFooterDialogAnim, View.GONE);
+        footerDialog.startAnimation(hideFooterDialogAnim);
+    }
+
+
 }

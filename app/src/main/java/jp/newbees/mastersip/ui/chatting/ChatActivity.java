@@ -42,8 +42,10 @@ import jp.newbees.mastersip.customviews.HiraginoEditText;
 import jp.newbees.mastersip.customviews.NavigationLayoutChild;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
 import jp.newbees.mastersip.customviews.SoftKeyboardListenedRelativeLayout;
+import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.eventbus.NewChatMessageEvent;
 import jp.newbees.mastersip.eventbus.ReceivingReadMessageEvent;
+import jp.newbees.mastersip.footerdialog.FooterManager;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.ImageChatItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -54,8 +56,6 @@ import jp.newbees.mastersip.presenter.CallPresenter;
 import jp.newbees.mastersip.presenter.chatting.ChatListener;
 import jp.newbees.mastersip.presenter.chatting.ChatPresenter;
 import jp.newbees.mastersip.ui.CallActivity;
-import jp.newbees.mastersip.ui.dialog.MessageDialog;
-import jp.newbees.mastersip.ui.dialog.MessageDialog.OnMessageDialogClickListener;
 import jp.newbees.mastersip.ui.dialog.OneButtonDialog;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -375,6 +375,19 @@ public class ChatActivity extends CallActivity implements
         }
     }
 
+    @Override
+    public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
+        // Don't show footer dialog if chatting with sender user
+        int type = footerDialogEvent.getType();
+        if ((type == Constant.FOOTER_DIALOG_TYPE.CHAT_TEXT ||
+                type == Constant.FOOTER_DIALOG_TYPE.SEND_GIFT)
+                && footerDialogEvent.getCompetitor().getUserId().equals(userItem.getUserId())) {
+            return;
+        }
+
+        super.onHasFooterDialogEvent(footerDialogEvent);
+    }
+
     private void initActionCalls(UserItem userItem) {
         if (userItem.getSettings().getVideoCall() == SettingItem.OFF) {
             actionVideo.setBackgroundColor(getResources().getColor(R.color.color_gray_bg));
@@ -477,12 +490,14 @@ public class ChatActivity extends CallActivity implements
     protected void onStart() {
         super.onStart();
         presenter.registerCallEvent();
+        FooterManager.getInstance(this).startChatActivity(userItem);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unregisterCallEvent();
+        FooterManager.getInstance(this).stopChatActivity();
     }
 
     @Override
@@ -587,7 +602,8 @@ public class ChatActivity extends CallActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+        this.userItem = intent.getParcelableExtra(USER);
+        initHeader(userItem.getUsername());
         chatAdapter.clearData();
         presenter.loadChatHistory(userItem, 0);
     }

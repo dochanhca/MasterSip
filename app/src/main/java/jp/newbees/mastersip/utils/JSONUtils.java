@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import jp.newbees.mastersip.R;
+import jp.newbees.mastersip.event.ChangeBadgeEvent;
+import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.model.BaseChatItem;
 import jp.newbees.mastersip.model.CallChatItem;
 import jp.newbees.mastersip.model.CallLogItem;
@@ -1130,10 +1132,41 @@ public class JSONUtils {
         return settingPushItem;
     }
 
-    public static String genMessageNotifyInCall(String myExtension, String roomID) throws JSONException{
+    public static String genMessageNotifyInCall(String myExtension, String roomID) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constant.JSON.MY_EXTENSION, myExtension);
         jsonObject.put(Constant.JSON.ROOM, roomID);
         return jsonObject.toString();
+    }
+
+    public static FooterDialogEvent genFooterDialogEvent(JSONObject jData) throws JSONException {
+        int type = jData.getInt(Constant.JSON.TYPE);
+        JSONObject jSender = jData.getJSONObject(Constant.JSON.SENDER);
+
+        UserItem competitor = new UserItem();
+        competitor.setUserId(jSender.getString(Constant.JSON.USER_ID));
+        competitor.setUsername(jSender.getString(Constant.JSON.HANDLE_NAME));
+        competitor.setAvatarItem(new ImageItem(jSender.getString(Constant.JSON.AVATAR),
+                jSender.getString(Constant.JSON.AVATAR)));
+
+        FooterDialogEvent event = new FooterDialogEvent(type, competitor);
+
+        switch (type) {
+            case Constant.FOOTER_DIALOG_TYPE.SEND_GIFT:
+
+                event.setGiftPoint(jData.getJSONObject(Constant.JSON.GIFT)
+                        .getInt(Constant.JSON.POINT));
+                break;
+            default:
+                break;
+        }
+
+        return event;
+    }
+
+    public static ChangeBadgeEvent genChangeBadgeEvent(JSONObject jData) throws JSONException {
+        int type = jData.getInt(Constant.JSON.TYPE);
+        int badge = jData.getInt(Constant.JSON.BADGE);
+        return new ChangeBadgeEvent(type, badge);
     }
 }

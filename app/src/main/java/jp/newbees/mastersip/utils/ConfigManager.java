@@ -43,6 +43,8 @@ final public class ConfigManager {
     private int imageDrawableCallerId = -1;
 
     private int unReadMessage;
+    private int unReadFootPrint;
+    private int unReadFollow;
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -286,6 +288,22 @@ final public class ConfigManager {
 
     public int getUnreadMessage() {
         return unReadMessage;
+    }
+
+    public int getUnReadFootPrint() {
+        return unReadFootPrint;
+    }
+
+    public void setUnReadFootPrint(int unReadFootPrint) {
+        this.unReadFootPrint = unReadFootPrint;
+    }
+
+    public int getUnReadFollow() {
+        return unReadFollow;
+    }
+
+    public void setUnReadFollow(int unReadFollow) {
+        this.unReadFollow = unReadFollow;
     }
 
     public int getCurrentTabInRootNavigater() {

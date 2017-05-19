@@ -158,6 +158,10 @@ public class UserItem implements Serializable, Parcelable {
         this.gender = gender;
     }
 
+    public boolean isMale() {
+        return gender == MALE;
+    }
+
     public String getDateOfBirth() {
         return dateOfBirth;
     }

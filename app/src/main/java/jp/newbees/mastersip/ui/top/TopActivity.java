@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.event.FollowEvent;
+import jp.newbees.mastersip.event.FootPrintEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.MasterDataItem;
@@ -44,9 +47,10 @@ public class TopActivity extends CallActivity implements
     private static final int REQUEST_OPEN_CALLER_PROFILE = 33;
     private static final int SEARCH_FRAGMENT = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
-    private static final int FOOT_PRINT_FRAGMENT = 2;
-    private static final int FOLLOW_FRAGMENT = 3;
-    private static final int MY_MENU_CONTAINER_FRAGMENT = 4;
+    public static final int FOOT_PRINT_FRAGMENT = 2;
+    public static final int FOLLOW_FRAGMENT = 3;
+    public static final int MY_MENU_CONTAINER_FRAGMENT = 4;
+    private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
@@ -61,18 +65,22 @@ public class TopActivity extends CallActivity implements
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
             ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
-            popBackToFirstFragment(position);
+            popBackToFirstFragmentAndReload(position);
         }
 
-        private void popBackToFirstFragment(int position) {
+        private void popBackToFirstFragmentAndReload(int position) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             if (position == FOOT_PRINT_FRAGMENT) {
                 FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
                 footPrintFragment.setLeftTabChecked();
+                if (ConfigManager.getInstance().getUnReadFootPrint() > 0)
+                    footPrintFragment.reLoadBadge();
             } else if (position == FOLLOW_FRAGMENT) {
                 FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
                 followFragment.setLeftTabChecked();
+                if (ConfigManager.getInstance().getUnReadFollow() > 0)
+                    followFragment.reloadBadge();
             }
         }
     };
@@ -168,11 +176,15 @@ public class TopActivity extends CallActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        getDataFromFCMChatMessage(intent);
-        int position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
-        viewPager.setCurrentItem(position, false);
-        navigationLayoutGroup.setSelectedItem(position);
+        int position = intent.getIntExtra(NAVIGATE_TO_FRAGMENT, -1);
+        if (position >= 0) {
+            viewPager.setCurrentItem(position, false);
+        } else {
+            getDataFromFCMChatMessage(intent);
+            position = ConfigManager.getInstance().getCurrentTabInRootNavigater();
+            viewPager.setCurrentItem(position, false);
+            navigationLayoutGroup.setSelectedItem(position);
+        }
     }
 
     /**
@@ -183,7 +195,6 @@ public class TopActivity extends CallActivity implements
         ConfigManager.getInstance().setUnreadMessage(roomChatEvent.getNumberOfRoomUnRead());
         setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
     }
-
     @Override
     public void onClick(View v) {
 
@@ -229,6 +240,8 @@ public class TopActivity extends CallActivity implements
         setBudgieMessage(masterDataItem.getTotalChat());
         setBudgieFootPrint(masterDataItem.getTotalFootPrint());
         setBudgieFollower(masterDataItem.getTotalFollower());
+
+        Log.d(TAG, "onLoadMasterDataSuccess: " + masterDataItem.getTotalFootPrint() + "-" + masterDataItem.getTotalFollower());
     }
 
     @Override
@@ -247,6 +260,12 @@ public class TopActivity extends CallActivity implements
         if (requestCode == REQUEST_OPEN_CALLER_PROFILE) {
             ProfileDetailItemActivity.startActivity(this, caller);
         }
+    }
+
+    public static final void navigateToFragment(Context context, int position) {
+        Intent intent = new Intent(context, TopActivity.class);
+        intent.putExtra(NAVIGATE_TO_FRAGMENT, position);
+        context.startActivity(intent);
     }
 
     private IabHelper getIabHelper() {

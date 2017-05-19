@@ -15,10 +15,12 @@ import jp.newbees.mastersip.model.PacketItem;
 import jp.newbees.mastersip.network.sip.AdminHangUpProcessor;
 import jp.newbees.mastersip.network.sip.BusyCallProcessor;
 import jp.newbees.mastersip.network.sip.CancelCallProcessor;
+import jp.newbees.mastersip.network.sip.ChangeBadgeProcessor;
 import jp.newbees.mastersip.network.sip.CompetitorChangeBackgroundStateProcessor;
 import jp.newbees.mastersip.network.sip.ChangeCallingStatusProcessor;
 import jp.newbees.mastersip.network.sip.ChattingProcessor;
 import jp.newbees.mastersip.network.sip.CoinChangedProcessor;
+import jp.newbees.mastersip.network.sip.FooterDialogProcessor;
 import jp.newbees.mastersip.network.sip.HangUpForGirlProcessor;
 import jp.newbees.mastersip.network.sip.PauseCallProcessor;
 import jp.newbees.mastersip.network.sip.ReceivingReadMessageProcessor;
@@ -103,6 +105,11 @@ public class PacketManager {
             case Constant.SOCKET.ACTION_ENTER_BACKGROUND:
                 processor = new CompetitorChangeBackgroundStateProcessor();
                 break;
+            case Constant.SOCKET.FOOTER_DIALOG:
+                processor = new FooterDialogProcessor();
+                break;
+            case Constant.SOCKET.CHANGE_BADGE:
+                processor = new ChangeBadgeProcessor();
             default:
                 break;
         }
