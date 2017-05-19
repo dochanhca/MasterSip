@@ -89,15 +89,17 @@ public class TopActivity extends CallActivity implements
 
         @Override
         public void onPageSelected(int position) {
+            navigationLayoutGroup.setSelectedItem(position);
             BaseFragment baseFragment = (BaseFragment) getFragmentForPosition(position);
-
+            if (baseFragment == null) {
+                return;
+            }
             if (position == MY_MENU_CONTAINER_FRAGMENT) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
                 if (null != fragment) fragment.onTabSelected();
             }
-            baseFragment.reloadDataToClearBadge();
+                baseFragment.reloadDataToClearBadge();
 
-            navigationLayoutGroup.setSelectedItem(position);
         }
 
         @Override
@@ -195,6 +197,7 @@ public class TopActivity extends CallActivity implements
         ConfigManager.getInstance().setUnreadMessage(roomChatEvent.getNumberOfRoomUnRead());
         setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
     }
+
     @Override
     public void onClick(View v) {
 

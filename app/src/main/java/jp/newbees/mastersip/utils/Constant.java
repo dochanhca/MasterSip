@@ -235,8 +235,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_VIDEO = 3;
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        //                private static final String DEVELOPMENT_IP = "52.199.112.26";
+        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
@@ -467,7 +467,7 @@ public final class Constant {
 
     }
 
-    public static final class FOOTER_DIALOG_TYPE{
+    public static final class FOOTER_DIALOG_TYPE {
         public static final int CHAT_TEXT = 1;
         public static final int SEND_GIFT = 2;
         public static final int FOOT_PRINT = 5;
