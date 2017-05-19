@@ -24,6 +24,7 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FootprintPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -61,6 +62,7 @@ public class FootPrintFragment extends BaseCallFragment implements
         fragment.setArguments(bundle);
         return fragment;
     }
+
     @Override
     protected int layoutId() {
         return R.layout.fragment_foot_print;
@@ -102,7 +104,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         adapterFootprint.notifyDataSetChanged();
         updateText(totalFootprint);
     }
-
 
 
     @Override
@@ -175,8 +176,11 @@ public class FootPrintFragment extends BaseCallFragment implements
         rdoFootprintViewedByOther.setChecked(true);
     }
 
-    public final void reLoadBadge() {
-        showLoading();
-        presenter.getListFootprintViewedByOther();
+    @Override
+    public void reloadDataToClearBadge() {
+        if (ConfigManager.getInstance().getUnReadFootPrint() > 0) {
+            showLoading();
+            presenter.getListFootprintViewedByOther();
+        }
     }
 }

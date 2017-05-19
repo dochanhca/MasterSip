@@ -160,4 +160,11 @@ public abstract class BaseFragment extends Fragment {
     protected void setOnBackPressed(BaseActivity.OnBackPressed listener) {
         ((BaseActivity) getActivity()).setOnBackPressed(listener);
     }
+
+    /**
+     * override this if need reload
+     */
+    public void reloadDataToClearBadge() {
+
+    }
 }

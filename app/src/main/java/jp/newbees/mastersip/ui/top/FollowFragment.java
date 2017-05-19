@@ -21,6 +21,7 @@ import jp.newbees.mastersip.model.FollowItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FollowPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
+import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by vietbq on 1/23/17.
@@ -168,8 +169,11 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         rdoFollowers.setChecked(true);
     }
 
-    public final void reloadBadge() {
-        showLoading();
-        presenter.getListFollowers();
+    @Override
+    public void reloadDataToClearBadge() {
+        if (ConfigManager.getInstance().getUnReadFollow() > 0) {
+            showLoading();
+            presenter.getListFollowers();
+        }
     }
 }

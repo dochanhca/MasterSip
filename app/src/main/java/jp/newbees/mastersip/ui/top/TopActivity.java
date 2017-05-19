@@ -16,8 +16,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
-import jp.newbees.mastersip.event.FollowEvent;
-import jp.newbees.mastersip.event.FootPrintEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.MasterDataItem;
@@ -27,6 +25,7 @@ import jp.newbees.mastersip.presenter.InAppPurchasePresenter;
 import jp.newbees.mastersip.presenter.top.TopActivityPresenter;
 import jp.newbees.mastersip.purchase.IabHelper;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.CallActivity;
 import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
@@ -74,13 +73,10 @@ public class TopActivity extends CallActivity implements
             if (position == FOOT_PRINT_FRAGMENT) {
                 FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
                 footPrintFragment.setLeftTabChecked();
-                if (ConfigManager.getInstance().getUnReadFootPrint() > 0)
-                    footPrintFragment.reLoadBadge();
+
             } else if (position == FOLLOW_FRAGMENT) {
                 FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
                 followFragment.setLeftTabChecked();
-                if (ConfigManager.getInstance().getUnReadFollow() > 0)
-                    followFragment.reloadBadge();
             }
         }
     };
@@ -93,10 +89,14 @@ public class TopActivity extends CallActivity implements
 
         @Override
         public void onPageSelected(int position) {
+            BaseFragment baseFragment = (BaseFragment) getFragmentForPosition(position);
+
             if (position == MY_MENU_CONTAINER_FRAGMENT) {
-                MyMenuContainerFragment fragment = (MyMenuContainerFragment) getFragmentForPosition(position);
+                MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
                 if (null != fragment) fragment.onTabSelected();
             }
+            baseFragment.reloadDataToClearBadge();
+
             navigationLayoutGroup.setSelectedItem(position);
         }
 

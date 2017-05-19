@@ -194,11 +194,15 @@ public class FooterManager {
     public void startChatActivity(UserItem competitor) {
         synchronized (deque) {
             this.userInChatActivity = competitor;
-            removeTask(competitor);
+            removeFooterDialogs(competitor);
         }
     }
 
-    private void removeTask(UserItem competitor) {
+    /**
+     * remove all competitor's footer dialog in chatting screen
+     * @param competitor
+     */
+    private void removeFooterDialogs(UserItem competitor) {
         for (int i = 0; i < deque.size(); i++) {
             FooterDialogEvent event = deque.get(i);
             if (competitor.getUserId().equalsIgnoreCase(event.getCompetitor().getUserId())
