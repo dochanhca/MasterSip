@@ -8,7 +8,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 import java.util.Map;
 
-import jp.newbees.mastersip.event.FootPrintEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.model.RoomChatItem;
 import jp.newbees.mastersip.model.UserItem;
