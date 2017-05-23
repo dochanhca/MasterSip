@@ -49,7 +49,7 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
     @Override
     public void onItemClick(int position) {
         ImageDetailActivity.startActivity(this, galleryItem, position,
-                ImageDetailActivity.RECEIVED_PHOTOS_FROM_CHAT);
+                ImageDetailActivity.RECEIVED_PHOTOS_FROM_CHAT, userId);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package jp.newbees.mastersip.network;
+package jp.newbees.mastersip.network.api;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.newbees.mastersip.model.SettingPushItem;
-import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.JSONUtils;
 

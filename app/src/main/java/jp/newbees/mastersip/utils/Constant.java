@@ -75,6 +75,9 @@ public final class Constant {
         public static final String USER_FOLLOW = "user_follow";
         public static final String MY_EXTENSION = "my_extension";
         public static final String ROOM = "room";
+        public static final String IMAGE_TYPE = "image_type";
+        public static final String MIN_POINT_DOWNLOAD = "min_point_download";
+        public static final String GALLERY = "gallery";
 
 
         private JSON() {
@@ -217,6 +220,9 @@ public final class Constant {
             //Prevent init constructor
         }
 
+        public static final int DOWN_IMAGE_CHAT = 1;
+        public static final int DOWN_IMAGE_GALLERY = 2;
+
         public static final int CHANGE_TO_BACKGROUND = 1;
         public static final int CHANGE_TO_FOREGROUND = 2;
 
@@ -235,8 +241,8 @@ public final class Constant {
         public static final int TYPE_UPLOAD_VIDEO = 3;
         public static final int TYPE_UPLOAD_IMAGE = 4;
 
-        //                private static final String DEVELOPMENT_IP = "52.199.112.26";
-        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        private static final String DEVELOPMENT_IP = "52.199.112.26";
+        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
@@ -304,6 +310,7 @@ public final class Constant {
 
         public static final String PUSH_NOTIFICATION = "push_notification/register";
         public static final String FOOTPRINT = "footprint";
+        public static final String DOWN_IMAGE = "down_image";
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
