@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/footer_dialog_height"
+    android:layout_height="wrap_content"
     android:background="@color/transparent"
-    android:paddingBottom="@dimen/size_50dp"
+    android:clickable="false"
     android:gravity="center"
     android:orientation="horizontal">
 
     <RelativeLayout
+        android:id="@+id/content_footer_dialog"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/footer_dialog_height"
         android:background="@drawable/bg_footer_dialog">
 
         <ImageView
@@ -43,4 +44,12 @@
             android:text="When the cosmonaut harvests for astral city, all processors acquire final, huge planets."
             android:textColor="@color/white" />
     </RelativeLayout>
+
+    <View
+        android:id="@+id/padding_view"
+        android:layout_below="@id/content_footer_dialog"
+        android:layout_width="match_parent"
+        android:clickable="false"
+        android:layout_height="0dp"
+        android:background="@color/transparent"></View>
 </RelativeLayout>
