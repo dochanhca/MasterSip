@@ -77,7 +77,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
         this.presenter = new FootprintPresenter(getContext(), this);
-        this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
     }
@@ -174,13 +173,6 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     public final void setLeftTabChecked() {
         rdoFootprintViewedByOther.setChecked(true);
-    }
-
-    @Override
-    public void reloadDataToClearBadge() {
-        if (ConfigManager.getInstance().getUnReadFootPrint() > 0) {
-            showLoading();
-            presenter.getListFootprintViewedByOther();
-        }
+        this.rdoFootprintViewedByOther.setChecked(true);
     }
 }

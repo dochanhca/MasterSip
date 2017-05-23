@@ -74,7 +74,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         this.rcvFollow.setAdapter(adapterFollow);
         this.setFragmentTitle(getString(R.string.follower));
         this.presenter = new FollowPresenter(getContext(), this);
-        this.rdoFollowers.setChecked(true);
         this.adapterFollow.setOnItemFollowClickListener(this);
         this.initRefreshView();
     }
@@ -167,13 +166,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
 
     public final void setLeftTabChecked() {
         rdoFollowers.setChecked(true);
-    }
-
-    @Override
-    public void reloadDataToClearBadge() {
-        if (ConfigManager.getInstance().getUnReadFollow() > 0) {
-            showLoading();
-            presenter.getListFollowers();
-        }
+        this.rdoFollowers.setChecked(true);
     }
 }
