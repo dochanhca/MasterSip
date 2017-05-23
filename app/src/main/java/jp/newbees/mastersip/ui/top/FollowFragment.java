@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -52,6 +53,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     private FollowPresenter presenter;
     private String descriptionTotal;
     private int currentCheckId;
+    private boolean isSelected;
 
     public static Fragment newInstance() {
         Fragment fragment = new FollowFragment();
@@ -70,6 +72,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFollowGroup.setOnCheckedChangeListener(this);
+        this.rdoFollowers.setChecked(true);
         this.adapterFollow = new FollowAdapter(getActivity().getApplicationContext(), new FollowItem());
         this.rcvFollow.setAdapter(adapterFollow);
         this.setFragmentTitle(getString(R.string.follower));
@@ -88,7 +91,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        this.handleChangeListFollow(checkedId);
+        handleChangeListFollow(checkedId);
     }
 
     @Override
@@ -148,14 +151,16 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     }
 
     private void handleChangeListFollow(int checkedId) {
-        if (checkedId == rdoFollowers.getId()) {
-            showLoading();
-            descriptionTotal = getString(R.string.description_followers);
-            presenter.getListFollowers();
-        } else {
-            showLoading();
-            descriptionTotal = getString(R.string.description_followings);
-            presenter.getListFollowing();
+        if (isSelected) {
+            if (checkedId == rdoFollowers.getId()) {
+                showLoading();
+                descriptionTotal = getString(R.string.description_followers);
+                presenter.getListFollowers();
+            } else {
+                showLoading();
+                descriptionTotal = getString(R.string.description_followings);
+                presenter.getListFollowing();
+            }
         }
     }
 
@@ -165,7 +170,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     }
 
     public final void setLeftTabChecked() {
-        rdoFollowers.setChecked(true);
-        this.rdoFollowers.setChecked(true);
+        isSelected = true;
+        handleChangeListFollow(currentCheckId);
     }
 }

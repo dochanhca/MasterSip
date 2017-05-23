@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -55,6 +56,7 @@ public class FootPrintFragment extends BaseCallFragment implements
     private String descriptionTotal;
     private SwipeRefreshLayout swipeContainer;
     private int currentCheckId;
+    private boolean isSelected;
 
     public static Fragment newInstance() {
         Fragment fragment = new FootPrintFragment();
@@ -77,6 +79,7 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
         this.presenter = new FootprintPresenter(getContext(), this);
+        this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
     }
@@ -133,14 +136,16 @@ public class FootPrintFragment extends BaseCallFragment implements
     }
 
     private void handleChangeListFootprint(int checkedId) {
-        if (checkedId == rdoFootprintViewedByOther.getId()) {
-            showLoading();
-            descriptionTotal = getString(R.string.description_viewed_by_other);
-            presenter.getListFootprintViewedByOther();
-        } else {
-            showLoading();
-            descriptionTotal = getString(R.string.description_viewed_by_me);
-            presenter.getListFootprintViewedByMe();
+        if (isSelected) {
+            if (checkedId == rdoFootprintViewedByOther.getId()) {
+                showLoading();
+                descriptionTotal = getString(R.string.description_viewed_by_other);
+                presenter.getListFootprintViewedByOther();
+            } else {
+                showLoading();
+                descriptionTotal = getString(R.string.description_viewed_by_me);
+                presenter.getListFootprintViewedByMe();
+            }
         }
     }
 
@@ -159,7 +164,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.txtFootprintDescription.setText(Html.fromHtml(description));
     }
 
-
     private void initRefreshView(View rootView) {
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -168,11 +172,10 @@ public class FootPrintFragment extends BaseCallFragment implements
                 handleChangeListFootprint(currentCheckId);
             }
         });
-
     }
 
     public final void setLeftTabChecked() {
-        rdoFootprintViewedByOther.setChecked(true);
-        this.rdoFootprintViewedByOther.setChecked(true);
+        isSelected = true;
+        handleChangeListFootprint(currentCheckId);
     }
 }
