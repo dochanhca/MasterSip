@@ -172,7 +172,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     }
 
     private void showDialogNotEnoughPointForMale(UserItem currentUser) {
-        String title = getString(R.string.notify_not_enough_point_male);
+        String title = getString(R.string.mess_missing_point);
         String giftPrice = String.valueOf(currentGiftSelected.getPrice()) + "pt";
         String currentPoint = currentUser.getCoin() + "pt";
         String content = String.format(getString(R.string.content_not_enough_point_male), giftPrice, currentPoint);
@@ -187,7 +187,7 @@ public class ListGiftFragment extends BaseFragment implements GiftListPresenter.
     private void showDialogNotEnoughPointForFemale(UserItem currentUser) {
         String giftPrice = String.valueOf(currentGiftSelected.getPrice()) + "pt";
         String currentPoint = currentUser.getCoin() + "pt";
-        String title = getString(R.string.notify_not_enough_point_female);
+        String title = getString(R.string.mess_missing_point);
         String content = String.format(getString(R.string.content_not_enough_point_female), giftPrice, currentPoint);
         showMessageDialog(title, content, "", false);
     }

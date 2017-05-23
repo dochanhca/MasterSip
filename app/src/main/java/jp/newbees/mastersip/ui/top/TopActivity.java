@@ -239,7 +239,6 @@ public class TopActivity extends CallActivity implements
 
     @Override
     public void onLoadMasterDataSuccess(MasterDataItem masterDataItem) {
-        topActivityPresenter.saveCoin(masterDataItem.getCoin());
         setBudgieMessage(masterDataItem.getTotalChat());
         setBudgieFootPrint(masterDataItem.getTotalFootPrint());
         setBudgieFollower(masterDataItem.getTotalFollower());

@@ -292,7 +292,7 @@
     <string name="title_send_gift">ギフトの確認</string>
     <string name="notify_not_enough_point_female">ポイントが不足しています</string>
     <string name="content_not_enough_point_female">このギフトを贈るには%1$s必要です。\n通話やチャットをして今すぐ稼ごう！\n(現在ポイント：%2$s)</string>
-    <string name="notify_not_enough_point_male">ポイントが不足しています</string>
+    <string name="mess_missing_point">ポイントが不足しています</string>
     <string name="content_not_enough_point_male">このギフトを贈るには%1$s必要です。 \n今すぐポイントを追加して \nお相手にアプローチしましょう！ \n(現在ポイント：%2$s)</string>
     <string name="buy_point">ポイント購入</string>
     <string name="title_send_gift_success">送信完了</string>
@@ -521,4 +521,8 @@
     <string name="footer_dialog_foot_print_message_for_male">%1$sさんがあなたのページに訪れました</string>
     <string name="footer_dialog_foot_print_message_for_female">%1$sさんがあなたのページに訪れました。さっそくアタックしてみましょう。</string>
     <string name="footer_dialog_follow_message_for_male">%1$sさんにお気に入りされました</string>
+    <string name="save_image">写真を保存</string>
+    <string name="mess_confirm_down_image_for_male">%dポイントを消費して\n この写真を保存しますか？</string>
+    <string name="mess_confirm_down_image_for_female">この写真を保存しますか？</string>
+    <string name="mess_request_buy_point_when_down_image">写真を保存するには、\n最低%dpt必要です。\nポイントを追加しますか？</string>
 </resources>

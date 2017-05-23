@@ -41,6 +41,7 @@ public class TopActivityPresenter extends BasePresenter {
     protected void didResponseTask(BaseTask task) {
         if (task instanceof LoadMasterDataTask) {
             MasterDataItem item = ((LoadMasterDataTask) task).getDataResponse();
+            saveMasterData(item);
             listener.onLoadMasterDataSuccess(item);
         }
     }
@@ -71,8 +72,10 @@ public class TopActivityPresenter extends BasePresenter {
 
     }
 
-    public void saveCoin(int coin) {
-        ConfigManager.getInstance().setCoin(coin);
+    private void saveMasterData(MasterDataItem item) {
+        ConfigManager.getInstance().setCoin(item.getCoin());
+        ConfigManager.getInstance().setMinPointDownImageChat(item.getMinPointDownImageChat());
+        ConfigManager.getInstance().setMinPointDownImageGallery(item.getGetMinPointDownImageGallery());
     }
 
     public enum Permission {

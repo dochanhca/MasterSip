@@ -13,6 +13,7 @@ import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.BaseUploadTask;
 import jp.newbees.mastersip.network.api.DeleteImageTask;
 import jp.newbees.mastersip.network.api.GetListChattingPhotos;
+import jp.newbees.mastersip.network.api.GetListUserPhotos;
 import jp.newbees.mastersip.network.api.GetMyPhotosTask;
 import jp.newbees.mastersip.network.api.UpdateImageTask;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -23,12 +24,12 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 2/8/17.
  */
 
-public class ImageDetailPresenter extends BasePresenter {
+public class ImageDetailPresenter extends DownloadImagePresenter {
 
     private PhotoDetailView view;
     private Handler handler;
 
-    public interface PhotoDetailView {
+    public interface PhotoDetailView extends DownloadImageView {
         void didUpdateImage(ImageItem imageItem);
 
         void didUpdateImageError(int errorCode, String errorMessage);
@@ -46,10 +47,12 @@ public class ImageDetailPresenter extends BasePresenter {
         void didLoadMorePhotosError(int errorCode, String errorMessage);
 
         void didLoadMoreChattingPhotos(ChattingGalleryItem chattingGalleryItem);
+
+        void didLoadMoreOtherUserPhotos(GalleryItem galleryItem);
     }
 
     public ImageDetailPresenter(Context context, PhotoDetailView view) {
-        super(context);
+        super(context, view);
         this.view = view;
         this.handler = new Handler();
     }
@@ -90,7 +93,12 @@ public class ImageDetailPresenter extends BasePresenter {
         GetListChattingPhotos getListChattingPhotos = new GetListChattingPhotos(context,
                 chattingGalleryItem.getNextId(), userID);
         requestToServer(getListChattingPhotos);
+    }
 
+    public void loadMoreOtherUserPhotos(int nextId, String userId) {
+        GetListUserPhotos getListUserPhotos = new GetListUserPhotos(context, nextId,
+                userId);
+        requestToServer(getListUserPhotos);
     }
 
     private void updateImage(ImageItem imageItem, String imagePath) {
@@ -120,7 +128,7 @@ public class ImageDetailPresenter extends BasePresenter {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                float percent = (float) (((double)transferredBytes * 100) / totalSize);
+                float percent = (float) (((double) transferredBytes * 100) / totalSize);
                 view.onUpdateImageProgressChanged(percent);
             }
         });
@@ -128,6 +136,7 @@ public class ImageDetailPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
+        super.didResponseTask(task);
         if (task instanceof DeleteImageTask) {
             view.didDeleteImage();
         } else if (task instanceof GetMyPhotosTask) {
@@ -135,14 +144,18 @@ public class ImageDetailPresenter extends BasePresenter {
             view.didLoadMorePhotos(galleryItem);
         } else if (task instanceof GetListChattingPhotos) {
             view.didLoadMoreChattingPhotos(((GetListChattingPhotos) task).getDataResponse());
+        } else if (task instanceof GetListUserPhotos) {
+            view.didLoadMoreOtherUserPhotos(((GetListUserPhotos) task).getDataResponse());
         }
     }
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
+        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof DeleteImageTask) {
             view.didDeleteImageError(errorCode, errorMessage);
-        } else if (task instanceof GetMyPhotosTask || task instanceof GetListChattingPhotos) {
+        } else if (task instanceof GetMyPhotosTask || task instanceof GetListChattingPhotos
+                || task instanceof GetListUserPhotos) {
             view.didLoadMorePhotosError(errorCode, errorMessage);
         }
     }

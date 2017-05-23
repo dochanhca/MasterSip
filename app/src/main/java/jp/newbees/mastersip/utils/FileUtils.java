@@ -1,7 +1,12 @@
 package jp.newbees.mastersip.utils;
 
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
+import android.webkit.MimeTypeMap;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,11 +18,11 @@ import java.io.IOException;
  */
 
 public class FileUtils {
-    private FileUtils(){
+    private FileUtils() {
         //Prevent init constructor
     }
 
-    public final static String saveBitmapToFile(Bitmap bitmap, String filename){
+    public final static String saveBitmapToFile(Bitmap bitmap, String filename) {
         FileOutputStream out = null;
         try {
             File sd = Environment.getExternalStorageDirectory();
@@ -40,7 +45,7 @@ public class FileUtils {
         return "";
     }
 
-    public final static String saveBitmapToFile(Bitmap bitmap){
+    public final static String saveBitmapToFile(Bitmap bitmap) {
         return FileUtils.saveBitmapToFile(bitmap, "photo.png");
     }
 
@@ -76,5 +81,34 @@ public class FileUtils {
 
     public static String saveImageBytesToFile(byte[] fileBytes) {
         return FileUtils.saveImageBytesToFile(fileBytes, "default.png");
+    }
+
+    public static void downloadImageFromUrl(Activity activity, String uRl) {
+        DownloadManager mgr = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        Uri downloadUri = Uri.parse(uRl);
+        DownloadManager.Request request = new DownloadManager.Request(
+                downloadUri);
+
+        StringBuilder fileName = new StringBuilder("image_")
+                .append(System.currentTimeMillis())
+                .append(".jpg");
+
+        request.setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI
+                        | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false).setTitle(fileName.toString())
+                .setDescription("From MasterSip.")
+                .setMimeType(getMimeFromFileName(fileName.toString()))
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                        fileName.toString());
+
+        mgr.enqueue(request);
+    }
+
+    private static String getMimeFromFileName(String fileName) {
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        String ext = MimeTypeMap.getFileExtensionFromUrl(fileName);
+        return map.getMimeTypeFromExtension(ext);
     }
 }

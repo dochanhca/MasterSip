@@ -540,7 +540,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     @Override
     public void onUserImageClick(int position) {
         // Show full Image
-        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
+        ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS,
+                ConfigManager.getInstance().getCurrentUser().getUserId());
     }
 
     @Override
