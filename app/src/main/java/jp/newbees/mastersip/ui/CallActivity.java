@@ -474,7 +474,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
         fillDataToFooterDialog(footerDialogEvent);
 
-        clearViewAnimation(footerDialog, showFooterDialogAnim, View.VISIBLE);
+        footerDialog.setClickable(true);
         footerDialog.startAnimation(showFooterDialogAnim);
         hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
     }
@@ -523,10 +523,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
 
     private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
         if (this instanceof ChatActivity) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
+//            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
+//            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
+            footerDialog.setPadding(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
         } else {
-            addConstrainWhenKeyboardShowing();
+//            addConstrainWhenKeyboardShowing();
         }
 
         txtContentFooterDialog.setText(footerDialogEvent.getMessage());
@@ -563,7 +564,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
         isShowingFooterDialog = false;
         View footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
-        clearViewAnimation(footerDialog, hideFooterDialogAnim, View.GONE);
+        footerDialog.setClickable(false);
         footerDialog.startAnimation(hideFooterDialogAnim);
     }
 
