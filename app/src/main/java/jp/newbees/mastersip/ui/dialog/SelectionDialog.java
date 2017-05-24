@@ -32,6 +32,7 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     private static final String LIST_SELECTION = "LIST SELECTION";
     private static final String DIALOG_TILE = "DIALOG_TILE";
     private static final String SELECTED_ITEM = "SELECTED_ITEM";
+    private static final String POSITIVE_TITLE = "POSITIVE_TITLE";
     private RecyclerView recyclerView;
     private List<SelectionItem> data;
     private String title;
@@ -52,6 +53,12 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         data = getArguments().getParcelableArrayList(LIST_SELECTION);
         title = getArguments().getString(DIALOG_TILE);
         selectionItem = getArguments().getParcelable(SELECTED_ITEM);
+        String positiveTitle = getArguments().getString(POSITIVE_TITLE, "");
+
+        if (!"".equals(positiveTitle)) {
+            setPositiveButtonContent(positiveTitle);
+        }
+
         selectedItemIndex = data.indexOf(selectionItem);
 
         initRecyclerView();
@@ -136,11 +143,13 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
     public static void openSelectionDialogFromFragment(Fragment fragment, int requestCode,
                                                        FragmentManager fragmentManager,
                                                        ArrayList<SelectionItem> selectionItems,
-                                                       String title, SelectionItem selectedItem) {
+                                                       String title,  String positiveTitle,
+                                                       SelectionItem selectedItem) {
         SelectionDialog selectionDialog = new SelectionDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putString(SelectionDialog.POSITIVE_TITLE, positiveTitle);
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, selectionItems);
         bundle.putParcelable(SelectionDialog.SELECTED_ITEM, selectedItem);
 
@@ -151,11 +160,13 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
 
     public static void openSelectionDialogFromActivity(FragmentManager fragmentManager,
                                                        ArrayList<SelectionItem> selectionItems,
-                                                       String title, SelectionItem selectedItem) {
+                                                       String title, String positiveTitle,
+                                                       SelectionItem selectedItem) {
         SelectionDialog selectionDialog = new SelectionDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString(SelectionDialog.DIALOG_TILE, title);
+        bundle.putString(SelectionDialog.POSITIVE_TITLE, positiveTitle);
         bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, selectionItems);
         bundle.putParcelable(SelectionDialog.SELECTED_ITEM, selectedItem);
 

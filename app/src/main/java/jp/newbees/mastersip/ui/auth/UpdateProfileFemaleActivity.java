@@ -175,7 +175,7 @@ public class UpdateProfileFemaleActivity extends ProfileBaseActivity implements 
             jobItem = new SelectionItem();
         }
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                femaleJobItems, getString(R.string.profession), jobItem);
+                femaleJobItems, getString(R.string.profession),"", jobItem);
     }
 
     @Override
@@ -230,7 +230,7 @@ public class UpdateProfileFemaleActivity extends ProfileBaseActivity implements 
             availableTimeItem = new SelectionItem();
         }
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                availableTimeItems, getString(R.string.available_time), availableTimeItem);
+                availableTimeItems, getString(R.string.available_time),"", availableTimeItem);
     }
 
     private void inputCharmPoint() {
@@ -250,7 +250,7 @@ public class UpdateProfileFemaleActivity extends ProfileBaseActivity implements 
             typeItem = new SelectionItem();
         }
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                typeItems, getString(R.string.type), typeItem);
+                typeItems, getString(R.string.type),"", typeItem);
     }
 
     public static void startActivityForResult(Fragment fragment, int from, int requestCode) {

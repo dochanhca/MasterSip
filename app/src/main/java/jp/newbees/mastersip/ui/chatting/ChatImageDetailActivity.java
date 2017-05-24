@@ -36,7 +36,8 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 
 public class ChatImageDetailActivity extends CallActivity implements
-        DownloadAndReportPresenter.DownloadImageView , SelectionDialog.OnSelectionDialogClick {
+        DownloadAndReportPresenter.DownloadImageView, CallActivity.ImageDownloadable,
+        SelectionDialog.OnSelectionDialogClick {
 
     private static final String IMAGE_CHAT_ITEM = "IMAGE_CHAT_ITEM";
     private static final String USER_ID = "USER_ID";
@@ -103,14 +104,27 @@ public class ChatImageDetailActivity extends CallActivity implements
     }
 
     @Override
-    public void didDownloadImage() {
+    public void didRequestDownloadImage() {
         handleDownloadImage(imageChatItem.getImageItem().getOriginUrl());
     }
 
     @Override
-    public void didDownloadImageError(int errorCode, String errorMessage) {
+    public void didRequestDownloadImageError(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void requestDownloadImage() {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
+        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
+            showDialogMissingPoint();
+        } else {
+            showLoading();
+            downloadAndReportPresenter.requestDownloadImage(imageChatItem.getMessageId(),
+                    Constant.API.DOWN_IMAGE_CHAT);
+        }
     }
 
     @Override
@@ -119,7 +133,7 @@ public class ChatImageDetailActivity extends CallActivity implements
         disMissLoading();
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
                 (ArrayList<SelectionItem>) reportReasons
-                ,getString(R.string.report_user), reportReasons.get(0));
+                ,getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
     }
 
     @Override
@@ -147,19 +161,6 @@ public class ChatImageDetailActivity extends CallActivity implements
         downloadAndReportPresenter.reportUser(
                 userId, reportReasons.get(position).getId(), Constant.API.REPORT_IMAGE_CHAT,
                 imageChatItem.getImageItem().getOriginUrl());
-    }
-
-    @Override
-    protected void handleRequestDownloadImage() {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
-        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
-            showDialogMissingPoint();
-        } else {
-            showLoading();
-            downloadAndReportPresenter.downloadImage(imageChatItem.getMessageId(),
-                    Constant.API.DOWN_IMAGE_CHAT);
-        }
     }
 
     @Override

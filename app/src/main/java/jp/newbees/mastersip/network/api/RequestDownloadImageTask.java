@@ -15,12 +15,12 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by ducpv on 5/23/17.
  */
 
-public class DownloadImageTask extends BaseTask<Void> {
+public class RequestDownloadImageTask extends BaseTask<Void> {
 
     private int imageId;
     private int type;
 
-    public DownloadImageTask(Context context, int imageId, int type) {
+    public RequestDownloadImageTask(Context context, int imageId, int type) {
         super(context);
         this.imageId = imageId;
         this.type = type;

@@ -382,7 +382,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         disMissLoading();
         SelectionDialog.openSelectionDialogFromFragment(this, -1, getFragmentManager(),
                 (ArrayList<SelectionItem>) reportReasons
-                ,getString(R.string.report_user), reportReasons.get(0));
+                , getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
     }
 
     @Override

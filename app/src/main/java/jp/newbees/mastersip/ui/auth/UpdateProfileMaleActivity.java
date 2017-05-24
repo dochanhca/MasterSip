@@ -54,7 +54,7 @@ public class UpdateProfileMaleActivity extends ProfileBaseActivity implements Vi
             jobItem = new SelectionItem();
         }
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                maleJobItems, getString(R.string.profession), jobItem);
+                maleJobItems, getString(R.string.profession),"", jobItem);
     }
 
     @Override

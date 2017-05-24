@@ -45,7 +45,7 @@ import jp.newbees.mastersip.utils.Constant;
  */
 
 public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView,
-        SelectionDialog.OnSelectionDialogClick {
+        SelectionDialog.OnSelectionDialogClick, CallActivity.ImageDownloadable {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
@@ -303,14 +303,33 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     }
 
     @Override
-    public void didDownloadImage() {
+    public void didRequestDownloadImage() {
         handleDownloadImage(photos.get(currentPosition).getOriginUrl());
     }
 
     @Override
-    public void didDownloadImageError(int errorCode, String errorMessage) {
+    public void didRequestDownloadImageError(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void requestDownloadImage() {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
+        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
+            showDialogMissingPoint();
+        } else {
+            showLoading();
+            int imageId = viewType == RECEIVED_PHOTOS_FROM_CHAT
+                    ? photos.get(currentPosition).getMessageId()
+                    : photos.get(currentPosition).getImageId();
+            int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.DOWN_IMAGE_CHAT
+                    : Constant.API.DOWN_IMAGE_GALLERY;
+
+            imageDetailPresenter.requestDownloadImage(imageId,
+                    type);
+        }
     }
 
     @Override
@@ -319,7 +338,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
         disMissLoading();
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
                 (ArrayList<SelectionItem>) reportReasons
-                , getString(R.string.report_user), reportReasons.get(0));
+                , getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
     }
 
     @Override
@@ -348,25 +367,6 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
                 : Constant.API.REPORT_IMAGE_PROFILE;
         imageDetailPresenter.reportUser(userId, reportReasons.get(position).getId(), type,
                 photos.get(currentPosition).getOriginUrl());
-    }
-
-    @Override
-    protected void handleRequestDownloadImage() {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
-        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
-            showDialogMissingPoint();
-        } else {
-            showLoading();
-            int imageId = viewType == RECEIVED_PHOTOS_FROM_CHAT
-                    ? photos.get(currentPosition).getMessageId()
-                    : photos.get(currentPosition).getImageId();
-            int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.DOWN_IMAGE_CHAT
-                    : Constant.API.DOWN_IMAGE_GALLERY;
-
-            imageDetailPresenter.downloadImage(imageId,
-                    type);
-        }
     }
 
     /**

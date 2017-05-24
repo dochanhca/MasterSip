@@ -6,7 +6,7 @@ import java.util.List;
 
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.network.api.BaseTask;
-import jp.newbees.mastersip.network.api.DownloadImageTask;
+import jp.newbees.mastersip.network.api.RequestDownloadImageTask;
 import jp.newbees.mastersip.network.api.GetListReportReasonTask;
 import jp.newbees.mastersip.network.api.ReportTask;
 
@@ -19,9 +19,9 @@ public class DownloadAndReportPresenter extends BasePresenter {
     private DownloadImageView downloadImageView;
 
     public interface DownloadImageView {
-        void didDownloadImage();
+        void didRequestDownloadImage();
 
-        void didDownloadImageError(int errorCode, String errorMessage);
+        void didRequestDownloadImageError(int errorCode, String errorMessage);
 
         void didGetListReportReason(List<SelectionItem> reportReasons);
 
@@ -39,8 +39,8 @@ public class DownloadAndReportPresenter extends BasePresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        if (task instanceof DownloadImageTask) {
-            downloadImageView.didDownloadImage();
+        if (task instanceof RequestDownloadImageTask) {
+            downloadImageView.didRequestDownloadImage();
         } else if (task instanceof GetListReportReasonTask) {
             downloadImageView.didGetListReportReason(((GetListReportReasonTask) task).getDataResponse());
         } else if (task instanceof ReportTask) {
@@ -50,8 +50,8 @@ public class DownloadAndReportPresenter extends BasePresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        if (task instanceof DownloadImageTask) {
-            downloadImageView.didDownloadImageError(errorCode, errorMessage);
+        if (task instanceof RequestDownloadImageTask) {
+            downloadImageView.didRequestDownloadImageError(errorCode, errorMessage);
         } else if (task instanceof GetListReportReasonTask) {
             downloadImageView.didGetListReportReasonError(errorCode, errorMessage);
         } else if (task instanceof ReportTask) {
@@ -59,9 +59,9 @@ public class DownloadAndReportPresenter extends BasePresenter {
         }
     }
 
-    public void downloadImage(int imageId, int type) {
-        DownloadImageTask downloadImageTask = new DownloadImageTask(getContext(), imageId, type);
-        requestToServer(downloadImageTask);
+    public void requestDownloadImage(int imageId, int type) {
+        RequestDownloadImageTask requestDownloadImageTask = new RequestDownloadImageTask(getContext(), imageId, type);
+        requestToServer(requestDownloadImageTask);
     }
 
     public void getListReportReason(int type) {

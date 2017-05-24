@@ -20,7 +20,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.FooterDialogEvent;
@@ -83,6 +82,10 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private Animation hideFooterDialogAnim;
     private boolean isShowingFooterDialog = false;
     private int minPoint;
+
+    public interface ImageDownloadable {
+        void requestDownloadImage();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,7 +164,9 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 showMessageDialog(getString(R.string.call_ended));
                 break;
             case REQUEST_DOWNLOAD_IMAGE:
-                handleRequestDownloadImage();
+                if (this instanceof ImageDownloadable) {
+                    ((ImageDownloadable) this).requestDownloadImage();
+                }
                 break;
             default:
                 break;
@@ -592,12 +597,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
     }
 
-    protected void handleRequestDownloadImage() {
-        /**
-         *Implement this method from Image detail screen to call API request download
-         */
-    }
-
     protected void handleDownloadImage(final String imageUrl) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
@@ -609,7 +608,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                     public void run() {
                         disMissLoading();
                         // Show dialog download image success
-                        Toast.makeText(CallActivity.this, "Dowload Image successfull", Toast.LENGTH_SHORT).show();
+                        showMessageDialog(getString(R.string.mess_down_image_success));
                     }
                 });
             }
@@ -629,5 +628,4 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 .build(content);
         textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
-
 }
