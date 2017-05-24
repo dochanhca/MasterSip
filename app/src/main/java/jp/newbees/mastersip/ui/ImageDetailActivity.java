@@ -16,6 +16,7 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,10 +30,12 @@ import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
+import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -41,7 +44,8 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView {
+public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView,
+        SelectionDialog.OnSelectionDialogClick {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
@@ -81,6 +85,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     private GalleryPagerAdapter galleryPagerAdapter;
     private boolean needReloadProfile;
     private boolean isLoadingMorePhotos = false;
+    private List<SelectionItem> reportReasons;
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         boolean lastPageChanged = false;
@@ -161,6 +166,10 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
                 showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_GALLERY);
                 break;
             case R.id.txt_report:
+                showLoading();
+                imageDetailPresenter.getListReportReason(viewType == RECEIVED_PHOTOS_FROM_CHAT
+                        ? Constant.API.REPORT_IMAGE_CHAT : Constant.API.REPORT_IMAGE_PROFILE);
+                break;
             default:
                 break;
         }
@@ -302,6 +311,43 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     public void didDownloadImageError(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void didGetListReportReason(List<SelectionItem> reportReasons) {
+        this.reportReasons = reportReasons;
+        disMissLoading();
+        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                (ArrayList<SelectionItem>) reportReasons
+                , getString(R.string.report_user), reportReasons.get(0));
+    }
+
+    @Override
+    public void didGetListReportReasonError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void didReportUser() {
+        disMissLoading();
+        showMessageDialog(getString(R.string.reported_user),
+                getString(R.string.mess_report_user_sucess), "", false);
+    }
+
+    @Override
+    public void didReportUserError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        showLoading();
+        int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.REPORT_IMAGE_CHAT
+                : Constant.API.REPORT_IMAGE_PROFILE;
+        imageDetailPresenter.reportUser(userId, reportReasons.get(position).getId(), type,
+                photos.get(currentPosition).getOriginUrl());
     }
 
     @Override

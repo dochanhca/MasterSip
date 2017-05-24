@@ -543,14 +543,15 @@ public class JSONUtils {
     private static SelectionItem getJobItem(Context context, UserItem userItem, JSONObject jMyInfo) throws JSONException {
         String jobTitle = jMyInfo.getString(Constant.JSON.JOB_NAME);
         String jobs[];
-        if (userItem.getGender() == UserItem.MALE) {
+        if (userItem.isMale()) {
             jobs = context.getResources().getStringArray(R.array.male_job);
         } else {
             jobs = context.getResources().getStringArray(R.array.female_job);
         }
         for (int i = 0; i < jobs.length; i++) {
             if (jobs[i].equalsIgnoreCase(jobTitle)) {
-                return new SelectionItem(i + 1, jobTitle);
+                return userItem.isMale() ? new SelectionItem(i + Constant.Application.START_MALE_JOB_ID, jobTitle)
+                        : new SelectionItem(i + 1, jobTitle);
             }
         }
         return new SelectionItem();
@@ -1173,5 +1174,18 @@ public class JSONUtils {
         int type = jData.getInt(Constant.JSON.TYPE);
         int badge = jData.getInt(Constant.JSON.BADGE);
         return new ChangeBadgeEvent(type, badge);
+    }
+
+    public static List<SelectionItem> parseReportReasonList(JSONArray jData) throws JSONException {
+        List<SelectionItem> reportReasons = new ArrayList<>();
+        for (int i = 0; i < jData.length(); i++) {
+            SelectionItem reportReason = new SelectionItem();
+            JSONObject jsonObject = jData.getJSONObject(i);
+            reportReason.setId(jsonObject.getInt(Constant.JSON.ID));
+            reportReason.setTitle(jsonObject.getString(Constant.JSON.CONTENT));
+
+            reportReasons.add(reportReason);
+        }
+        return reportReasons;
     }
 }

@@ -525,4 +525,6 @@
     <string name="mess_confirm_down_image_for_male">%dポイントを消費して\n この写真を保存しますか？</string>
     <string name="mess_confirm_down_image_for_female">この写真を保存しますか？</string>
     <string name="mess_request_buy_point_when_down_image">写真を保存するには、\n最低%dpt必要です。\nポイントを追加しますか？</string>
+    <string name="mess_report_user_sucess">ご報告ありがとうございます。\n 後ほどスタッフで審査いたします。</string>
+    <string name="reported_user">このユーザーを通報しました</string>
 </resources>

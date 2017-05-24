@@ -62,6 +62,7 @@ public class ChattingPhotoGalleryActivity extends BaseGalleryActivity implements
 
     @Override
     public void didLoadChattingPhotosError(int errorCode, String errorMessage) {
+        disMissLoading();
         showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
 

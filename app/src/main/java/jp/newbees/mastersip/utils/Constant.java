@@ -78,6 +78,9 @@ public final class Constant {
         public static final String IMAGE_TYPE = "image_type";
         public static final String MIN_POINT_DOWNLOAD = "min_point_download";
         public static final String GALLERY = "gallery";
+        public static final String REPORTEE_ID = "reportee_id";
+        public static final String REPORT_TYPE = "report_type";
+        public static final String REPORT_DETAIL_ID = "report_detail_id";
 
 
         private JSON() {
@@ -223,6 +226,10 @@ public final class Constant {
         public static final int DOWN_IMAGE_CHAT = 1;
         public static final int DOWN_IMAGE_GALLERY = 2;
 
+        public static final int REPORT_IMAGE_PROFILE = 1;
+        public static final int REPORT_PROFILE = 2;
+        public static final int REPORT_IMAGE_CHAT = 3;
+
         public static final int CHANGE_TO_BACKGROUND = 1;
         public static final int CHANGE_TO_FOREGROUND = 2;
 
@@ -307,10 +314,12 @@ public final class Constant {
         public static final String ONLINE_LIST = "online/list";
         public static final String CHANGE_BACKGROUND_STATE = "background";
         public static final String MASTER_DATA = "master_data/get";
-
         public static final String PUSH_NOTIFICATION = "push_notification/register";
         public static final String FOOTPRINT = "footprint";
         public static final String DOWN_IMAGE = "down_image";
+        public static final String REPORT_LIST = "report/list";
+        public static final String REPORT = "report";
+
 
         public static void initBaseURL() {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;

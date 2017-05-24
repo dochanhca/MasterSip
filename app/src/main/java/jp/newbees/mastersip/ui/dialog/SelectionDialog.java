@@ -52,7 +52,7 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
         data = getArguments().getParcelableArrayList(LIST_SELECTION);
         title = getArguments().getString(DIALOG_TILE);
         selectionItem = getArguments().getParcelable(SELECTED_ITEM);
-        selectedItemIndex = selectionItem.getId() - 1;
+        selectedItemIndex = data.indexOf(selectionItem);
 
         initRecyclerView();
 
@@ -135,13 +135,13 @@ public class SelectionDialog extends BaseDialog implements SelectionAdapter.OnSe
 
     public static void openSelectionDialogFromFragment(Fragment fragment, int requestCode,
                                                        FragmentManager fragmentManager,
-                                                       ArrayList<SelectionItem> sortConditions,
+                                                       ArrayList<SelectionItem> selectionItems,
                                                        String title, SelectionItem selectedItem) {
         SelectionDialog selectionDialog = new SelectionDialog();
 
         Bundle bundle = new Bundle();
         bundle.putString(SelectionDialog.DIALOG_TILE, title);
-        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, sortConditions);
+        bundle.putParcelableArrayList(SelectionDialog.LIST_SELECTION, selectionItems);
         bundle.putParcelable(SelectionDialog.SELECTED_ITEM, selectedItem);
 
         selectionDialog.setArguments(bundle);
