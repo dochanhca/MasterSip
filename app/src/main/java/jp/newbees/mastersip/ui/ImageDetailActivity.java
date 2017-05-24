@@ -29,20 +29,25 @@ import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
+import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 
 /**
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView {
+public class ImageDetailActivity extends CallActivity implements
+        ImageDetailPresenter.PhotoDetailView, CallActivity.ImageDownloadable {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
     public static final String POSITION = "POSITION";
+    public static final String USER_ID = "USER_ID";
     private static final int VIEW_ALL_PHOTO = 12;
 
     public static final int MY_PHOTOS = 1;
@@ -71,6 +76,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     private List<ImageItem> photos;
     private int currentPosition;
     private int viewType;
+    private String userId;
     private ImageDetailPresenter imageDetailPresenter;
     private Uri pickedImage;
     private GalleryPagerAdapter galleryPagerAdapter;
@@ -105,9 +111,12 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             isLoadingMorePhotos = true;
             if (viewType == MY_PHOTOS) {
                 imageDetailPresenter.loadMorePhotos(galleryItem);
-            } else {
+            } else if ((viewType == RECEIVED_PHOTOS_FROM_CHAT)) {
                 ChattingGalleryItem chattingGalleryItem = (ChattingGalleryItem) galleryItem;
                 imageDetailPresenter.loadMoreChattingPhotos(chattingGalleryItem);
+            } else {
+                imageDetailPresenter.loadMoreOtherUserPhotos(Integer.parseInt(galleryItem.getNextId())
+                        , userId);
             }
         }
     };
@@ -123,6 +132,7 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
         galleryItem = getIntent().getParcelableExtra(GALLERY_ITEM);
         currentPosition = getIntent().getIntExtra(POSITION, 0);
         viewType = getIntent().getIntExtra(VIEW_TYPE, 1);
+        userId = getIntent().getStringExtra(USER_ID);
 
         photos = galleryItem.getPhotos();
         initHeader(currentPosition + 1 + "/" + photos.size());
@@ -149,6 +159,8 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
                 PhotoGalleryActivity.startActivityForResult(this, galleryItem, VIEW_ALL_PHOTO);
                 break;
             case R.id.txt_save_photo:
+                showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_GALLERY);
+                break;
             case R.id.txt_report:
             default:
                 break;
@@ -236,7 +248,6 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     @Override
     public void didLoadMorePhotos(GalleryItem galleryItem) {
         isLoadingMorePhotos = false;
-        makeAllImageApproved(galleryItem);
         updatePhotos(galleryItem);
         disMissLoading();
         viewPagerGallery.setCurrentItem(++currentPosition);
@@ -259,6 +270,14 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     }
 
     @Override
+    public void didLoadMoreOtherUserPhotos(GalleryItem galleryItem) {
+        isLoadingMorePhotos = false;
+        updatePhotos(galleryItem);
+        disMissLoading();
+        viewPagerGallery.setCurrentItem(++currentPosition);
+    }
+
+    @Override
     public void onTextDialogOkClick(int requestCode) {
         super.onTextDialogOkClick(requestCode);
         if (requestCode == REQUEST_DELETE_IMAGE) {
@@ -275,8 +294,39 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
         super.onBackPressed();
     }
 
+    @Override
+    public void didDownloadImage() {
+        handleDownloadImage(photos.get(currentPosition).getOriginUrl());
+    }
+
+    @Override
+    public void didDownloadImageError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void requestDownloadImage() {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
+        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
+            showDialogMissingPoint();
+        } else {
+            showLoading();
+            int imageId = viewType == RECEIVED_PHOTOS_FROM_CHAT
+                    ? photos.get(currentPosition).getMessageId()
+                    : photos.get(currentPosition).getImageId();
+            int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.DOWN_IMAGE_CHAT
+                    : Constant.API.DOWN_IMAGE_GALLERY;
+
+            imageDetailPresenter.downloadImage(imageId,
+                    type);
+        }
+    }
+
     /**
      * Trick because images from chat room don't need approve
+     *
      * @param galleryItem
      */
     private void makeAllImageApproved(GalleryItem galleryItem) {
@@ -318,8 +368,8 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
         } else {
             txtChangePhoto.setVisibility(View.GONE);
             txtDeletePhoto.setVisibility(View.GONE);
-            txtSavePhoto.setVisibility(View.GONE);
-            txtReport.setVisibility(View.GONE);
+            txtSavePhoto.setVisibility(View.VISIBLE);
+            txtReport.setVisibility(View.VISIBLE);
         }
     }
 
@@ -371,11 +421,12 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
      * @param type
      */
     public static void startActivity(Activity activity, GalleryItem galleryItem, int imagePosition,
-                                     int type) {
+                                     int type, String userID) {
         Intent intent = new Intent(activity, ImageDetailActivity.class);
         intent.putExtra(GALLERY_ITEM, galleryItem);
         intent.putExtra(POSITION, imagePosition);
         intent.putExtra(VIEW_TYPE, type);
+        intent.putExtra(USER_ID, userID);
         activity.startActivity(intent);
     }
 }

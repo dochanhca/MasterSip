@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -20,15 +19,19 @@ import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageChatItem;
+import jp.newbees.mastersip.model.UserItem;
+import jp.newbees.mastersip.presenter.DownloadImagePresenter;
 import jp.newbees.mastersip.ui.CallActivity;
-import jp.newbees.mastersip.utils.Utils;
+import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by ducpv on 2/9/17.
  */
 
-public class ChatImageDetailActivity extends CallActivity {
+public class ChatImageDetailActivity extends CallActivity implements
+        DownloadImagePresenter.DownloadImageView, CallActivity.ImageDownloadable {
 
     private static final String IMAGE_CHAT_ITEM = "IMAGE_CHAT_ITEM";
 
@@ -45,6 +48,9 @@ public class ChatImageDetailActivity extends CallActivity {
     @BindView(R.id.progress_wheel)
     ProgressWheel prwImageLoading;
 
+    private DownloadImagePresenter downloadImagePresenter;
+    private ImageChatItem imageChatItem;
+
     @Override
     protected int layoutId() {
         return R.layout.activity_chat_image_detail;
@@ -57,34 +63,15 @@ public class ChatImageDetailActivity extends CallActivity {
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        ImageChatItem imageChatItem = getIntent().getParcelableExtra(IMAGE_CHAT_ITEM);
+        downloadImagePresenter = new DownloadImagePresenter(this, this);
+
+        imageChatItem = getIntent().getParcelableExtra(IMAGE_CHAT_ITEM);
         if (imageChatItem.isOwner()) {
             layoutBottomAction.setVisibility(View.GONE);
         } else {
             layoutBottomAction.setVisibility(View.VISIBLE);
         }
-        new PhotoViewAttacher(imgPhoto, true);
-        Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl())
-                .asBitmap().atMost()
-                .thumbnail(0.1f)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        setImageSize(resource.getHeight(), resource.getWidth());
-                        imgPhoto.setImageBitmap(resource);
-                        prwImageLoading.setVisibility(View.GONE);
-                    }
-
-                    private void setImageSize(int h, int w) {
-                        ViewGroup.LayoutParams layoutParams = imgPhoto.getLayoutParams();
-                        layoutParams.height =
-                                Utils.getScreenHeight(ChatImageDetailActivity.this) < h
-                        ? Utils.getScreenHeight(ChatImageDetailActivity.this) : h;
-                        layoutParams.width = Utils.getScreenWidth(ChatImageDetailActivity.this) < w
-                                ? Utils.getScreenWidth(ChatImageDetailActivity.this) : w;
-                        imgPhoto.setLayoutParams(layoutParams);
-                    }
-                });
+        loadImage();
     }
 
     @OnClick({R.id.txt_save_photo, R.id.txt_report, R.id.img_close})
@@ -95,6 +82,7 @@ public class ChatImageDetailActivity extends CallActivity {
                 overridePendingTransition(R.anim.enter_from_top, R.anim.exit_to_bot);
                 break;
             case R.id.txt_save_photo:
+                showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_CHAT);
             case R.id.txt_report:
             default:
                 break;
@@ -102,9 +90,47 @@ public class ChatImageDetailActivity extends CallActivity {
     }
 
     @Override
+    public void didDownloadImage() {
+        handleDownloadImage(imageChatItem.getImageItem().getOriginUrl());
+    }
+
+    @Override
+    public void didDownloadImageError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void requestDownloadImage() {
+        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
+        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
+        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
+            showDialogMissingPoint();
+        } else {
+            showLoading();
+            downloadImagePresenter.downloadImage(imageChatItem.getMessageId(),
+                    Constant.API.DOWN_IMAGE_CHAT);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.enter_from_top, R.anim.exit_to_bot);
+    }
+
+    private void loadImage() {
+        new PhotoViewAttacher(imgPhoto, true);
+        Glide.with(this).load(imageChatItem.getImageItem().getOriginUrl())
+                .asBitmap().atMost()
+                .thumbnail(0.1f)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        imgPhoto.setImageBitmap(resource);
+                        prwImageLoading.setVisibility(View.GONE);
+                    }
+                });
     }
 
     /**

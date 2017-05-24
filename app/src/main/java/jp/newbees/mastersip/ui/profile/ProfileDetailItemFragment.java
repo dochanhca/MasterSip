@@ -372,9 +372,11 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     @Override
     public void onUserImageClick(int position) {
         if (isCurrentUser()) {
-            ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.MY_PHOTOS);
+            ImageDetailActivity.startActivity(getActivity(), galleryItem, position,
+                    ImageDetailActivity.MY_PHOTOS, userItem.getUserId());
         } else {
-            ImageDetailActivity.startActivity(getActivity(), galleryItem, position, ImageDetailActivity.OTHER_USER_PHOTOS);
+            ImageDetailActivity.startActivity(getActivity(), galleryItem,
+                    position, ImageDetailActivity.OTHER_USER_PHOTOS, userItem.getUserId());
         }
     }
 

@@ -10,6 +10,24 @@ public class MasterDataItem {
     private int totalFollower;
     private int totalMyMenu;
     private int coin;
+    private int minPointDownImageChat;
+    private int getMinPointDownImageGallery;
+
+    public int getMinPointDownImageChat() {
+        return minPointDownImageChat;
+    }
+
+    public void setMinPointDownImageChat(int minPointDownImageChat) {
+        this.minPointDownImageChat = minPointDownImageChat;
+    }
+
+    public int getGetMinPointDownImageGallery() {
+        return getMinPointDownImageGallery;
+    }
+
+    public void setGetMinPointDownImageGallery(int getMinPointDownImageGallery) {
+        this.getMinPointDownImageGallery = getMinPointDownImageGallery;
+    }
 
     public int getTotalChat() {
         return totalChat;

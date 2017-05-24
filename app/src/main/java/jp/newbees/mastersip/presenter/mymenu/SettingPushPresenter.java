@@ -3,7 +3,7 @@ package jp.newbees.mastersip.presenter.mymenu;
 import android.content.Context;
 
 import jp.newbees.mastersip.model.SettingPushItem;
-import jp.newbees.mastersip.network.GetSettingPushTask;
+import jp.newbees.mastersip.network.api.GetSettingPushTask;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.SettingPushTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
