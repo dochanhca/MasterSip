@@ -171,6 +171,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
 
     public final void setLeftTabChecked() {
         isSelected = true;
+        rdoFollowers.setChecked(true);
         handleChangeListFollow(currentCheckId);
     }
 }

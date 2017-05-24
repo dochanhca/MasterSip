@@ -176,6 +176,7 @@ public class FootPrintFragment extends BaseCallFragment implements
 
     public final void setLeftTabChecked() {
         isSelected = true;
+        rdoFootprintViewedByOther.setChecked(true);
         handleChangeListFootprint(currentCheckId);
     }
 }
