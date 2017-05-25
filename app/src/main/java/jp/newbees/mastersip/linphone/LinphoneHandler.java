@@ -433,6 +433,8 @@ public class LinphoneHandler implements LinphoneCoreListener {
                     sipItem.getExtension(), sipItem.getSecret());
         } catch (LinphoneCoreException e) {
             Logger.e(TAG, e.getMessage());
+        } catch (NullPointerException e) {
+            Logger.e(TAG, e.getMessage());
         }
     }
 

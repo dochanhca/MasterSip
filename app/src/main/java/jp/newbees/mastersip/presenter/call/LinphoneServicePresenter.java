@@ -198,17 +198,23 @@ public class LinphoneServicePresenter extends BasePresenter implements MyLifecyc
      * @param status get in constant/api/CHANGE_TO_BACKGROUND or constant/api/CHANGE_TO_FOREGROUND
      */
     public void sendChangeBackgroundStateToSever(final int status) {
-        SendBackgroundStateTask task = new SendBackgroundStateTask(getContext(), status);
-        task.request(new Response.Listener() {
-            @Override
-            public void onResponse(Object response) {
-            }
-        }, new BaseTask.ErrorListener() {
-            @Override
-            public void onError(int errorCode, String errorMessage) {
-                Logger.e("LinphoneServicePresenter", errorCode + " " + errorMessage);
-            }
-        });
+        try {
+            String extension = ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension();
+            SendBackgroundStateTask task = new SendBackgroundStateTask(getContext(), status, extension);
+            task.request(new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                }
+            }, new BaseTask.ErrorListener() {
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+                    Logger.e("LinphoneServicePresenter", errorCode + " " + errorMessage);
+                }
+            });
+        } catch (NullPointerException ex) {
+            Logger.e("LinphoneServicePresenter", "user has not login");
+        }
+
     }
 
     public interface IncomingCallListener {
