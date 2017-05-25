@@ -1188,4 +1188,16 @@ public class JSONUtils {
         }
         return reportReasons;
     }
+
+    public static List<UserItem> parseListBlockUser(JSONObject jData) throws JSONException {
+        JSONArray jList = jData.getJSONArray(Constant.JSON.LIST);
+        List<UserItem> userItems = new ArrayList<>();
+        for (int i = 0; i < jList.length(); i++) {
+            JSONObject jUser = jList.getJSONObject(i);
+            UserItem userItem = parseUserForFootprint(jUser);
+            userItem.setBlocked(true);
+            userItems.add(userItem);
+        }
+        return userItems;
+    }
 }

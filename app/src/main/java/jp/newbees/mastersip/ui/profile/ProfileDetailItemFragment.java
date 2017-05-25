@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,10 +46,12 @@ import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseCallFragment;
+import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
 import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.mymenu.BlockListFragment;
 import jp.newbees.mastersip.ui.top.SearchContainerFragment;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
@@ -343,7 +346,9 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     @Override
     public void didGetListPhotosError(String errorMessage, int errorCode) {
-        showToastExceptionVolleyError(errorCode, errorMessage);
+        if (errorCode != Constant.Error.HAS_BEEN_BLOCKED) {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
         swipeRefreshLayout.setRefreshing(false);
         isLoading = false;
     }
@@ -489,6 +494,8 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         } else if (requestCode == CONFIRM_BLOCK_USER) {
             showLoading();
             profileDetailItemPresenter.blockUser(userItem.getUserId());
+        } else if (requestCode == REQUEST_GO_BLOCK_LIST) {
+            showBlockListFragment();
         }
     }
 
@@ -691,6 +698,17 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     private void showGiftFragment() {
         SearchContainerFragment.showGiftFragment(getActivity(), userItem,
                 ListGiftFragment.OPEN_FROM_PROFILE_DETAILS, needShowActionBar);
+    }
+
+
+    private void showBlockListFragment() {
+        BaseFragment fragment = BlockListFragment.newInstance();
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragment.setTransitionAnimation(transaction);
+        transaction.addToBackStack(null);
+        transaction.add(R.id.fragment_search_container, fragment,
+                BlockListFragment.class.getSimpleName()).commit();
     }
 
     public final void onPageSelected() {

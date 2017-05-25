@@ -533,4 +533,6 @@
     <string name="maximum_number_of_block_user">ブロック人数が上限に達しています</string>
     <string name="mess_maximum_user_block">%sさんをブロックするには\nブロックリストから\n他のお相手を解除してください。</string>
     <string name="go_block_list">ブロックリストへ</string>
+    <string name="un_block">解除する</string>
+    <string name="block">ブロック</string>
 </resources>

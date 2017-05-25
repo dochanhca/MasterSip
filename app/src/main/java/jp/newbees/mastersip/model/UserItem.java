@@ -54,6 +54,15 @@ public class UserItem implements Serializable, Parcelable {
 
     private SettingItem settings;
     private String footprintTime;
+    private boolean isBlocked;
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
 
     public SettingItem getSettings() {
         return settings;
