@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -463,6 +464,9 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 break;
             case Constant.FOOTER_DIALOG_TYPE.FOLLOW:
                 setBudgieFollower(badge);
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.ONLINE_NOTIFY:
+                setBadgeOnl(badge);
                 break;
         }
     }

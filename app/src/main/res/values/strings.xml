@@ -514,6 +514,7 @@
     <string name="notification_settings">通知設定</string>
     <string name="notification_setting_saved">通知設定が保存されました。</string>
     <string name="mess_be_followed">%1$sさんにお気に入りされました</string>
+    <string name="mess_be_uerOnl">%1$sさんがオンラインになりました</string>
     <string name="block_user">ブロックする</string>
     <string name="report_user">通報する</string>
     <string name="footer_dialog_gift_message_for_male">%1$sさんからギフトが届いています。</string>

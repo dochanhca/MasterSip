@@ -50,7 +50,7 @@ public class TopActivity extends CallActivity implements
     public static final int FOLLOW_FRAGMENT = 3;
     public static final int MY_MENU_CONTAINER_FRAGMENT = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
-
+    private boolean isPushUserOnl = true;
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
 
@@ -96,9 +96,11 @@ public class TopActivity extends CallActivity implements
             }
             if (position == MY_MENU_CONTAINER_FRAGMENT) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
-                if (null != fragment) fragment.onTabSelected();
+                if (null != fragment) {
+                    fragment.onTabSelected();
+                }
             }
-                baseFragment.reloadDataToClearBadge();
+            baseFragment.reloadDataToClearBadge();
 
         }
 
@@ -308,6 +310,9 @@ public class TopActivity extends CallActivity implements
                 viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
                 ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
                 break;
+            case MyFirebaseMessagingService.USER_ONL:
+                ConfigManager.getInstance().savePushUserOnl(true);
+                viewPager.setCurrentItem(MY_MENU_CONTAINER_FRAGMENT);
             default:
                 break;
         }

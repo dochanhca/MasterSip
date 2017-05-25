@@ -390,6 +390,7 @@ public final class Constant {
         public static final String REGISTER_TOKEN = "RegisterToken";
         public static final String LOGIN_FLAG = "Login_Flag";
         public static final String LOGIN_VOIP_FLAG = "LOGIN_VOIP_FLAG";
+        public static final String PUSH_USER_ONL = "PUSH_USER_ONL";
 
         public static final String DEFAULT_LANGUAGE = "ja";
         public static final int MIN_AGE = 18;
@@ -479,6 +480,6 @@ public final class Constant {
         public static final int SEND_GIFT = 2;
         public static final int FOOT_PRINT = 5;
         public static final int FOLLOW = 6;
-        public static final int ONLINE_NOTIFY = 7;
+        public static final int ONLINE_NOTIFY = 20;
     }
 }

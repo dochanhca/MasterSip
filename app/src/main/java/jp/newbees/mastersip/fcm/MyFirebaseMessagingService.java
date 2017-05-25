@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.fcm;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -43,6 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int PUSH_MISS_CALL = 1;
     public static final int PUSH_CHAT = 2;
     public static final int PUSH_FOLLOWED = 3;
+    public static final int USER_ONL = 4;
 
 
     /**
@@ -70,6 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Logger.e(TAG, "Message data payload: " + remoteMessage.getData());
             try {
+                Logger.e(TAG, "onMessageReceived: ");
                 Map<String, Object> data = FirebaseUtils.parseData(remoteMessage.getData());
                 handlePushMessage(data);
 
@@ -92,6 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // message, here is where that should be initiated. See sendNotification method below.
 
     private void handlePushMessage(Map<String, Object> data) {
+        Logger.e(TAG, "Push from server: " + data.get(Constant.JSON.FCM_PUSH_ITEM));
         FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
         Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
         switch (fcmPushItem.getCategory()) {
@@ -113,6 +118,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendNotificationForFollow(fcmPushItem);
                 }
                 break;
+            case FCMPushItem.CATEGORY.USER_ONLINE:
+                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
+                    sendNotificationUserOnl(fcmPushItem);
+                }
+                break;
             default:
                 break;
         }
@@ -123,6 +133,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PUSH_TYPE, PUSH_FOLLOWED);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotificationUserOnl(FCMPushItem fcmPushItem) {
+        String message = String.format(getString(R.string.mess_be_uerOnl), fcmPushItem.getMessage());
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PUSH_TYPE, USER_ONL);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }

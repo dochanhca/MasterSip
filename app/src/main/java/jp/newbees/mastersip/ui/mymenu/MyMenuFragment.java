@@ -164,6 +164,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         ButterKnife.bind(this, mRoot);
         presenter = new MyMenuPresenter(getContext(), this);
         initDefaultViews();
+        if (ConfigManager.getInstance().isPushUserOnl()) {
+            MyMenuContainerFragment.showOnlineListFragment(getActivity());
+            ConfigManager.getInstance().savePushUserOnl(false);
+        }
     }
 
     private void initDefaultViews() {

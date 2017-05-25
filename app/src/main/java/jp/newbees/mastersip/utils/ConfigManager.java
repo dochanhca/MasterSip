@@ -49,6 +49,7 @@ final public class ConfigManager {
     private int unReadMessage;
     private int unReadFootPrint;
     private int unReadFollow;
+    private int userOnl;
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -138,7 +139,15 @@ final public class ConfigManager {
         editor.putString(Constant.Application.AUTHORIZATION, authId);
         editor.commit();
     }
+    public boolean isPushUserOnl() {
+        return sharedPreferences.getBoolean(Constant.Application.PUSH_USER_ONL, false);
+    }
 
+    public void savePushUserOnl(boolean isPushUserOnl) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.PUSH_USER_ONL, isPushUserOnl);
+        editor.commit();
+    }
     public FilterItem getFilterUser() {
         String jFilter = sharedPreferences.getString(Constant.Application.SETTING_FILTER, null);
         Gson gson = new Gson();
@@ -309,7 +318,13 @@ final public class ConfigManager {
     public void setUnReadFollow(int unReadFollow) {
         this.unReadFollow = unReadFollow;
     }
+    public int getUserOnl() {
+        return userOnl;
+    }
 
+    public void setUserOnl(int userOnl) {
+        this.userOnl = userOnl;
+    }
     public int getCurrentTabInRootNavigater() {
         return currentTabInRootNavigater;
     }
