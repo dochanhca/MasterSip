@@ -9,7 +9,6 @@ import com.android.volley.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
@@ -18,17 +17,19 @@ import jp.newbees.mastersip.utils.Constant;
 
 public class SendBackgroundStateTask extends BaseTask {
     private int status;
+    private String extension;
 
-    public SendBackgroundStateTask(Context context, int status) {
+    public SendBackgroundStateTask(Context context, int status, String extension) {
         super(context);
         this.status = status;
+        this.extension = extension;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constant.JSON.EXTENSION, ConfigManager.getInstance().getCurrentUser().getSipItem().getExtension());
+        jsonObject.put(Constant.JSON.EXTENSION, extension);
         jsonObject.put(Constant.JSON.STATUS, status);
         return jsonObject;
     }

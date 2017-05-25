@@ -23,8 +23,8 @@ android {
         applicationId "jp.newbees.mastersip"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 20
-        versionName "v1.0.0 b20"
+        versionCode 21
+        versionName "v1.0.0 b21"
         multiDexEnabled true
         useLibrary 'org.apache.http.legacy'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

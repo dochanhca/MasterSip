@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -52,7 +51,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 1/4/17.
  */
 
-public abstract class ProfileBaseActivity extends BaseActivity implements
+public abstract class ProfileBaseActivity extends CallActivity implements
         UpdateRegisterProfilePresenter.View, UploadImagePresenter.View,
         TextDialog.OnTextDialogPositiveClick, SelectImageDialog.OnSelectAvatarDiaLogClick {
 
