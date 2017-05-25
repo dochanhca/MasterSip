@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -25,7 +24,6 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FootprintPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -73,7 +71,6 @@ public class FootPrintFragment extends BaseCallFragment implements
     protected void init(View rootView, Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
-        this.rdoFootprintGroup.setOnCheckedChangeListener(this);
         this.adapterFootprint = new FootprintAdapter(getActivity().getApplicationContext(), new ArrayList<FootprintItem>());
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
@@ -92,6 +89,7 @@ public class FootPrintFragment extends BaseCallFragment implements
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
+        handleChangeListFootprint(currentCheckId);
     }
 
     @Override
@@ -169,11 +167,9 @@ public class FootPrintFragment extends BaseCallFragment implements
         });
     }
 
-    public final void setLeftTabChecked() {
+    public void initData() {
+        handleChangeListFootprint(currentCheckId);
         this.rdoFootprintViewedByOther.setChecked(true);
-    }
-
-    public void loadData() {
-        handleChangeListFootprint(rdoFootprintViewedByOther.getId());
+        this.rdoFootprintGroup.setOnCheckedChangeListener(this);
     }
 }

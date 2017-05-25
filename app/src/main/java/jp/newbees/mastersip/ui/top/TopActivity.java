@@ -92,12 +92,10 @@ public class TopActivity extends CallActivity implements
                 if (null != fragment) fragment.onTabSelected();
             } else if (position == FOOT_PRINT_FRAGMENT) {
                 FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
-                footPrintFragment.setLeftTabChecked();
-                footPrintFragment.loadData();
+                footPrintFragment.initData();
 
             } else if (position == FOLLOW_FRAGMENT) {
                 FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
-                followFragment.setLeftTabChecked();
                 followFragment.loadData();
             }
         }
