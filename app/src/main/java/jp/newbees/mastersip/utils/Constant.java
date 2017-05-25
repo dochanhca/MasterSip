@@ -219,6 +219,8 @@ public final class Constant {
 
     public static final class API {
 
+        public static final String BLOCK = "block";
+
         private API() {
             //Prevent init constructor
         }
@@ -383,6 +385,9 @@ public final class Constant {
         public static final int TYPE_BOY_NG = 1031;
         public static final int CHARM_POINT_NG = 1016;
         public static final int SLOGAN_NG = 1015;
+        public static final int MAXIMUM_USER_BLOCK = 6002;
+        public static final int HAS_BEEN_BLOCKED = 6101;
+
     }
 
     public final class Application {

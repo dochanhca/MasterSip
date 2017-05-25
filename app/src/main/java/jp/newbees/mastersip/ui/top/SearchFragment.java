@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
 
     private GridLayoutManager layoutManager;
 
-    private ArrayList<UserItem> userItems = Mockup.getUserItems();
+    private List<UserItem> userItems = Mockup.getUserItems();
     private String nextPage;
 
     private HashMap<Integer, Integer> FILTER_MODE_INDEXS;
@@ -431,6 +430,13 @@ public class SearchFragment extends BaseFragment implements FilterUserPresenter.
         if (!isShowFilterAndNavigationBar) {
             isShowFilterAndNavigationBar = true;
             showFilterAndNavigationBar();
+        }
+    }
+
+    public void removeUserAfterBlocked(UserItem userItem) {
+        if ( userItems.contains(userItem)) {
+            userItems.remove(userItem);
+            notifyListUserChanged();
         }
     }
 }

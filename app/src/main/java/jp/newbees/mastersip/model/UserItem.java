@@ -327,4 +327,20 @@ public class UserItem implements Serializable, Parcelable {
             return new UserItem[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserItem userItem = (UserItem) o;
+
+        return userId.equals(userItem.userId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return userId.hashCode();
+    }
 }

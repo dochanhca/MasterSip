@@ -528,4 +528,9 @@
     <string name="mess_report_user_sucess">ご報告ありがとうございます。\n 後ほどスタッフで審査いたします。</string>
     <string name="reported_user">このユーザーを通報しました</string>
     <string name="mess_down_image_success">画像を保存しました。</string>
+    <string name="mess_confirm_block_user">%sさんをブロックしますか？</string>
+    <string name="user_block">ユーザーブロック</string>
+    <string name="maximum_number_of_block_user">ブロック人数が上限に達しています</string>
+    <string name="mess_maximum_user_block">%sさんをブロックするには\nブロックリストから\n他のお相手を解除してください。</string>
+    <string name="go_block_list">ブロックリストへ</string>
 </resources>

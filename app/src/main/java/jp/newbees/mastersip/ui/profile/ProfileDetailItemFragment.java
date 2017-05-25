@@ -1,5 +1,7 @@
 package jp.newbees.mastersip.ui.profile;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import org.greenrobot.eventbus.EventBus;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.UserPhotoAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.BlockUserEvent;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
@@ -46,9 +50,13 @@ import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.top.SearchContainerFragment;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -61,8 +69,10 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
     public static final String USER_ITEM = "USER_ITEM";
-    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
     private static final String SELECTED = "SELECTED";
+    private static final int CONFIRM_SEND_GIFT_DIALOG = 11;
+    private static final int CONFIRM_BLOCK_USER = 41;
+    private static final int REQUEST_GO_BLOCK_LIST = 42;
     private static final long TIME_DELAY = 500;
 
     @BindView(R.id.txt_online_time)
@@ -240,7 +250,8 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
-            R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call, R.id.layout_report_user})
+            R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call, R.id.layout_report_user,
+    R.id.layout_block_user})
     public void onClick(View view) {
         // mis-clicking prevention, using threshold of 1000 ms
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
@@ -272,9 +283,21 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                 showLoading();
                 profileDetailItemPresenter.getListReportReason();
                 break;
+            case R.id.layout_block_user:
+                showDialogConfirmBlockUser();
+                break;
             default:
                 break;
         }
+    }
+
+    private void showDialogConfirmBlockUser() {
+        String content = String.format(getString(R.string.mess_confirm_block_user), userItem.getUsername());
+        TextDialog textDialog = new TextDialog.Builder()
+                .setTitle(getString(R.string.user_block))
+                .build(this, content
+                        , CONFIRM_BLOCK_USER);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
     }
 
     @Override
@@ -293,7 +316,11 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     @Override
     public void didGetProfileDetailError(String errorMessage, int errorCode) {
-        showToastExceptionVolleyError(errorCode, errorMessage);
+        if (errorCode == Constant.Error.HAS_BEEN_BLOCKED) {
+            redirectToListProfile();
+        } else {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
         progressWheel.spin();
         progressWheel.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
@@ -405,6 +432,46 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @Override
+    public void didBlockUser() {
+        disMissLoading();
+        redirectToListProfile();
+    }
+
+    private void redirectToListProfile() {
+        Activity activity = this.getActivity();
+        if (activity instanceof TopActivity) {
+            EventBus.getDefault().post(new BlockUserEvent(userItem));
+        } else if (activity instanceof ProfileDetailItemActivity) {
+            Intent intent = new Intent(getApplicationContext(), TopActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(USER_ITEM, userItem);
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void didBlockUserError(int errorCode, String errorMessage) {
+        disMissLoading();
+        if (errorCode == Constant.Error.MAXIMUM_USER_BLOCK) {
+            showDialogMaximumUserBlock();
+        } else {
+            showToastExceptionVolleyError(errorCode, errorMessage);
+        }
+    }
+
+    private void showDialogMaximumUserBlock() {
+        String title = getString(R.string.maximum_number_of_block_user);
+        String content = String.format(getString(R.string.mess_maximum_user_block), userItem.getUsername());
+        String positiveTitle = getString(R.string.go_block_list);
+        TextDialog textDialog = new TextDialog.Builder()
+                .setPositiveTitle(positiveTitle)
+                .setTitle(title).build(this, content, REQUEST_GO_BLOCK_LIST);
+        textDialog.show(getFragmentManager(), TextDialog.class.getSimpleName());
+    }
+
+    @Override
     public void onUserImageClick(int position) {
         if (isCurrentUser()) {
             ImageDetailActivity.startActivity(getActivity(), galleryItem, position,
@@ -419,6 +486,9 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     public void onTextDialogOkClick(int requestCode) {
         if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
             showGiftFragment();
+        } else if (requestCode == CONFIRM_BLOCK_USER) {
+            showLoading();
+            profileDetailItemPresenter.blockUser(userItem.getUserId());
         }
     }
 
@@ -626,5 +696,4 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     public final void onPageSelected() {
         super.setShowingProfile(userItem);
     }
-
 }

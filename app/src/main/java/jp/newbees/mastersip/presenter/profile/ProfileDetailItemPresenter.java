@@ -11,6 +11,7 @@ import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
+import jp.newbees.mastersip.network.api.BlockUserTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
 import jp.newbees.mastersip.network.api.GetListReportReasonTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
@@ -63,6 +64,10 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         void didReportUser();
 
         void didReportUserError(int errorCode, String errorMessage);
+
+        void didBlockUser();
+
+        void didBlockUserError(int errorCode, String errorMessage);
     }
 
     public ProfileDetailItemPresenter(BaseActivity context, ProfileDetailItemView view) {
@@ -91,6 +96,8 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didGetListReportReason(((GetListReportReasonTask) task).getDataResponse());
         } else if (task instanceof ReportTask) {
             view.didReportUser();
+        } else if (task instanceof BlockUserTask) {
+            view.didBlockUser();
         }
     }
 
@@ -108,6 +115,8 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didGetListReportReasonError(errorCode, errorMessage);
         } else if (task instanceof ReportTask) {
             view.didReportUserError(errorCode, errorMessage);
+        } else if (task instanceof BlockUserTask) {
+            view.didBlockUserError(errorCode, errorMessage);
         }
     }
 
@@ -122,8 +131,6 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         view.didSettingOnlineChanged(event.isFollowing(), event.getUserId());
     }
 
-
-
     public final void registerEvent() {
         EventBus.getDefault().register(this);
     }
@@ -131,8 +138,6 @@ public class ProfileDetailItemPresenter extends BasePresenter {
     public final void unRegisterEvent() {
         EventBus.getDefault().unregister(this);
     }
-
-
 
     public void getProfileDetail(String userId) {
         GetProfileDetailTask getProfileDetailTask = new GetProfileDetailTask(context, userId);
@@ -167,6 +172,11 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         requestToServer(sendFootPrintTask);
     }
 
+    public void blockUser(String userId) {
+        BlockUserTask blockUserTask = new BlockUserTask(getContext(), userId);
+        requestToServer(blockUserTask);
+    }
+
     public void getListReportReason() {
         GetListReportReasonTask getListReportReasonTask = new GetListReportReasonTask(getContext(),
                 Constant.API.REPORT_PROFILE);
@@ -195,5 +205,4 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         requestToServer(getListUserPhotos);
 
     }
-
 }
