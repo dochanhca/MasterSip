@@ -16,12 +16,10 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.newbees.mastersip.HandleImageActivity;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageChatItem;
-import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.DownloadImagePresenter;
-import jp.newbees.mastersip.ui.CallActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -30,10 +28,10 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * Created by ducpv on 2/9/17.
  */
 
-public class ChatImageDetailActivity extends CallActivity implements
-        DownloadImagePresenter.DownloadImageView, CallActivity.ImageDownloadable {
+public class ChatImageDetailActivity extends HandleImageActivity {
 
     private static final String IMAGE_CHAT_ITEM = "IMAGE_CHAT_ITEM";
+    private static final String USER_ID = "USER_ID";
 
     @BindView(R.id.img_photo)
     ImageView imgPhoto;
@@ -48,8 +46,8 @@ public class ChatImageDetailActivity extends CallActivity implements
     @BindView(R.id.progress_wheel)
     ProgressWheel prwImageLoading;
 
-    private DownloadImagePresenter downloadImagePresenter;
     private ImageChatItem imageChatItem;
+    private String userId;
 
     @Override
     protected int layoutId() {
@@ -57,14 +55,44 @@ public class ChatImageDetailActivity extends CallActivity implements
     }
 
     @Override
+    protected int getImageId() {
+        return imageChatItem.getMessageId();
+    }
+
+    @Override
+    protected int getReportImageType() {
+        return Constant.API.REPORT_IMAGE_CHAT;
+    }
+
+    @Override
+    protected int getDownloadImageType() {
+        return Constant.API.DOWN_IMAGE_CHAT;
+    }
+
+    @Override
+    protected int getMinPoint() {
+        return ConfigManager.getInstance().getMinPointDownImageChat();
+    }
+
+    @Override
+    protected String getImagePath() {
+        return imageChatItem.getImageItem().getOriginUrl();
+    }
+
+    @Override
+    protected String getUserId() {
+        return userId;
+    }
+
+    @Override
     protected void initViews(Bundle savedInstanceState) {
+        super.initViews(savedInstanceState);
         ButterKnife.bind(this);
     }
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        downloadImagePresenter = new DownloadImagePresenter(this, this);
-
+        userId = getIntent().getStringExtra(USER_ID);
         imageChatItem = getIntent().getParcelableExtra(IMAGE_CHAT_ITEM);
         if (imageChatItem.isOwner()) {
             layoutBottomAction.setVisibility(View.GONE);
@@ -82,34 +110,14 @@ public class ChatImageDetailActivity extends CallActivity implements
                 overridePendingTransition(R.anim.enter_from_top, R.anim.exit_to_bot);
                 break;
             case R.id.txt_save_photo:
-                showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_CHAT);
+                showConfirmDownloadImageDialog();
+                break;
             case R.id.txt_report:
+                showLoading();
+                downloadAndReportPresenter.getListReportReason(Constant.API.REPORT_IMAGE_CHAT);
+                break;
             default:
                 break;
-        }
-    }
-
-    @Override
-    public void didDownloadImage() {
-        handleDownloadImage(imageChatItem.getImageItem().getOriginUrl());
-    }
-
-    @Override
-    public void didDownloadImageError(int errorCode, String errorMessage) {
-        disMissLoading();
-        showToastExceptionVolleyError(this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void requestDownloadImage() {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
-        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
-            showDialogMissingPoint();
-        } else {
-            showLoading();
-            downloadImagePresenter.downloadImage(imageChatItem.getMessageId(),
-                    Constant.API.DOWN_IMAGE_CHAT);
         }
     }
 
@@ -137,9 +145,10 @@ public class ChatImageDetailActivity extends CallActivity implements
      * @param activity
      * @param imageChatItem
      */
-    public static void startActivity(Activity activity, ImageChatItem imageChatItem) {
+    public static void startActivity(Activity activity, ImageChatItem imageChatItem, String userId) {
         Intent intent = new Intent(activity, ChatImageDetailActivity.class);
         intent.putExtra(IMAGE_CHAT_ITEM, imageChatItem);
+        intent.putExtra(USER_ID, userId);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.enter_from_bot, R.anim.exit_to_top);
     }

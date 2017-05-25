@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.FooterDialogEvent;
@@ -50,7 +49,6 @@ import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
-import jp.newbees.mastersip.utils.FileUtils;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -60,7 +58,7 @@ import jp.newbees.mastersip.utils.Logger;
 public abstract class CallActivity extends BaseActivity implements CallPresenter.CallView,
         TextDialog.OnTextDialogPositiveClick,
         CallMaker, SelectVideoCallDialog.OnSelectVideoCallDialog,
-        NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, OneButtonDialog.OneButtonDialogClickListener {
+        NotifyRunOutOfCoinDialog.NotifyRunOutOfCoinDialogClick, OneButtonDialog.OneButtonDialogClickListener{
 
     private static final int CONFIRM_REQUEST_ENABLE_VOICE_CALL = 10;
     private static final int CONFIRM_REQUEST_ENABLE_VIDEO_CALL = 11;
@@ -68,7 +66,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private static final int CONFIRM_MAKE_VOICE_CALL = 13;
     protected static final int REQUEST_BUY_POINT = 15;
     private static final int REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL = 99;
-    private static final int REQUEST_DOWNLOAD_IMAGE = 31;
     private CallPresenter presenter;
     private boolean isMessageDialogShowing;
     private UserItem callee;
@@ -87,11 +84,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private Animation hideFooterDialogAnim;
     private boolean isShowingFooterDialog = true;
 
-    private int minPoint;
-
-    public interface ImageDownloadable {
-        void requestDownloadImage();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,11 +161,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             case REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL:
                 isMessageDialogShowing = false;
                 showMessageDialog(getString(R.string.call_ended));
-                break;
-            case REQUEST_DOWNLOAD_IMAGE:
-                if (this instanceof ImageDownloadable) {
-                    ((ImageDownloadable) this).requestDownloadImage();
-                }
                 break;
             default:
                 break;
@@ -475,6 +462,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
 
     /**
      * need call before showFooterDialog method to android draw view
+     *
      * @param footerDialogEvent
      */
     public void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
@@ -504,8 +492,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         hideFooterDialog();
     }
 
-
-
     public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
         isShowingFooterDialog = true;
 
@@ -517,7 +503,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
     }
 
-    private void updateViewToRedrawFooterDialog(String msg){
+    private void updateViewToRedrawFooterDialog(String msg) {
         txtContentFooterDialog.setText(msg);
     }
 
@@ -598,24 +584,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         footerDialog.startAnimation(hideFooterDialogAnim);
     }
 
-    protected void showConfirmDownloadImageDialog(int type) {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        minPoint = type == Constant.API.DOWN_IMAGE_CHAT
-                ? ConfigManager.getInstance().getMinPointDownImageChat()
-                : ConfigManager.getInstance().getMinPointDownImageGallery();
-
-        String title = getString(R.string.save_image);
-        String content = currentUser.isMale()
-                ? String.format(getString(R.string.mess_confirm_down_image_for_male), minPoint)
-                : getString(R.string.mess_confirm_down_image_for_female);
-
-        TextDialog textDialog = new TextDialog.Builder()
-                .setTitle(title)
-                .setRequestCode(REQUEST_DOWNLOAD_IMAGE)
-                .build(content);
-        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
-    }
-
     protected UserItem getCurrentCallee() {
         return this.callee;
     }
@@ -627,37 +595,5 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         } else {
             ChatActivity.startChatActivity(this, callee);
         }
-    }
-
-    protected void handleDownloadImage(final String imageUrl) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FileUtils.downloadImageFromUrl(CallActivity.this, imageUrl);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        disMissLoading();
-                        // Show dialog download image success
-                        Toast.makeText(CallActivity.this, "Dowload Image successfull", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }).start();
-    }
-
-    protected void showDialogMissingPoint() {
-        // Missing point when download image
-
-        String title = getString(R.string.mess_missing_point);
-        String content = String.format(getString(R.string.mess_request_buy_point_when_down_image), minPoint);
-        String positiveTitle = getString(R.string.add_point);
-        TextDialog textDialog = new TextDialog.Builder()
-                .setRequestCode(REQUEST_BUY_POINT)
-                .setPositiveTitle(positiveTitle)
-                .setTitle(title)
-                .build(content);
-        textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 }
