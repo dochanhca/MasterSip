@@ -53,7 +53,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     private FollowPresenter presenter;
     private String descriptionTotal;
     private int currentCheckId;
-    private boolean isSelected;
 
     public static Fragment newInstance() {
         Fragment fragment = new FollowFragment();
@@ -72,7 +71,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
         this.rdoFollowGroup.setOnCheckedChangeListener(this);
-        this.rdoFollowers.setChecked(true);
         this.adapterFollow = new FollowAdapter(getActivity().getApplicationContext(), new FollowItem());
         this.rcvFollow.setAdapter(adapterFollow);
         this.setFragmentTitle(getString(R.string.follower));
@@ -91,7 +89,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        handleChangeListFollow(checkedId);
     }
 
     @Override
@@ -151,7 +148,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     }
 
     private void handleChangeListFollow(int checkedId) {
-        if (isSelected) {
             if (checkedId == rdoFollowers.getId()) {
                 showLoading();
                 descriptionTotal = getString(R.string.description_followers);
@@ -161,7 +157,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
                 descriptionTotal = getString(R.string.description_followings);
                 presenter.getListFollowing();
             }
-        }
     }
 
     private void updateText(int totalFollow) {
@@ -170,8 +165,9 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     }
 
     public final void setLeftTabChecked() {
-        isSelected = true;
-        rdoFollowers.setChecked(true);
-        handleChangeListFollow(currentCheckId);
+        this.rdoFollowers.setChecked(true);
+    }
+    public void loadData() {
+        handleChangeListFollow(rdoFollowers.getId());
     }
 }

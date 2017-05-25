@@ -56,7 +56,6 @@ public class FootPrintFragment extends BaseCallFragment implements
     private String descriptionTotal;
     private SwipeRefreshLayout swipeContainer;
     private int currentCheckId;
-    private boolean isSelected;
 
     public static Fragment newInstance() {
         Fragment fragment = new FootPrintFragment();
@@ -79,7 +78,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
         this.presenter = new FootprintPresenter(getContext(), this);
-        this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
     }
@@ -94,7 +92,6 @@ public class FootPrintFragment extends BaseCallFragment implements
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        this.handleChangeListFootprint(checkedId);
     }
 
     @Override
@@ -136,16 +133,14 @@ public class FootPrintFragment extends BaseCallFragment implements
     }
 
     private void handleChangeListFootprint(int checkedId) {
-        if (isSelected) {
-            if (checkedId == rdoFootprintViewedByOther.getId()) {
-                showLoading();
-                descriptionTotal = getString(R.string.description_viewed_by_other);
-                presenter.getListFootprintViewedByOther();
-            } else {
-                showLoading();
-                descriptionTotal = getString(R.string.description_viewed_by_me);
-                presenter.getListFootprintViewedByMe();
-            }
+        if (checkedId == rdoFootprintViewedByOther.getId()) {
+            showLoading();
+            descriptionTotal = getString(R.string.description_viewed_by_other);
+            presenter.getListFootprintViewedByOther();
+        } else {
+            showLoading();
+            descriptionTotal = getString(R.string.description_viewed_by_me);
+            presenter.getListFootprintViewedByMe();
         }
     }
 
@@ -175,8 +170,10 @@ public class FootPrintFragment extends BaseCallFragment implements
     }
 
     public final void setLeftTabChecked() {
-        isSelected = true;
-        rdoFootprintViewedByOther.setChecked(true);
-        handleChangeListFootprint(currentCheckId);
+        this.rdoFootprintViewedByOther.setChecked(true);
+    }
+
+    public void loadData() {
+        handleChangeListFootprint(rdoFootprintViewedByOther.getId());
     }
 }
