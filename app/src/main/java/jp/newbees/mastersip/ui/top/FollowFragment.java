@@ -70,7 +70,6 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     protected void init(View rootView, Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
-        this.rdoFollowGroup.setOnCheckedChangeListener(this);
         this.adapterFollow = new FollowAdapter(getActivity().getApplicationContext(), new FollowItem());
         this.rcvFollow.setAdapter(adapterFollow);
         this.setFragmentTitle(getString(R.string.follower));
@@ -89,6 +88,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
+        handleChangeListFollow(currentCheckId);
     }
 
     @Override
@@ -164,10 +164,9 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         this.txtFollowDescription.setText(Html.fromHtml(description));
     }
 
-    public final void setLeftTabChecked() {
-        this.rdoFollowers.setChecked(true);
-    }
     public void loadData() {
-        handleChangeListFollow(rdoFollowers.getId());
+        handleChangeListFollow(currentCheckId);
+        this.rdoFollowGroup.setOnCheckedChangeListener(this);
+        this.rdoFollowers.setChecked(true);
     }
 }
