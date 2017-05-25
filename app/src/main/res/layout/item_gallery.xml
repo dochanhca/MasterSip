@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/img_photo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:scaleType="fitCenter" />
+        android:adjustViewBounds="true" />
 
     <ImageView
         android:id="@+id/img_mask_approving"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/action_bar_h"
         android:layout_marginBottom="@dimen/action_bar_h"
+        android:layout_marginTop="@dimen/action_bar_h"
         android:background="@color/black_transparent_50" />
 
     <jp.newbees.mastersip.customviews.HiraginoTextView
@@ -24,8 +24,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:text="@string/approving"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_13"
-        android:text="@string/approving"/>
+        android:textSize="@dimen/text_size_13" />
+
+    <com.pnikosis.materialishprogress.ProgressWheel
+        android:id="@+id/progress_wheel"
+        android:layout_width="@dimen/size_50dp"
+        android:layout_height="@dimen/size_50dp"
+        android:layout_centerInParent="true"
+        app:matProg_barColor="@color/colorPrimary"
+        app:matProg_progressIndeterminate="true" />
 
 </RelativeLayout>

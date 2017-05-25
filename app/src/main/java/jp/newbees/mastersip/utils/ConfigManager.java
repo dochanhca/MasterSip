@@ -32,10 +32,14 @@ import static jp.newbees.mastersip.utils.Constant.API.BASE_URL;
 
 final public class ConfigManager {
     private static final String WAITING_ID = "WAITING_ID";
+    public final static int CALL_STATE_WAITING = 1;
+    public final static int CALL_STATE_CONNECTED = 2;
     private final RequestQueue requestQueue;
-    private static ConfigManager instance;
-    private final String deviceId;
     private final SharedPreferences sharedPreferences;
+    private static ConfigManager instance;
+
+    private final String deviceId;
+
     private String domain;
     private int imageDrawableCalleeId = -1;
     private HashMap<String, UserItem> callUsers;
@@ -48,9 +52,9 @@ final public class ConfigManager {
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
-    public final static int CALL_STATE_WAITING = 1;
-    public final static int CALL_STATE_CONNECTED = 2;
     private int startServiceFrom;
+    private int minPointDownImageChat;
+    private int minPointDownImageGallery;
 
     public final static void initConfig(Context context) {
         if (instance == null) {
@@ -351,5 +355,21 @@ final public class ConfigManager {
 
     public int getStartServiceFrom() {
         return startServiceFrom;
+    }
+
+    public void setMinPointDownImageChat(int point) {
+        this.minPointDownImageChat = point;
+    }
+
+    public int getMinPointDownImageChat() {
+        return minPointDownImageChat;
+    }
+
+    public void setMinPointDownImageGallery(int point) {
+        this.minPointDownImageGallery = point;
+    }
+
+    public int getMinPointDownImageGallery() {
+        return minPointDownImageGallery;
     }
 }

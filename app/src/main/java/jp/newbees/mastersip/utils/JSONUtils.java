@@ -1121,6 +1121,11 @@ public class JSONUtils {
         masterDataItem.setTotalFollower(jData.getInt(Constant.JSON.TOTAL_FOLLOWER));
         masterDataItem.setTotalFootPrint(jData.getInt(Constant.JSON.TOTAL_FOOTPRINT));
         masterDataItem.setTotalMyMenu(jData.getInt(Constant.JSON.TOTAL_MY_MENU));
+
+        JSONObject jsonObject = jData.getJSONObject(Constant.JSON.MIN_POINT_DOWNLOAD);
+        masterDataItem.setMinPointDownImageChat(jsonObject.getInt(Constant.JSON.CHAT));
+        masterDataItem.setGetMinPointDownImageGallery(jsonObject.getInt(Constant.JSON.GALLERY));
+
         return masterDataItem;
     }
 
