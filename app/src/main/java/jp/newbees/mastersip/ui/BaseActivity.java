@@ -447,6 +447,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
 
     public void setBadgeOnl(int value) {
         ConfigManager.getInstance().setUserOnl(value);
+    }
+
+    public void setBadgeUserOnlNotify(int value) {
+        ConfigManager.getInstance().setUserOnlNotify(value);
         if (!checkBottomNavigation()){
             return;
         }

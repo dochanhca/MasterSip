@@ -444,6 +444,7 @@ public final class Constant {
         public static final String ACTION_ENTER_FOREGROUND = "enter_foreground";
         public static final String FOOTER_DIALOG = "FOOTER_DIALOG";
         public static final String CHANGE_BADGE = "CHANGE_BADGE";
+        public static final String CHANGE_BADGE_ONLINE = "CHANGE_BADGE_ONLINE";
 
     }
 
@@ -481,5 +482,6 @@ public final class Constant {
         public static final int FOOT_PRINT = 5;
         public static final int FOLLOW = 6;
         public static final int ONLINE_NOTIFY = 20;
+        public static final int USER_ONLINE_NOTIFY = 7;
     }
 }

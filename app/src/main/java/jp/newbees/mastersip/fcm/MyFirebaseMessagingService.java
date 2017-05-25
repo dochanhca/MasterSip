@@ -119,9 +119,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
             case FCMPushItem.CATEGORY.USER_ONLINE:
-                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotificationUserOnl(fcmPushItem);
-                }
+                sendNotificationUserOnl(fcmPushItem);
                 break;
             default:
                 break;

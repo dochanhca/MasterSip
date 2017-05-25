@@ -207,17 +207,8 @@
 
                 <jp.newbees.mastersip.customviews.HiraginoTextView
                     android:id="@+id/txt_message_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_25dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/margin_10"
-                    android:layout_marginTop="@dimen/margin_5"
-                    android:background="@drawable/bg_number_message_text"
-                    android:gravity="center"
-                    android:minWidth="@dimen/_25dp"
-                    android:text="22"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_12" />
+                    style="@style/style_bg_text_circle"
+                    android:text="22" />
             </RelativeLayout>
 
             <LinearLayout
@@ -311,16 +302,32 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="120dp"
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal">
-
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3">
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_online_list"
                         style="@style/style_text_view_with_button_my_menu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:drawableTop="@drawable/ic_online_list_female"
                         android:text="男性 \nオンライン通知" />
+                    <jp.newbees.mastersip.customviews.HiraginoTextView
+                        android:id="@+id/txt_user_onl"
+                        style="@style/style_bg_text_circle"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginEnd="25dp"
+                        android:text="!"
+                        android:visibility="gone"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
 
                     <View
                         android:layout_width="@dimen/_1dp"
@@ -330,6 +337,8 @@
                     <jp.newbees.mastersip.customviews.HiraginoTextView
                         android:id="@+id/txt_call_history"
                         style="@style/style_text_view_with_button_my_menu"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
                         android:layout_height="match_parent"
                         android:drawablePadding="@dimen/_10dp"
                         android:drawableTop="@drawable/ic_my_call_history"
@@ -345,6 +354,8 @@
                         android:id="@+id/txt_block_list"
                         style="@style/style_text_view_with_button_my_menu"
                         android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
                         android:drawablePadding="@dimen/_10dp"
                         android:drawableTop="@drawable/ic_block_list"
                         android:paddingTop="@dimen/_25dp"

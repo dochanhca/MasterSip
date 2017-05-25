@@ -119,6 +119,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtMessageNumber;
     @BindView(R.id.txt_online_list)
     HiraginoTextView txtOnlineList;
+    @BindView(R.id.txt_user_onl)
+    HiraginoTextView txtUserOnl;
     @BindView(R.id.txt_email_backup_setting)
     HiraginoTextView txtEmailBackup;
     @BindView(R.id.divider_email_backup)
@@ -165,18 +167,19 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         presenter = new MyMenuPresenter(getContext(), this);
         initDefaultViews();
         if (ConfigManager.getInstance().isPushUserOnl()) {
-            MyMenuContainerFragment.showOnlineListFragment(getActivity());
             ConfigManager.getInstance().savePushUserOnl(false);
+            MyMenuContainerFragment.showOnlineListFragment(getActivity());
         }
     }
 
     private void initDefaultViews() {
+
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
 
         txtActionBarTitle.setText(userItem.getUsername());
         txtVersion.setText(presenter.getVersion());
-
+        txtUserOnl.setVisibility(ConfigManager.getInstance().getUserOnlNotify() > 0 ? View.VISIBLE : View.GONE);
         if (userItem.getAvatarItem() == null) {
             imgAvatar.setImageResource(defaultAvatar);
         } else {

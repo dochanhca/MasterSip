@@ -50,6 +50,7 @@ final public class ConfigManager {
     private int unReadFootPrint;
     private int unReadFollow;
     private int userOnl;
+    private int userOnlNotify;
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -324,6 +325,14 @@ final public class ConfigManager {
 
     public void setUserOnl(int userOnl) {
         this.userOnl = userOnl;
+    }
+
+    public int getUserOnlNotify() {
+        return userOnlNotify;
+    }
+
+    public void setUserOnlNotify(int userOnlNotify) {
+        this.userOnlNotify = userOnlNotify;
     }
     public int getCurrentTabInRootNavigater() {
         return currentTabInRootNavigater;
