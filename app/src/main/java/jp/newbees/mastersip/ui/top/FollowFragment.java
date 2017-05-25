@@ -88,7 +88,7 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        handleChangeListFollow(currentCheckId);
+        this.handleChangeListFollow(currentCheckId);
     }
 
     @Override
@@ -164,9 +164,11 @@ public class FollowFragment extends BaseCallFragment implements RadioGroup.OnChe
         this.txtFollowDescription.setText(Html.fromHtml(description));
     }
 
-    public void loadData() {
-        handleChangeListFollow(currentCheckId);
-        this.rdoFollowGroup.setOnCheckedChangeListener(this);
+    public void initData() {
+        handleChangeListFollow(rdoFollowers.getId());
+        this.rdoFollowGroup.setOnCheckedChangeListener(null);
         this.rdoFollowers.setChecked(true);
+        this.updateTextColorSegment(rdoFollowers.getId());
+        this.rdoFollowGroup.setOnCheckedChangeListener(this);
     }
 }

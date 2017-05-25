@@ -89,7 +89,7 @@ public class FootPrintFragment extends BaseCallFragment implements
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        handleChangeListFootprint(currentCheckId);
+        this.handleChangeListFootprint(currentCheckId);
     }
 
     @Override
@@ -168,8 +168,10 @@ public class FootPrintFragment extends BaseCallFragment implements
     }
 
     public void initData() {
-        handleChangeListFootprint(currentCheckId);
+        handleChangeListFootprint(rdoFootprintViewedByOther.getId());
+        this.rdoFootprintGroup.setOnCheckedChangeListener(null);
         this.rdoFootprintViewedByOther.setChecked(true);
+        this.updateTextColorSegment(rdoFootprintViewedByOther.getId());
         this.rdoFootprintGroup.setOnCheckedChangeListener(this);
     }
 }

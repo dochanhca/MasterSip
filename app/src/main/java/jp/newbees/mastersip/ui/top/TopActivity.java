@@ -96,7 +96,7 @@ public class TopActivity extends CallActivity implements
 
             } else if (position == FOLLOW_FRAGMENT) {
                 FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
-                followFragment.loadData();
+                followFragment.initData();
             }
         }
 
