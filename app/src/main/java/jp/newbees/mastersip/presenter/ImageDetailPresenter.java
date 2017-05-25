@@ -24,7 +24,7 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 2/8/17.
  */
 
-public class ImageDetailPresenter extends DownloadImagePresenter {
+public class ImageDetailPresenter extends DownloadAndReportPresenter {
 
     private PhotoDetailView view;
     private Handler handler;

@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.FooterDialogEvent;
@@ -640,7 +639,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                     public void run() {
                         disMissLoading();
                         // Show dialog download image success
-                        Toast.makeText(CallActivity.this, "Dowload Image successfull", Toast.LENGTH_SHORT).show();
+                        showMessageDialog(getString(R.string.mess_down_image_success));
                     }
                 });
             }

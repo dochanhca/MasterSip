@@ -35,12 +35,14 @@ import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
 import jp.newbees.mastersip.model.RelationshipItem;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.SettingItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.profile.ProfileDetailItemPresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.ui.BaseCallFragment;
 import jp.newbees.mastersip.ui.ImageDetailActivity;
+import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.top.SearchContainerFragment;
@@ -55,7 +57,7 @@ import jp.newbees.mastersip.utils.Utils;
 public class ProfileDetailItemFragment extends BaseCallFragment implements
         ProfileDetailItemPresenter.ProfileDetailItemView,
         UserPhotoAdapter.OnItemClickListener,
-        TextDialog.OnTextDialogPositiveClick {
+        TextDialog.OnTextDialogPositiveClick, SelectionDialog.OnSelectionDialogClick {
 
     private static final String NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT = "NEED_SHOW_ACTION_BAR_IN_GIFT_FRAGMENT";
     public static final String USER_ITEM = "USER_ITEM";
@@ -143,6 +145,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     private UserPhotoAdapter userPhotoAdapter;
     private boolean needSendFootprint;
     private boolean needShowActionBar;
+    private List<SelectionItem> reportReasons;
 
     private long mLastClickTime = 0;
 
@@ -237,7 +240,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
-            R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call,})
+            R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call, R.id.layout_report_user})
     public void onClick(View view) {
         // mis-clicking prevention, using threshold of 1000 ms
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
@@ -264,6 +267,10 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
                 break;
             case R.id.layout_video_call:
                 super.callVideo(userItem, true);
+                break;
+            case R.id.layout_report_user:
+                showLoading();
+                profileDetailItemPresenter.getListReportReason();
                 break;
             default:
                 break;
@@ -370,6 +377,34 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     }
 
     @Override
+    public void didGetListReportReason(List<SelectionItem> reportReasons) {
+        this.reportReasons = reportReasons;
+        disMissLoading();
+        SelectionDialog.openSelectionDialogFromFragment(this, -1, getFragmentManager(),
+                (ArrayList<SelectionItem>) reportReasons
+                , getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
+    }
+
+    @Override
+    public void didGetListReportReasonError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
+    public void didReportUser() {
+        disMissLoading();
+        showMessageDialog(getString(R.string.reported_user),
+                getString(R.string.mess_report_user_sucess), "", false);
+    }
+
+    @Override
+    public void didReportUserError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(errorCode, errorMessage);
+    }
+
+    @Override
     public void onUserImageClick(int position) {
         if (isCurrentUser()) {
             ImageDetailActivity.startActivity(getActivity(), galleryItem, position,
@@ -385,6 +420,12 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         if (requestCode == CONFIRM_SEND_GIFT_DIALOG) {
             showGiftFragment();
         }
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        showLoading();
+        profileDetailItemPresenter.reportUser(userItem.getUserId(), reportReasons.get(position).getId());
     }
 
     private boolean isCurrentUser() {
@@ -585,4 +626,5 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
     public final void onPageSelected() {
         super.setShowingProfile(userItem);
     }
+
 }

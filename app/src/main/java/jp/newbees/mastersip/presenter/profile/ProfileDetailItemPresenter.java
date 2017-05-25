@@ -3,18 +3,24 @@ package jp.newbees.mastersip.presenter.profile;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.SettingOnlineChangedEvent;
 import jp.newbees.mastersip.model.GalleryItem;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.network.api.BaseTask;
 import jp.newbees.mastersip.network.api.FollowUserTask;
+import jp.newbees.mastersip.network.api.GetListReportReasonTask;
 import jp.newbees.mastersip.network.api.GetListUserPhotos;
 import jp.newbees.mastersip.network.api.GetProfileDetailTask;
-import jp.newbees.mastersip.network.api.UnFollowUserTask;
+import jp.newbees.mastersip.network.api.ReportTask;
 import jp.newbees.mastersip.network.api.SendFootPrintTask;
+import jp.newbees.mastersip.network.api.UnFollowUserTask;
 import jp.newbees.mastersip.presenter.BasePresenter;
 import jp.newbees.mastersip.ui.BaseActivity;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 
 /**
@@ -49,6 +55,14 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         void didEditProfileImage();
 
         void didSettingOnlineChanged(boolean isFollowing, String userId);
+
+        void didGetListReportReason(List<SelectionItem> reportReasons);
+
+        void didGetListReportReasonError(int errorCode, String errorMessage);
+
+        void didReportUser();
+
+        void didReportUserError(int errorCode, String errorMessage);
     }
 
     public ProfileDetailItemPresenter(BaseActivity context, ProfileDetailItemView view) {
@@ -73,6 +87,10 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didFollowUser();
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUser();
+        } else if (task instanceof GetListReportReasonTask) {
+            view.didGetListReportReason(((GetListReportReasonTask) task).getDataResponse());
+        } else if (task instanceof ReportTask) {
+            view.didReportUser();
         }
     }
 
@@ -86,6 +104,10 @@ public class ProfileDetailItemPresenter extends BasePresenter {
             view.didFollowUserError(errorMessage, errorCode);
         } else if (task instanceof UnFollowUserTask) {
             view.didUnFollowUserError(errorMessage, errorCode);
+        } else if (task instanceof GetListReportReasonTask) {
+            view.didGetListReportReasonError(errorCode, errorMessage);
+        } else if (task instanceof ReportTask) {
+            view.didReportUserError(errorCode, errorMessage);
         }
     }
 
@@ -100,6 +122,8 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         view.didSettingOnlineChanged(event.isFollowing(), event.getUserId());
     }
 
+
+
     public final void registerEvent() {
         EventBus.getDefault().register(this);
     }
@@ -108,13 +132,7 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         EventBus.getDefault().unregister(this);
     }
 
-    private void getNextIdForLoadMore(GalleryItem galleryItem) {
-        if (!"".equals(galleryItem.getNextId())) {
-            nextId = Integer.parseInt(galleryItem.getNextId());
-        } else {
-            nextId = -1;
-        }
-    }
+
 
     public void getProfileDetail(String userId) {
         GetProfileDetailTask getProfileDetailTask = new GetProfileDetailTask(context, userId);
@@ -124,15 +142,6 @@ public class ProfileDetailItemPresenter extends BasePresenter {
     public void getListPhotos(String userId) {
         nextId = -1;
         getListPhotos(false, userId);
-    }
-
-    private void getListPhotos(boolean isLoadMore, String userId) {
-        this.isLoadMore = isLoadMore;
-
-        GetListUserPhotos getListUserPhotos = new
-                GetListUserPhotos(context, nextId, userId);
-        requestToServer(getListUserPhotos);
-
     }
 
     public void loadMoreListPhotos(String userId) {
@@ -157,4 +166,34 @@ public class ProfileDetailItemPresenter extends BasePresenter {
         SendFootPrintTask sendFootPrintTask = new SendFootPrintTask(context, userId);
         requestToServer(sendFootPrintTask);
     }
+
+    public void getListReportReason() {
+        GetListReportReasonTask getListReportReasonTask = new GetListReportReasonTask(getContext(),
+                Constant.API.REPORT_PROFILE);
+        requestToServer(getListReportReasonTask);
+    }
+
+    public void reportUser(String userId, int reportDetailId) {
+        ReportTask reportTask = new ReportTask(getContext(), userId, Constant.API.REPORT_PROFILE,
+                reportDetailId);
+        requestToServer(reportTask);
+    }
+
+    private void getNextIdForLoadMore(GalleryItem galleryItem) {
+        if (!"".equals(galleryItem.getNextId())) {
+            nextId = Integer.parseInt(galleryItem.getNextId());
+        } else {
+            nextId = -1;
+        }
+    }
+
+    private void getListPhotos(boolean isLoadMore, String userId) {
+        this.isLoadMore = isLoadMore;
+
+        GetListUserPhotos getListUserPhotos = new
+                GetListUserPhotos(context, nextId, userId);
+        requestToServer(getListUserPhotos);
+
+    }
+
 }

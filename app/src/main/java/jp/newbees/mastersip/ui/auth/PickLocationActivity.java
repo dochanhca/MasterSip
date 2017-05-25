@@ -171,7 +171,7 @@ public class PickLocationActivity extends BaseActivity implements GoogleApiClien
     public void onClick(View view) {
         if (view == layoutPosition) {
             SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                    provinceItems, getString(R.string.pick_location), provinceItem);
+                    provinceItems, getString(R.string.pick_location),"", provinceItem);
         }
 
         if (view == imgBack) {
