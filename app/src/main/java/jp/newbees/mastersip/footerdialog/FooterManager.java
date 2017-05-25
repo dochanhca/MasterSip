@@ -22,6 +22,7 @@ public class FooterManager {
     private CallActivity callActivity;
     private UserItem userInChatActivity;
     private boolean isExecutorRunning = false;
+    private static boolean needWaitForFirstTimeInit = true;
 
     public static FooterManager getInstance(CallActivity callActivity) {
         if (mInstance == null) {
@@ -98,8 +99,15 @@ public class FooterManager {
     private void showFooterDialog(FooterDialogEvent footerDialogEvent) {
         try {
             Logger.e("FooterManager", "show Footer Dialog");
-
             genMessageFooterDialog(footerDialogEvent);
+            fillDataToFooterDialog(footerDialogEvent);
+            // wait for system redraw layout
+            if (needWaitForFirstTimeInit) {
+                needWaitForFirstTimeInit = false;
+                Thread.sleep(500);
+            } else {
+                Thread.sleep(50);
+            }
             performShowFooterDialog(footerDialogEvent);
             // wait for footer dialog hide to continue show other footer dialog
             Thread.sleep(SHOW_TIME + ANIM_TIME + ANIM_TIME);
@@ -183,6 +191,15 @@ public class FooterManager {
             @Override
             public void run() {
                 callActivity.showFooterDialog(footerDialogEvent);
+            }
+        });
+    }
+
+    private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
+        callActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                callActivity.fillDataToFooterDialog(footerDialogEvent);
             }
         });
     }

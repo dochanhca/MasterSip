@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,7 +66,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private static final int CONFIRM_MAKE_VOICE_CALL = 13;
     protected static final int REQUEST_BUY_POINT = 15;
     private static final int REQUEST_SHOW_MESSAGE_DIALOG_AFTER_ADMIN_HANG_UP_CALL = 99;
-    private int NAVIGATION_SYSTEM_BAR_HIGHT = 0;
     private CallPresenter presenter;
     private boolean isMessageDialogShowing;
     private UserItem callee;
@@ -83,12 +82,13 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private ImageView imgIconFooterDialog;
     private Animation showFooterDialogAnim;
     private Animation hideFooterDialogAnim;
-    private boolean isShowingFooterDialog = false;
+    private boolean isShowingFooterDialog = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CallPresenter(this.getApplicationContext(), this);
+        prepareToShowFooterDialog();
     }
 
     @Override
@@ -472,102 +472,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
     }
 
-    public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        isShowingFooterDialog = true;
-        if (footerDialog == null) {
-            prepareToShowFooterDialog();
-        }
-        fillDataToFooterDialog(footerDialogEvent);
-        contentFooterDialog.setClickable(true);
-        footerDialog.setVisibility(View.VISIBLE);
-        footerDialog.startAnimation(showFooterDialogAnim);
-        hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
-    }
-
-    private void hideFooterDialogAfter(int timeDelay) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideFooterDialog();
-            }
-        }, timeDelay);
-    }
-
-    private void prepareToShowFooterDialog() {
-        setOnFocusChangeAllEditText(rootView);
-
-        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
-        footerDialog.setVisibility(View.VISIBLE);
-        contentFooterDialog = footerDialog.findViewById(R.id.content_footer_dialog);
-        paddingView = footerDialog.findViewById(R.id.padding_view);
-
-        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
-        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
-        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
-        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
-    }
-
-    private void addConstrainWhenKeyboardShowing() {
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                needUpdateOffset = true;
-
-                Window mRootWindow = getWindow();
-                View view = mRootWindow.getDecorView();
-                Rect rect = new Rect();
-                rootView.getWindowVisibleDisplayFrame(rect);
-
-                int screenHeight = view.getHeight();
-                int keyboardHeight = screenHeight - (rect.bottom - rect.top);
-
-//                View child = rootView.findViewById(R.id.ll_action_bar);
-                int offsetScreenSpan = screenHeight - rootView.getHeight();
-
-//                int[] positions = new int[2];
-//                rootView.getLocationInWindow(positions);
-
-//                DisplayMetrics dm = new DisplayMetrics();
-//                getWindowManager().getDefaultDisplay().getMetrics(dm);
-//                int topOffset = dm.heightPixels - rootView.getMeasuredHeight();
-
-//                Logger.e("Keyboard", "screenHeight: " + screenHeight + " -- keyboardHeight: " + keyboardHeight
-//                        + " -- bottom: [" + positions[0] + "," + positions[1] + "] -- offset: " + offsetScreenSpan
-//                        + " -- topOffset: " + topOffset
-//                        + " -- location: " + (positions[1] - topOffset));
-
-                Logger.e("Keyboard", "screenHeight: " + screenHeight + " -- keyboardHeight: " + keyboardHeight
-                        + " -- offset: " + offsetScreenSpan
-                        + " -- magic offset: " + magicOffset);
-
-                int offset;
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
-                if (keyboardHeight > screenHeight / 3) {
-                    if (magicOffset < keyboardHeight) {
-                        offset = keyboardHeight - magicOffset;
-                        offset = keyboardHeight - offsetScreenSpan - offset;
-                    } else {
-                        offset = keyboardHeight - offsetScreenSpan;
-                    }
-                    layoutParams.setMargins(0, 0, 0, offset);
-                    Logger.e("Keyboard", "ACTIVE : " + offset);
-
-                } else {
-                    layoutParams.setMargins(0, 0, 0, 0);
-                    NAVIGATION_SYSTEM_BAR_HIGHT = keyboardHeight;
-                    Logger.e("Keyboard", "HIDE");
-                }
-            }
-        });
-    }
-
-    private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        if (this instanceof ChatActivity) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
-        } else {
-            addConstrainWhenKeyboardShowing();
-        }
+    /**
+     * need call before showFooterDialog method to android draw view
+     * @param footerDialogEvent
+     */
+    public void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
 
         txtContentFooterDialog.setText(footerDialogEvent.getMessage());
         imgIconFooterDialog.setImageResource(footerDialogEvent.getIconResourceId());
@@ -580,59 +489,86 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         });
     }
 
-    private void setOnFocusChangeAllEditText(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) view;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                View child = group.getChildAt(i);
-                setOnFocusChangeAllEditText(child);
+    private void prepareToShowFooterDialog() {
+        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
+        contentFooterDialog = footerDialog.findViewById(R.id.content_footer_dialog);
+        paddingView = footerDialog.findViewById(R.id.padding_view);
+
+        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
+        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
+        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
+        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
+
+        addConstrainToFooterDialog();
+        hideFooterDialog();
+    }
+
+
+
+    public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
+        isShowingFooterDialog = true;
+
+        updateViewToRedrawFooterDialog(footerDialogEvent.getMessage());
+
+        contentFooterDialog.setClickable(true);
+        footerDialog.setVisibility(View.VISIBLE);
+        footerDialog.startAnimation(showFooterDialogAnim);
+        hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
+    }
+
+    private void updateViewToRedrawFooterDialog(String msg){
+        txtContentFooterDialog.setText(msg);
+    }
+
+    private void hideFooterDialogAfter(int timeDelay) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideFooterDialog();
             }
-        } else if (view instanceof EditText) {
-            view.setOnFocusChangeListener(mOnFocusChange);
+        }, timeDelay);
+    }
+
+    public void addConstrainToFooterDialog() {
+        if (this instanceof ChatActivity) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
+        } else {
+            addConstrainWhenKeyboardShowing();
         }
     }
 
-    int magicOffset = 0;
-    int tempMagicOffet = 0;
-    boolean needUpdateOffset = false;
+    private void addConstrainWhenKeyboardShowing() {
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Window mRootWindow = getWindow();
+                View view = mRootWindow.getDecorView();
+                Rect rect = new Rect();
+                rootView.getWindowVisibleDisplayFrame(rect);
 
-    private View.OnFocusChangeListener mOnFocusChange = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            needUpdateOffset = false;
-            int[] location = new int[2];
-            v.getLocationInWindow(location);
+                int screenHeight = view.getHeight();
+                int keyboardHeight = screenHeight - (rect.bottom - rect.top);
 
-            Window mRootWindow = getWindow();
-            View view = mRootWindow.getDecorView();
+                int offsetNavigationSystemBar = screenHeight - rootView.getHeight();
 
-            int screenHeight = view.getHeight();
+                int[] viewPositionsInScreen = new int[2];
+                rootView.getLocationInWindow(viewPositionsInScreen);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (needUpdateOffset) {
-                        Logger.e("Keyboard", "update");
-                        magicOffset = tempMagicOffet;
-                        needUpdateOffset = false;
-                    } else {
-                        Logger.e("Keyboard", "donot update");
-                    }
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                int offsetSystemStatusBar = dm.heightPixels - rootView.getMeasuredHeight();
+
+                // update margin layout footer dialog
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
+                if (keyboardHeight > screenHeight / 3) {
+                    layoutParams.setMargins(0, 0, 0, keyboardHeight - offsetNavigationSystemBar + (viewPositionsInScreen[1] - offsetSystemStatusBar));
+                } else {
+                    layoutParams.setMargins(0, 0, 0, 0);
                 }
-            }, 300);
-
-            if (hasFocus) {
-//                Logger.e("Keyboard", "has focus : " + rect.top + ":" + rect.bottom);
-                tempMagicOffet = screenHeight - location[1];
-                Logger.e("Keyboard", "has focus : " + tempMagicOffet);
-            } else {
-//                Logger.e("Keyboard", "has focus : " + rect.top + ":" + rect.bottom);
-//                tempMagicOffet = screenHeight - location[1];
-//                Logger.e("Keyboard", "has focus : " + magicOffset);
             }
-        }
-    };
-
+        });
+    }
 
     private void redirect(FooterDialogEvent footerDialogEvent) {
         switch (footerDialogEvent.getType()) {
