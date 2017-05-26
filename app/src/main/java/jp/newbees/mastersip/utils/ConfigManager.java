@@ -49,8 +49,8 @@ final public class ConfigManager {
     private int unReadMessage;
     private int unReadFootPrint;
     private int unReadFollow;
-    private int userOnl;
-    private int userOnlNotify;
+    private int unReadUserOnlineNotify;
+    private int unReadMyMenu;
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -319,20 +319,20 @@ final public class ConfigManager {
     public void setUnReadFollow(int unReadFollow) {
         this.unReadFollow = unReadFollow;
     }
-    public int getUserOnl() {
-        return userOnl;
+    public int getUnReadUserOnlineNotify() {
+        return unReadUserOnlineNotify;
     }
 
-    public void setUserOnl(int userOnl) {
-        this.userOnl = userOnl;
+    public void setUserOnline(int userOnl) {
+        this.unReadUserOnlineNotify = userOnl;
     }
 
-    public int getUserOnlNotify() {
-        return userOnlNotify;
+    public int getUnReadMyMenu() {
+        return unReadMyMenu;
     }
 
-    public void setUserOnlNotify(int userOnlNotify) {
-        this.userOnlNotify = userOnlNotify;
+    public void setUnReadMyMenu(int unReadMyMenu) {
+        this.unReadMyMenu = unReadMyMenu;
     }
     public int getCurrentTabInRootNavigater() {
         return currentTabInRootNavigater;

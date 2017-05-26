@@ -319,7 +319,7 @@
                         android:drawableTop="@drawable/ic_online_list_female"
                         android:text="男性 \nオンライン通知" />
                     <jp.newbees.mastersip.customviews.HiraginoTextView
-                        android:id="@+id/txt_user_onl"
+                        android:id="@+id/txt_user_online"
                         style="@style/style_bg_text_circle"
                         android:layout_marginTop="@dimen/_5dp"
                         android:layout_marginEnd="25dp"

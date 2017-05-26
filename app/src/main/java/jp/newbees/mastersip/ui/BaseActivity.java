@@ -375,7 +375,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void showNavigation() {
-        if (!checkBottomNavigation()) {
+        if (!hasBottomNavigation()) {
             return;
         }
         if (slideUp == null) {
@@ -389,7 +389,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void hideNavigation() {
-        if (!checkBottomNavigation()) {
+        if (!hasBottomNavigation()) {
             return;
         }
         if (slideDown == null) {
@@ -403,7 +403,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public boolean isShowNavigationBar() {
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()){
             return false;
         }
         return isShowNavigationBar;
@@ -411,7 +411,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
 
     public void setBudgieMessage(int value) {
         ConfigManager.getInstance().setUnreadMessage(value);
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()){
             return;
         }
         if (value == 0) {
@@ -423,7 +423,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
 
     public void setBudgieFootPrint(int value) {
         ConfigManager.getInstance().setUnReadFootPrint(value);
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()){
             return;
         }
         if (value == 0) {
@@ -435,7 +435,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
 
     public void setBudgieFollower(int value) {
         ConfigManager.getInstance().setUnReadFollow(value);
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()){
            return;
        }
         if (value == 0) {
@@ -445,13 +445,13 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         }
     }
 
-    public void setBadgeOnl(int value) {
-        ConfigManager.getInstance().setUserOnl(value);
+    public void setBadgeOnline(int value) {
+        ConfigManager.getInstance().setUserOnline(value);
     }
 
-    public void setBadgeUserOnlNotify(int value) {
-        ConfigManager.getInstance().setUserOnlNotify(value);
-        if (!checkBottomNavigation()){
+    public void setBadgeUserOnlineNotify(int value) {
+        ConfigManager.getInstance().setUnReadMyMenu(value);
+        if (!hasBottomNavigation()){
             return;
         }
         if (value == 0) {
@@ -461,7 +461,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
         }
     }
 
-    private boolean checkBottomNavigation() {
+    private boolean hasBottomNavigation() {
         return this instanceof BottomNavigation;
     }
 

@@ -306,7 +306,7 @@ public class TopActivity extends CallActivity implements
                 viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
                 ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
                 break;
-            case MyFirebaseMessagingService.USER_ONL:
+            case MyFirebaseMessagingService.USER_ONLINE:
                 ConfigManager.getInstance().savePushUserOnl(true);
                 viewPager.setCurrentItem(MY_MENU_CONTAINER_FRAGMENT);
             default:

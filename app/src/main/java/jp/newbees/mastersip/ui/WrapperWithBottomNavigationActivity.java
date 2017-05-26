@@ -41,8 +41,8 @@ public abstract class WrapperWithBottomNavigationActivity extends CallActivity i
         setBudgieMessage(ConfigManager.getInstance().getUnreadMessage());
         setBudgieFootPrint(ConfigManager.getInstance().getUnReadFootPrint());
         setBudgieFollower(ConfigManager.getInstance().getUnReadFollow());
-        setBadgeOnl(ConfigManager.getInstance().getUserOnl());
-        setBadgeUserOnlNotify(ConfigManager.getInstance().getUserOnlNotify());
+        setBadgeOnline(ConfigManager.getInstance().getUnReadUserOnlineNotify());
+        setBadgeUserOnlineNotify(ConfigManager.getInstance().getUnReadMyMenu());
         navigationLayoutGroup.setSelectedItem(ConfigManager.getInstance().getCurrentTabInRootNavigater());
     }
 

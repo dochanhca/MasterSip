@@ -26,19 +26,19 @@ public class FirebaseUtils {
         JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         FCMPushItem fcmPushItem = parsePushItem(jAps);
 
-        if (data.containsKey(Constant.JSON.CALLER)) {
-            return parseDataForCallMessage(data, fcmPushItem);
+        switch (fcmPushItem.getCategory()) {
+            case FCMPushItem.CATEGORY.CHAT_TEXT:
+                return parseDataForChatMessage(data, fcmPushItem);
+            case FCMPushItem.CATEGORY.FOLLOW:
+                return parseDataForFollowMessage(data, fcmPushItem);
+            case FCMPushItem.CATEGORY.USER_ONLINE:
+                return parseDataForUserOnlMessage(data, fcmPushItem);
+            case FCMPushItem.CATEGORY.INCOMING_CALL:
+            case FCMPushItem.CATEGORY.MISS_CALL:
+                return parseDataForCallMessage(data, fcmPushItem);
+            default:
+                return null;
         }
-
-        if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
-            return parseDataForChatMessage(data, fcmPushItem);
-        } else if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.FOLLOW)) {
-            return parseDataForFollowMessage(data, fcmPushItem);
-        } else if(fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.USER_ONLINE)){
-            return parseDataForUserOnlMessage(data, fcmPushItem);
-        }
-
-        return null;
     }
 
     private static Map<String, Object> parseDataForFollowMessage(Map<String, String> data,
@@ -49,14 +49,16 @@ public class FirebaseUtils {
         result.put(Constant.JSON.RECEIVER_STATUS, data.get(Constant.JSON.RECEIVER_STATUS));
         return result;
     }
+
     private static Map<String, Object> parseDataForUserOnlMessage(Map<String, String> data,
-                                                                 FCMPushItem fcmPushItem) throws JSONException {
+                                                                  FCMPushItem fcmPushItem) throws JSONException {
         Map<String, Object> result = new HashMap<>();
 
         result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
         result.put(Constant.JSON.RECEIVER_STATUS, data.get(Constant.JSON.RECEIVER_STATUS));
         return result;
     }
+
     private static Map<String, Object> parseDataForCallMessage(Map<String, String> data, FCMPushItem fcmPushItem) throws JSONException {
         Map<String, Object> result = new HashMap<>();
         UserItem caller = parseCaller(new JSONObject(data.get(Constant.JSON.CALLER)));

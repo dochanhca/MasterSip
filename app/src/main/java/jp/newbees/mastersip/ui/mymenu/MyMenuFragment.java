@@ -9,7 +9,6 @@ import android.os.SystemClock;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -122,8 +121,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtMessageNumber;
     @BindView(R.id.txt_online_list)
     HiraginoTextView txtOnlineList;
-    @BindView(R.id.txt_user_onl)
-    HiraginoTextView txtUserOnl;
+    @BindView(R.id.txt_user_online)
+    HiraginoTextView txtUserOnline;
     @BindView(R.id.txt_email_backup_setting)
     HiraginoTextView txtEmailBackup;
     @BindView(R.id.divider_email_backup)
@@ -182,7 +181,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
         txtActionBarTitle.setText(userItem.getUsername());
         txtVersion.setText(presenter.getVersion());
-        txtUserOnl.setVisibility(ConfigManager.getInstance().getUserOnlNotify() > 0 ? View.VISIBLE : View.GONE);
+        txtUserOnline.setVisibility(ConfigManager.getInstance().getUnReadMyMenu() > 0 ? View.VISIBLE : View.GONE);
         if (userItem.getAvatarItem() == null) {
             imgAvatar.setImageResource(defaultAvatar);
         } else {
@@ -645,6 +644,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Subscribe
     public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
-        txtUserOnl.setVisibility(badgeEvent.getType() == Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY ? View.VISIBLE : View.GONE);
+        txtUserOnline.setVisibility(badgeEvent.getType() == Constant.FOOTER_DIALOG_TYPE.MY_MENU ? View.VISIBLE : View.GONE);
     }
 }
