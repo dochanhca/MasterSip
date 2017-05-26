@@ -1121,7 +1121,7 @@ public class JSONUtils {
         masterDataItem.setTotalChat(jData.getInt(Constant.JSON.TOTAL_CHAT));
         masterDataItem.setTotalFollower(jData.getInt(Constant.JSON.TOTAL_FOLLOWER));
         masterDataItem.setTotalFootPrint(jData.getInt(Constant.JSON.TOTAL_FOOTPRINT));
-        masterDataItem.setTotalMyMenu(jData.getInt(Constant.JSON.TOTAL_MY_MENU));
+        masterDataItem.setTotalMyMenu(jData.getString(Constant.JSON.TOTAL_MY_MENU));
 
         JSONObject jsonObject = jData.getJSONObject(Constant.JSON.MIN_POINT_DOWNLOAD);
         masterDataItem.setMinPointDownImageChat(jsonObject.getInt(Constant.JSON.CHAT));
@@ -1172,7 +1172,7 @@ public class JSONUtils {
 
     public static ChangeBadgeEvent genChangeBadgeEvent(JSONObject jData) throws JSONException {
         int type = jData.getInt(Constant.JSON.TYPE);
-        int badge = jData.getInt(Constant.JSON.BADGE);
+        String badge = jData.getString(Constant.JSON.BADGE);
         return new ChangeBadgeEvent(type, badge);
     }
 

@@ -8,7 +8,7 @@ public class MasterDataItem {
     private int totalChat;
     private int totalFootPrint;
     private int totalFollower;
-    private int totalMyMenu;
+    private String totalMyMenu;
     private int coin;
     private int minPointDownImageChat;
     private int getMinPointDownImageGallery;
@@ -53,11 +53,11 @@ public class MasterDataItem {
         this.totalFollower = totalFollower;
     }
 
-    public int getTotalMyMenu() {
+    public String getTotalMyMenu() {
         return totalMyMenu;
     }
 
-    public void setTotalMyMenu(int totalMyMenu) {
+    public void setTotalMyMenu(String totalMyMenu) {
         this.totalMyMenu = totalMyMenu;
     }
 

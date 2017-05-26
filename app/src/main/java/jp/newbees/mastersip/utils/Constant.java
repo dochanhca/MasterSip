@@ -490,7 +490,7 @@ public final class Constant {
         public static final int SEND_GIFT = 2;
         public static final int FOOT_PRINT = 5;
         public static final int FOLLOW = 6;
-        public static final int ONLINE_NOTIFY = 20;
-        public static final int MY_MENU = 7;
+        public static final int ONLINE_NOTIFY = 7;
+        public static final int MY_MENU = 20;
     }
 }

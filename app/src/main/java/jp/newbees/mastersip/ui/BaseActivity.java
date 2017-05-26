@@ -403,58 +403,58 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public boolean isShowNavigationBar() {
-        if (!hasBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return false;
         }
         return isShowNavigationBar;
     }
 
-    public void setBudgieMessage(int value) {
+    public void setBudgieMessage(String value) {
         ConfigManager.getInstance().setUnreadMessage(value);
-        if (!hasBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return;
         }
-        if (value == 0) {
+        if (value.equals("0")) {
             navigationMessage.setShowBoxValue(false);
         } else {
             navigationMessage.showBoxValue(value);
         }
     }
 
-    public void setBudgieFootPrint(int value) {
+    public void setBudgieFootPrint(String value) {
         ConfigManager.getInstance().setUnReadFootPrint(value);
-        if (!hasBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return;
         }
-        if (value == 0) {
+        if (value.equals("0")) {
             navigationLeg.setShowBoxValue(false);
         } else {
             navigationLeg.showBoxValue(value);
         }
     }
 
-    public void setBudgieFollower(int value) {
+    public void setBudgieFollower(String value) {
         ConfigManager.getInstance().setUnReadFollow(value);
-        if (!hasBottomNavigation()){
-           return;
-       }
-        if (value == 0) {
+        if (!hasBottomNavigation()) {
+            return;
+        }
+        if (value.equals("0")) {
             navigationHeart.setShowBoxValue(false);
         } else {
             navigationHeart.showBoxValue(value);
         }
     }
 
-    public void setBadgeOnline(int value) {
+    public void setBadgeUserOnline(String value) {
         ConfigManager.getInstance().setUserOnline(value);
     }
 
-    public void setBadgeUserOnlineNotify(int value) {
+    public void setBadgeMyMenuNotify(String value) {
         ConfigManager.getInstance().setUnReadMyMenu(value);
-        if (!hasBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return;
         }
-        if (value == 0) {
+        if (value.equals("0")) {
             navigationMenu.setShowBoxValue(false);
         } else {
             navigationMenu.showBoxValue(value);

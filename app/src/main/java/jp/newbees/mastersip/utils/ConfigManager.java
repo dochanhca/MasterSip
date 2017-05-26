@@ -46,11 +46,11 @@ final public class ConfigManager {
     private int currentCallType;
     private int imageDrawableCallerId = -1;
 
-    private int unReadMessage;
-    private int unReadFootPrint;
-    private int unReadFollow;
-    private int unReadUserOnlineNotify;
-    private int unReadMyMenu;
+    private String unReadMessage = "0";
+    private String unReadFootPrint = "0";
+    private String unReadFollow = "0";
+    private String unReadUserOnlineNotify = "0";
+    private String unReadMyMenu = "0";
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -140,6 +140,7 @@ final public class ConfigManager {
         editor.putString(Constant.Application.AUTHORIZATION, authId);
         editor.commit();
     }
+
     public boolean isPushUserOnl() {
         return sharedPreferences.getBoolean(Constant.Application.PUSH_USER_ONL, false);
     }
@@ -149,6 +150,7 @@ final public class ConfigManager {
         editor.putBoolean(Constant.Application.PUSH_USER_ONL, isPushUserOnl);
         editor.commit();
     }
+
     public FilterItem getFilterUser() {
         String jFilter = sharedPreferences.getString(Constant.Application.SETTING_FILTER, null);
         Gson gson = new Gson();
@@ -296,44 +298,46 @@ final public class ConfigManager {
         return imageDrawableCallerId;
     }
 
-    public void setUnreadMessage(int unReadMessage) {
+    public void setUnreadMessage(String unReadMessage) {
         this.unReadMessage = unReadMessage;
     }
 
-    public int getUnreadMessage() {
+    public String getUnreadMessage() {
         return unReadMessage;
     }
 
-    public int getUnReadFootPrint() {
+    public String getUnReadFootPrint() {
         return unReadFootPrint;
     }
 
-    public void setUnReadFootPrint(int unReadFootPrint) {
+    public void setUnReadFootPrint(String unReadFootPrint) {
         this.unReadFootPrint = unReadFootPrint;
     }
 
-    public int getUnReadFollow() {
+    public String getUnReadFollow() {
         return unReadFollow;
     }
 
-    public void setUnReadFollow(int unReadFollow) {
+    public void setUnReadFollow(String unReadFollow) {
         this.unReadFollow = unReadFollow;
     }
-    public int getUnReadUserOnlineNotify() {
+
+    public String getUnReadUserOnlineNotify() {
         return unReadUserOnlineNotify;
     }
 
-    public void setUserOnline(int userOnl) {
+    public void setUserOnline(String userOnl) {
         this.unReadUserOnlineNotify = userOnl;
     }
 
-    public int getUnReadMyMenu() {
+    public String getUnReadMyMenu() {
         return unReadMyMenu;
     }
 
-    public void setUnReadMyMenu(int unReadMyMenu) {
+    public void setUnReadMyMenu(String unReadMyMenu) {
         this.unReadMyMenu = unReadMyMenu;
     }
+
     public int getCurrentTabInRootNavigater() {
         return currentTabInRootNavigater;
     }

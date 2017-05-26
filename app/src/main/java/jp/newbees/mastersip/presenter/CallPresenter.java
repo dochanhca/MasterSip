@@ -70,7 +70,7 @@ public class CallPresenter extends BasePresenter {
 
         void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent);
 
-        void onChangeBadgeEvent(int type, int badge);
+        void onChangeBadgeEvent(int type, String badge);
     }
 
     public CallPresenter(Context context, CallView callView) {

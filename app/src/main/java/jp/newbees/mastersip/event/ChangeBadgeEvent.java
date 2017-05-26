@@ -6,9 +6,9 @@ package jp.newbees.mastersip.event;
 
 public class ChangeBadgeEvent {
     private int type;
-    private int badge;
+    private String badge;
 
-    public ChangeBadgeEvent(int type, int badge) {
+    public ChangeBadgeEvent(int type, String badge) {
         this.type = type;
         this.badge = badge;
     }
@@ -21,11 +21,11 @@ public class ChangeBadgeEvent {
         this.type = type;
     }
 
-    public int getBadge() {
+    public String getBadge() {
         return badge;
     }
 
-    public void setBadge(int badge) {
+    public void setBadge(String badge) {
         this.badge = badge;
     }
 }

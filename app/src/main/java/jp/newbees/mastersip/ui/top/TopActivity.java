@@ -191,8 +191,8 @@ public class TopActivity extends CallActivity implements
      */
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
-        ConfigManager.getInstance().setUnreadMessage(roomChatEvent.getNumberOfRoomUnRead());
-        setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
+        ConfigManager.getInstance().setUnreadMessage(String.valueOf(roomChatEvent.getNumberOfRoomUnRead()));
+        setBudgieMessage(String.valueOf(roomChatEvent.getNumberOfRoomUnRead()));
     }
 
     @Override
@@ -236,10 +236,10 @@ public class TopActivity extends CallActivity implements
 
     @Override
     public void onLoadMasterDataSuccess(MasterDataItem masterDataItem) {
-        setBudgieMessage(masterDataItem.getTotalChat());
-        setBudgieFootPrint(masterDataItem.getTotalFootPrint());
-        setBudgieFollower(masterDataItem.getTotalFollower());
-        setBadgeUserOnlineNotify(masterDataItem.getTotalMyMenu());
+        setBudgieMessage(String.valueOf(masterDataItem.getTotalChat()));
+        setBudgieFootPrint(String.valueOf(masterDataItem.getTotalFootPrint()));
+        setBudgieFollower(String.valueOf(masterDataItem.getTotalFollower()));
+        setBadgeMyMenuNotify(String.valueOf(masterDataItem.getTotalMyMenu()));
         Log.d(TAG, "onLoadMasterDataSuccess: " + masterDataItem.getTotalFootPrint() + "-" + masterDataItem.getTotalFollower());
     }
 
