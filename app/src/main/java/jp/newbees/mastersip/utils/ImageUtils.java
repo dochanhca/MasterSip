@@ -51,6 +51,11 @@ public class ImageUtils {
      */
     public static Bitmap decodeSampledBitmap(Context context, Uri uri, int reqWidth, int reqHeight) {
 
+        if (uri.getAuthority() != null) {
+            String imagePath = ImageFilePath.getPath(context, uri);
+            return decodeBitmapFromFile(imagePath, reqWidth, reqHeight);
+        }
+
         try {
             ContentResolver resolver = context.getContentResolver();
 
