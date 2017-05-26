@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -131,8 +132,8 @@ public class TopActivity extends CallActivity implements
         fillData();
         topActivityPresenter.requestPermissions();
         topActivityPresenter.loadMasterData();
-        getDataFromFCMChatMessage(getIntent());
         ConfigManager.getInstance().setCurrentTabInRootNavigater(0);
+        getDataFromFCMChatMessage(getIntent());
     }
 
     @Override
@@ -319,12 +320,26 @@ public class TopActivity extends CallActivity implements
                 ChatActivity.startChatActivity(this, fromUser);
                 break;
             case MyFirebaseMessagingService.PUSH_FOLLOWED:
-                viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
-                ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
+                handlePushFollowed();
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * need to wait small time to viewpager init fragment before navigate
+     */
+    private void handlePushFollowed() {
+        showLoading();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                disMissLoading();
+                viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
+                ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
+            }
+        }, 100);
     }
 
     private void showMessageDialogForMissedCall(UserItem fromUser) {

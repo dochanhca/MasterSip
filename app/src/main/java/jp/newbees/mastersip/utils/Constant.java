@@ -226,8 +226,8 @@ public final class Constant {
             BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
         }
 
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
+//        private static final String DEVELOPMENT_IP = "52.199.112.26";
+                private static final String DEVELOPMENT_IP = "52.197.138.1";
         private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";

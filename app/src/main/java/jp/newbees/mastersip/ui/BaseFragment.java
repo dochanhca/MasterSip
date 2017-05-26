@@ -105,7 +105,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void showToastExceptionVolleyError(int errorCode, String errorMessage) {
-        ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity().getApplicationContext(),
+        ((BaseActivity) getActivity()).showToastExceptionVolleyError(getActivity(),
                 errorCode, errorMessage);
     }
 
