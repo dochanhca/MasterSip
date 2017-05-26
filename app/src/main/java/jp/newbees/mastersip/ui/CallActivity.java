@@ -558,6 +558,10 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
                 TopActivity.navigateToFragment(this, TopActivity.FOOT_PRINT_FRAGMENT);
                 break;
+            case Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY:
+                ConfigManager.getInstance().savePushUserOnl(true);
+                TopActivity.navigateToFragment(this, TopActivity.MY_MENU_CONTAINER_FRAGMENT);
+                break;
             default:
                 break;
         }

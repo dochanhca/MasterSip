@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.ChangeBadgeEvent;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
@@ -57,6 +59,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -489,6 +492,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         EventBus.getDefault().removeStickyEvent(event);
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
         txtPoint.setText(event.getCoin() + "");
@@ -637,5 +641,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             UpdateProfileFemaleActivity.startActivityForResult(this,
                     ProfileBaseActivity.MODE_UPDATE, REQUEST_EDIT_PROFILE);
         }
+    }
+
+    @Subscribe
+    public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
+        txtUserOnl.setVisibility(badgeEvent.getType() == Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY ? View.VISIBLE : View.GONE);
     }
 }

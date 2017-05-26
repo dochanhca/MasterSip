@@ -50,7 +50,6 @@ public class TopActivity extends CallActivity implements
     public static final int FOLLOW_FRAGMENT = 3;
     public static final int MY_MENU_CONTAINER_FRAGMENT = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
-    private boolean isPushUserOnl = true;
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
 
@@ -121,7 +120,6 @@ public class TopActivity extends CallActivity implements
         topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
