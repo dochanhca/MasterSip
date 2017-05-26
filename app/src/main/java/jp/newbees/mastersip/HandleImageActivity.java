@@ -67,7 +67,7 @@ public abstract class HandleImageActivity extends BaseActivity implements
         disMissLoading();
         SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
                 (ArrayList<SelectionItem>) reportReasons
-                , getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
+                , getString(R.string.report_user), getString(R.string.send), reportReasons.get(0));
     }
 
     @Override
