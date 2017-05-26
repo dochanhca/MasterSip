@@ -302,7 +302,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="@dimen/_120dp"
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal">
