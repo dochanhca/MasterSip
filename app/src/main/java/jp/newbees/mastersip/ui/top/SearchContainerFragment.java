@@ -10,6 +10,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.ui.BaseFragment;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
+import jp.newbees.mastersip.ui.profile.ProfileDetailFragment;
 import jp.newbees.mastersip.ui.profile.SettingOnlineFragment;
 
 /**
@@ -88,5 +89,11 @@ public class SearchContainerFragment extends BaseFragment {
         SearchFragment searchFragment =
                 (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.class.getName());
         searchFragment.removeUserAfterBlocked(userItem);
+
+        ProfileDetailFragment profileDetailFragment = (ProfileDetailFragment) getFragmentManager().findFragmentByTag(ProfileDetailFragment.class.getName());
+        if (profileDetailFragment != null) {
+            profileDetailFragment.notifyListUserChanged();
+        }
+
     }
 }

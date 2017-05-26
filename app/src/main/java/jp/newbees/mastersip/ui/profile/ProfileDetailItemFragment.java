@@ -1,7 +1,6 @@
 package jp.newbees.mastersip.ui.profile;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -58,8 +57,6 @@ import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.DateTimeUtils;
 import jp.newbees.mastersip.utils.Utils;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by ducpv on 1/18/17.
@@ -254,7 +251,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
 
     @OnClick({R.id.btn_follow, R.id.btn_on_off_notify, R.id.btn_send_gift,
             R.id.layout_chat, R.id.layout_voice_call, R.id.layout_video_call, R.id.layout_report_user,
-    R.id.layout_block_user})
+            R.id.layout_block_user})
     public void onClick(View view) {
         // mis-clicking prevention, using threshold of 1000 ms
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
@@ -447,12 +444,7 @@ public class ProfileDetailItemFragment extends BaseCallFragment implements
         if (activity instanceof TopActivity) {
             EventBus.getDefault().post(new BlockUserEvent(userItem));
         } else if (activity instanceof ProfileDetailItemActivity) {
-            Intent intent = new Intent(getApplicationContext(), TopActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(USER_ITEM, userItem);
-            intent.putExtras(bundle);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            TopActivity.startActivityClearTop(getActivity(), userItem);
         }
     }
 

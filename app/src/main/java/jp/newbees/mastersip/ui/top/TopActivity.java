@@ -1,5 +1,6 @@
 package jp.newbees.mastersip.ui.top;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
-import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -52,6 +52,8 @@ public class TopActivity extends CallActivity implements
     public static final int FOLLOW_FRAGMENT = 3;
     private static final int MY_MENU_FRAGMENT_CONTAINER = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
+
+    private static final String USER_ITEM = "USER_ITEM";
 
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
@@ -183,7 +185,7 @@ public class TopActivity extends CallActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
-        final UserItem userItem = intent.getParcelableExtra(ProfileDetailItemFragment.USER_ITEM);
+        final UserItem userItem = intent.getParcelableExtra(USER_ITEM);
         if (userItem != null) {
             isUserBlocked = true;
             this.userItem = userItem;
@@ -425,5 +427,14 @@ public class TopActivity extends CallActivity implements
     @Override
     public void didSendMsgRequestEnableSettingCallError(String errorMessage, int errorCode) {
         super.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
+    }
+
+    public static void startActivityClearTop(Activity activity, UserItem userItem) {
+        Intent intent = new Intent(activity, TopActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(USER_ITEM, userItem);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
     }
 }

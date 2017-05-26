@@ -62,6 +62,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftActivity;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
+import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.ImageUtils;
@@ -304,7 +305,11 @@ public class ChatActivity extends CallActivity implements
 
     @Override
     public void didLoadChatHistoryError(int errorCode, String errorMessage) {
-        showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+        if (errorCode == Constant.Error.HAS_BEEN_BLOCKED) {
+            TopActivity.startActivityClearTop(this, userItem);
+        } else {
+            showToastExceptionVolleyError(ChatActivity.this, errorCode, errorMessage);
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 
