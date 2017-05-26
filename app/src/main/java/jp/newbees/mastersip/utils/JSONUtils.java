@@ -1121,7 +1121,7 @@ public class JSONUtils {
         masterDataItem.setTotalChat(jData.getInt(Constant.JSON.TOTAL_CHAT));
         masterDataItem.setTotalFollower(jData.getInt(Constant.JSON.TOTAL_FOLLOWER));
         masterDataItem.setTotalFootPrint(jData.getInt(Constant.JSON.TOTAL_FOOTPRINT));
-        masterDataItem.setTotalMyMenu(jData.getInt(Constant.JSON.TOTAL_MY_MENU));
+        masterDataItem.setTotalMyMenu(jData.getString(Constant.JSON.TOTAL_MY_MENU));
 
         JSONObject jsonObject = jData.getJSONObject(Constant.JSON.MIN_POINT_DOWNLOAD);
         masterDataItem.setMinPointDownImageChat(jsonObject.getInt(Constant.JSON.CHAT));
@@ -1187,5 +1187,17 @@ public class JSONUtils {
             reportReasons.add(reportReason);
         }
         return reportReasons;
+    }
+
+    public static List<UserItem> parseListBlockUser(JSONObject jData) throws JSONException {
+        JSONArray jList = jData.getJSONArray(Constant.JSON.LIST);
+        List<UserItem> userItems = new ArrayList<>();
+        for (int i = 0; i < jList.length(); i++) {
+            JSONObject jUser = jList.getJSONObject(i);
+            UserItem userItem = parseUserForFootprint(jUser);
+            userItem.setBlocked(true);
+            userItems.add(userItem);
+        }
+        return userItems;
     }
 }

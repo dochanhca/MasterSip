@@ -314,11 +314,14 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.txt_notify_setting:
                 MyMenuContainerFragment.showSettingPushFragment(getActivity());
                 break;
+            case R.id.txt_block_list:
+                MyMenuContainerFragment.showBlockListFragment(getActivity());
+                break;
             case R.id.layout_my_notify:
             case R.id.layout_guide:
             case R.id.layout_contact:
             case R.id.layout_common_guide:
-            case R.id.txt_block_list:
+
             default:
                 break;
         }

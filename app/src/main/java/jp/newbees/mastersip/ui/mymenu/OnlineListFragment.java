@@ -87,7 +87,7 @@ public class OnlineListFragment extends BaseFragment implements OnlineListAdapte
     @Override
     public void onChangeOnlineSettingClick(int position) {
         UserItem userItem = adapter.getData().get(position);
-        BaseFragment settingOnlineFragment = SettingOnlineFragment.newInstance(userItem, false);
+        BaseFragment settingOnlineFragment = SettingOnlineFragment.newInstance(userItem, true);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         settingOnlineFragment.setTransitionAnimation(transaction);
         transaction.addToBackStack(null);

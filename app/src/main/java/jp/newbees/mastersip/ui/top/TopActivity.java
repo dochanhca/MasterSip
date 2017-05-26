@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.NavigationLayoutGroup;
+import jp.newbees.mastersip.event.BlockUserEvent;
 import jp.newbees.mastersip.event.RoomChatEvent;
 import jp.newbees.mastersip.fcm.MyFirebaseMessagingService;
 import jp.newbees.mastersip.model.MasterDataItem;
@@ -31,6 +32,7 @@ import jp.newbees.mastersip.ui.chatting.ChatActivity;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.gift.ListGiftFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
+import jp.newbees.mastersip.ui.profile.ProfileDetailItemFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -40,15 +42,15 @@ import jp.newbees.mastersip.utils.Logger;
  */
 
 public class TopActivity extends CallActivity implements
-        View.OnClickListener, InAppPurchasePresenter.InAppPurchaseListener, BaseActivity.BottomNavigation, TopActivityPresenter.TopActivityListener {
+        InAppPurchasePresenter.InAppPurchaseListener, BaseActivity.BottomNavigation, TopActivityPresenter.TopActivityListener {
 
     private static final String TAG = "TopActivity";
     private static final int REQUEST_OPEN_CALLER_PROFILE = 33;
-    private static final int SEARCH_FRAGMENT = 0;
+    private static final int SEARCH_FRAGMENT_CONTAINER = 0;
     private static final int CHAT_GROUP_FRAGMENT = 1;
     public static final int FOOT_PRINT_FRAGMENT = 2;
     public static final int FOLLOW_FRAGMENT = 3;
-    public static final int MY_MENU_CONTAINER_FRAGMENT = 4;
+    private static final int MY_MENU_FRAGMENT_CONTAINER = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
 
     private ViewPager viewPager;
@@ -58,19 +60,20 @@ public class TopActivity extends CallActivity implements
     private TopActivityPresenter topActivityPresenter;
 
     private UserItem caller;
+    private boolean isUserBlocked;
+    private UserItem userItem;
 
     private NavigationLayoutGroup.OnChildItemClickListener mOnNavigationChangeListener = new NavigationLayoutGroup.OnChildItemClickListener() {
         @Override
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
             ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
-            popBackToFirstFragmentAndReload(position);
+            popBackToFirstFragment(position);
         }
 
-        private void popBackToFirstFragmentAndReload(int position) {
+        private void popBackToFirstFragment(int position) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
         }
     };
 
@@ -87,7 +90,7 @@ public class TopActivity extends CallActivity implements
             if (baseFragment == null) {
                 return;
             }
-            if (position == MY_MENU_CONTAINER_FRAGMENT) {
+            if (position == MY_MENU_FRAGMENT_CONTAINER) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
                 if (null != fragment) fragment.onTabSelected();
             } else if (position == FOOT_PRINT_FRAGMENT) {
@@ -139,6 +142,10 @@ public class TopActivity extends CallActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        if (isUserBlocked) {
+            handleAfterBlockedUser(userItem);
+            isUserBlocked = false;
+        }
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_search_container);
         if (fragment != null && fragment instanceof ListGiftFragment) {
             getSupportFragmentManager().popBackStack();
@@ -176,6 +183,12 @@ public class TopActivity extends CallActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
+        final UserItem userItem = intent.getParcelableExtra(ProfileDetailItemFragment.USER_ITEM);
+        if (userItem != null) {
+            isUserBlocked = true;
+            this.userItem = userItem;
+        }
+
         int position = intent.getIntExtra(NAVIGATE_TO_FRAGMENT, -1);
         if (position >= 0) {
             viewPager.setCurrentItem(position, false);
@@ -196,9 +209,10 @@ public class TopActivity extends CallActivity implements
         setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
     }
 
-    @Override
-    public void onClick(View v) {
-
+    @Subscribe()
+    public void onBlockUserEvent(BlockUserEvent event) {
+        Logger.e(TAG, "onBlockUserEvent receive");
+        handleAfterBlockedUser(event.getUserItem());
     }
 
     @Override
@@ -327,6 +341,18 @@ public class TopActivity extends CallActivity implements
         textDialog.show(getSupportFragmentManager(), TextDialog.class.getSimpleName());
     }
 
+    private void handleAfterBlockedUser(UserItem userItem) {
+        viewPager.setCurrentItem(SEARCH_FRAGMENT_CONTAINER, false);
+        ConfigManager.getInstance().setCurrentTabInRootNavigater(SEARCH_FRAGMENT_CONTAINER);
+
+        // Pop all fragment from back stack except first fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        BaseFragment baseFragment = (BaseFragment) getFragmentForPosition(SEARCH_FRAGMENT_CONTAINER);
+        ((SearchContainerFragment) baseFragment).removeUserAfterBlocked(userItem);
+    }
+
     private class MyPagerAdapter extends FragmentPagerAdapter {
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -335,7 +361,7 @@ public class TopActivity extends CallActivity implements
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case SEARCH_FRAGMENT:
+                case SEARCH_FRAGMENT_CONTAINER:
                     return SearchContainerFragment.newInstance();
                 case CHAT_GROUP_FRAGMENT:
                     return ChatGroupFragment.newInstance();
@@ -343,7 +369,7 @@ public class TopActivity extends CallActivity implements
                     return FootPrintFragment.newInstance();
                 case FOLLOW_FRAGMENT:
                     return FollowFragment.newInstance();
-                case MY_MENU_CONTAINER_FRAGMENT:
+                case MY_MENU_FRAGMENT_CONTAINER:
                     return MyMenuContainerFragment.newInstance();
                 default:
                     return null;

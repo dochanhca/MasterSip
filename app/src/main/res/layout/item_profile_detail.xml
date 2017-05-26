@@ -179,7 +179,7 @@
                                 android:gravity="center">
 
                                 <jp.newbees.mastersip.customviews.HiraginoTextView
-                                    android:id="@+id/btn_block_user"
+                                    android:id="@+id/txt_block_user"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:minHeight="45dp"
@@ -206,7 +206,7 @@
                                 android:gravity="center">
 
                                 <jp.newbees.mastersip.customviews.HiraginoTextView
-                                    android:id="@+id/btn_report_user"
+                                    android:id="@+id/txt_report_user"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:minHeight="45dp"

@@ -218,10 +218,24 @@ public final class Constant {
     }
 
     public static final class API {
-
         private API() {
             //Prevent init constructor
         }
+
+        public static void initBaseURL() {
+            BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
+        }
+
+        private static final String DEVELOPMENT_IP = "52.199.112.26";
+        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
+        private static final String PRODUCTION_IP = "52.197.138.1";
+
+        public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
+        public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
+        public static final String BIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.BIT_CASH + "/status="
+                + "success";
+        public static final String CREDIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.CREDIT_CARD + "/status="
+                + "success";
 
         public static final int DOWN_IMAGE_CHAT = 1;
         public static final int DOWN_IMAGE_GALLERY = 2;
@@ -247,10 +261,6 @@ public final class Constant {
         public static final int TYPE_UPLOAD_VOICE = 1;
         public static final int TYPE_UPLOAD_VIDEO = 3;
         public static final int TYPE_UPLOAD_IMAGE = 4;
-
-        private static final String DEVELOPMENT_IP = "52.199.112.26";
-        //        private static final String DEVELOPMENT_IP = "52.197.138.1";
-        private static final String PRODUCTION_IP = "52.197.138.1";
 
         public static final String GET_PROFILE = "profile";
 
@@ -321,16 +331,9 @@ public final class Constant {
         public static final String REPORT = "report";
 
 
-        public static void initBaseURL() {
-            BASE_URL = Application.DEBUG ? DEVELOPMENT_IP : PRODUCTION_IP;
-        }
-
-        public static final String TIP_PAGE = "http://" + DEVELOPMENT_IP + "/sip_api/webview/tips/";
-        public static final String TIP_PAGE_DIRECTION = "sip://sipBackDevice";
-        public static final String BIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.BIT_CASH + "/status="
-                + "success";
-        public static final String CREDIT_CASH_PAYMENT_SUCCESS = "sip://" + Application.CREDIT_CARD + "/status="
-                + "success";
+        public static final String BLOCK_LIST = "block_list";
+        public static final String BLOCK = "block";
+        public static final String UNBLOCk ="unblock";
     }
 
     public final class Error {
@@ -383,6 +386,9 @@ public final class Constant {
         public static final int TYPE_BOY_NG = 1031;
         public static final int CHARM_POINT_NG = 1016;
         public static final int SLOGAN_NG = 1015;
+        public static final int MAXIMUM_USER_BLOCK = 6002;
+        public static final int HAS_BEEN_BLOCKED = 6101;
+
     }
 
     public final class Application {

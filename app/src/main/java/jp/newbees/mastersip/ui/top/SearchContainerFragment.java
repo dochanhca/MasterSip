@@ -83,4 +83,10 @@ public class SearchContainerFragment extends BaseFragment {
         transaction.addToBackStack(null);
         transaction.add(R.id.fragment_search_container, fragment).commit();
     }
+
+    public void removeUserAfterBlocked(UserItem userItem) {
+        SearchFragment searchFragment =
+                (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.class.getName());
+        searchFragment.removeUserAfterBlocked(userItem);
+    }
 }

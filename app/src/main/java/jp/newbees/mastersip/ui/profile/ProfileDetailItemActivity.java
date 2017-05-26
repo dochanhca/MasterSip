@@ -52,5 +52,4 @@ public class ProfileDetailItemActivity extends WrapperWithBottomNavigationActivi
         super.didSendMsgRequestEnableSettingCallError(errorMessage, errorCode);
         showToastExceptionVolleyError(getApplicationContext(), errorCode, errorMessage);
     }
-
 }
