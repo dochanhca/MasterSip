@@ -16,12 +16,12 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import jp.newbees.mastersip.HandleImageActivity;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryPagerAdapter;
 import jp.newbees.mastersip.customviews.HackyViewPager;
@@ -30,12 +30,9 @@ import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.model.ChattingGalleryItem;
 import jp.newbees.mastersip.model.GalleryItem;
 import jp.newbees.mastersip.model.ImageItem;
-import jp.newbees.mastersip.model.SelectionItem;
-import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.ImageDetailPresenter;
 import jp.newbees.mastersip.ui.auth.CropImageActivity;
 import jp.newbees.mastersip.ui.dialog.SelectImageDialog;
-import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
@@ -44,8 +41,7 @@ import jp.newbees.mastersip.utils.Constant;
  * Created by ducpv on 2/6/17.
  */
 
-public class ImageDetailActivity extends CallActivity implements ImageDetailPresenter.PhotoDetailView,
-        SelectionDialog.OnSelectionDialogClick, CallActivity.ImageDownloadable {
+public class ImageDetailActivity extends HandleImageActivity implements ImageDetailPresenter.PhotoDetailView {
 
     private static final String GALLERY_ITEM = "GALLERY_ITEM";
     private static final String VIEW_TYPE = "VIEW_TYPE";
@@ -85,7 +81,6 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     private GalleryPagerAdapter galleryPagerAdapter;
     private boolean needReloadProfile;
     private boolean isLoadingMorePhotos = false;
-    private List<SelectionItem> reportReasons;
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         boolean lastPageChanged = false;
@@ -131,7 +126,45 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
     }
 
     @Override
+    protected int getImageId() {
+        ImageItem imageItem = photos.get(currentPosition);
+        int imageId = viewType == RECEIVED_PHOTOS_FROM_CHAT
+                ? imageItem.getMessageId() : imageItem.getImageId();
+        return imageId;
+    }
+
+    @Override
+    protected int getReportImageType() {
+        return viewType == RECEIVED_PHOTOS_FROM_CHAT
+                ? Constant.API.REPORT_IMAGE_CHAT : Constant.API.REPORT_IMAGE_PROFILE;
+    }
+
+    @Override
+    protected int getDownloadImageType() {
+        return viewType == RECEIVED_PHOTOS_FROM_CHAT
+                ? Constant.API.DOWN_IMAGE_CHAT : Constant.API.DOWN_IMAGE_GALLERY;
+    }
+
+    @Override
+    protected int getMinPoint() {
+        ConfigManager configManager = ConfigManager.getInstance();
+        return viewType == RECEIVED_PHOTOS_FROM_CHAT
+                ? configManager.getMinPointDownImageChat() : configManager.getMinPointDownImageGallery();
+    }
+
+    @Override
+    protected String getImagePath() {
+        return photos.get(currentPosition).getOriginUrl();
+    }
+
+    @Override
+    protected String getUserId() {
+        return userId;
+    }
+
+    @Override
     protected void initViews(Bundle savedInstanceState) {
+        super.initViews(savedInstanceState);
         ButterKnife.bind(this);
         galleryItem = getIntent().getParcelableExtra(GALLERY_ITEM);
         currentPosition = getIntent().getIntExtra(POSITION, 0);
@@ -163,12 +196,10 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
                 PhotoGalleryActivity.startActivityForResult(this, galleryItem, VIEW_ALL_PHOTO);
                 break;
             case R.id.txt_save_photo:
-                showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_GALLERY);
+                showConfirmDownloadImageDialog();
                 break;
             case R.id.txt_report:
-                showLoading();
-                imageDetailPresenter.getListReportReason(viewType == RECEIVED_PHOTOS_FROM_CHAT
-                        ? Constant.API.REPORT_IMAGE_CHAT : Constant.API.REPORT_IMAGE_PROFILE);
+                downloadAndReportPresenter.getListReportReason(getReportImageType());
                 break;
             default:
                 break;
@@ -300,73 +331,6 @@ public class ImageDetailActivity extends CallActivity implements ImageDetailPres
             EventBus.getDefault().postSticky(new ReLoadProfileEvent(true));
         }
         super.onBackPressed();
-    }
-
-    @Override
-    public void didRequestDownloadImage() {
-        handleDownloadImage(photos.get(currentPosition).getOriginUrl());
-    }
-
-    @Override
-    public void didRequestDownloadImageError(int errorCode, String errorMessage) {
-        disMissLoading();
-        showToastExceptionVolleyError(this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void requestDownloadImage() {
-        UserItem currentUser = ConfigManager.getInstance().getCurrentUser();
-        int minPoint = ConfigManager.getInstance().getMinPointDownImageChat();
-        if (minPoint > currentUser.getCoin() && currentUser.isMale()) {
-            showDialogMissingPoint();
-        } else {
-            showLoading();
-            int imageId = viewType == RECEIVED_PHOTOS_FROM_CHAT
-                    ? photos.get(currentPosition).getMessageId()
-                    : photos.get(currentPosition).getImageId();
-            int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.DOWN_IMAGE_CHAT
-                    : Constant.API.DOWN_IMAGE_GALLERY;
-
-            imageDetailPresenter.requestDownloadImage(imageId,
-                    type);
-        }
-    }
-
-    @Override
-    public void didGetListReportReason(List<SelectionItem> reportReasons) {
-        this.reportReasons = reportReasons;
-        disMissLoading();
-        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
-                (ArrayList<SelectionItem>) reportReasons
-                , getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
-    }
-
-    @Override
-    public void didGetListReportReasonError(int errorCode, String errorMessage) {
-        disMissLoading();
-        showToastExceptionVolleyError(this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void didReportUser() {
-        disMissLoading();
-        showMessageDialog(getString(R.string.reported_user),
-                getString(R.string.mess_report_user_sucess), "", false);
-    }
-
-    @Override
-    public void didReportUserError(int errorCode, String errorMessage) {
-        disMissLoading();
-        showToastExceptionVolleyError(this, errorCode, errorMessage);
-    }
-
-    @Override
-    public void onItemSelected(int position) {
-        showLoading();
-        int type = viewType == RECEIVED_PHOTOS_FROM_CHAT ? Constant.API.REPORT_IMAGE_CHAT
-                : Constant.API.REPORT_IMAGE_PROFILE;
-        imageDetailPresenter.reportUser(userId, reportReasons.get(position).getId(), type,
-                photos.get(currentPosition).getOriginUrl());
     }
 
     /**

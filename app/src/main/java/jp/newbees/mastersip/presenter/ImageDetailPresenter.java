@@ -24,12 +24,12 @@ import jp.newbees.mastersip.utils.Logger;
  * Created by ducpv on 2/8/17.
  */
 
-public class ImageDetailPresenter extends DownloadAndReportPresenter {
+public class ImageDetailPresenter extends BasePresenter {
 
     private PhotoDetailView view;
     private Handler handler;
 
-    public interface PhotoDetailView extends DownloadImageView {
+    public interface PhotoDetailView {
         void didUpdateImage(ImageItem imageItem);
 
         void didUpdateImageError(int errorCode, String errorMessage);
@@ -52,7 +52,7 @@ public class ImageDetailPresenter extends DownloadAndReportPresenter {
     }
 
     public ImageDetailPresenter(Context context, PhotoDetailView view) {
-        super(context, view);
+        super(context);
         this.view = view;
         this.handler = new Handler();
     }
@@ -136,7 +136,6 @@ public class ImageDetailPresenter extends DownloadAndReportPresenter {
 
     @Override
     protected void didResponseTask(BaseTask task) {
-        super.didResponseTask(task);
         if (task instanceof DeleteImageTask) {
             view.didDeleteImage();
         } else if (task instanceof GetMyPhotosTask) {
@@ -151,7 +150,6 @@ public class ImageDetailPresenter extends DownloadAndReportPresenter {
 
     @Override
     protected void didErrorRequestTask(BaseTask task, int errorCode, String errorMessage) {
-        super.didErrorRequestTask(task, errorCode, errorMessage);
         if (task instanceof DeleteImageTask) {
             view.didDeleteImageError(errorCode, errorMessage);
         } else if (task instanceof GetMyPhotosTask || task instanceof GetListChattingPhotos

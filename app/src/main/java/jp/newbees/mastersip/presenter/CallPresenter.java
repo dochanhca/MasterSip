@@ -34,7 +34,7 @@ import jp.newbees.mastersip.utils.Logger;
 public class CallPresenter extends BasePresenter {
     private CallView callView;
 
-    public interface CallView {
+    public interface CallView  {
 
         void outgoingVoiceCall(UserItem callee, String callID);
 
