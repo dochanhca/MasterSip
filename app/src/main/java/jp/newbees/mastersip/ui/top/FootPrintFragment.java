@@ -24,7 +24,6 @@ import jp.newbees.mastersip.model.FootprintItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.presenter.top.FootprintPresenter;
 import jp.newbees.mastersip.ui.BaseCallFragment;
-import jp.newbees.mastersip.utils.ConfigManager;
 
 /**
  * Created by thangit14 on 12/22/16.
@@ -72,12 +71,10 @@ public class FootPrintFragment extends BaseCallFragment implements
     protected void init(View rootView, Bundle savedInstanceState) {
         unbinder = ButterKnife.bind(this, rootView);
         this.imgBack.setVisibility(View.INVISIBLE);
-        this.rdoFootprintGroup.setOnCheckedChangeListener(this);
         this.adapterFootprint = new FootprintAdapter(getActivity().getApplicationContext(), new ArrayList<FootprintItem>());
         this.rcvFootprint.setAdapter(adapterFootprint);
         this.setFragmentTitle(getString(R.string.footprint));
         this.presenter = new FootprintPresenter(getContext(), this);
-        this.rdoFootprintViewedByOther.setChecked(true);
         this.adapterFootprint.setOnItemClickListener(this);
         this.initRefreshView(rootView);
     }
@@ -92,7 +89,7 @@ public class FootPrintFragment extends BaseCallFragment implements
     public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
         this.updateTextColorSegment(checkedId);
         this.currentCheckId = checkedId;
-        this.handleChangeListFootprint(checkedId);
+        this.handleChangeListFootprint(currentCheckId);
     }
 
     @Override
@@ -160,7 +157,6 @@ public class FootPrintFragment extends BaseCallFragment implements
         this.txtFootprintDescription.setText(Html.fromHtml(description));
     }
 
-
     private void initRefreshView(View rootView) {
         swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -169,18 +165,13 @@ public class FootPrintFragment extends BaseCallFragment implements
                 handleChangeListFootprint(currentCheckId);
             }
         });
-
     }
 
-    public final void setLeftTabChecked() {
-        rdoFootprintViewedByOther.setChecked(true);
-    }
-
-    @Override
-    public void reloadDataToClearBadge() {
-        if (ConfigManager.getInstance().getUnReadFootPrint() > 0) {
-            showLoading();
-            presenter.getListFootprintViewedByOther();
-        }
+    public void initData() {
+        handleChangeListFootprint(rdoFootprintViewedByOther.getId());
+        this.rdoFootprintGroup.setOnCheckedChangeListener(null);
+        this.rdoFootprintViewedByOther.setChecked(true);
+        this.updateTextColorSegment(rdoFootprintViewedByOther.getId());
+        this.rdoFootprintGroup.setOnCheckedChangeListener(this);
     }
 }

@@ -15,7 +15,7 @@ import jp.newbees.mastersip.R;
  * Created by ducpv on 12/15/16.
  */
 
-public class InputActivity extends BaseActivity {
+public class InputActivity extends CallActivity {
 
     public static final String TITLE = "TITLE";
     public static final String INPUT_DATA = "INPUT_DATA";

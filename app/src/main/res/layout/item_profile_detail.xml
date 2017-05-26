@@ -172,6 +172,7 @@
                             android:background="@drawable/bg_sub_menu_profile">
 
                             <LinearLayout
+                                android:id="@+id/layout_block_user"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -198,6 +199,7 @@
                                 android:background="@color/color_gray_corner" />
 
                             <LinearLayout
+                                android:id="@+id/layout_report_user"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"

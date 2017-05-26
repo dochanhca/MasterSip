@@ -12,32 +12,33 @@ import org.json.JSONObject;
 import jp.newbees.mastersip.utils.Constant;
 
 /**
- * Created by thangit14 on 5/10/17.
+ * Created by ducpv on 5/23/17.
  */
 
-public class SendBackgroundStateTask extends BaseTask {
-    private int status;
-    private String extension;
+public class RequestDownloadImageTask extends BaseTask<Void> {
 
-    public SendBackgroundStateTask(Context context, int status, String extension) {
+    private int imageId;
+    private int type;
+
+    public RequestDownloadImageTask(Context context, int imageId, int type) {
         super(context);
-        this.status = status;
-        this.extension = extension;
+        this.imageId = imageId;
+        this.type = type;
     }
 
     @Nullable
     @Override
     protected JSONObject genParams() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Constant.JSON.EXTENSION, extension);
-        jsonObject.put(Constant.JSON.STATUS, status);
-        return jsonObject;
+        JSONObject jParam = new JSONObject();
+        jParam.put(Constant.JSON.IMAGE_ID, imageId);
+        jParam.put(Constant.JSON.IMAGE_TYPE, type);
+        return jParam;
     }
 
     @NonNull
     @Override
     protected String getUrl() {
-        return Constant.API.CHANGE_BACKGROUND_STATE;
+        return Constant.API.DOWN_IMAGE;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SendBackgroundStateTask extends BaseTask {
     }
 
     @Override
-    protected Object didResponse(JSONObject data) throws JSONException {
+    protected Void didResponse(JSONObject data) throws JSONException {
         return null;
     }
 }

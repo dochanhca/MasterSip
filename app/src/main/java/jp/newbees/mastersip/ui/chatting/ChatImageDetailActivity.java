@@ -13,15 +13,20 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
 import jp.newbees.mastersip.model.ImageChatItem;
+import jp.newbees.mastersip.model.SelectionItem;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.presenter.DownloadImagePresenter;
+import jp.newbees.mastersip.presenter.DownloadAndReportPresenter;
 import jp.newbees.mastersip.ui.CallActivity;
+import jp.newbees.mastersip.ui.dialog.SelectionDialog;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -31,9 +36,11 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 
 public class ChatImageDetailActivity extends CallActivity implements
-        DownloadImagePresenter.DownloadImageView, CallActivity.ImageDownloadable {
+        DownloadAndReportPresenter.DownloadImageView, CallActivity.ImageDownloadable,
+        SelectionDialog.OnSelectionDialogClick {
 
     private static final String IMAGE_CHAT_ITEM = "IMAGE_CHAT_ITEM";
+    private static final String USER_ID = "USER_ID";
 
     @BindView(R.id.img_photo)
     ImageView imgPhoto;
@@ -48,8 +55,10 @@ public class ChatImageDetailActivity extends CallActivity implements
     @BindView(R.id.progress_wheel)
     ProgressWheel prwImageLoading;
 
-    private DownloadImagePresenter downloadImagePresenter;
+    private DownloadAndReportPresenter downloadAndReportPresenter;
     private ImageChatItem imageChatItem;
+    private List<SelectionItem> reportReasons;
+    private String userId;
 
     @Override
     protected int layoutId() {
@@ -63,8 +72,9 @@ public class ChatImageDetailActivity extends CallActivity implements
 
     @Override
     protected void initVariables(Bundle savedInstanceState) {
-        downloadImagePresenter = new DownloadImagePresenter(this, this);
+        downloadAndReportPresenter = new DownloadAndReportPresenter(this, this);
 
+        userId = getIntent().getStringExtra(USER_ID);
         imageChatItem = getIntent().getParcelableExtra(IMAGE_CHAT_ITEM);
         if (imageChatItem.isOwner()) {
             layoutBottomAction.setVisibility(View.GONE);
@@ -83,19 +93,23 @@ public class ChatImageDetailActivity extends CallActivity implements
                 break;
             case R.id.txt_save_photo:
                 showConfirmDownloadImageDialog(Constant.API.DOWN_IMAGE_CHAT);
+                break;
             case R.id.txt_report:
+                showLoading();
+                downloadAndReportPresenter.getListReportReason(Constant.API.REPORT_IMAGE_CHAT);
+                break;
             default:
                 break;
         }
     }
 
     @Override
-    public void didDownloadImage() {
+    public void didRequestDownloadImage() {
         handleDownloadImage(imageChatItem.getImageItem().getOriginUrl());
     }
 
     @Override
-    public void didDownloadImageError(int errorCode, String errorMessage) {
+    public void didRequestDownloadImageError(int errorCode, String errorMessage) {
         disMissLoading();
         showToastExceptionVolleyError(this, errorCode, errorMessage);
     }
@@ -108,9 +122,45 @@ public class ChatImageDetailActivity extends CallActivity implements
             showDialogMissingPoint();
         } else {
             showLoading();
-            downloadImagePresenter.downloadImage(imageChatItem.getMessageId(),
+            downloadAndReportPresenter.requestDownloadImage(imageChatItem.getMessageId(),
                     Constant.API.DOWN_IMAGE_CHAT);
         }
+    }
+
+    @Override
+    public void didGetListReportReason(List<SelectionItem> reportReasons) {
+        this.reportReasons = reportReasons;
+        disMissLoading();
+        SelectionDialog.openSelectionDialogFromActivity(getSupportFragmentManager(),
+                (ArrayList<SelectionItem>) reportReasons
+                ,getString(R.string.report_user), getString(R.string.report), reportReasons.get(0));
+    }
+
+    @Override
+    public void didGetListReportReasonError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void didReportUser() {
+        disMissLoading();
+        showMessageDialog(getString(R.string.reported_user),
+                getString(R.string.mess_report_user_sucess), "", false);
+    }
+
+    @Override
+    public void didReportUserError(int errorCode, String errorMessage) {
+        disMissLoading();
+        showToastExceptionVolleyError(this, errorCode, errorMessage);
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        showLoading();
+        downloadAndReportPresenter.reportUser(
+                userId, reportReasons.get(position).getId(), Constant.API.REPORT_IMAGE_CHAT,
+                imageChatItem.getImageItem().getOriginUrl());
     }
 
     @Override
@@ -137,9 +187,10 @@ public class ChatImageDetailActivity extends CallActivity implements
      * @param activity
      * @param imageChatItem
      */
-    public static void startActivity(Activity activity, ImageChatItem imageChatItem) {
+    public static void startActivity(Activity activity, ImageChatItem imageChatItem, String userId) {
         Intent intent = new Intent(activity, ChatImageDetailActivity.class);
         intent.putExtra(IMAGE_CHAT_ITEM, imageChatItem);
+        intent.putExtra(USER_ID, userId);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.enter_from_bot, R.anim.exit_to_top);
     }

@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,15 +74,18 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private UserItem currentProfileShowing;
     private boolean fromProfileDetail;
     private BroadcastReceiver wifiBroadcastReceiver;
-    private ViewGroup rootView;
+    private View rootView;
 
     private View footerDialog;
+    private View contentFooterDialog;
+    private View paddingView;
     private TextView txtContentFooterDialog;
-    private ImageView imgIconFooterDialog;
 
+    private ImageView imgIconFooterDialog;
     private Animation showFooterDialogAnim;
     private Animation hideFooterDialogAnim;
-    private boolean isShowingFooterDialog = false;
+    private boolean isShowingFooterDialog = true;
+
     private int minPoint;
 
     public interface ImageDownloadable {
@@ -93,6 +96,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CallPresenter(this.getApplicationContext(), this);
+        prepareToShowFooterDialog();
     }
 
     @Override
@@ -113,8 +117,8 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        rootView = (ViewGroup) layoutInflater.inflate(R.layout.root_view_with_footer_dialog, null);
-        ViewGroup containerContent = (ViewGroup) rootView.findViewById(R.id.root_container);
+        rootView = layoutInflater.inflate(R.layout.root_view_with_footer_dialog, null);
+        ViewGroup containerContent = (ViewGroup) rootView.findViewById(R.id.main_content);
         View contentView = layoutInflater.inflate(layoutResID, null);
         containerContent.addView(contentView);
         super.setContentView(rootView);
@@ -473,16 +477,52 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }
     }
 
+    /**
+     * need call before showFooterDialog method to android draw view
+     * @param footerDialogEvent
+     */
+    public void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
+
+        txtContentFooterDialog.setText(footerDialogEvent.getMessage());
+        imgIconFooterDialog.setImageResource(footerDialogEvent.getIconResourceId());
+        contentFooterDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirect(footerDialogEvent);
+                hideFooterDialog();
+            }
+        });
+    }
+
+    private void prepareToShowFooterDialog() {
+        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
+        contentFooterDialog = footerDialog.findViewById(R.id.content_footer_dialog);
+        paddingView = footerDialog.findViewById(R.id.padding_view);
+
+        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
+        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
+        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
+        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
+
+        addConstrainToFooterDialog();
+        hideFooterDialog();
+    }
+
+
+
     public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
         isShowingFooterDialog = true;
-        if (footerDialog == null) {
-            prepareToShowFooterDialog(footerDialogEvent);
-        }
-        fillDataToFooterDialog(footerDialogEvent);
 
-        clearViewAnimation(footerDialog, showFooterDialogAnim, View.VISIBLE);
+        updateViewToRedrawFooterDialog(footerDialogEvent.getMessage());
+
+        contentFooterDialog.setClickable(true);
+        footerDialog.setVisibility(View.VISIBLE);
         footerDialog.startAnimation(showFooterDialogAnim);
         hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
+    }
+
+    private void updateViewToRedrawFooterDialog(String msg){
+        txtContentFooterDialog.setText(msg);
     }
 
     private void hideFooterDialogAfter(int timeDelay) {
@@ -494,54 +534,43 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         }, timeDelay);
     }
 
-    private void prepareToShowFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
-        footerDialog.setVisibility(View.VISIBLE);
-
-        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
-        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
-        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
-        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
+    public void addConstrainToFooterDialog() {
+        if (this instanceof ChatActivity) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
+        } else {
+            addConstrainWhenKeyboardShowing();
+        }
     }
 
     private void addConstrainWhenKeyboardShowing() {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                Window mRootWindow = getWindow();
+                View view = mRootWindow.getDecorView();
                 Rect rect = new Rect();
                 rootView.getWindowVisibleDisplayFrame(rect);
 
-                int screenHeight = rootView.getHeight();
+                int screenHeight = view.getHeight();
                 int keyboardHeight = screenHeight - (rect.bottom - rect.top);
 
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
-                if (keyboardHeight > screenHeight / 3) {
-                    layoutParams.setMargins(0, 0, 0, keyboardHeight);
-                    Logger.e("Keyboard", "Active");
+                int offsetNavigationSystemBar = screenHeight - rootView.getHeight();
 
+                int[] viewPositionsInScreen = new int[2];
+                rootView.getLocationInWindow(viewPositionsInScreen);
+
+                DisplayMetrics dm = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(dm);
+                int offsetSystemStatusBar = dm.heightPixels - rootView.getMeasuredHeight();
+
+                // update margin layout footer dialog
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
+                if (keyboardHeight > screenHeight / 3) {
+                    layoutParams.setMargins(0, 0, 0, keyboardHeight - offsetNavigationSystemBar + (viewPositionsInScreen[1] - offsetSystemStatusBar));
                 } else {
                     layoutParams.setMargins(0, 0, 0, 0);
-                    Logger.e("Keyboard", "Not Active");
                 }
-            }
-        });
-    }
-
-    private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        if (this instanceof ChatActivity) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) footerDialog.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
-        } else {
-            addConstrainWhenKeyboardShowing();
-        }
-
-        txtContentFooterDialog.setText(footerDialogEvent.getMessage());
-        imgIconFooterDialog.setImageResource(footerDialogEvent.getIconResourceId());
-        footerDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redirect(footerDialogEvent);
-                hideFooterDialog();
             }
         });
     }
@@ -558,10 +587,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
                 TopActivity.navigateToFragment(this, TopActivity.FOOT_PRINT_FRAGMENT);
                 break;
-            case Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY:
-                ConfigManager.getInstance().savePushUserOnl(true);
-                TopActivity.navigateToFragment(this, TopActivity.MY_MENU_CONTAINER_FRAGMENT);
-                break;
             default:
                 break;
         }
@@ -572,8 +597,8 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
             return;
         }
         isShowingFooterDialog = false;
-        View footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
-        clearViewAnimation(footerDialog, hideFooterDialogAnim, View.GONE);
+        contentFooterDialog.setClickable(false);
+        clearViewAnimation(footerDialog, hideFooterDialogAnim, View.INVISIBLE);
         footerDialog.startAnimation(hideFooterDialogAnim);
     }
 
@@ -619,7 +644,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                     public void run() {
                         disMissLoading();
                         // Show dialog download image success
-                        Toast.makeText(CallActivity.this, "Dowload Image successfull", Toast.LENGTH_SHORT).show();
+                        showMessageDialog(getString(R.string.mess_down_image_success));
                     }
                 });
             }

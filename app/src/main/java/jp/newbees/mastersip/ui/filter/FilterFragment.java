@@ -165,7 +165,7 @@ public class FilterFragment extends BaseFragment implements View.OnClickListener
                 break;
             case R.id.layout_sort:
                 SelectionDialog.openSelectionDialogFromFragment(this, SELECT_DIALOG, getFragmentManager(),
-                        sortCondition, getString(R.string.sort), orderBy);
+                        sortCondition, getString(R.string.sort),"", orderBy);
                 break;
             case R.id.btn_search:
                 getSearchCondition();

@@ -50,6 +50,7 @@ public class TopActivity extends CallActivity implements
     public static final int FOLLOW_FRAGMENT = 3;
     public static final int MY_MENU_CONTAINER_FRAGMENT = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
+
     private ViewPager viewPager;
     private MyPagerAdapter myPagerAdapter;
 
@@ -69,14 +70,7 @@ public class TopActivity extends CallActivity implements
         private void popBackToFirstFragmentAndReload(int position) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            if (position == FOOT_PRINT_FRAGMENT) {
-                FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
-                footPrintFragment.setLeftTabChecked();
 
-            } else if (position == FOLLOW_FRAGMENT) {
-                FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
-                followFragment.setLeftTabChecked();
-            }
         }
     };
 
@@ -95,12 +89,15 @@ public class TopActivity extends CallActivity implements
             }
             if (position == MY_MENU_CONTAINER_FRAGMENT) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
-                if (null != fragment) {
-                    fragment.onTabSelected();
-                }
-            }
-            baseFragment.reloadDataToClearBadge();
+                if (null != fragment) fragment.onTabSelected();
+            } else if (position == FOOT_PRINT_FRAGMENT) {
+                FootPrintFragment footPrintFragment = (FootPrintFragment) getFragmentForPosition(position);
+                footPrintFragment.initData();
 
+            } else if (position == FOLLOW_FRAGMENT) {
+                FollowFragment followFragment = (FollowFragment) getFragmentForPosition(position);
+                followFragment.initData();
+            }
         }
 
         @Override
@@ -120,6 +117,7 @@ public class TopActivity extends CallActivity implements
         topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 

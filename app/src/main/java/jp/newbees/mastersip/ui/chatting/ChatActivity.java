@@ -611,7 +611,7 @@ public class ChatActivity extends CallActivity implements
     @Override
     public void onImageClick(int position) {
         ImageChatItem imageChatItem = (ImageChatItem) chatAdapter.getData().get(position);
-        ChatImageDetailActivity.startActivity(this, imageChatItem);
+        ChatImageDetailActivity.startActivity(this, imageChatItem, userItem.getUserId());
     }
 
     @Override
