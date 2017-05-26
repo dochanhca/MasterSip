@@ -117,7 +117,6 @@ public class TopActivity extends CallActivity implements
         topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
@@ -240,7 +239,7 @@ public class TopActivity extends CallActivity implements
         setBudgieMessage(masterDataItem.getTotalChat());
         setBudgieFootPrint(masterDataItem.getTotalFootPrint());
         setBudgieFollower(masterDataItem.getTotalFollower());
-
+        setBadgeUserOnlineNotify(masterDataItem.getTotalMyMenu());
         Log.d(TAG, "onLoadMasterDataSuccess: " + masterDataItem.getTotalFootPrint() + "-" + masterDataItem.getTotalFollower());
     }
 
@@ -306,7 +305,7 @@ public class TopActivity extends CallActivity implements
                 viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
                 ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
                 break;
-            case MyFirebaseMessagingService.USER_ONLINE:
+            case MyFirebaseMessagingService.USER_ONL:
                 ConfigManager.getInstance().savePushUserOnl(true);
                 viewPager.setCurrentItem(MY_MENU_CONTAINER_FRAGMENT);
             default:

@@ -471,6 +471,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 break;
             case Constant.FOOTER_DIALOG_TYPE.ONLINE_NOTIFY:
                 setBadgeOnline(badge);
+                break;
             case Constant.FOOTER_DIALOG_TYPE.MY_MENU:
                 setBadgeUserOnlineNotify(badge);
                 break;

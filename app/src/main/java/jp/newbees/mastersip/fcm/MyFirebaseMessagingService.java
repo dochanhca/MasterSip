@@ -43,7 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int PUSH_MISS_CALL = 1;
     public static final int PUSH_CHAT = 2;
     public static final int PUSH_FOLLOWED = 3;
-    public static final int USER_ONLINE = 4;
+    public static final int USER_ONL = 4;
 
 
     /**
@@ -106,22 +106,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             case FCMPushItem.CATEGORY.CHAT_TEXT:
                 if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotification(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER), PUSH_CHAT);
+                    sendNotificationForChat(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
                 }
                 break;
             case FCMPushItem.CATEGORY.FOLLOW:
                 if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotificationWithFormat(fcmPushItem, R.string.mess_be_followed ,PUSH_FOLLOWED);
+                    sendNotificationForFollow(fcmPushItem);
                 }
                 break;
             case FCMPushItem.CATEGORY.USER_ONLINE:
                 if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotificationWithFormat(fcmPushItem, R.string.mess_be_uerOnl, USER_ONLINE);
+                    sendNotificationUserOnl(fcmPushItem);
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    private void sendNotificationForFollow(FCMPushItem fcmPushItem) {
+        String message = String.format(getString(R.string.mess_be_followed), fcmPushItem.getUserName());
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PUSH_TYPE, PUSH_FOLLOWED);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotificationUserOnl(FCMPushItem fcmPushItem) {
+        String message = String.format(getString(R.string.mess_be_uerOnl), fcmPushItem.getMessage());
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PUSH_TYPE, USER_ONL);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
     }
 
     private void handleIncomingCallMessage(Map<String, Object> data) {
@@ -136,7 +154,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void handleMissCallMessage(UserItem caller) {
         String message = caller.getUsername() +
                 getApplicationContext().getResources().getString(R.string.push_missed_call);
-        sendNotification(message, caller, PUSH_MISS_CALL);
+        sendNotificationForMissCall(message, caller);
     }
 
     private void handleIncomingCall(String callId) {
@@ -146,20 +164,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendNotificationWithFormat(FCMPushItem fcmPushItem, int type, int msgID) {
-        String message = String.format(getString(msgID), fcmPushItem.getMessage());
+    private void sendNotificationForMissCall(String message, UserItem caller) {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(PUSH_TYPE, type);
+        bundle.putParcelable(FROM_USER, caller);
+        bundle.putInt(PUSH_TYPE, PUSH_MISS_CALL);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }
 
-    private void sendNotification(String message, UserItem caller, int type) {
+    private void sendNotificationForChat(String message, UserItem fromUser) {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(FROM_USER, caller);
-        bundle.putInt(PUSH_TYPE, type);
+        bundle.putParcelable(FROM_USER, fromUser);
+        bundle.putInt(PUSH_TYPE, PUSH_CHAT);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }
