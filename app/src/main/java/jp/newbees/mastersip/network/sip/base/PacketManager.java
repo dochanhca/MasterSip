@@ -108,6 +108,9 @@ public class PacketManager {
             case Constant.SOCKET.FOOTER_DIALOG:
                 processor = new FooterDialogProcessor();
                 break;
+            case Constant.SOCKET.CHANGE_BADGE:
+                processor = new ChangeBadgeProcessor();
+                break;
             case Constant.SOCKET.CHANGE_BADGE_ONLINE:
                 processor = new ChangeBadgeProcessor();
             default:
