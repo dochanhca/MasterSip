@@ -435,7 +435,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     }
 
     @Override
-    public void onChangeBadgeEvent(int type, int badge) {
+    public void onChangeBadgeEvent(int type, String badge) {
         changeBadge(type, badge);
     }
 
@@ -449,13 +449,19 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         showMessageDialog(message.toString());
     }
 
-    private void changeBadge(int type, int badge) {
+    private void changeBadge(int type, String badge) {
         switch (type) {
             case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
                 setBudgieFootPrint(badge);
                 break;
             case Constant.FOOTER_DIALOG_TYPE.FOLLOW:
                 setBudgieFollower(badge);
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.ONLINE_NOTIFY:
+                setBadgeUserOnline(badge);
+                break;
+            case Constant.FOOTER_DIALOG_TYPE.MY_MENU:
+                setBadgeMyMenuNotify(badge);
                 break;
         }
     }

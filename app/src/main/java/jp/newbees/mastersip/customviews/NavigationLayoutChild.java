@@ -32,7 +32,7 @@ public class NavigationLayoutChild extends LinearLayout {
     private int iconSelected;
     private int textColorNormal;
     private int iconNormal;
-    private int boxValue;
+    private String boxValue;
     private boolean showBoxValue;
     private boolean showDivider = false;
     private int dividerColor;
@@ -152,7 +152,7 @@ public class NavigationLayoutChild extends LinearLayout {
         setShowBoxValue(showBoxValue);
     }
 
-    public int getBoxValue() {
+    public String getBoxValue() {
         return boxValue;
     }
 
@@ -161,12 +161,12 @@ public class NavigationLayoutChild extends LinearLayout {
      *
      * @param boxValue
      */
-    public void setBoxValue(int boxValue) {
+    public void setBoxValue(String boxValue) {
         this.boxValue = boxValue;
-        txtBoxValue.setText(String.valueOf(boxValue));
+        txtBoxValue.setText(boxValue);
     }
 
-    public void showBoxValue(int boxValue) {
+    public void showBoxValue(String boxValue) {
         showBoxValue = true;
         setShowBoxValue(true);
         this.boxValue = boxValue;

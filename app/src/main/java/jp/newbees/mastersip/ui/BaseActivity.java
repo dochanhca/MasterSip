@@ -375,7 +375,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void showNavigation() {
-        if (!checkBottomNavigation()) {
+        if (!hasBottomNavigation()) {
             return;
         }
         if (slideUp == null) {
@@ -389,7 +389,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public void hideNavigation() {
-        if (!checkBottomNavigation()) {
+        if (!hasBottomNavigation()) {
             return;
         }
         if (slideDown == null) {
@@ -403,49 +403,65 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     }
 
     public boolean isShowNavigationBar() {
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return false;
         }
         return isShowNavigationBar;
     }
 
-    public void setBudgieMessage(int value) {
+    public void setBudgieMessage(String value) {
         ConfigManager.getInstance().setUnreadMessage(value);
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return;
         }
-        if (value == 0) {
+        if (value.equals("0")) {
             navigationMessage.setShowBoxValue(false);
         } else {
             navigationMessage.showBoxValue(value);
         }
     }
 
-    public void setBudgieFootPrint(int value) {
+    public void setBudgieFootPrint(String value) {
         ConfigManager.getInstance().setUnReadFootPrint(value);
-        if (!checkBottomNavigation()){
+        if (!hasBottomNavigation()) {
             return;
         }
-        if (value == 0) {
+        if (value.equals("0")) {
             navigationLeg.setShowBoxValue(false);
         } else {
             navigationLeg.showBoxValue(value);
         }
     }
 
-    public void setBudgieFollower(int value) {
+    public void setBudgieFollower(String value) {
         ConfigManager.getInstance().setUnReadFollow(value);
-        if (!checkBottomNavigation()){
-           return;
-       }
-        if (value == 0) {
+        if (!hasBottomNavigation()) {
+            return;
+        }
+        if (value.equals("0")) {
             navigationHeart.setShowBoxValue(false);
         } else {
             navigationHeart.showBoxValue(value);
         }
     }
 
-    private boolean checkBottomNavigation() {
+    public void setBadgeUserOnline(String value) {
+        ConfigManager.getInstance().setUserOnline(value);
+    }
+
+    public void setBadgeMyMenuNotify(String value) {
+        ConfigManager.getInstance().setUnReadMyMenu(value);
+        if (!hasBottomNavigation()) {
+            return;
+        }
+        if (value.equals("0")) {
+            navigationMenu.setShowBoxValue(false);
+        } else {
+            navigationMenu.showBoxValue(value);
+        }
+    }
+
+    private boolean hasBottomNavigation() {
         return this instanceof BottomNavigation;
     }
 

@@ -110,6 +110,10 @@ public class PacketManager {
                 break;
             case Constant.SOCKET.CHANGE_BADGE:
                 processor = new ChangeBadgeProcessor();
+                break;
+            case Constant.SOCKET.CHANGE_BADGE_ONLINE:
+                processor = new ChangeBadgeProcessor();
+                break;
             default:
                 break;
         }

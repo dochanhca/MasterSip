@@ -46,9 +46,11 @@ final public class ConfigManager {
     private int currentCallType;
     private int imageDrawableCallerId = -1;
 
-    private int unReadMessage;
-    private int unReadFootPrint;
-    private int unReadFollow;
+    private String unReadMessage = "0";
+    private String unReadFootPrint = "0";
+    private String unReadFollow = "0";
+    private String unReadUserOnlineNotify = "0";
+    private String unReadMyMenu = "0";
     private int currentTabInRootNavigater;
     private String currentCallId;
     private HashMap<String, Integer> callStatus;
@@ -136,6 +138,16 @@ final public class ConfigManager {
     public void saveAuthId(String authId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constant.Application.AUTHORIZATION, authId);
+        editor.commit();
+    }
+
+    public boolean isPushUserOnl() {
+        return sharedPreferences.getBoolean(Constant.Application.PUSH_USER_ONL, false);
+    }
+
+    public void savePushUserOnl(boolean isPushUserOnl) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.Application.PUSH_USER_ONL, isPushUserOnl);
         editor.commit();
     }
 
@@ -286,28 +298,44 @@ final public class ConfigManager {
         return imageDrawableCallerId;
     }
 
-    public void setUnreadMessage(int unReadMessage) {
+    public void setUnreadMessage(String unReadMessage) {
         this.unReadMessage = unReadMessage;
     }
 
-    public int getUnreadMessage() {
+    public String getUnreadMessage() {
         return unReadMessage;
     }
 
-    public int getUnReadFootPrint() {
+    public String getUnReadFootPrint() {
         return unReadFootPrint;
     }
 
-    public void setUnReadFootPrint(int unReadFootPrint) {
+    public void setUnReadFootPrint(String unReadFootPrint) {
         this.unReadFootPrint = unReadFootPrint;
     }
 
-    public int getUnReadFollow() {
+    public String getUnReadFollow() {
         return unReadFollow;
     }
 
-    public void setUnReadFollow(int unReadFollow) {
+    public void setUnReadFollow(String unReadFollow) {
         this.unReadFollow = unReadFollow;
+    }
+
+    public String getUnReadUserOnlineNotify() {
+        return unReadUserOnlineNotify;
+    }
+
+    public void setUserOnline(String userOnl) {
+        this.unReadUserOnlineNotify = userOnl;
+    }
+
+    public String getUnReadMyMenu() {
+        return unReadMyMenu;
+    }
+
+    public void setUnReadMyMenu(String unReadMyMenu) {
+        this.unReadMyMenu = unReadMyMenu;
     }
 
     public int getCurrentTabInRootNavigater() {

@@ -38,6 +38,7 @@ import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.adapter.GalleryAdapter;
 import jp.newbees.mastersip.customviews.HiraginoButton;
 import jp.newbees.mastersip.customviews.HiraginoTextView;
+import jp.newbees.mastersip.event.ChangeBadgeEvent;
 import jp.newbees.mastersip.event.PaymentSuccessEvent;
 import jp.newbees.mastersip.event.ReLoadProfileEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
@@ -57,6 +58,7 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
+import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -119,6 +121,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
     HiraginoTextView txtMessageNumber;
     @BindView(R.id.txt_online_list)
     HiraginoTextView txtOnlineList;
+    @BindView(R.id.txt_user_online)
+    HiraginoTextView txtUserOnline;
     @BindView(R.id.txt_email_backup_setting)
     HiraginoTextView txtEmailBackup;
     @BindView(R.id.divider_email_backup)
@@ -164,15 +168,20 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         ButterKnife.bind(this, mRoot);
         presenter = new MyMenuPresenter(getContext(), this);
         initDefaultViews();
+        if (ConfigManager.getInstance().isPushUserOnl()) {
+            ConfigManager.getInstance().savePushUserOnl(false);
+            MyMenuContainerFragment.showOnlineListFragment(getActivity());
+        }
     }
 
     private void initDefaultViews() {
+
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         defaultAvatar = ConfigManager.getInstance().getImageCallerDefault();
 
         txtActionBarTitle.setText(userItem.getUsername());
         txtVersion.setText(presenter.getVersion());
-
+        txtUserOnline.setVisibility(!ConfigManager.getInstance().getUnReadUserOnlineNotify().equals("0") ? View.VISIBLE : View.GONE);
         if (userItem.getAvatarItem() == null) {
             imgAvatar.setImageResource(defaultAvatar);
         } else {
@@ -485,6 +494,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         EventBus.getDefault().removeStickyEvent(event);
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCoinChangedEvent(CoinChangedEvent event) {
         txtPoint.setText(event.getCoin() + "");
@@ -633,5 +643,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             UpdateProfileFemaleActivity.startActivityForResult(this,
                     ProfileBaseActivity.MODE_UPDATE, REQUEST_EDIT_PROFILE);
         }
+    }
+
+    @Subscribe
+    public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
+        txtUserOnline.setVisibility(badgeEvent.getType() == Constant.FOOTER_DIALOG_TYPE.MY_MENU && !badgeEvent.getBadge().equals("0") ? View.VISIBLE : View.GONE);
     }
 }

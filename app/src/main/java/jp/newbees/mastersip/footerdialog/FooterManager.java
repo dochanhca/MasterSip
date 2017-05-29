@@ -150,6 +150,7 @@ public class FooterManager {
                 iconResourceId = R.drawable.footer_dialog_message;
                 message = getMessageWithUserName(footerDialogEvent, R.string.footer_dialog_follow_message_for_male);
                 break;
+
             default:
                 iconResourceId = R.drawable.footer_dialog_gift;
                 message = "not yet handle this type";

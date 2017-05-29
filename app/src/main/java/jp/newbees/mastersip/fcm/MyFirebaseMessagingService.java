@@ -43,6 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int PUSH_MISS_CALL = 1;
     public static final int PUSH_CHAT = 2;
     public static final int PUSH_FOLLOWED = 3;
+    public static final int USER_ONL = 4;
 
 
     /**
@@ -113,6 +114,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendNotificationForFollow(fcmPushItem);
                 }
                 break;
+            case FCMPushItem.CATEGORY.USER_ONLINE:
+                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
+                    sendNotificationUserOnl(fcmPushItem);
+                }
+                break;
             default:
                 break;
         }
@@ -123,6 +129,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PUSH_TYPE, PUSH_FOLLOWED);
+        intent.putExtras(bundle);
+        sendNotification(message, intent);
+    }
+
+    private void sendNotificationUserOnl(FCMPushItem fcmPushItem) {
+        String message = String.format(getString(R.string.mess_be_uerOnl), fcmPushItem.getMessage());
+        Intent intent = new Intent(this, SplashActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PUSH_TYPE, USER_ONL);
         intent.putExtras(bundle);
         sendNotification(message, intent);
     }

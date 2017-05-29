@@ -123,7 +123,6 @@ public class TopActivity extends CallActivity implements
         topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
@@ -208,8 +207,8 @@ public class TopActivity extends CallActivity implements
      */
     @Subscribe
     public void onRoomChatEvent(RoomChatEvent roomChatEvent) {
-        ConfigManager.getInstance().setUnreadMessage(roomChatEvent.getNumberOfRoomUnRead());
-        setBudgieMessage(roomChatEvent.getNumberOfRoomUnRead());
+        ConfigManager.getInstance().setUnreadMessage(String.valueOf(roomChatEvent.getNumberOfRoomUnRead()));
+        setBudgieMessage(String.valueOf(roomChatEvent.getNumberOfRoomUnRead()));
     }
 
     @Subscribe()
@@ -254,10 +253,10 @@ public class TopActivity extends CallActivity implements
 
     @Override
     public void onLoadMasterDataSuccess(MasterDataItem masterDataItem) {
-        setBudgieMessage(masterDataItem.getTotalChat());
-        setBudgieFootPrint(masterDataItem.getTotalFootPrint());
-        setBudgieFollower(masterDataItem.getTotalFollower());
-
+        setBudgieMessage(String.valueOf(masterDataItem.getTotalChat()));
+        setBudgieFootPrint(String.valueOf(masterDataItem.getTotalFootPrint()));
+        setBudgieFollower(String.valueOf(masterDataItem.getTotalFollower()));
+        setBadgeMyMenuNotify(String.valueOf(masterDataItem.getTotalMyMenu()));
         Log.d(TAG, "onLoadMasterDataSuccess: " + masterDataItem.getTotalFootPrint() + "-" + masterDataItem.getTotalFollower());
     }
 
@@ -322,6 +321,9 @@ public class TopActivity extends CallActivity implements
             case MyFirebaseMessagingService.PUSH_FOLLOWED:
                 handlePushFollowed();
                 break;
+            case MyFirebaseMessagingService.USER_ONL:
+                ConfigManager.getInstance().savePushUserOnl(true);
+                viewPager.setCurrentItem(MY_MENU_CONTAINER_FRAGMENT);
             default:
                 break;
         }

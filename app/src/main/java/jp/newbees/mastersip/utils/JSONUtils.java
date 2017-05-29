@@ -1172,7 +1172,7 @@ public class JSONUtils {
 
     public static ChangeBadgeEvent genChangeBadgeEvent(JSONObject jData) throws JSONException {
         int type = jData.getInt(Constant.JSON.TYPE);
-        int badge = jData.getInt(Constant.JSON.BADGE);
+        String badge = jData.getString(Constant.JSON.BADGE);
         return new ChangeBadgeEvent(type, badge);
     }
 

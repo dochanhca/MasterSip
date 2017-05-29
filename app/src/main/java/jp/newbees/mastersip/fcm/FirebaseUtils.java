@@ -34,12 +34,24 @@ public class FirebaseUtils {
             return parseDataForChatMessage(data, fcmPushItem);
         } else if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.FOLLOW)) {
             return parseDataForFollowMessage(data, fcmPushItem);
+        } else if(fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.USER_ONLINE)){
+            return parseDataForUserOnlMessage(data, fcmPushItem);
         }
+
         return null;
     }
 
     private static Map<String, Object> parseDataForFollowMessage(Map<String, String> data,
                                                                  FCMPushItem fcmPushItem) throws JSONException {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
+        result.put(Constant.JSON.RECEIVER_STATUS, data.get(Constant.JSON.RECEIVER_STATUS));
+        return result;
+    }
+
+    private static Map<String, Object> parseDataForUserOnlMessage(Map<String, String> data,
+                                                                  FCMPushItem fcmPushItem) throws JSONException {
         Map<String, Object> result = new HashMap<>();
 
         result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);

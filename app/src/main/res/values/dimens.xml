@@ -39,6 +39,7 @@
     <dimen name="margin_2">2dp</dimen>
     <dimen name="common_margin">16dp</dimen>
     <dimen name="margin_50">50dp</dimen>
+    <dimen name="_120dp">120dp</dimen>
     <dimen name="search_field_h">45dp</dimen>
     <dimen name="radio_button_conner_radius">5dp</dimen>
     <dimen name="radio_button_stroke_border">1dp</dimen>
