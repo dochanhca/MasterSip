@@ -740,6 +740,8 @@ public class ChatActivity extends CallActivity implements
 
     private void uploadImageToServer() {
         if (null == bitmap) {
+            disMissLoading();
+            Toast.makeText(this, getString(R.string.something_wrong), Toast.LENGTH_SHORT).show();
             return;
         }
         InputStream file = ImageUtils.convertToInputStream(bitmap);
