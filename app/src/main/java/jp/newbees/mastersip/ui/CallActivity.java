@@ -4,27 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Rect;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import jp.newbees.mastersip.R;
-import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.footerdialog.FooterManager;
 import jp.newbees.mastersip.linphone.LinphoneService;
@@ -46,7 +31,6 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.payment.PaymentActivity;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
-import jp.newbees.mastersip.ui.top.TopActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -72,24 +56,11 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     private UserItem currentProfileShowing;
     private boolean fromProfileDetail;
     private BroadcastReceiver wifiBroadcastReceiver;
-    private View rootView;
-
-    private View footerDialog;
-    private View contentFooterDialog;
-    private View paddingView;
-    private TextView txtContentFooterDialog;
-
-    private ImageView imgIconFooterDialog;
-    private Animation showFooterDialogAnim;
-    private Animation hideFooterDialogAnim;
-    private boolean isShowingFooterDialog = true;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CallPresenter(this.getApplicationContext(), this);
-        prepareToShowFooterDialog();
     }
 
     @Override
@@ -105,16 +76,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
         super.onStop();
         presenter.unregisterCallEvent();
         this.unregisterReceiver(wifiBroadcastReceiver);
-    }
-
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        rootView = layoutInflater.inflate(R.layout.root_view_with_footer_dialog, null);
-        ViewGroup containerContent = (ViewGroup) rootView.findViewById(R.id.main_content);
-        View contentView = layoutInflater.inflate(layoutResID, null);
-        containerContent.addView(contentView);
-        super.setContentView(rootView);
     }
 
     private void registerWifiStateChange() {
@@ -411,11 +372,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
     }
 
     @Override
-    public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
-        FooterManager.getInstance(this).add(footerDialogEvent);
-    }
-
-    @Override
     public void onOneButtonPositiveClick() {
         this.gotoProfileFromActivity(callee);
     }
@@ -465,133 +421,6 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 break;
 
         }
-    }
-
-    /**
-     * need call before showFooterDialog method to android draw view
-     *
-     * @param footerDialogEvent
-     */
-    public void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
-
-        txtContentFooterDialog.setText(footerDialogEvent.getMessage());
-        imgIconFooterDialog.setImageResource(footerDialogEvent.getIconResourceId());
-        contentFooterDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redirect(footerDialogEvent);
-                hideFooterDialog();
-            }
-        });
-    }
-
-    private void prepareToShowFooterDialog() {
-        footerDialog = rootView.findViewById(R.id.footer_dialog_layout);
-        contentFooterDialog = footerDialog.findViewById(R.id.content_footer_dialog);
-        paddingView = footerDialog.findViewById(R.id.padding_view);
-
-        showFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.show_footer_dialog);
-        hideFooterDialogAnim = AnimationUtils.loadAnimation(this, R.anim.hide_footer_dialog);
-        txtContentFooterDialog = (TextView) footerDialog.findViewById(R.id.txt_content);
-        imgIconFooterDialog = (ImageView) footerDialog.findViewById(R.id.img_icon);
-
-        addConstrainToFooterDialog();
-        hideFooterDialog();
-    }
-
-    public void showFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        isShowingFooterDialog = true;
-
-        updateViewToRedrawFooterDialog(footerDialogEvent.getMessage());
-
-        contentFooterDialog.setClickable(true);
-        footerDialog.setVisibility(View.VISIBLE);
-        footerDialog.startAnimation(showFooterDialogAnim);
-        hideFooterDialogAfter(FooterManager.SHOW_TIME + FooterManager.ANIM_TIME);
-    }
-
-    private void updateViewToRedrawFooterDialog(String msg) {
-        txtContentFooterDialog.setText(msg);
-    }
-
-    private void hideFooterDialogAfter(int timeDelay) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideFooterDialog();
-            }
-        }, timeDelay);
-    }
-
-    public void addConstrainToFooterDialog() {
-        if (this instanceof ChatActivity) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
-            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.height_footer_chat));
-        } else {
-            addConstrainWhenKeyboardShowing();
-        }
-    }
-
-    private void addConstrainWhenKeyboardShowing() {
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Window mRootWindow = getWindow();
-                View view = mRootWindow.getDecorView();
-                Rect rect = new Rect();
-                rootView.getWindowVisibleDisplayFrame(rect);
-
-                int screenHeight = view.getHeight();
-                int keyboardHeight = screenHeight - (rect.bottom - rect.top);
-
-                int offsetNavigationSystemBar = screenHeight - rootView.getHeight();
-
-                int[] viewPositionsInScreen = new int[2];
-                rootView.getLocationInWindow(viewPositionsInScreen);
-
-                DisplayMetrics dm = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(dm);
-                int offsetSystemStatusBar = dm.heightPixels - rootView.getMeasuredHeight();
-
-                // update margin layout footer dialog
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) paddingView.getLayoutParams();
-                if (keyboardHeight > screenHeight / 3) {
-                    layoutParams.setMargins(0, 0, 0, keyboardHeight - offsetNavigationSystemBar + (viewPositionsInScreen[1] - offsetSystemStatusBar));
-                } else {
-                    layoutParams.setMargins(0, 0, 0, 0);
-                }
-            }
-        });
-    }
-
-    private void redirect(FooterDialogEvent footerDialogEvent) {
-        switch (footerDialogEvent.getType()) {
-            case Constant.FOOTER_DIALOG_TYPE.SEND_GIFT:
-            case Constant.FOOTER_DIALOG_TYPE.CHAT_TEXT:
-                ChatActivity.startChatActivity(CallActivity.this, footerDialogEvent.getCompetitor());
-                break;
-            case Constant.FOOTER_DIALOG_TYPE.FOLLOW:
-                TopActivity.navigateToFragment(this, TopActivity.FOLLOW_FRAGMENT);
-                break;
-            case Constant.FOOTER_DIALOG_TYPE.FOOT_PRINT:
-                TopActivity.navigateToFragment(this, TopActivity.FOOT_PRINT_FRAGMENT);
-                break;
-            case Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY:
-                ConfigManager.getInstance().savePushUserOnl(true);
-                TopActivity.navigateToFragment(this, TopActivity.MY_MENU_FRAGMENT_CONTAINER);
-            default:
-                break;
-        }
-    }
-
-    private void hideFooterDialog() {
-        if (!isShowingFooterDialog) {
-            return;
-        }
-        isShowingFooterDialog = false;
-        contentFooterDialog.setClickable(false);
-        clearViewAnimation(footerDialog, hideFooterDialogAnim, View.INVISIBLE);
-        footerDialog.startAnimation(hideFooterDialogAnim);
     }
 
     protected UserItem getCurrentCallee() {

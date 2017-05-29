@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import jp.newbees.mastersip.R;
@@ -136,12 +135,6 @@ public class TopActivity extends CallActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (isUserBlocked) {
@@ -154,11 +147,6 @@ public class TopActivity extends CallActivity implements
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     protected void onDestroy() {

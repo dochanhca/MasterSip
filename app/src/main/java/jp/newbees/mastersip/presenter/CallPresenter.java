@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.ChangeBadgeEvent;
-import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.event.call.AdminHangUpEvent;
 import jp.newbees.mastersip.event.call.BusyCallEvent;
 import jp.newbees.mastersip.event.call.CoinChangedEvent;
@@ -67,8 +66,6 @@ public class CallPresenter extends BasePresenter {
         void didCheckedIncomingVideoCall(UserItem callUser, String callId);
 
         void didCheckedIncomingVideoChatCall(UserItem callUser, String callId);
-
-        void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent);
 
         void onChangeBadgeEvent(int type, String badge);
     }
@@ -208,11 +205,6 @@ public class CallPresenter extends BasePresenter {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBusyCallEvent(BusyCallEvent busyCallEvent) {
         callView.onCalleeRejectCall(busyCallEvent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
-        callView.onHasFooterDialogEvent(footerDialogEvent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

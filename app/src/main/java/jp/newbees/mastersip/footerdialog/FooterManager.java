@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import jp.newbees.mastersip.R;
 import jp.newbees.mastersip.event.FooterDialogEvent;
 import jp.newbees.mastersip.model.UserItem;
-import jp.newbees.mastersip.ui.CallActivity;
+import jp.newbees.mastersip.ui.BaseActivity;
 import jp.newbees.mastersip.utils.ConfigManager;
 import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
@@ -19,41 +19,39 @@ public class FooterManager {
     public static final int ANIM_TIME = 400;
     private LinkedList<FooterDialogEvent> deque;
     private static FooterManager mInstance;
-    private CallActivity callActivity;
+    private BaseActivity currentActivity;
     private UserItem userInChatActivity;
     private boolean isExecutorRunning = false;
     private static boolean needWaitForFirstTimeInit = true;
 
-    public static FooterManager getInstance(CallActivity callActivity) {
+    public static FooterManager getInstance(BaseActivity currentActivity) {
         if (mInstance == null) {
-            mInstance = new FooterManager(callActivity);
+            mInstance = new FooterManager(currentActivity);
         }
-        mInstance.callActivity = callActivity;
+        mInstance.currentActivity = currentActivity;
         return mInstance;
     }
 
-    public static void changeActivity(CallActivity callActivity) {
+    public static void changeActivity(BaseActivity currentActivity) {
         if (mInstance != null) {
-            mInstance.callActivity = callActivity;
+            mInstance.currentActivity = currentActivity;
         }
     }
 
     /**
      * prevent use constructor to create instance
      *
-     * @param callActivity
+     * @param currentActivity
      */
-    private FooterManager(CallActivity callActivity) {
+    private FooterManager(BaseActivity currentActivity) {
         deque = new LinkedList<>();
-        this.callActivity = callActivity;
+        this.currentActivity = currentActivity;
     }
 
     public final void add(FooterDialogEvent footerDialogEvent) {
         synchronized (deque) {
             deque.add(footerDialogEvent);
-            Logger.e("FooterManager", "after add, size =  " + deque.size());
             if (!isExecutorRunning) {
-                Logger.e("FooterManager", "----- start Thread ------");
                 startThreadToExecute();
             }
         }
@@ -73,7 +71,6 @@ public class FooterManager {
 
     private void runExecutor(FooterDialogEvent footerDialogEvent) {
         if (footerDialogEvent == null) {
-            Logger.e("FooterManager", "----- end Thread ------");
             return;
         }
         if (checkCondition(footerDialogEvent)) {
@@ -111,7 +108,6 @@ public class FooterManager {
             performShowFooterDialog(footerDialogEvent);
             // wait for footer dialog hide to continue show other footer dialog
             Thread.sleep(SHOW_TIME + ANIM_TIME + ANIM_TIME);
-            Logger.e("FooterManager", "end show, size of queue " + deque.size());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -175,7 +171,7 @@ public class FooterManager {
         if (ConfigManager.getInstance().getCurrentUser().isMale()) {
             message = getMessageWithUserName(footerDialogEvent, R.string.footer_dialog_gift_message_for_male);
         } else {
-            message = String.format(callActivity.getString(R.string.footer_dialog_gift_message_for_female),
+            message = String.format(currentActivity.getString(R.string.footer_dialog_gift_message_for_female),
                     footerDialogEvent.getCompetitor().getUsername(),
                     footerDialogEvent.getGiftPoint());
         }
@@ -183,24 +179,24 @@ public class FooterManager {
     }
 
     private String getMessageWithUserName(FooterDialogEvent footerDialogEvent, int stringId) {
-        return String.format(callActivity.getString(stringId),
+        return String.format(currentActivity.getString(stringId),
                 footerDialogEvent.getCompetitor().getUsername());
     }
 
     private void performShowFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        callActivity.runOnUiThread(new Runnable() {
+        currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                callActivity.showFooterDialog(footerDialogEvent);
+                currentActivity.showFooterDialog(footerDialogEvent);
             }
         });
     }
 
     private void fillDataToFooterDialog(final FooterDialogEvent footerDialogEvent) {
-        callActivity.runOnUiThread(new Runnable() {
+        currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                callActivity.fillDataToFooterDialog(footerDialogEvent);
+                currentActivity.fillDataToFooterDialog(footerDialogEvent);
             }
         });
     }
