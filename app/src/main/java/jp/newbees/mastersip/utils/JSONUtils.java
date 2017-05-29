@@ -509,6 +509,10 @@ public class JSONUtils {
         UserItem userItem = ConfigManager.getInstance().getCurrentUser();
         userItem.setCoin(jMyInfo.getInt(Constant.JSON.POINT));
         userItem.setUsername(jMyInfo.getString(Constant.JSON.HANDLE_NAME));
+        RelationshipItem relationshipItem = new RelationshipItem();
+        JSONObject relation = jMyInfo.getJSONObject(Constant.JSON.RELATIONS);
+        relationshipItem.setUserOnline(relation.getInt(Constant.JSON.TOTAL_ONLINE));
+        userItem.setRelationshipItem(relationshipItem);
         userItem.setEmail((jMyInfo.isNull(Constant.JSON.EMAIL)
                 ? "" : jMyInfo.getString(Constant.JSON.EMAIL)));
 

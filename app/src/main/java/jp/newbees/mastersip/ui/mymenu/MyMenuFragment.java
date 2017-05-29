@@ -649,7 +649,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Subscribe
     public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
-        Toast.makeText(getContext(),badgeEvent.getBadge() +": type: "+badgeEvent.getType(), Toast.LENGTH_SHORT).show();
         txtUserOnline.setVisibility(!ConfigManager.getInstance().getUnReadUserOnline().equals("0") ? View.VISIBLE : View.GONE);
     }
 }

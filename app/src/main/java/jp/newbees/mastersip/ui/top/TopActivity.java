@@ -51,7 +51,7 @@ public class TopActivity extends CallActivity implements
     private static final int CHAT_GROUP_FRAGMENT = 1;
     public static final int FOOT_PRINT_FRAGMENT = 2;
     public static final int FOLLOW_FRAGMENT = 3;
-    private static final int MY_MENU_FRAGMENT_CONTAINER = 4;
+    public static final int MY_MENU_FRAGMENT_CONTAINER = 4;
     private static final String NAVIGATE_TO_FRAGMENT = "NAVIGATE_TO_FRAGMENT";
 
     private static final String USER_ITEM = "USER_ITEM";
@@ -323,7 +323,7 @@ public class TopActivity extends CallActivity implements
                 break;
             case MyFirebaseMessagingService.USER_ONL:
                 ConfigManager.getInstance().savePushUserOnl(true);
-                viewPager.setCurrentItem(MY_MENU_CONTAINER_FRAGMENT);
+                viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
             default:
                 break;
         }
