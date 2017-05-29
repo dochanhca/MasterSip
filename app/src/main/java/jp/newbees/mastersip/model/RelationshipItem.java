@@ -18,7 +18,7 @@ public class RelationshipItem implements Parcelable {
 
     private int isFollowed;
     private int isNotification;
-
+    private int userOnline;
     public RelationshipItem(int isFollowed) {
         this.isFollowed = isFollowed;
     }
@@ -26,12 +26,14 @@ public class RelationshipItem implements Parcelable {
     protected RelationshipItem(Parcel in) {
         isFollowed = in.readInt();
         isNotification = in.readInt();
+        userOnline=in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(isFollowed);
         dest.writeInt(isNotification);
+        dest.writeInt(userOnline);
     }
 
     @Override
@@ -65,6 +67,14 @@ public class RelationshipItem implements Parcelable {
 
     public void setIsNotification(int isNotification) {
         this.isNotification = isNotification;
+    }
+
+    public int getUserOnline() {
+        return userOnline;
+    }
+
+    public void setUserOnline(int userOnline) {
+        this.userOnline = userOnline;
     }
 
     public RelationshipItem() {

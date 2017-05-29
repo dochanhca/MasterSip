@@ -578,7 +578,7 @@ public abstract class CallActivity extends BaseActivity implements CallPresenter
                 break;
             case Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY:
                 ConfigManager.getInstance().savePushUserOnl(true);
-                TopActivity.navigateToFragment(this, TopActivity.MY_MENU_CONTAINER_FRAGMENT);
+                TopActivity.navigateToFragment(this, TopActivity.MY_MENU_FRAGMENT_CONTAINER);
             default:
                 break;
         }
