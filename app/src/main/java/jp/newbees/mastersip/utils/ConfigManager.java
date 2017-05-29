@@ -322,7 +322,7 @@ final public class ConfigManager {
         this.unReadFollow = unReadFollow;
     }
 
-    public String getUnReadUserOnlineNotify() {
+    public String getUnReadUserOnline() {
         return unReadUserOnlineNotify;
     }
 
