@@ -181,7 +181,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
         txtActionBarTitle.setText(userItem.getUsername());
         txtVersion.setText(presenter.getVersion());
-        txtUserOnline.setVisibility(!ConfigManager.getInstance().getUnReadUserOnlineNotify().equals("0") ? View.VISIBLE : View.GONE);
         if (userItem.getAvatarItem() == null) {
             imgAvatar.setImageResource(defaultAvatar);
         } else {
@@ -360,6 +359,9 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Override
     public void didLoadMyProfile(UserItem userItem) {
+        if (userItem.getRelationshipItem() != null) {
+            txtUserOnline.setVisibility(userItem.getRelationshipItem().getUserOnline()  > 0 ? View.VISIBLE : View.GONE);
+        }
         txtPoint.setText("" + userItem.getCoin());
         txtActionBarTitle.setText(userItem.getUsername());
         updateAvatarView(userItem.getAvatarItem());
@@ -647,6 +649,7 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
 
     @Subscribe
     public void onChangeBadgeListener(ChangeBadgeEvent badgeEvent) {
-        txtUserOnline.setVisibility(badgeEvent.getType() == Constant.FOOTER_DIALOG_TYPE.MY_MENU && !badgeEvent.getBadge().equals("0") ? View.VISIBLE : View.GONE);
+        Toast.makeText(getContext(),badgeEvent.getBadge() +": type: "+badgeEvent.getType(), Toast.LENGTH_SHORT).show();
+        txtUserOnline.setVisibility(!ConfigManager.getInstance().getUnReadUserOnline().equals("0") ? View.VISIBLE : View.GONE);
     }
 }

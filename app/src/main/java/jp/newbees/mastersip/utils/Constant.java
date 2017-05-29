@@ -136,6 +136,7 @@ public final class Constant {
         public static final String ID = "id";
         public static final String AVATAR = "avatar";
         public static final String RELATIONS = "relations";
+        public static final String TOTAL_ONLINE = "total_online";
         public static final String FOLLOWED = "followed";
         public static final String ONLINE_NOTIFICATION = "online_notification";
         public static final String JOB_NAME = "job_name";
@@ -496,7 +497,7 @@ public final class Constant {
         public static final int SEND_GIFT = 2;
         public static final int FOOT_PRINT = 5;
         public static final int FOLLOW = 6;
-        public static final int ONLINE_NOTIFY = 7;
+        public static final int USER_ONLINE_NOTIFY = 7;
         public static final int MY_MENU = 20;
     }
 }
