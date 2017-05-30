@@ -11,6 +11,13 @@ import jp.newbees.mastersip.model.SipItem;
 import jp.newbees.mastersip.model.UserItem;
 import jp.newbees.mastersip.utils.Constant;
 
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.CHAT_TEXT;
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.FOLLOW;
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.INCOMING_CALL;
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.MISS_CALL;
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.NOTIFY;
+import static jp.newbees.mastersip.model.FCMPushItem.CATEGORY.USER_ONLINE;
+
 /**
  * Created by ducpv on 3/29/17.
  */
@@ -26,19 +33,27 @@ public class FirebaseUtils {
         JSONObject jAps = new JSONObject(data.get(Constant.FCM.APS));
         FCMPushItem fcmPushItem = parsePushItem(jAps);
 
-        if (data.containsKey(Constant.JSON.CALLER)) {
-            return parseDataForCallMessage(data, fcmPushItem);
+        switch (fcmPushItem.getCategory()) {
+            case MISS_CALL:
+            case INCOMING_CALL:
+                return parseDataForCallMessage(data, fcmPushItem);
+            case CHAT_TEXT:
+                return parseDataForChatMessage(data, fcmPushItem);
+            case FOLLOW:
+                return parseDataForFollowMessage(data, fcmPushItem);
+            case USER_ONLINE:
+                return parseDataForUserOnlMessage(data, fcmPushItem);
+            case NOTIFY:
+                return parseDataForNotify(fcmPushItem);
+            default:
+                return parseDataForNotify(fcmPushItem);
         }
+    }
 
-        if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.CHAT_TEXT)) {
-            return parseDataForChatMessage(data, fcmPushItem);
-        } else if (fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.FOLLOW)) {
-            return parseDataForFollowMessage(data, fcmPushItem);
-        } else if(fcmPushItem.getCategory().equals(FCMPushItem.CATEGORY.USER_ONLINE)){
-            return parseDataForUserOnlMessage(data, fcmPushItem);
-        }
-
-        return null;
+    private static Map<String, Object> parseDataForNotify(FCMPushItem fcmPushItem) {
+        Map<String, Object> result = new HashMap<>();
+        result.put(Constant.JSON.FCM_PUSH_ITEM, fcmPushItem);
+        return result;
     }
 
     private static Map<String, Object> parseDataForFollowMessage(Map<String, String> data,
@@ -113,7 +128,11 @@ public class FirebaseUtils {
         }
 
         fcmPushItem.setSound(jsonObject.getString(Constant.FCM.SOUND));
-        fcmPushItem.setCategory(jsonObject.getString(Constant.FCM.CATEGORY));
+        if (jsonObject.has(Constant.FCM.CATEGORY)) {
+            fcmPushItem.setCategory(jsonObject.getString(Constant.FCM.CATEGORY));
+        } else {
+            fcmPushItem.setCategory(FCMPushItem.CATEGORY.COMMON_PUSH);
+        }
 
         JSONObject jAlert = jsonObject.getJSONObject(Constant.FCM.ALERT);
         fcmPushItem.setUserName(jAlert.getJSONArray(Constant.FCM.LOC_ARGS).get(0).toString());

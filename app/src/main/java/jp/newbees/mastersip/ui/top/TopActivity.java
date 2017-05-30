@@ -69,11 +69,10 @@ public class TopActivity extends CallActivity implements
         @Override
         public void onChildItemClick(View view, int position) {
             viewPager.setCurrentItem(position, false);
-            ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
-            popBackToFirstFragment(position);
+            popBackToFirstFragment();
         }
 
-        private void popBackToFirstFragment(int position) {
+        private void popBackToFirstFragment() {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
@@ -92,6 +91,7 @@ public class TopActivity extends CallActivity implements
             if (baseFragment == null) {
                 return;
             }
+            ConfigManager.getInstance().setCurrentTabInRootNavigater(position);
             if (position == MY_MENU_FRAGMENT_CONTAINER) {
                 MyMenuContainerFragment fragment = (MyMenuContainerFragment) baseFragment;
                 if (null != fragment) fragment.onTabSelected();
@@ -122,6 +122,7 @@ public class TopActivity extends CallActivity implements
         topActivityPresenter = new TopActivityPresenter(this, this);
         navigationLayoutGroup.setOnChildItemClickListener(mOnNavigationChangeListener);
         viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
@@ -309,27 +310,54 @@ public class TopActivity extends CallActivity implements
             case MyFirebaseMessagingService.PUSH_FOLLOWED:
                 handlePushFollowed();
                 break;
-            case MyFirebaseMessagingService.USER_ONL:
-                ConfigManager.getInstance().savePushUserOnl(true);
-                viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
+            case MyFirebaseMessagingService.PUSH_USER_ONLINE:
+                handlePushUserOnline();
+                break;
+            case MyFirebaseMessagingService.PUSH_FROM_ADMIN:
+                handlePushFromAdmin();
             default:
                 break;
         }
     }
 
-    /**
-     * need to wait small time to viewpager init fragment before navigate
-     */
+    private void handlePushFromAdmin() {
+        handlePushForChangeFragment(new Runnable() {
+            @Override
+            public void run() {
+                disMissLoading();
+                viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
+                MyMenuContainerFragment.showNotificationListFragment(TopActivity.this);
+            }
+        });
+    }
+
+    private void handlePushUserOnline() {
+        handlePushForChangeFragment(new Runnable() {
+            @Override
+            public void run() {
+                disMissLoading();
+                viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
+                MyMenuContainerFragment.showOnlineListFragment(TopActivity.this);
+            }
+        });
+    }
+
     private void handlePushFollowed() {
-        showLoading();
-        new Handler().postDelayed(new Runnable() {
+        handlePushForChangeFragment(new Runnable() {
             @Override
             public void run() {
                 disMissLoading();
                 viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
-                ConfigManager.getInstance().setCurrentTabInRootNavigater(FOLLOW_FRAGMENT);
             }
-        }, 100);
+        });
+    }
+
+    /**
+     * need to wait small time to viewpager init fragment before navigate
+     */
+    private void handlePushForChangeFragment(Runnable runnable) {
+        showLoading();
+        new Handler().postDelayed(runnable, 100);
     }
 
     private void showMessageDialogForMissedCall(UserItem fromUser) {
