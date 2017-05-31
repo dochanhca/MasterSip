@@ -313,7 +313,7 @@ public class TopActivity extends CallActivity implements
             case MyFirebaseMessagingService.PUSH_USER_ONLINE:
                 handlePushUserOnline();
                 break;
-            case MyFirebaseMessagingService.PUSH_FROM_ADMIN:
+            case MyFirebaseMessagingService.PUSH_NOTIFY:
                 handlePushFromAdmin();
             default:
                 break;

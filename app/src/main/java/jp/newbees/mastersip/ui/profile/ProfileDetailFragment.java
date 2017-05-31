@@ -158,6 +158,13 @@ public class ProfileDetailFragment extends BaseFragment implements ProfileDetail
         viewPagerProfile.setAdapter(adapterViewPagerProfileDetail);
         viewPagerProfile.addOnPageChangeListener(onPagerProfileChangeListener);
         viewPagerProfile.setCurrentItem(currentIndex);
+        viewPagerProfile.post(new Runnable() {
+            @Override
+            public void run() {
+                if (currentIndex == 0)
+                    onPagerProfileChangeListener.onPageSelected(currentIndex);
+            }
+        });
         updatePagerIndicator();
     }
 
