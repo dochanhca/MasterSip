@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -43,7 +44,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int PUSH_MISS_CALL = 1;
     public static final int PUSH_CHAT = 2;
     public static final int PUSH_FOLLOWED = 3;
-    public static final int USER_ONL = 4;
+    public static final int PUSH_USER_ONLINE = 4;
+    public static final int PUSH_NOTIFY = 5;
 
 
     /**
@@ -94,6 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void handlePushMessage(Map<String, Object> data) {
         FCMPushItem fcmPushItem = (FCMPushItem) data.get(Constant.JSON.FCM_PUSH_ITEM);
+        String message = fcmPushItem.getMessage();
         Logger.e(TAG, "Push from server: " + fcmPushItem.getCategory());
         switch (fcmPushItem.getCategory()) {
             case FCMPushItem.CATEGORY.INCOMING_CALL:
@@ -105,42 +108,41 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 break;
             case FCMPushItem.CATEGORY.CHAT_TEXT:
-                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotificationForChat(fcmPushItem.getMessage(), (UserItem) data.get(Constant.JSON.USER));
-                }
+                handleNotification((UserItem) data.get(Constant.JSON.USER), message, PUSH_CHAT);
                 break;
             case FCMPushItem.CATEGORY.FOLLOW:
-                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    sendNotificationForFollow(fcmPushItem);
-                }
+                message = String.format(getString(R.string.mess_be_followed), fcmPushItem.getUserName());
+                handleNotification(null, message, PUSH_FOLLOWED);
                 break;
             case FCMPushItem.CATEGORY.USER_ONLINE:
-                if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
-                    ConfigManager.getInstance().savePushUserOnl(true);
-                    sendNotificationUserOnl(fcmPushItem);
-                }
+                message = String.format(getString(R.string.mess_be_uerOnl), fcmPushItem.getMessage());
+                handleNotification(null, message, PUSH_USER_ONLINE);
+                break;
+            case FCMPushItem.CATEGORY.NOTIFY:
+                handleNotification(null, message, PUSH_NOTIFY);
                 break;
             default:
+                sendNotification(message);
                 break;
         }
     }
 
-    private void sendNotificationForFollow(FCMPushItem fcmPushItem) {
-        String message = String.format(getString(R.string.mess_be_followed), fcmPushItem.getUserName());
-        Intent intent = new Intent(this, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(PUSH_TYPE, PUSH_FOLLOWED);
-        intent.putExtras(bundle);
-        sendNotification(message, intent);
+    private void handleMissCallMessage(UserItem caller) {
+        String message = caller.getUsername() + getString(R.string.push_missed_call);
+        handleNotification(caller, message, PUSH_MISS_CALL);
     }
 
-    private void sendNotificationUserOnl(FCMPushItem fcmPushItem) {
-        String message = String.format(getString(R.string.mess_be_uerOnl), fcmPushItem.getMessage());
-        Intent intent = new Intent(this, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(PUSH_TYPE, USER_ONL);
-        intent.putExtras(bundle);
-        sendNotification(message, intent);
+    private void handleNotification(@Nullable UserItem userItem, String message, int type) {
+        if (!MyLifecycleHandler.getInstance().isApplicationVisible()) {
+            Intent intent = new Intent(this, SplashActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(PUSH_TYPE, type);
+            if (userItem != null) {
+                bundle.putParcelable(FROM_USER, userItem);
+            }
+            intent.putExtras(bundle);
+            sendNotification(message, intent);
+        }
     }
 
     private void handleIncomingCallMessage(Map<String, Object> data) {
@@ -152,35 +154,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         handleIncomingCall((String) data.get(Constant.JSON.CALL_ID));
     }
 
-    private void handleMissCallMessage(UserItem caller) {
-        String message = caller.getUsername() +
-                getApplicationContext().getResources().getString(R.string.push_missed_call);
-        sendNotificationForMissCall(message, caller);
-    }
-
     private void handleIncomingCall(String callId) {
         ConfigManager.getInstance().setCallId(callId);
         if (!LinphoneService.isRunning()) {
             LinphoneService.startLinphone(getApplicationContext(), LinphoneService.START_FROM_PUSH_NOTIFICATION);
         }
-    }
-
-    private void sendNotificationForMissCall(String message, UserItem caller) {
-        Intent intent = new Intent(this, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(FROM_USER, caller);
-        bundle.putInt(PUSH_TYPE, PUSH_MISS_CALL);
-        intent.putExtras(bundle);
-        sendNotification(message, intent);
-    }
-
-    private void sendNotificationForChat(String message, UserItem fromUser) {
-        Intent intent = new Intent(this, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(FROM_USER, fromUser);
-        bundle.putInt(PUSH_TYPE, PUSH_CHAT);
-        intent.putExtras(bundle);
-        sendNotification(message, intent);
     }
 
     private void sendNotification(String message) {
@@ -209,7 +187,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
 
         if (Build.VERSION.SDK_INT >= 21) {
             notificationBuilder.setVibrate(new long[0])

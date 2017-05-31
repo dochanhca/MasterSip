@@ -14,6 +14,7 @@ import jp.newbees.mastersip.ui.mailbackup.RegisterEmailBackupFragment;
 import jp.newbees.mastersip.ui.mymenu.BlockListFragment;
 import jp.newbees.mastersip.ui.mymenu.HistoryCallFragment;
 import jp.newbees.mastersip.ui.mymenu.MyMenuFragment;
+import jp.newbees.mastersip.ui.mymenu.NotificationListFragment;
 import jp.newbees.mastersip.ui.mymenu.OnlineListFragment;
 import jp.newbees.mastersip.ui.mymenu.SettingPushFragment;
 import jp.newbees.mastersip.ui.payment.PaymentFragment;
@@ -114,6 +115,11 @@ public class MyMenuContainerFragment extends BaseFragment {
 
     public static void showBlockListFragment(FragmentActivity activity) {
         BaseFragment fragment = BlockListFragment.newInstance();
+        performShowFragment(activity, fragment);
+    }
+
+    public static void showNotificationListFragment(FragmentActivity activity) {
+        BaseFragment fragment = NotificationListFragment.newInstance();
         performShowFragment(activity, fragment);
     }
 

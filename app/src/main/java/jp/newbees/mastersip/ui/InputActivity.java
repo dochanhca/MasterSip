@@ -45,6 +45,7 @@ public class InputActivity extends CallActivity {
         txtActionBarTitle.setText(title);
         edtData.setText(textContent);
 
+        imgBack.setImageResource(R.drawable.img_save_button);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

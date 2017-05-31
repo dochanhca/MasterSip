@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_view"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
     <include layout="@layout/layout_action_bar" />
 
     <jp.newbees.mastersip.customviews.HiraginoEditText
         android:id="@+id/edt_data"
-        android:background="@android:color/transparent"
-        android:layout_margin="@dimen/margin_20"
-        android:maxLength="200"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/margin_5"/>
+        android:layout_margin="@dimen/margin_20"
+        android:background="@android:color/transparent"
+        android:maxLength="200"
+        android:paddingBottom="@dimen/margin_5" />
 </LinearLayout>

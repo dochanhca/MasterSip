@@ -519,11 +519,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
     public interface BottomNavigation {
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHasFooterDialogEvent(FooterDialogEvent footerDialogEvent) {
         FooterManager.getInstance(this).add(footerDialogEvent);
-
     }
 
     /**
@@ -636,7 +634,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageD
                 TopActivity.navigateToFragment(this, TopActivity.FOOT_PRINT_FRAGMENT);
                 break;
             case Constant.FOOTER_DIALOG_TYPE.USER_ONLINE_NOTIFY:
-                ConfigManager.getInstance().savePushUserOnl(true);
                 TopActivity.navigateToFragment(this, TopActivity.MY_MENU_FRAGMENT_CONTAINER);
             default:
                 break;

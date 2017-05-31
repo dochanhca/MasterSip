@@ -47,6 +47,8 @@ public class FCMPushItem implements Parcelable {
         public static final String CHAT_TEXT = "CHAT_TEXT";
         public static final String FOLLOW = "FOLLOW";
         public static final String USER_ONLINE = "USER_ONLINE";
+        public static final String COMMON_PUSH = "COMMON_PUSH";
+        public static final String NOTIFY = "NOTIFY";
     }
 
     public String getBadge() {
