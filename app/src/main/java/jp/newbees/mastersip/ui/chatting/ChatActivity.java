@@ -293,7 +293,7 @@ public class ChatActivity extends CallActivity implements
             chatAdapter.removeHeaderItemIfDuplicated(resultItem.getBaseChatItems());
         }
         chatAdapter.addDataFromBeginning(resultItem.getBaseChatItems());
-
+        disMissLoading();
         if (needScrollToTheEnd) {
             recyclerChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
@@ -305,6 +305,7 @@ public class ChatActivity extends CallActivity implements
 
     @Override
     public void didLoadChatHistoryError(int errorCode, String errorMessage) {
+        disMissLoading();
         if (errorCode == Constant.Error.HAS_BEEN_BLOCKED) {
             TopActivity.startActivityClearTop(this, userItem);
         } else {
@@ -488,6 +489,7 @@ public class ChatActivity extends CallActivity implements
 
         updateTopPaddingRecycle();
 
+        showLoading();
         presenter.loadChatHistory(userItem, 0);
     }
 
