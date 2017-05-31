@@ -30,6 +30,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/small_margin"
             android:paddingRight="@dimen/small_margin"
+            android:paddingBottom="@dimen/_2dp"
             android:text="Title"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_action_bar" />

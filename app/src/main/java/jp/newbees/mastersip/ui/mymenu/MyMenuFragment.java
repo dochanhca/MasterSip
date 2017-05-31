@@ -58,7 +58,6 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -168,10 +167,6 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
         ButterKnife.bind(this, mRoot);
         presenter = new MyMenuPresenter(getContext(), this);
         initDefaultViews();
-        if (ConfigManager.getInstance().isPushUserOnl()) {
-            ConfigManager.getInstance().savePushUserOnl(false);
-            MyMenuContainerFragment.showOnlineListFragment(getActivity());
-        }
     }
 
     private void initDefaultViews() {
@@ -326,6 +321,8 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
                 MyMenuContainerFragment.showBlockListFragment(getActivity());
                 break;
             case R.id.layout_my_notify:
+                MyMenuContainerFragment.showNotificationListFragment(getActivity());
+                break;
             case R.id.layout_guide:
             case R.id.layout_contact:
             case R.id.layout_common_guide:
