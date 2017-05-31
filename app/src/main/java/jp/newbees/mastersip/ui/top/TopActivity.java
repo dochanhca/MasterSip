@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -324,7 +323,6 @@ public class TopActivity extends CallActivity implements
         handlePushForChangeFragment(new Runnable() {
             @Override
             public void run() {
-                disMissLoading();
                 viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
                 MyMenuContainerFragment.showNotificationListFragment(TopActivity.this);
             }
@@ -335,7 +333,6 @@ public class TopActivity extends CallActivity implements
         handlePushForChangeFragment(new Runnable() {
             @Override
             public void run() {
-                disMissLoading();
                 viewPager.setCurrentItem(MY_MENU_FRAGMENT_CONTAINER);
                 MyMenuContainerFragment.showOnlineListFragment(TopActivity.this);
             }
@@ -346,18 +343,13 @@ public class TopActivity extends CallActivity implements
         handlePushForChangeFragment(new Runnable() {
             @Override
             public void run() {
-                disMissLoading();
                 viewPager.setCurrentItem(FOLLOW_FRAGMENT, false);
             }
         });
     }
 
-    /**
-     * need to wait small time to viewpager init fragment before navigate
-     */
     private void handlePushForChangeFragment(Runnable runnable) {
-        showLoading();
-        new Handler().postDelayed(runnable, 100);
+        viewPager.post(runnable);
     }
 
     private void showMessageDialogForMissedCall(UserItem fromUser) {

@@ -137,7 +137,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(this, SplashActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(PUSH_TYPE, type);
-            if (type == PUSH_CHAT || type == PUSH_MISS_CALL) {
+            if (userItem != null) {
                 bundle.putParcelable(FROM_USER, userItem);
             }
             intent.putExtras(bundle);
