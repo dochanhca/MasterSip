@@ -58,7 +58,6 @@ import jp.newbees.mastersip.ui.dialog.TextDialog;
 import jp.newbees.mastersip.ui.profile.ProfileDetailItemActivity;
 import jp.newbees.mastersip.ui.top.MyMenuContainerFragment;
 import jp.newbees.mastersip.utils.ConfigManager;
-import jp.newbees.mastersip.utils.Constant;
 import jp.newbees.mastersip.utils.Logger;
 import jp.newbees.mastersip.utils.Utils;
 
@@ -286,10 +285,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.img_edit_profile:
                 startEditProfileScreen();
                 break;
-            case R.id.btn_change_avatar:
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
+            case R.id.btn_change_avatar:
             case R.id.group_avatar:
                 handleUploadAvatar();
                 break;
