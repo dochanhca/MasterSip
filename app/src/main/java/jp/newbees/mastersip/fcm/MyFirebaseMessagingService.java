@@ -45,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final int PUSH_CHAT = 2;
     public static final int PUSH_FOLLOWED = 3;
     public static final int PUSH_USER_ONLINE = 4;
-    public static final int PUSH_FROM_ADMIN = 5;
+    public static final int PUSH_NOTIFY = 5;
 
 
     /**
@@ -119,7 +119,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 handleNotification(null, message, PUSH_USER_ONLINE);
                 break;
             case FCMPushItem.CATEGORY.NOTIFY:
-                handleNotification(null, message, PUSH_FROM_ADMIN);
+                handleNotification(null, message, PUSH_NOTIFY);
                 break;
             default:
                 sendNotification(message);
@@ -137,7 +137,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(this, SplashActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt(PUSH_TYPE, type);
-            if (type == PUSH_CHAT || type == PUSH_MISS_CALL) {
+            if (userItem != null) {
                 bundle.putParcelable(FROM_USER, userItem);
             }
             intent.putExtras(bundle);
@@ -187,7 +187,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSound(defaultSoundUri)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
 
         if (Build.VERSION.SDK_INT >= 21) {
             notificationBuilder.setVibrate(new long[0])

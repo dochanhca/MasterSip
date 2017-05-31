@@ -281,10 +281,10 @@ public class MyMenuFragment extends BaseFragment implements MyMenuPresenter.MyMe
             case R.id.img_edit_profile:
                 startEditProfileScreen();
                 break;
-            case R.id.btn_change_avatar:
             case R.id.btn_upload_photo:
                 handleUploadPhotoForGallery();
                 break;
+            case R.id.btn_change_avatar:
             case R.id.group_avatar:
                 handleUploadAvatar();
                 break;
